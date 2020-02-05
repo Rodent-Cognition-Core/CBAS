@@ -1,0 +1,154 @@
+<div>
+    <section id="firstsection" class="firstsection bgRow" ngClass.xs="firstsection bgRowXs" style="background: url(../assets/images/bg1.jpg) no-repeat center center / cover;">
+        <!--<br /><br />-->
+        <header class="section-header">
+            <div class="container">
+                <div class="row">
+                    <h1 class="section-title title-font-size" style="color: #fff; margin:10px 10px">
+                        <span countUp [endVal]="mouseCounter" style="color: #ceaafb">0</span> Registered Mice in&nbsp;
+                        Mouse<span class="title-font-size" style="color: #ceaafb">Bytes</span>
+                    </h1>
+                    <div class="section-subtitle" style="color: #ccc;font-size:20px;">Open access database for mouse cognition, imaging and genomics data integration</div>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <owl-carousel [options]="carouselOptions"
+                              [items]="images"
+                              [carouselClasses]="['owl-carousel', 'owl-theme', 'row', 'sliding']">
+                    <div class="item" *ngFor="let image of images;let i = index">
+                        <div class="textcenter" fxLayout="column" style="text-align:center;">
+                            <img style="max-width: 400px; min-width: 200px; width: 25%;" src="{{image.src}}" />
+                            <span style="margin: auto;">
+                                <a routerLink="{{image.btnLink}}">
+                                    <button mat-raised-button style=" background-color: #795d9c; color: white ;" *ngIf="image.btnVisible">{{image.btnText}}</button>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </owl-carousel>
+            </div>
+        </div>
+
+
+        <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column" style="padding-top:30px">
+            <div class="item item-3" fxFlex="50%" style="color: #ccc;font-size:18px;">
+                <span style="font-size:22px">Benefits</span>
+                <ul class="desc-font-size">
+                    <li>Data Storage and Repository</li>
+                    <li>Publicly shareable through a permanent URL</li>
+                    <li>Data Extraction and Comparison</li>
+                    <li>Interactive Visualization</li>
+                </ul>
+            </div>
+            <div class="item item-3 sponsor-logo" fxFlex="50%">
+                <div style="color: #ccc; font-size: 22px; text-align: center; padding-bottom: 20px;">Supported by</div>
+                <a href="https://brainscan.uwo.ca/" target="_blank"><img alt="BrainSCAN" class="logo-img" src="../../assets/images/western_logo_transparent.png"></a>
+                <a href="http://westonbraininstitute.ca/home/" target="_blank"><img alt="Weston Brain Institute" class="logo-img" src="../../assets/images/weston_logo_transparent.png"></a>
+                <br/>
+                <br/> 
+            </div>
+        </div>
+    </section>
+    <!--<section class="about" id="about" style="background-color:white">
+
+        <div style="width: 70%; margin: auto; padding-top: 130px;">
+            <div class="row" style="padding-top: 50px;">
+                <h1 class="section-title">ABOUT <span>US</span></h1>
+
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+
+                <div class="item item-1" fxFlex="50%" style="text-align:justify; color:#656565; padding: 50px 50px 0;">
+                    <b>MouseBytes:</b>
+                    An open access and searchable database targeting imaging, genomics, and cognitive behavioral data of rodents for integration, storage,
+                    standardization and analysis in pre-clinical research. MouseBytes facilitates collaboration, data availability, and data reproducibility,
+                    enabling investigators to compare and validate their research data in one coherent platform and, as a result,
+                    produce new findings in drug discovery studies in a more efficient and effective manner. Investigating a variety of mouse models longitudinally at multiple
+                    laboratories around the world results in generation of large amount of data, and to the best of our knowledge,
+                    MouseBytes is the first platform aiming to integrate and share different types of data, particularly cognitive behavioral data on a large scale.
+                </div>
+                <div class="item item-2" fxFlex="50%" style="text-align:center; color:white; padding: 50px 0px 0px;">
+                    <img src="../../assets/images/AboutUs1.png" class="sub-img" />
+                </div>
+            </div>
+            <br />
+
+            <div fxLayout="row" fxLayout.xs="column" fxLayout.sm="column">
+                <div class="item item-3" fxFlex="50%" style="text-align:center; color:white; padding: 20px 0px 0px;">
+                    <img src="../../assets/images/AboutUS2.jpg" class="sub-img" />
+                </div>
+                <div class="item item-3" fxFlex="50%" style="text-align:justify; color:#656565; padding: 20px 50px 0px;">
+                    <b>Touch Screen Technology:</b>
+                    Thanks to automated touch screen technology, mice and rats can be assessed with multiple cognitive functions within the same testing environment for
+                    investigating neurodegenerative and neuropsychiatric disorders. Data generated using such a technology also provides standardized formats, suitable for
+                    data analysis. In addition, MouseBytes moves a step further and checks data, obtained from touch screen, against some quality control rules to make sure
+                    complete, valid, high quality, and accurate data are embedded into the system. Touch screen has been being utilized widely at multiple sites. So our first
+                    focus in MouseBytes is on the integration of cognitive behavioral data from this technology. Please contact our support team for more details about this project.
+                </div>
+            </div>
+
+
+        </div>
+        <br />
+    </section>-->
+    <!--<section id="contactsection" class="contactsection high-margin" style="min-height:100%; background-color:white">
+        <header class="section-header">
+            <div class="container">
+                <div class="row" style="padding-top: 80px;">
+                    <h1 class="section-title">CONTACT <span>US</span></h1>
+                    <div class="section-border"></div>
+                    <p class="section-subtitle">Get in touch with us!</p>
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="block-container">
+                        <div class="block-icon">
+                            <div class="block-triangle">
+                                <div data-angle="SE" class="flat-icon">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block-content">
+                            <p>
+                                <script type="text/javascript">
+                                    var string1 = "mousebytes";
+                                    var string2 = "@";
+                                    var string3 = "uwo.ca";
+                                    var string4 = string1 + string2 + string3;
+                                    document.write("<a href=" + "mail" + "to:" + string1 + string2 + string3 + ">" + string1 + string2 + string3 + "</a>");
+                                </script>
+                            </p>
+                            <p class="section-subtitle">MouseBytes Support Team: <b>mousebytes@uwo.ca</b></p>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+
+            </div>
+        </div>
+
+
+    </section>-->
+
+
+
+</div>
+

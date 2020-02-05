@@ -1,0 +1,44 @@
+<br />
+<table class="docs-markdown-table" style="width: 98%;">
+    <thead>
+        <tr>
+            <th class="docs-markdown-th">
+                Data Visualization
+                <!--<button mat-raised-button color="warn" (click)="GenerateLink()" style="float: right;">Link to this result</button>-->
+            </th>
+        </tr>
+    </thead>
+    <tbody class="docs-markdown-tbody">
+        <tr>
+            <td class="docs-markdown-td" style="vertical-align:top;">
+                <div>
+                    <label style="color:red" >It is recommended to browse data visualization page using eigther Chrome or Firefox.</label> <br/>
+                    <label>Please select the cognitive task to view the corresponding graphs: </label> &nbsp;&nbsp;&nbsp;
+                    <mat-form-field>
+                        <mat-select placeholder="Select" [(ngModel)]="selectedCogTaskValue" (selectionChange)="selectCogTaskChange(true)">
+                            <mat-option *ngFor="let cogTask of cogTaskList" [value]="cogTask.cogTaskID">
+                                <span matTooltip="{{cogTask.name}}">{{cogTask.name}}</span>
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                    &nbsp;
+
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="main">
+                    <div id="contentpanel" class="webPlayerCss"></div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<br />
+<br />
+

@@ -1,0 +1,50 @@
+<div class="account-card-container" style="margin-top: 50px;">
+    <mat-card>
+        <mat-toolbar color="primary">Forgot password?</mat-toolbar>
+        <mat-card-content>
+            <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && forgot()" novalidate>
+                <div>
+                    <br />
+                    <br />
+                    <!--<mat-form-field class="full-width">
+                        <input type="text" matInput [(ngModel)]="model.username" name="email" #username="ngModel" placeholder="email" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>-->
+
+
+                    <mat-form-field class="full-width">
+                        <input type="text" matInput [(ngModel)]="model.username" name="username" #username="ngModel" placeholder="email" (keyup)="clearMessages()"
+                               pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+                        <mat-error *ngIf="username.hasError('required')">
+                            Required
+                        </mat-error>
+                        <mat-error *ngIf="username.hasError('pattern')">
+                            Invalid format
+                        </mat-error>
+                    </mat-form-field>
+
+                    <br />
+                    <div *ngIf="errorMessages.length > 0" class="has-error">
+                        <div *ngFor="let errorMessage of errorMessages">
+                            <small>{{ errorMessage.description }}</small>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div *ngIf="showCheckYourEmail" class="has-error" style="color: blue;">
+                    <small>Please check your Email to reset your password if you are already registered with Mousebytes.<br /></small>
+                    <br />
+                </div>
+
+                <!--<div><span *ngIf=""><br />Please check your Email to reset your password! <br />You have an email in your inbox if you are registered with mousebytes.<br /></span></div>-->
+
+                <div>
+                    <button mat-raised-button color="accent" type="submit" class="full-width">Submit</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+</div>

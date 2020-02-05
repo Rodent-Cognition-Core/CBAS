@@ -1,0 +1,123 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>Upload Log</h1></div>
+
+
+<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
+
+<br /><br />
+
+      <div *ngIf="experimentID!=null">
+
+          <!--Search-->
+          <div style="float: left; margin-left: 10%; width: 80%;">
+              <mat-input-container class="md-icon-float full-width">
+                  <input matInput [(ngModel)]="expfilter" placeholder="search file or animal ID" (keyup.enter)="search()">
+              </mat-input-container>
+          </div>
+          <div style="float: left">
+              <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+          </div>
+          <div style="clear: both;"></div>
+          <br />
+
+
+          <table class="docs-markdown-table">
+              <thead>
+
+                  <tr><th colspan="6" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Major Upload Errors for {{experimentName}}</th></tr>
+                  <tr style=" text-align: center; color:#566573;">
+                      <td class="docs-markdown-td">Sub-Experiment Name, Age</td>
+                      <td class="docs-markdown-td">File Name</td>
+                      <td class="docs-markdown-td">Upload Date</td>
+                      <td class="docs-markdown-td">Animal ID</td>
+                      <td class="docs-markdown-td">Error Message</td>
+                      <td class="docs-markdown-td-wide-errorMessage">Manage Error</td>
+
+                  </tr>
+
+              </thead>
+
+              <tbody class="docs-markdown-tbody">
+                  <tr *ngFor="let row of pagedItems; let i = index">
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.subExpNameAge}}</td>
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userFileName}}</td>
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.dateFileCreated | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+                      <td style="text-align: left; color:#CD5C5C;" class="docs-markdown-td">
+                          <div [innerHTML]="row.errorMessage"></div>
+                          <div style="color: #DC7633;" [innerHTML]="row.warningMessage"></div>
+                      </td>
+
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-errorMessage" *ngIf="!row.errorMessage.includes('Missing Animal Information:')">
+                          <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button><br />
+                          <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button>
+                      </td>
+                      <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-errorMessage" *ngIf="row.errorMessage.includes('Missing Animal Information:')">
+                          <button mat-button (click)="ResolveIssue(row.animalObj, row.uploadID)">Resolve Issue</button><br />
+                          <button mat-button (click)="delAnimal(row.animalID, row.expID)">Delete Animal</button><br />
+                          <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button><br />
+                          <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button>
+                      </td>
+                  </tr>
+
+                  <tr>
+                      <td colspan="13" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
+                          <!-- pager -->
+                          <div class="pagination-custom">
+                              <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                              <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                              <span *ngFor="let page of pager.pages">
+                                  <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                              </span>
+                              <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                              <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                          </div>
+                      </td>
+                  </tr>
+
+              </tbody>
+
+          </table>
+
+      </div>
+
+<br /><br />
+
+<div *ngIf="experimentID!=null">
+    <table class="docs-markdown-table">
+
+        <thead>
+            <tr><td colspan="4" style="padding: 5px; text-align:right; border: 1px solid rgba(0,0,0,.03);"><button mat-button (click)="ClearUploadErrorLogList(experimentID)">Clear Table</button></td></tr>
+            <tr><th colspan="4" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Minor Upload Errors for {{experimentName}}</th></tr>
+            <tr style=" text-align: center; color:#566573;">
+                <td class="docs-markdown-td">Sub-Experiment Name, Age</td>
+                <td class="docs-markdown-td">File Name</td>
+                <td class="docs-markdown-td">Upload Date</td>
+                <td class="docs-markdown-td">Error Message</td>
+            </tr>
+
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+
+            <tr *ngFor="let row1 of uploadErrorLogList; let i = index">
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.subExpNameAge}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.userFileName}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.uploadDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td style="text-align: left; color:#CD5C5C;" class="docs-markdown-td">
+                    <div [innerHTML]="row1.errorMessage"></div>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>
+<br/>
+<br/>
+
+
+
+

@@ -1,0 +1,79 @@
+<div class="panel panel-default" style="margin-top:10px; text-align:center; margin:auto; width:90%" *ngIf="colNames.length > 0">
+
+    <div style="background-color: white; padding: 20px; text-align: left;">
+        <div [innerHTML]="description"></div>
+    </div>
+
+    <div style="text-align: left;">
+        <button mat-raised-button color="primary" (click)="DownloadCsv()">Export Data</button>
+    </div>
+    <div class="pane pane--table1">
+        <div class="pane-hScroll">
+            <table>
+                <thead>
+                <th *ngFor="let col of colNames">
+                    <span matTooltip="{{col}}" matTooltipPosition="left" [matTooltipClass]="'my-tooltip'">{{col}}</span>
+                </th>
+                </thead>
+            </table>
+            <div class="pane-vScroll">
+                <table>
+                    <tbody>
+                        <tr *ngFor="let res of pagedItems; let i = index">
+                            <!--<tr *ngFor="let res of result">-->
+                            <td *ngFor="let col of colNames">
+                                <span *ngIf="col=='Image'" [innerHTML]="res[col]"></span>
+                                <span *ngIf="col!='Image'">{{res[col]}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td [colSpan]="colNames.length" *ngIf="pager.pages && pager.pages.length" style="text-align: left;">
+                                <!-- pager -->
+                                <div class="pagination-custom">
+                                    <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                                    <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                                    <span *ngFor="let page of pager.pages">
+                                        <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                    </span>
+                                    <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                                    <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+<!--<div class="panel-body" style="position:relative">
+    <div class="table-responsive" style="overflow: auto">
+        <div [innerHTML]="description"></div>
+        <br />
+        <table class="docs-markdown-table" style="width: 100%">
+            <thead>
+                <tr>
+                    <td height="50px;" style="padding: 5px; text-align:left; border: 1px solid rgba(0,0,0,.03);column-span:{{colNames.length}}">
+                        <button mat-button (click)="DownloadCsv()" style="position: absolute; left: 5px;">Export Data</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="docs-markdown-th-wide" *ngFor="let col of colNames">
+                        {{col}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="docs-markdown-tbody">
+                <tr *ngFor="let res of result">
+                    <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide" *ngFor="let col of colNames">
+                        {{res[col]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>-->

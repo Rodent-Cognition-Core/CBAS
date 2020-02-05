@@ -1,0 +1,143 @@
+
+<div>
+
+    <h3 mat-dialog-title>Please fill the form:</h3>
+    <br />
+
+    <mat-dialog-content>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your sub-experiment name" [formControl]="subExp" [(ngModel)]="subExpNameModel" required>
+            <mat-error *ngIf="subExp.invalid">{{getErrorMessage()}}</mat-error>
+            <mat-error *ngIf="subExp.invalid">{{getErrorMessageTaken()}}</mat-error>
+        </mat-form-field>
+
+        <!--<mat-form-field class="full-width">
+        <input matInput placeholder="Animal Age (Months)" [formControl]="ageInMonth" [(ngModel)]="ageInMonthModel" (input)="onAgeInputChange($event.target.value)" required>
+        <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageAge()}}</mat-error>
+        <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageAgeValidation()}}</mat-error>
+        <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageTakenAge()}}</mat-error>
+
+    </mat-form-field>-->
+
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select the age range" [formControl]="ageInMonth" required [(ngModel)]="ageInMonthModel">
+                <mat-option *ngFor="let age of ageList" [value]="age.id">
+                    {{age.ageInMonth}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageAge()}}</mat-error>
+            <!--<mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageTakenAge()}}</mat-error>-->
+        </mat-form-field>
+
+        <!--Image Drop-down list if the selected task is PAL or PD-->
+        <div [hidden]="taskID != 3 && taskID != 4">
+
+            <mat-form-field class="full-width">
+                <mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>
+                    <mat-option *ngFor="let image of imageList" [value]="image.id">
+                        <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>
+            </mat-form-field>
+
+        </div>
+
+        <!--providing description if more than 2 iamges selected for PD and more than 3 iamges selected for PAL-->
+        <div [hidden]="!((taskID==3 && selectedImageResult >2 ) || (taskID==4 && selectedImageResult > 3))">
+
+            <mat-form-field class="full-width">
+
+                <textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
+                          [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
+                          matAutosizeMaxRows="5">
+           
+                </textarea>
+                <mat-error *ngIf="imageDescription.invalid">{{getErrorMessageImageDescription()}}</mat-error>
+            </mat-form-field>
+
+        </div>
+
+        <!--Housing information-->
+        <mat-radio-group [formControl]="housing" [(ngModel)]="housingModel" required>
+            <span style="font-size:small">How are the mice housed in your facility? </span> <br />
+            <mat-radio-button style="font-size:small" value="Single-housed">Single-housed</mat-radio-button>
+            <mat-radio-button style="font-size:small" value="Group-housed">Group-housed</mat-radio-button>
+            <mat-error style="font-size:small" *ngIf="housing.invalid">{{getErrorMessageHousing()}}</mat-error>
+        </mat-radio-group>
+
+        <br /><br />
+
+        <!--Light-Cycle information-->
+        <mat-radio-group [formControl]="lightCycle" [(ngModel)]="lightCycleModel" required>
+            <span style="font-size:small">How is the light cycle in your animal facility?</span> <br />
+            <mat-radio-button style="font-size:small" value="Reversed light cycle">Reversed light cycle</mat-radio-button>
+            <mat-radio-button style="font-size:small" value="Diurnal light cycle">Diurnal light cycle</mat-radio-button>
+            <mat-error style="font-size:small" *ngIf="lightCycle.invalid">{{getErrorMessageLightCycle()}}</mat-error>
+        </mat-radio-group>
+
+
+        <br /><br />
+
+        <span style="font-size:small">- Each sub-experiment can include data either with or without intervention. Please indicate if the sub-experiment has intervention?</span>
+        <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
+            <mat-radio-button value="0">No</mat-radio-button>
+            <mat-radio-button value="1">Yes</mat-radio-button>
+            <mat-error *ngIf="intervention.invalid">{{getErrorMessageIntervention()}}</mat-error>
+        </mat-radio-group>
+
+        <br />
+        <br />
+
+        <span style="font-size:small" *ngIf="interventionModel=='1'">- Please indicate if the intervention is medication/drug?</span>
+        <mat-radio-group [formControl]="isDrug" [(ngModel)]="isDrugModel" required *ngIf="interventionModel=='1'">
+            <mat-radio-button value="0">No</mat-radio-button>
+            <mat-radio-button value="1">Yes</mat-radio-button>
+            <mat-error *ngIf="isDrug.invalid">{{getErrorMessageIsDrug()}}</mat-error>
+        </mat-radio-group>
+
+        <br />
+
+        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
+            <input matInput placeholder="Enter drug name" [formControl]="drug" [(ngModel)]="drugModel" required>
+            <mat-error *ngIf="drug.invalid">{{getErrorMessageDrug()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" *ngIf="isDrugModel=='1'&& interventionModel=='1'">
+            <input matInput placeholder="Enter drug quantity" [formControl]="drugQuantity" [(ngModel)]="drugQuantityModel" required>
+            <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatity()}}</mat-error>
+            <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatityNumber()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
+            <input matInput placeholder="Enter drug unit" [formControl]="drugUnit" [(ngModel)]="drugUnitModel" required>
+            <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageDrugUnit()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" *ngIf="interventionModel=='1' && isDrugModel=='0'">
+            <textarea matInput placeholder="Intervention Description" [formControl]="intDes" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
+                      matAutosizeMaxRows="5"></textarea>
+            <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>
+        </mat-form-field>
+
+        <!--<mat-form-field class="hidden">
+        <div> <input matInput> </div>Unit
+    </mat-form-field>-->
+
+
+
+    </mat-dialog-content>
+
+    <br />
+
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+
+    <br />
+    <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageTakenAge()}}</mat-error>
+
+</div>
+

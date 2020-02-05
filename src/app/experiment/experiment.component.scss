@@ -1,0 +1,32 @@
+/*a {
+    color: #85929E;
+    float: left;
+    padding: 6px 6px;
+    text-decoration: none;
+    font-size: 12px;
+}*/
+
+/*.pagination-custom {
+    display: inline-block;
+    padding-top: 20px;
+}
+
+.pagination-custom a {
+    color: #85929E;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagination-custom a.active {
+    background-color: #566573;
+    color: white;
+}
+
+.pagination-custom a:hover:not(.active) {
+    background-color: #ddd;
+}*/
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';

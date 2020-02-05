@@ -1,0 +1,250 @@
+<mat-sidenav-container class="all-wrap" fullscreen>
+    <ng4-loading-spinner [threshold]="300"> </ng4-loading-spinner>
+    <mat-sidenav #sidenav style="background-color: #EDEDEE; ">
+        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; "></a></div>
+
+        <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
+            <li><a style="text-decoration: underline;" routerLink="/home">Home</a></li>
+            <li>
+                <br />
+                <b>TUTORIALS</b>
+                <ul>
+
+                    <li *ngFor="let navItem of navItemsTutorials">
+                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                    </li>
+
+                </ul>
+            </li>
+
+
+            <li>
+                <br />
+                <b>RESOURCES</b>
+                <ul>
+
+                    <li *ngFor="let navItem of navItemsResources">
+                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <br />
+
+            <!--<li><a style="color: #354248;" routerLink="/imaging">Imaging</a></li>-->
+            <!--<li><a style="color: #354248;" routerLink="/genomics">Genomics</a></li>-->
+            <li>
+                <b>DATA INTEGRATION</b>
+                <ul>
+                    <li *ngFor="let item of navItemsIntegration">
+                        <a [routerLink]="[item.route]">{{ item.name}}</a>
+                    </li>
+                </ul>
+            </li>
+            <br />
+
+            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
+
+            <li>
+                <br />
+                <b>TOUCHSCREEN DATA</b>
+                <ul>
+                    <li *ngFor="let navItem of navItems">
+                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                    </li>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/experiment">Experiment</a></li>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/upload">Upload</a></li>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/animal-info">Animal</a></li>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" routerLink="/dashboard">Upload Log</a></li>
+                    <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/manage-user">User Management</a></li>
+                    <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/pubScreen">PUBSCREEN</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </mat-sidenav>
+
+    <div class="page-wrap">
+        <header role="banner">
+            <mat-toolbar style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
+                <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color:  #4F2683; color: white; padding-right: 30px;">
+                    <div fxHide fxShow.xs="true">
+                        <button type="button"
+                                mat-icon-button
+                                (click)="sidenav.open()"
+                                title="Open sidenav">
+                            <mat-icon>menu</mat-icon>
+                        </button>
+                    </div>
+                    <span class="fill-remaining-space"></span>
+                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signin" *ngIf="(signedIn | async) === false">Sign in</a>
+                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signup" *ngIf="(signedIn | async) === false">Sign up</a>
+                    <span *ngIf="!!name" style="color: white">Hi {{ name }}!&nbsp;&nbsp;</span>
+                    <a mat-button class="mat-small" style="color: white" routerLink="/profile" *ngIf="signedIn | async">Profile</a>
+                    <a mat-button class="mat-small" style="color: white" (click)="signout()" *ngIf="signedIn | async">Sign out</a>
+                </mat-toolbar-row>
+                <mat-toolbar-row style="height: 100px; background-color: #EDEDEE; white-space: normal;">
+                    <!--xs menu-->
+                    <div fxLayout="row" fxHide.gt-xs="true" fxShow.xs="true" style="width: 100%;">
+                        <ul class="top-nav-ul" style="width: 100%; text-align: center;">
+                            <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:middle"></a></span>
+                        </ul>
+                    </div>
+                    <!--sm menu-->
+                    <div class="naviMenu" fxLayout="row" fxHide.gt-sm="true" fxHide.lt-sm="true" fxShow.sm="true"  fxShow.md="true">
+                        <ul class="top-nav-ul">
+                            <span style="padding:0 10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:left;"></a></span>
+                        </ul>
+                        <ul class="top-nav-ul" style="float: left;">
+                            <li style="letter-spacing: 1px; margin: 0 0 0 10px;">
+                                Touchscreen Data
+                                <ul>
+                                    <li *ngFor="let navItem of navItems">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
+                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
+                                    <li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
+
+                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+
+                            <li class="liright">
+                                TUTORIALS
+                                <ul>
+                                    <li *ngFor="let navItem of navItemsTutorials">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="liright">
+                                RESOURCES
+                                <ul>
+                                    <li *ngFor="let navItem of navItemsResources">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!--other sizes menu-->
+                    <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true">
+                        <ul class="top-nav-ul" style="float: left;" fxLayout="row">
+                            <li>
+                                Touchscreen Data
+                                <ul>
+                                    <li *ngFor="let navItem of navItems">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
+                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
+                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
+                                    <li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>
+                                </ul>
+                            </li>
+                            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
+                            <li>
+                                DATA INTEGRATION
+                                <ul>
+                                    <li *ngFor="let item of navItemsIntegration">
+                                        <a [routerLink]="[item.route]">{{ item.name}}</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--<li><a routerLink="/imaging">Imaging</a></li>-->
+                            <!--<li><a routerLink="/genomics">Genomics</a></li>-->
+
+                        </ul>
+                        <span style="padding:0 20px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:middle"></a></span>
+                        <ul class="top-nav-ul" style="float: right;" fxLayout="row">
+                            <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+                            <li class="liright">
+                                TUTORIALS
+                                <ul>
+                                    <li *ngFor="let navItem of navItemsTutorials">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                            <li class="liright">
+                                RESOURCES
+                                <ul>
+                                    <li *ngFor="let navItem of navItemsResources">
+                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </mat-toolbar-row>
+
+            </mat-toolbar>
+        </header>
+        <main id="contentMain" class="content inner-sidenav-content">
+            <router-outlet (activate)="onActivate($event)"></router-outlet>
+        </main>
+        <footer *ngIf="showFooter" class="footer" style="background-image:url(../assets/images/western_overlay.jpg); border-top: 1px solid grey;background-size: cover;">
+            <div style="text-align: center;">
+                <br />
+                <br />
+                <!--<span><img src="../assets/images/western.png" style="min-width: 300px; width: 300px; margin-left: 20px;"></span>-->
+
+                <p class="footer-text" style="text-align:center; color: #d7d7d7; font-size: 90%; line-height: 20pt;">
+                    <span>
+                        Tim Bussey and Lisa Saksida have established a series of targeted cognitive tests for animals, administered via touchscreen within a custom environment
+                        known as the "Bussey-Saksida touchscreen chamber". Cambridge Enterprise, the technology transfer office of the University of Cambridge, supported
+                        commercialization of the Bussey-Saksida chamber, culminating in a license to Campden Instruments. Any financial compensation received from
+                        commercialization of the technology is fully invested in further touchscreen development and/or maintenance.
+                    </span>
+
+                </p>
+                <br />
+                <br />
+                <br />
+                <!--<br />
+                <br />-->
+                <!--<br />
+                <br />
+                <br />
+                <br />
+                <br />-->
+            </div>
+           
+            <p style="padding-left: 20px; color: #d7d7d7; text-align:center">
+                <span>
+                    
+                    &copy; 2018 Western University | <a style="color: #3498DB" href="https://mousebytes.ca/terms" target="_blank">Terms of Service</a> <br/>
+                    Research data is distributed under Creative Commons license | <a style="color: #3498DB" href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 license</a> 
+                    
+                </span>
+            </p>
+            <br/>
+            
+        </footer>
+
+
+        <!--<span *ngIf="router.url != '/home'">
+            <br />
+            <br />
+            <br />
+        </span>-->
+    </div>
+</mat-sidenav-container>
+

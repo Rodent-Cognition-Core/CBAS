@@ -1,0 +1,37 @@
+ <div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>UPLOAD</h1></div>
+
+<div>
+
+    <app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" (outSelectedSubExperiment)="SelectedSubExpChanged($event)"></app-shared-experiment>
+    <br /><br />
+    <table class="docs-markdown-table">
+        <tbody class="docs-markdown-tbody">
+            <tr *ngIf="experimentID!=null && subExpID!=null">
+                <td class="docs-markdown-td" style="height:25px; color:#566573">
+                    Task of selected experiment is <b>{{expTask}}</b>. Please select the session type or schedule name of the xml files you want to upload: &nbsp;
+                    <mat-form-field>
+                        <mat-select placeholder="Select Session Type" [(ngModel)]="sessionNameVal">
+                            <mat-option *ngFor="let session of SessionList" [value]="session.sessionName">
+                                <span matTooltip="{{session.sessionDescription}}">{{session.sessionName}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </td>
+            </tr>
+
+            <tr *ngIf="experimentID!=null && subExpID!=null && sessionNameVal!=null">
+                <td class="docs-markdown-td" style="color:#566573">
+                    <span style="color:#566573">Upload <b>ONLY </b><span style="color: red; font-weight:bold">{{sessionNameVal}}</span> XML files for the selected experiment and sub-experiment: </span><hr /><br />
+                    <dropzone [config]="config" [message]="'Click or drag your XML files here to upload'" class="dropzone-container"
+                              (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (sending)="onSending($event)"
+                              (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)"></dropzone>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br /><br />
+
+</div>
+

@@ -1,0 +1,60 @@
+/*.docs-markdown-td-wide {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    max-width: 120px;
+    min-width: 120px;
+}*/
+
+* {
+    box-sizing: border-box;
+}
+
+table {
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed;
+    width: 100%;
+}
+
+th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    width: 160px;
+    max-width: 160px;
+    min-width: 160px;
+}
+
+td {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    width: 160px;
+    max-width: 160px;
+    min-width: 160px;
+}
+
+.pane {
+    background: #eee;
+}
+
+.pane-hScroll {
+    overflow: auto;
+    width: 100%;
+    background: green;
+}
+
+.pane-vScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 600px;
+    background: red;
+}
+
+/deep/ .my-tooltip {
+    /*overflow: visible;*/
+}

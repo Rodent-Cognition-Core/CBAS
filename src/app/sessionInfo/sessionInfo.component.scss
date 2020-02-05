@@ -1,0 +1,8 @@
+.sessionInfo-container {
+    display: flex;
+    flex-direction: column;
+
+    .mat-table {
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,282 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>DATA LAB</h1></div>
+
+<div>
+    <table class="docs-markdown-table">
+        <thead>
+
+            <tr><th class="docs-markdown-th">Query Database</th></tr>
+
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+            <tr>
+                <td style="padding: 13px 16px;">
+
+                    <!--Task dropDown-->
+                    <mat-form-field>
+                        <mat-select placeholder="Select the Task" [formControl]="task" [(ngModel)]="selectedTaskvalue" (selectionChange)="selectedTaskChange(selectedTaskvalue)" required>
+                            <mat-option *ngFor="let task of taskList" [value]="task.id">
+                                <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
+                    </mat-form-field>
+
+                    <!--Trial by Trial-->
+                    &nbsp; &nbsp;
+                    <mat-checkbox [(ngModel)]="isTrialByTrial">Extracting Data Trial by Trial</mat-checkbox>
+                    <br /><br />
+
+                    <!--Experiment dropDown-->
+                    <mat-form-field *ngIf="selectedTaskvalue!=null">
+                        <mat-select [formControl]="exp" placeholder="Select Experiments" [(ngModel)]="selectedExpvalue" [multiple]="true" (selectionChange)="selectedExpChange(selectedExpvalue)">
+                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="ExpMultiSelect" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
+                            <mat-option disabled="disabled" class="filter-option">
+                                <button mat-raised-button
+                                        class="mat-primary fill text-sm"
+                                        (click)="selectAllExperiments()"
+                                        [disabled]="ExpMultiSelect != undefined && ExpMultiSelect != ''">
+                                    Select All
+                                </button>
+                                <button mat-raised-button
+                                        class="mat-accent fill text-sm"
+                                        (click)="deselectAllExperiments()">
+                                    Deselect All
+                                </button>
+                            </mat-option>
+                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID">
+                                <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="exp.invalid">{{getErrorMessageExp()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--SubTask/Session dropDown-->
+                    <mat-form-field *ngIf="selectedExpvalue.length > 0">
+                        <mat-select [formControl]="subtask" placeholder="Select the Session" [(ngModel)]="selectedSubTaskValue" (selectionChange)="selectedSubTaskChange(selectedSubTaskValue, selectedExpvalue)" required>
+                            <mat-option *ngFor="let subtask of subTakList" [value]="subtask.id">
+                                <span matTooltip="{{subtask.subTaskDescription}}">{{subtask.name}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="subtask.invalid">{{getErrorMessageSubTask()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--Sub-session dropDown for some selected Sub-tasks-->
+                    <mat-form-field *ngIf="subSessionList.length > 0">
+                        <mat-select  placeholder="Select the sub-Session" [(ngModel)]="selectedSubSessionValue" multiple>
+                            <mat-option *ngFor="let subsession of subSessionList" [value]="subsession.sessionName">
+                                <span matTooltip="{{subsession.sessionDescription}}">{{subsession.sessionName}}</span>
+                            </mat-option>
+                        </mat-select>
+                        
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--Static SessionInfo Features-->
+                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
+                        <mat-select [formControl]="sessioninfo" placeholder="Select key features" [(ngModel)]="selectedSessionInfoValue" multiple>
+                            <mat-option *ngFor="let sessioninfo of sessionInfoFeature" [value]="sessioninfo.name">
+                                <span matTooltip="{{sessioninfo.name}}">{{sessioninfo.name}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="sessioninfo.invalid">{{getErrorMessageSessionInfo()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--Dynamic markerInfo Features-->
+                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
+                        <mat-select [formControl]="markerinfo" placeholder="Select the required features" [(ngModel)]="selectedMarkerInfoValue" (selectionChange)="getAnimalInfo(selectedExpvalue)" multiple>
+
+                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="MarkerInfoMultiSelect" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
+
+                            <mat-option *ngFor="let markerinfo of filteredMarkerInfoList | async" [value]="markerinfo">
+                                <span matTooltip="{{markerinfo}}">{{markerinfo}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="markerinfo.invalid">{{getErrorMessageMarkerInfo()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--List of Aggregation Function-->
+                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null && !isTrialByTrial">
+                        <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function" [(ngModel)]="selectedAggFunction" multiple>
+                            <mat-option *ngFor="let agg of aggregationFunction" [value]="agg.name">
+                                {{agg.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="aggFunc.invalid">{{getErrorMessageAggregation()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--PISite Information-->
+                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
+                        <mat-select [formControl]="PISite" placeholder="Select PI and institution" [(ngModel)]="selectedPiSiteValue" multiple>
+                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.pusid">
+                                <span matTooltip="{{exp.piSiteUser}}">{{exp.piSiteUser}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <!--Show Intervention information if the selected experiments do have intervention-->
+                    <mat-form-field *ngIf="InterventionList.length>0 && selectedExpvalue.length > 0 && selectedSubTaskValue!=null ">
+                        <mat-select placeholder="Select Intervention" [(ngModel)]="selectedInterventionValue" multiple>
+                            <mat-option *ngFor="let intervention of InterventionList" [value]="intervention.subExpID">
+                                <span matTooltip="{{ intervention.isDrug ? intervention.drugName : intervention.interventionDescription }}">{{ intervention.isDrug ? intervention.drugName + " " + intervention.drugQuantity + " " + intervention.drugUnit : intervention.interventionDescription }}</span>
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
+                    <br /><br />
+
+                    <!--Adding Panel for Filtering Animal Information-->
+
+                    <mat-card *ngIf="selectedMarkerInfoValue.length > 0">
+
+                        <mat-card-header>
+                            <mat-card-title>
+                                <b>Animal Data</b>
+                            </mat-card-title>
+                            <mat-card-subtitle>
+                                Select the filtering values for any of the following animal features:
+                            </mat-card-subtitle>
+                        </mat-card-header>
+
+                        <mat-card-content>
+
+                            <!--Animal Age list-->
+                            <mat-form-field>
+
+                                <mat-select placeholder="Select Animal Age (Month)" [(ngModel)]="selectedAgeValue" multiple>
+                                    <mat-option *ngFor="let animal of AnimalInfoListAge" [value]="animal.ageID">
+                                        {{animal.ageInMonth}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                            &nbsp; &nbsp; &nbsp;
+
+
+                            <!--Animal Sex-->
+                            <mat-form-field>
+
+                                <mat-select placeholder="Select Animal Sex" [(ngModel)]="selectedSexValue" multiple>
+                                    <mat-option *ngFor="let animal of AnimalInfoListSex" [value]="animal.sex">
+                                        {{animal.sex}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                            &nbsp; &nbsp; &nbsp;
+
+
+                            <!--Animal Strain-->
+                            <mat-form-field>
+
+                                <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, selectedExpvalue)" multiple>
+                                    <mat-option *ngFor="let animal of AnimalInfoListStrain" [value]="animal.id">
+                                        <span matTooltip="{{animal.strain}}">{{animal.strain}}, <a href="{{animal.link}}" target="_blank">Reference</a></span>
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                            &nbsp; &nbsp; &nbsp;
+
+                            <!--Animal GenoType -->
+                            <mat-form-field *ngIf="selectedStrainValue.length > 0">
+
+                                <mat-select placeholder="Select Animal Genotype" [(ngModel)]="selectedGenotypeValue" multiple>
+                                    <mat-option *ngFor="let animal of AnimalInfoListGenotype" [value]="animal.id">
+                                        <span matTooltip="{{animal.genotype}}">{{animal.genotype}}, <a href="{{animal.link}}" target="_blank">Reference</a> {{animal.description}}</span>
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                            &nbsp; &nbsp; &nbsp;
+
+                        </mat-card-content>
+                        <mat-hint style="color: #A93226; font-size: 13px;">Note that if no value is filtered from this panel, everything will be automatically selected and returned in the result.</mat-hint>
+
+                    </mat-card>
+                    <br /><br />
+
+                    <!--Terms and Condition check box-->
+                    <mat-checkbox [(ngModel)]="termsChecked" required>
+                        <label style="white-space: normal;">
+                            I acknowledge that any research data I download from MouseBytes is already dedicated to the public domain and my use will be
+                            consistent with CC0 license and MouseBytes <span (click)="openDialogTerms()" style="color: blue; text-decoration: underline;">Terms of Service</span>
+                        </label>
+                    </mat-checkbox>
+                    <br /><br />
+
+                    <button mat-raised-button (click)="GetData()" [disabled]="setDisabledVal()">Get Data</button>
+
+
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+
+<br /><br />
+
+<div class="panel panel-default" style="margin-top:10px; text-align:center; margin:auto; width:90%" *ngIf="colNames.length > 0">
+    <div class="tableData">
+
+        <button mat-raised-button color="primary" (click)="DownloadCsv()" style="float: left;">Export Data</button>
+        <button mat-raised-button color="warn" (click)="GenerateLink()" style="float: left;">Generate Link</button>
+
+        <div class="pane pane--table1">
+            <div class="pane-hScroll">
+                <table>
+                    <thead>
+                    <th *ngFor="let col of colNames">
+                        <span matTooltip="{{col}}" matTooltipPosition="left" [matTooltipClass]="'my-tooltip'">{{col}}</span>
+                    </th>
+                    </thead>
+                </table>
+                <div class="pane-vScroll">
+                    <table>
+                        <tbody>
+                            <tr *ngFor="let res of pagedItems; let i = index">
+                                <!--<tr *ngFor="let res of result">-->
+                                <td *ngFor="let col of colNames">
+                                    <span *ngIf="col=='Image' && (selectedTaskvalue==3||selectedTaskvalue==4)" [innerHTML]="res[col]"></span>
+                                    <!--<span *ngIf="col=='Image_Description' && (selectedTaskvalue==3||selectedTaskvalue==4)">{{res[col]}}</span>-->
+                                    <span *ngIf="col!='Image'">{{res[col]}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td [colSpan]="colNames.length" *ngIf="pager.pages && pager.pages.length" style="text-align: left;">
+                                    <!-- pager -->
+                                    <div class="pagination-custom">
+                                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                                        <span *ngFor="let page of pager.pages">
+                                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                        </span>
+                                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<br />
+<br />
+<br />
+
+
+

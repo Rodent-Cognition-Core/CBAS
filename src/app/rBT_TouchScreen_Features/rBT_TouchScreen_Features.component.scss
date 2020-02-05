@@ -1,0 +1,8 @@
+.rBT_TouchScreen_Features-container {
+    display: flex;
+    flex-direction: column;
+
+    .mat-table {
+        overflow: hidden;
+    }
+}

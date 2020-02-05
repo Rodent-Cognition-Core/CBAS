@@ -1,0 +1,50 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
+import { map, catchError } from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
+import { Animal } from '../models/animal';
+
+import { AuthenticationService } from './authentication.service';
+
+@Injectable() export class ExperimentService {
+
+
+
+    constructor(
+        private http: HttpClient,
+        private authenticationService: AuthenticationService) { }
+
+
+    //Function Defintion for getting some info from Upload Table and show them in Experiment page
+    public getUploadInfoBySubExpId(id: any): any {
+
+        return this.http
+            .get("/api/upload/GetUploadInfoBySubExpId?subExpId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    public deleteExperimentbyID(id: any): any {
+
+        return this.http
+            .delete("/api/experiment/DeleteExpById?expId=" + id, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
+    public deleteFilebyID(id: any): any {
+
+        return this.http
+            .delete("/api/experiment/DeleteFileById?uploadID=" + id, {
+             headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
+    
+
+     
+    
+}

@@ -1,0 +1,81 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>EXPERIMENT</h1></div>
+
+
+<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" (outSelectedSubExperiment)="SelectedSubExpChanged($event)" [showSubExpTbl]="true"></app-shared-experiment>
+
+<br /><br />
+
+<div *ngIf="selectedSubExperiment!=null">
+    <div style="float: left; margin-left: 10%; width: 80%;">
+        <mat-input-container class="md-icon-float full-width">
+            <input matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
+        </mat-input-container>
+    </div>
+    <div style="float: left">
+        <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+    </div>
+    <div style="clear: both;"></div>
+    <br />
+    <table class="docs-markdown-table">
+        <thead>
+
+            <tr><th colspan="8" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{selectedSubExperiment.subExpName}}, {{selectedSubExperiment.ageInMonth}}</th></tr>
+            <tr style=" text-align: center; color:#566573;">
+                <td class="docs-markdown-td">File Name</td>
+                <td class="docs-markdown-td">Session/Schedule Name</td>
+                <td class="docs-markdown-td">Upload Date</td>
+                <td class="docs-markdown-td">Animal ID</td>
+                <td class="docs-markdown-td">Status</td>
+                <td class="docs-markdown-td">Download File</td>
+                <td class="docs-markdown-td">Delete File</td>
+
+            </tr>
+
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+
+
+            <tr *ngFor="let row of pagedItemsTblFile">
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userFileName}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.sessionName}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.dateUpload | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isUploaded==true">
+                    <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
+                </td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isUploaded==false">
+                    <mat-icon color="warn">clear</mat-icon>
+                </td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
+
+
+            </tr>
+
+            <tr>
+                <td colspan="12" *ngIf="pagerTblFile.pages && pagerTblFile.pages.length" style="text-align: right;">
+                    <!-- pager -->
+                    <div class="pagination-custom">
+                        <a (click)="pagerTblFile.currentPage === 1 || setPageTblFile(1)">First</a>
+                        <a (click)="pagerTblFile.currentPage === 1 || setPageTblFile(pagerTblFile.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                        <span *ngFor="let page of pagerTblFile.pages">
+                            <a (click)="pagerTblFile.currentPage === page || setPageTblFile(page)" [ngClass]="{active:pagerTblFile.currentPage === page}">{{page}}</a>
+                        </span>
+                        <a (click)="pagerTblFile.currentPage === pagerTblFile.totalPages || setPageTblFile(pagerTblFile.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                        <a (click)="pagerTblFile.currentPage === pagerTblFile.totalPages || setPageTblFile(pagerTblFile.totalPages)">Last</a>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+<br />
+<br />
+
+<!--</div>-->

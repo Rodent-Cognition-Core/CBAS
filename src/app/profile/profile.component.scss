@@ -1,0 +1,32 @@
+/*.card {
+    //border-collapse: collapse;
+    border-radius: 2px;
+    border-spacing: 2px;
+    border-collapse: separate;
+    margin: 0px auto;
+    //margin: 0 0 32px 0;
+    width: 90%;
+    box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);
+    border-color: grey;
+}*/
+
+.account-card-container2 {
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
+    //padding-left: 50px;
+
+    mat-card {
+        width: 850px;
+        //height: 500px;
+    }
+}
+
+.mat-toolbar.mat-primary {
+    background-color: #795D9C;
+}
+
+.mat-raised-button.mat-accent {
+    background-color: #bab9b6;
+}
+

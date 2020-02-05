@@ -1,0 +1,474 @@
+html, body {
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: $font-family;
+
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .mat-sidenav {
+        min-width: 20vw;
+
+        .mat-button {
+            width: 100%;
+            position: relative;
+            bottom: 0;
+            margin: 24px 0;
+        }
+    }
+
+    .app-content {
+        padding: 32px;
+        box-sizing: border-box;
+
+        h1 {
+            display: inline-block;
+            font-size: 24px;
+            font-weight: 500;
+            margin: 8px 0px;
+        }
+        /*h1:after {
+            content: "";
+            display: block;
+            height: 1px;
+            width: 40%;
+            margin: 24px 0px 10px;
+            background: $lightgray;
+            clear: both;
+        }*/
+    }
+
+    .mat-toolbar {
+        .mat-icon {
+            cursor: pointer;
+        }
+
+        .app-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-left: 24px;
+            margin-right: 8px;
+
+            @media ($xsmall) {
+                margin-left: 16px;
+                margin-right: 0px;
+            }
+        }
+    }
+
+    .footer-text {
+        padding: 0 150px;
+
+        @media only screen and (min-width: 1px) and (max-width: 320px) {
+            padding: 0 20px;
+        }
+
+        @media only screen and (min-width: 321px) and (max-width: 621px) {
+            padding: 0 40px;
+        }
+
+        @media only screen and (min-width: 620px) and (max-width: 1023px) {
+            padding: 0 80px;
+        }
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .fill-remaining-space {
+        flex: 1 1 auto;
+    }
+}
+
+// Stretch to screen size in fullscreen mode.
+.app-content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.inner-sidenav-content {
+    padding-top: 130px;
+    margin: auto;
+    text-align: left;
+    width: 100%;
+}
+
+.top-nav-ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.025em
+}
+
+.top-nav-ul li {
+    display: block;
+    margin: 0 15px 0 0;
+}
+
+.top-nav-ul .liright {
+    margin: 0 0 0 15px;
+}
+
+.mat-button.mat-small {
+    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: top;
+    font-size: x-small;
+    padding: 0 0;
+    margin: 0;
+}
+
+.active-link {
+    .mat-list-item-content {
+        color: $blue;
+    }
+}
+
+.account-card-container {
+    display: flex;
+    justify-content: center;
+
+    mat-card {
+        width: 400px;
+    }
+}
+
+.has-error {
+    color: $brightred;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.docs-markdown-table {
+    border-collapse: collapse;
+    border-radius: 2px;
+    border-spacing: 0;
+    margin: 0px auto;
+    //margin: 0 0 32px 0;
+    width: 90%;
+    box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);
+}
+
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: grey;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+th {
+    font-weight: bold;
+    //text-align: internal-center;
+}
+
+td, th {
+    display: table-cell;
+    vertical-align: inherit;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+.docs-markdown-th {
+    font-weight: 400;
+    max-width: 100px;
+    padding: 13px 16px;
+    text-align: left;
+}
+
+.docs-markdown-th-wide {
+    font-weight: 400;
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    max-width: 120px;
+    background: #f5f5f5;
+}
+
+.docs-markdown-th {
+    background: #f5f5f5;
+}
+
+.docs-markdown-td {
+    font-weight: 400;
+    padding: 8px 16px;
+}
+
+.docs-markdown-td {
+    border: 1px solid rgba(0,0,0,.03);
+}
+
+.top-menu-title {
+    padding: 15px;
+    font-size: medium;
+    font-family: sans-serif;
+}
+
+.page-title {
+    text-align: center;
+    background-position-x: center !important;
+    background-position-y: 18px !important;
+    background-size: initial !important;
+    background-repeat-x: no-repeat !important;
+    background-repeat-y: no-repeat !important;
+    background-attachment: initial !important;
+    background-origin: initial !important;
+    background-clip: initial !important;
+    background-color: initial !important;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.page-title h1 {
+    background: #fafafa;
+    padding: 0 6px;
+    color: #666;
+}
+
+.dropzone.dz-wrapper .dz-message {
+    height: 100px;
+}
+
+.pagination-custom {
+    display: inline-block;
+    padding-top: 20px;
+}
+
+.pagination-custom a {
+    color: #85929E;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagination-custom a.active {
+    background-color: #566573;
+    color: white;
+}
+
+.pagination-custom a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+// top nav menu ------------------------------------------
+
+.naviMenu a {
+    text-decoration: none;
+}
+
+.naviMenu ul.top-nav-ul li a {
+    /* color: #FFF; */
+    color: #354248;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.naviMenu ul.top-nav-ul li a:hover {
+    color: #ff5527;
+    border-bottom: 5px solid #ff5527;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 20px;
+    display: inline-block;
+    cursor: pointer;
+    
+}
+
+.naviMenu ul.top-nav-ul > li {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    color: #354248;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.naviMenu ul.top-nav-ul > li > ul {
+    z-index: 1000;
+    position: absolute;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    top: 100%;
+    left: 0;
+    -webkit-transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    display: block;
+    background-color: transparentize($color: #000000, $amount: 0.5);
+    padding-left: 20px;
+    width: 100%;
+    min-width: 200px;
+}
+
+.naviMenu ul.top-nav-ul > li:hover > ul {
+    max-height: 60vh;
+    opacity: 1;
+}
+
+.naviMenu ul.top-nav-ul > li > ul > li {
+    text-align: left;
+    white-space: nowrap;
+    padding: 0 .5em;
+}
+
+.naviMenu ul.top-nav-ul > li > ul > li > a {
+    color: white;
+    display: block;
+    padding: 10px 0;
+}
+
+.naviMenu ul.top-nav-ul > li > ul > li > a:hover {
+    border-bottom: none;
+    color: #ff5527;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 20px;
+    display: inline-block;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.naviMenu ul.top-nav-ul > li > ul li {
+    border-bottom: 1px solid #bcbcbc
+}
+
+// top nav menu end ------------------------------------------
+
+
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.all-wrap {
+    min-height: 100vh;
+}
+
+.page-wrap {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+}
+
+
+main {
+    display: flex;
+    flex-direction: column;
+
+    > *:not(router-outlet) {
+        flex: 1;
+        display: block;
+    }
+}
+
+footer {
+    background-color: #48395a;
+}
+
+section {
+}
+
+.hideIt{
+    display: none;
+}
+
+.showIt {
+    display: inline-block;
+}
+
+.bgRow {
+    background-size: 100% 100%;
+    padding:5% 8%;
+    box-sizing: border-box;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+    height:400px;
+}
+
+.bgRowXs {
+    background-size: 100% 100%;
+    padding: 15% 5%;
+    box-sizing: border-box;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 400px;
+}
+
+
+.topImage {
+    background-size: 100% 100%;
+    padding: 20%;
+    box-sizing: border-box;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+    //height: 400px;
+}
+
+.menuDiv {
+    text-align: center;
+    width: 100%;
+    padding: 0 15%;
+}
+
+.menuDivNoPadding {
+    text-align: center;
+    width: 100%;
+    padding: 0 !important;
+}
+
+.menuDivLessPadding {
+    text-align: center;
+    width: 100%;
+    padding: 0 90px;
+}
+
+.logoLessPadding{
+    padding: 0 20px !important;
+}
+

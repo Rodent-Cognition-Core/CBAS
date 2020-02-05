@@ -1,0 +1,76 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>ANIMAL INFORMATION</h1></div>
+
+<!--<div>-->
+
+<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
+
+<br /><br />
+<div *ngIf="experimentID!=null">
+
+    <!-- Search-->
+    <div style="float: left; margin-left: 10%; width: 80%;">
+        <mat-input-container class="md-icon-float full-width">
+            <input matInput [(ngModel)]="expfilter" placeholder="search animal ID" (keyup.enter)="search()">
+        </mat-input-container>
+    </div>
+    <div style="float: left">
+        <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+    </div>
+    <div style="clear: both;"></div>
+    <br />
+
+    <table class="docs-markdown-table">
+        <thead>
+
+            <tr><td colspan="7" style="padding: 5px; text-align:right; border: 1px solid rgba(0,0,0,.03);"><button mat-button (click)="openDialog()">Add New Animal</button></td></tr>
+            <tr><th colspan="7" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{experimentName}}</th></tr>
+            <tr style=" text-align: center; color:#566573;">
+                <td class="docs-markdown-td">Animal ID</td>
+
+                <td class="docs-markdown-td">Sex</td>
+                <td class="docs-markdown-td">Strain</td>
+                <td class="docs-markdown-td">Genotype</td>
+                <td class="docs-markdown-td">Edit</td>
+                <td class="docs-markdown-td">Delete</td>
+            </tr>
+
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+
+
+            <tr *ngFor="let row of pagedItems">
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.sex}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.strain}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.genotype}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button (click)="openDialog(row)"><mat-icon>edit</mat-icon></button></td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="delAnimal(row.animalID, row.expID)"><mat-icon>delete</mat-icon></button> </td>
+
+            </tr>
+            <tr>
+                <td colspan="12" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
+                    <!-- pager -->
+                    <div class="pagination-custom">
+                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                        <span *ngFor="let page of pager.pages">
+                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                        </span>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                    </div>
+                </td>
+            </tr>
+
+
+        </tbody>
+    </table>
+</div>
+
+<br/>
+<br/>
+
+<!--</div>-->

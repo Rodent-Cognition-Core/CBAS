@@ -1,0 +1,18 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+
+    .mat-table {
+        overflow: hidden;
+    }
+}
+
+.docs-markdown-td-wide-errorMessage {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    max-width: 100px;
+    min-width: 110px;
+}
+
+

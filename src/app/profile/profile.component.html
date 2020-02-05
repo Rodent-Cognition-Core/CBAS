@@ -1,0 +1,169 @@
+<!--<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>User Profile</h1></div>-->
+
+<div class="account-card-container2">
+    <mat-card>
+        <mat-toolbar color="primary">User Profile</mat-toolbar>
+        <mat-card-content>
+
+
+            <div>
+                <br />
+                <br />
+                <span style="color: #666;"><b>Name:</b></span>
+                <mat-form-field style="width:40%;">
+                    <input matInput style="text-align:center" [formControl]="givenName" [(ngModel)]="givenNameModel" required>
+
+                </mat-form-field>
+
+                &nbsp;&nbsp;<span style="color: #666;"><b>Last Name:</b></span>
+                <mat-form-field style="width:40%;">
+                    <input matInput style="text-align:center" [formControl]="familyName" [(ngModel)]="familyNameModel" required>
+
+                </mat-form-field>
+                <br />
+                <br />
+
+                <label style="color: #666;"><b>Email address:</b></label> &nbsp; <span style="color:#909497;">{{email}}</span>
+                <br />
+                <br />
+
+                <!--List of already added PI-Site-->
+                <label style="color: #666;"><b>List of Principle Investigator and Institution:</b></label><br />
+                <mat-list>
+                    <div *ngFor="let PIS of piSiteListByUserID">
+                        <small>{{ PIS.piSiteName }}</small>
+                        
+                    </div>
+                    <!--<mat-list-item>Item 1</mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>Item 2</mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>Item 3</mat-list-item>-->
+                </mat-list>
+                <br/> 
+
+
+                <!--Adding new PI to the  profile-->
+                <mat-form-field class="full-width">
+                    <mat-select placeholder="Add New PI(s) & Institution(s)" [(ngModel)]="selectePISiteModel" multiple>
+                        <mat-option *ngFor="let PIS of piSiteListByUserIDFilter" [value]="PIS.psid">{{PIS.piSiteName}}</mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+
+                <br />
+                <br />
+                <button mat-raised-button color="accent" [disabled]="setDisabledVal()" (click)="updateUserProfile()">Update</button>&nbsp;&nbsp;
+                <button mat-raised-button color="accent" (click)="openDialog()">Change Password</button>
+
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+</div>
+
+
+
+<div class="account-card-container" style="margin-top: 50px;" *ngIf=false>
+
+    <mat-card>
+        <mat-toolbar color="primary">Change Password</mat-toolbar>
+        <mat-card-content>
+            <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && changePassword()" novalidate>
+                <div>
+                    <br />
+                    <br />
+
+                    <mat-form-field class="full-width">
+                        <input type="password" matInput [(ngModel)]="model.currentPassword" name="password" #password="ngModel" placeholder="current password" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <input type="password" matInput [(ngModel)]="model.newPassword" name="password" #password="ngModel" placeholder="new password" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <div *ngIf="showSuccess" class="has-error" style="color: blue;">
+                        <small>Your password has been successfully changed!<br /></small>
+                        <br />
+                    </div>
+
+                    <div *ngIf="errorMessages.length > 0" class="has-error">
+                        <div *ngFor="let errorMessage of errorMessages">
+                            <small>{{ errorMessage.description }}</small>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div>
+                    <button mat-raised-button color="accent" type="submit" class="full-width">Change Password</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+</div>
+
+<br />
+<br />
+<br />
+
+
+
+<!--<div class="account-card-container2" style="margin-top: 50px;">
+
+    <mat-card>
+        <mat-toolbar color="#5D6D7E">Sign up</mat-toolbar>
+        <mat-card-content>
+
+            <div>
+                <br />
+                <br />-->
+<!--GivenName-->
+<!--<mat-form-field class="full-width">
+    <label>Given Name</label>
+    <input type="text" matInput [formControl]="givenName" [(ngModel)]="userInfo.givenName" required>
+    <mat-error *ngIf="givenName.invalid">{{getErrorMessageGN()}}</mat-error>
+</mat-form-field>
+<br />
+<br />-->
+<!--FamilyName-->
+<!--<mat-form-field class="full-width">
+    <label>Family Name</label>
+    <input type="text" matInput [formControl]="familyName" [(ngModel)]="userInfo.familyName" required>
+    <mat-error *ngIf="familyName.invalid">{{getErrorMessageFN()}}</mat-error>
+</mat-form-field>
+<br />
+<br />-->
+<!--Email-->
+<!--<mat-form-field class="full-width">
+    <input type="text" matInput [(ngModel)]="user.userName" disabled>
+</mat-form-field>
+<br />
+<br />-->
+<!--List of PI & Institution-->
+<!--<mat-form-field class="full-width">
+                <mat-select required [formControl]="pi" [(ngModel)]="userInfo.selectedPiSiteIds" multiple="true" [compareWith]="compareWithFunc">
+                    <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.psid">{{PIS.piSiteName}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="pi.invalid">{{getErrorMessagePI()}}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <
+
+        </div>
+        <div>
+            <button mat-raised-button color="accent" type="submit" class="full-width">Submit</button>
+        </div>
+
+    </mat-card-content>
+</mat-card>-->
+<!--</div>-->

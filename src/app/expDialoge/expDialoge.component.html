@@ -1,0 +1,81 @@
+<div>
+    <h3 mat-dialog-title>Please fill the form:</h3>
+
+    <mat-dialog-content>
+        <br />
+
+        <!--<app-shared-experiment></app-shared-experiment>-->
+        <!--<p><strong>{{data}}</strong></p>-->
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your Experiment" [formControl]="exp" [(ngModel)]="expNameModel" required>
+            <mat-error *ngIf="exp.invalid">{{getErrorMessage()}}</mat-error>
+            <mat-error *ngIf="exp.invalid">{{getErrorMessageTaken()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [(ngModel)]="sDateModel" [max]="eDateModel" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="sDate.invalid">{{getErrorMessagesDate()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [(ngModel)]="eDateModel" [min]="sDateModel" required>
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+            <mat-error *ngIf="eDate.invalid">{{getErrorMessageeDate()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select the Task" [formControl]="task" required [(ngModel)]="selectedvalue" [disabled]="data.experimentObj!=null">
+                <mat-option *ngFor="let task of taskList" [value]="task.id">
+                    {{task.name}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
+        </mat-form-field>
+
+        
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required [(ngModel)]="selectPISvalue">
+                <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.pusid">
+                    {{PIS.piSiteName}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="piSite.invalid">{{getErrorMessageTask()}}</mat-error>
+        </mat-form-field>
+
+        <!--<mat-form-field class="full-width">-->
+        <mat-radio-group [formControl]="status" [(ngModel)]="statusModel" required>
+            <mat-radio-button value="0">Private</mat-radio-button>
+            <mat-radio-button value="1">Public</mat-radio-button>
+            <mat-error *ngIf="status.invalid">{{getErrorMessageStatus()}}</mat-error>
+        </mat-radio-group>
+        <!--</mat-form-field>-->
+
+        <mat-form-field class="full-width">
+
+            <textarea matInput placeholder="Experiment Description" [(ngModel)]="taskDesModel" [formControl]="expDescription" required matTextareaAutosize matAutosizeMinRows="2"
+                      matAutosizeMaxRows="5">
+           
+            </textarea>
+            <mat-error *ngIf="expDescription.invalid">{{getErrorMessageExpDescription()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="DOI (e.g. 10.1038/s41593-018-0209-y)" [(ngModel)]="DOIModel" type="url">
+
+        </mat-form-field>
+
+        <!--<br />
+        <span style="float:right;"><button mat-icon-button (click)="openDialog(null)"><mat-icon>add</mat-icon></button></span><span>Please add sub experiment based on animal age:</span>-->
+        <!--Insert Table  to show details of sub-Experiment-->
+
+    </mat-dialog-content>
+    <br />
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+
+</div>

@@ -1,0 +1,95 @@
+.filter-option /deep/ .mat-pseudo-checkbox {
+    display: none !important;
+}
+
+/* deep is from here: https: //stackoverflow.com/questions/42416037/is-there-a-way-to-use-css-in-ng-content-inside-an-angular2-component*/
+
+
+.docs-markdown-td-wide {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    max-width: 120px;
+    min-width: 120px;
+}
+
+
+.tableData * {
+    box-sizing: border-box;
+}
+
+.tableData table {
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tableData th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    width: 160px;
+    max-width: 160px;
+    min-width: 160px;
+}
+
+.tableData td {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+    width: 160px;
+    max-width: 160px;
+    min-width: 160px;
+}
+
+.tableData .pane {
+    background: #eee;
+}
+
+.tableData .pane-hScroll {
+    overflow: auto;
+    width: 100%;
+    background: green;
+}
+
+.tableData .pane-vScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*height: 600px;*/
+    background: red;
+}
+
+.tableData /deep/ .my-tooltip {
+    /*overflow: visible;*/
+}
+
+.tooltipCss {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipCss .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltipCss:hover .tooltiptext {
+    visibility: visible;
+}
+
+/deep/ .mat-tooltip {
+    font-size: 15px !important;
+}

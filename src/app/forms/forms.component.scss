@@ -1,0 +1,19 @@
+.Temp {
+    padding: 30px 30px;
+    font-size: 32px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin: 50px
+}
+
+
+.docs-markdown-table-cutomized {
+    border-collapse: collapse;
+    border-radius: 2px;
+    border-spacing: 0;
+    margin: 0px auto;
+    //margin: 0 0 32px 0;
+    width: 60%;
+    box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);
+}

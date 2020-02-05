@@ -1,0 +1,83 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>Search Experiment</h1></div>
+
+
+<div>
+
+    <!--Search-->
+    <div style="float: left; margin-left: 10%; width: 80%;">
+        <mat-input-container class="md-icon-float full-width">
+            <input matInput [(ngModel)]="expfilter" placeholder="search experiment" (keyup.enter)="search()">
+        </mat-input-container>
+    </div>
+    <div style="float: left">
+        <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+    </div>
+    <div style="clear: both;"></div>
+    <br />
+
+    <table class="docs-markdown-table">
+        <thead>
+
+            <tr><th colspan="12" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Experiment List</th></tr>
+            <tr style=" text-align: center; color:#566573;">
+
+                <td class="docs-markdown-td">Experiment Name</td>
+                <td class="docs-markdown-td">Cognitive Task</td>
+                <td class="docs-markdown-td">Status</td>
+                <td class="docs-markdown-td">Age</td>
+                <td class="docs-markdown-td">Strain</td>
+                <td class="docs-markdown-td">Genotype</td>
+                <td class="docs-markdown-td">Task Description</td>
+                <td class="docs-markdown-td">Start Date-End Date</td>
+                <td class="docs-markdown-td">PI and Site</td>
+                <td class="docs-markdown-td">Researcher</td>
+                <td class="docs-markdown-td">Email</td>
+                <td class="docs-markdown-td">DOI</td>
+
+            </tr>
+
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+            <tr *ngFor="let row of pagedItems; let i = index">
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.expName}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.cognitiveTask}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.status}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-age"><div [innerHTML]="row.age"></div></td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><div [innerHTML]="row.strain"></div></td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.genotype}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.taskDescription}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.period}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.piSiteName}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.username}}</td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.email}}</td>
+                <!--<td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.doi}}</td>-->
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><a href="{{'http://www.doi.org/' + row.doi}}" target="_blank">{{row.doi}}</a></td>
+
+
+            </tr>
+
+            <tr>
+                <td colspan="13" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
+                    <!-- pager -->
+                    <div class="pagination-custom">
+                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                        <span *ngFor="let page of pager.pages">
+                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                        </span>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+</div>
+<br />
+<br />
+<br />
+
+

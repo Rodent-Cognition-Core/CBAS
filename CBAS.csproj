@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>2.6</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\Mapping_SessionInfoService.cs" />
+    <Compile Remove="Services\SessionInfoService.cs" />
+    <Compile Remove="Services\SessionInfo_DynamicService.cs" />
+    <Compile Remove="Services\SourceTypeService.cs" />
+    <Compile Remove="Services\SubTaskService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="src\app\shared\scroll.service.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dropzone" Version="4.2.0" />
+    <PackageReference Include="IdentityServer4" Version="2.0.0" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.0.0" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="TempUpload\" />
+    <Folder Include="UPLOAD\" />
+    <Folder Include="wwwroot\" />
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="src\app\shared\scroll.service.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="e2e\*" CopyToPublishDirectory="Never" />
+    <Content Update="src\*" CopyToPublishDirectory="Never" />
+    <Content Update="package*.json" CopyToPublishDirectory="Never" />
+    <Content Update="?angular*.json" CopyToPublishDirectory="Never" />
+    <Content Update="ts*.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+</Project>

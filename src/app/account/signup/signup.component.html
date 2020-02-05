@@ -1,0 +1,85 @@
+<div class="account-card-container"  style="margin-top: 50px;">
+
+    <mat-card>
+        <mat-toolbar color="primary">Sign up</mat-toolbar>
+        <mat-card-content>
+            <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && signup()" novalidate>
+                <div>
+                    <br />
+                    <br />
+                    <mat-form-field class="full-width">
+                        <input type="text" matInput [(ngModel)]="model.givenName" name="givenName" #givenName="ngModel" placeholder="first name" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <mat-form-field class="full-width">
+                        <input type="text" matInput [(ngModel)]="model.familyName" name="familyName" #familyName="ngModel" placeholder="last name" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <mat-form-field class="full-width">
+                        <input type="text" matInput [(ngModel)]="model.username" name="username" #username="ngModel" placeholder="email" (keyup)="clearMessages()"
+                               pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+                        <mat-error *ngIf="username.hasError('required')">
+                            Required
+                        </mat-error>
+                        <mat-error *ngIf="username.hasError('pattern')">
+                            Invalid format
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <mat-form-field class="full-width">
+                        <input type="password" matInput [(ngModel)]="model.password" name="password" #password="ngModel" placeholder="password" (keyup)="clearMessages()" required>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <mat-form-field class="full-width">
+                        <mat-select placeholder="Select PI & Institution" required name="selectedPiSiteIds" [(ngModel)]="model.selectedPiSiteIds" multiple>
+                            <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.psid">
+                                <span matTooltip="{{PIS.piSiteName}}">{{PIS.piSiteName}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                    <br />
+                    <br />
+                    <mat-checkbox name="termsConfirmed" [(ngModel)]="model.termsChecked">
+                        I have read and agree to the MouseBytes <span (click)="openDialogTerms()" style="color: blue; text-decoration: underline;">Terms of Service</span>
+                    </mat-checkbox>
+                    <br />
+                    <br />
+                    <div *ngIf="errorMessages.length > 0" class="has-error">
+                        <div *ngFor="let errorMessage of errorMessages">
+                            <small>{{ errorMessage.description }}</small>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+                <div>
+                    <button mat-raised-button color="accent" type="submit" class="full-width">Sign up</button>
+                </div>
+
+                
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+</div>
+
+<br/>
+<br />
+<br />
+
