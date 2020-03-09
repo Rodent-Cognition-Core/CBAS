@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
         //{ name: 'Resources', route: 'resources' },
         { name: 'Data Lab', route: 'data-extraction' },
         { name: 'Data Visualization', route: 'data-visualization' },
+        //{ name: 'MouseBytes Dashborad', route: 'mb-dashboard' },
         { name: 'Search', route: 'search-experiment' },
     ];
 
@@ -138,6 +139,7 @@ export class AppComponent implements OnInit {
             routerUrl.toUpperCase() === '/home'.toUpperCase() ||
             routerUrl.toUpperCase() === '/data-extraction'.toUpperCase() ||
             routerUrl.toUpperCase() === '/data-visualization'.toUpperCase() ||
+            routerUrl.toUpperCase() === '/mb-dashboard'.toUpperCase() ||
             routerUrl.toUpperCase().indexOf('/data-link'.toUpperCase()) != -1 ||
             routerUrl.toUpperCase() === '/guideline'.toUpperCase() ||
             routerUrl.toUpperCase() === '/imaging'.toUpperCase() ||
