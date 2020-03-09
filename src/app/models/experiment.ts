@@ -18,5 +18,7 @@ export class Experiment {
     public ImageIds: Array<number>;
     //public ImagePath: Array<string>;
     public ImageInfo: string;
+    public SpeciesID: number;
+    public species: string;
 
 }

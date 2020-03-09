@@ -38,10 +38,12 @@ export class ExpDialogeComponent implements OnInit {
     isTaken: boolean;
     selectedvalue: any;
     selectPISvalue: any;
+    speciesModel: any;
    
 
     taskList: any;
     piSiteList: any;
+    speciesList: any;
     
 
     private _experiment = new Experiment();
@@ -53,19 +55,18 @@ export class ExpDialogeComponent implements OnInit {
 
     ngOnInit() {
         this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; console.log(this.taskList); });
-        this.piSiteService.getPISitebyUserID().subscribe(data => {
-        this.piSiteList = data;
-            //console.log(this.piSiteList);
-        });
-        
+        this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
+        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
 
 
         //console.log(this.data.experimentObj);
+        // if it is an Edit model
         if (this.data.experimentObj != null) {
             this.expNameModel = this.data.experimentObj.expName;
             this.sDateModel = this.data.experimentObj.startExpDate;
             this.eDateModel = this.data.experimentObj.endExpDate;
             this.selectedvalue = this.data.experimentObj.taskID;
+            this.speciesModel = this.data.experimentObj.speciesID  
             this.taskDesModel = this.data.experimentObj.taskDescription;
             this.selectPISvalue = this.data.experimentObj.pusid;
             this.DOIModel = this.data.experimentObj.doi;
@@ -90,6 +91,7 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.StartExpDate = this.sDateModel;
         this._experiment.EndExpDate = this.eDateModel;
         this._experiment.TaskID = this.getSelectedTask(this.selectedvalue).id; // should be readonly
+        this._experiment.SpeciesID = this.speciesModel;
         this._experiment.TaskDescription = this.taskDesModel;
         this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
         this._experiment.DOI = this.DOIModel;
@@ -136,6 +138,7 @@ export class ExpDialogeComponent implements OnInit {
     sDate = new FormControl('', [Validators.required]);
     eDate = new FormControl('', [Validators.required]);
     task = new FormControl('', [Validators.required]);
+    species = new FormControl('', [Validators.required]);
     piSite = new FormControl('', [Validators.required]);
     status = new FormControl('', [Validators.required]);
     expDescription = new FormControl('', [Validators.required]);
@@ -192,6 +195,11 @@ export class ExpDialogeComponent implements OnInit {
             '';
     }
 
+    getErrorMessageSpecies() {
+        return this.species.hasError('required') ? 'Species is required' :
+            '';
+    }
+
     
     setDisabledVal() {
 
@@ -200,8 +208,9 @@ export class ExpDialogeComponent implements OnInit {
             this.eDate.hasError('required') ||
             this.task.hasError('required') ||
             this.piSite.hasError('required') ||
-            this.status.hasError('required') 
-            || this.expDescription.hasError('required')
+            this.status.hasError('required') ||
+            this.expDescription.hasError('required') ||
+            this.species.hasError('required') 
                         
         ) {
             

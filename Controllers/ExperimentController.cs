@@ -104,6 +104,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_experimentService.GetAllImagesList());
         }
 
+        //Function to get all images from DB for PAL and PD
+        [HttpGet("GetAllSpecies")]
+        public IActionResult GetAllSpecies()
+        {
+
+            return new JsonResult(_experimentService.GetAllSpeciesList());
+        }
+
 
     }
 }

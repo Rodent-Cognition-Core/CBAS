@@ -21,6 +21,8 @@ namespace AngularSPAWebAPI.Models
         public string TaskDescription { get; set; }
         public string DOI { get; set; }
         public bool Status { get; set; }
+        public int SpeciesID { get; set; }
+        public string Species { get; set; }
         //public bool IsPostProcessingPass { get; set; }
         public System.Collections.Generic.List<SubExperiment> SubExpList {get; set; }
     }

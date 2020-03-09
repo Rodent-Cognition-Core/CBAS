@@ -48,7 +48,9 @@
                     <div style="clear:both"></div>
                     <hr /><br />
                     <label>Experiment name:</label>&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).expName}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Task name:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).taskName}}</span> <br /><br />
+                    <label>Task name:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).taskName}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Species:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).species}}</span>&nbsp; &nbsp; &nbsp;
+                    <br /><br />
                     <label>Start date:</label>&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).startExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
                     <label>End date:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).endExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
                     <label>Status:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).status == true ? 'Public' : 'Private'}}</span> <br /><br />

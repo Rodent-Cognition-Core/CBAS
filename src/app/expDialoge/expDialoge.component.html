@@ -6,12 +6,14 @@
 
         <!--<app-shared-experiment></app-shared-experiment>-->
         <!--<p><strong>{{data}}</strong></p>-->
+        <!--Experiment Name-->
         <mat-form-field class="full-width">
             <input matInput placeholder="Enter your Experiment" [formControl]="exp" [(ngModel)]="expNameModel" required>
             <mat-error *ngIf="exp.invalid">{{getErrorMessage()}}</mat-error>
             <mat-error *ngIf="exp.invalid">{{getErrorMessageTaken()}}</mat-error>
         </mat-form-field>
 
+        <!--Start Date-->
         <mat-form-field class="full-width">
             <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [(ngModel)]="sDateModel" [max]="eDateModel" required>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -19,6 +21,7 @@
             <mat-error *ngIf="sDate.invalid">{{getErrorMessagesDate()}}</mat-error>
         </mat-form-field>
 
+        <!--End Date-->
         <mat-form-field class="full-width">
             <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [(ngModel)]="eDateModel" [min]="sDateModel" required>
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -26,6 +29,7 @@
             <mat-error *ngIf="eDate.invalid">{{getErrorMessageeDate()}}</mat-error>
         </mat-form-field>
 
+        <!--Cognitive Task-->
         <mat-form-field class="full-width">
             <mat-select placeholder="Select the Task" [formControl]="task" required [(ngModel)]="selectedvalue" [disabled]="data.experimentObj!=null">
                 <mat-option *ngFor="let task of taskList" [value]="task.id">
@@ -35,7 +39,17 @@
             <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
         </mat-form-field>
 
-        
+        <!--Species-->
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select the Species" [formControl]="species" required [(ngModel)]="speciesModel">
+                <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                    {{species.species}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="species.invalid">{{getErrorMessageSpecies()}}</mat-error>
+        </mat-form-field>
+
+        <!--PI & Institution-->
         <mat-form-field class="full-width">
             <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required [(ngModel)]="selectPISvalue">
                 <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.pusid">
@@ -68,7 +82,7 @@
         </mat-form-field>
 
         <!--<br />
-        <span style="float:right;"><button mat-icon-button (click)="openDialog(null)"><mat-icon>add</mat-icon></button></span><span>Please add sub experiment based on animal age:</span>-->
+    <span style="float:right;"><button mat-icon-button (click)="openDialog(null)"><mat-icon>add</mat-icon></button></span><span>Please add sub experiment based on animal age:</span>-->
         <!--Insert Table  to show details of sub-Experiment-->
 
     </mat-dialog-content>

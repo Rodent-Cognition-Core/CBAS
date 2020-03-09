@@ -16,7 +16,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Experiment> lstExperiment = new List<Experiment>();
 
-            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, tt2.PISiteName, 
+            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, Species.Species as Species, tt2.PISiteName, 
 
                                                         STUFF((SELECT ' <br/>' + se.SubExpName
                                                                 FROM SubExperiment se
@@ -26,7 +26,8 @@ namespace AngularSPAWebAPI.Services
                                                         ).value('.', 'nvarchar(max)'),1,6,'') As SubExpNames
 
                                                         from Experiment 
-                                                        inner join task on task.id = Experiment.taskID 
+                                                        inner join task on task.id = Experiment.taskID
+                                                        inner join species on species.id = Experiment.SpeciesID
                                                         inner join 
 
                                                         (Select PUSID, PIUserSite.PSID, tt.PISiteName  From PIUserSite
@@ -57,7 +58,9 @@ namespace AngularSPAWebAPI.Services
                         //IsPostProcessingPass = bool.Parse(dr["IsPostProcessingPass"].ToString()),
                         PISiteName = Convert.ToString(dr["PISiteName"].ToString()),
                         Status = Convert.ToBoolean(dr["Status"]),
-                        
+                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
+                        Species = Convert.ToString(dr["Species"].ToString()),
+
                         
                     });
                 }
@@ -122,9 +125,9 @@ namespace AngularSPAWebAPI.Services
         {
             
             string sql = $"insert into Experiment " +
-              $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, TaskDescription, DOI, Status) Values " +
+              $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status) Values " +
               $"('{userID}', {experiment.PUSID}, '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
-              $"'{experiment.TaskID}', '{HelperService.EscapeSql(experiment.TaskDescription)}', '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}); SELECT @@IDENTITY AS 'Identity';";
+              $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql(experiment.TaskDescription)}', '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}); SELECT @@IDENTITY AS 'Identity';";
 
             // Calling function to send an email to Admin that new Exp with public Status has been added to MouseBytes
 
@@ -142,7 +145,7 @@ namespace AngularSPAWebAPI.Services
             
             string sql = $@"UPDATE Experiment " +
                  $"SET PUSID = {experiment.PUSID}, ExpName = '{HelperService.EscapeSql(experiment.ExpName)}', StartExpDate = '{experiment.StartExpDate}'," +
-                 $"EndExpDate = '{experiment.EndExpDate}', TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}', DOI = '{HelperService.EscapeSql(experiment.DOI)}', Status = {(experiment.Status ? 1 : 0)} " +
+                 $"EndExpDate = '{experiment.EndExpDate}', SpeciesID = {experiment.SpeciesID}, TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}', DOI = '{HelperService.EscapeSql(experiment.DOI)}', Status = {(experiment.Status ? 1 : 0)} " +
                  $" WHERE ExpID = {experiment.ExpID}  AND UserID = '{userID}';";
 
             if (experiment.Status)
@@ -202,6 +205,29 @@ namespace AngularSPAWebAPI.Services
             }
 
             return lstImages;
+
+        }
+
+        // Function definition to get image list from DB for PAL and PD
+        public List<Species_> GetAllSpeciesList()
+        {
+            List<Species_> lstSpecies = new List<Species_>();
+
+            using (DataTable dt = Dal.GetDataTable("select * from Species"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstSpecies.Add(new Species_
+                    {
+                        ID = Int32.Parse(dr["ID"].ToString()),
+                        Species = Convert.ToString(dr["Species"].ToString()),
+
+                    });
+                }
+
+            }
+
+            return lstSpecies;
 
         }
 

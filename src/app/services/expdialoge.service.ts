@@ -37,7 +37,6 @@ import { AuthenticationService } from './authentication.service';
         return this.http.post("/api/experiment/CreateExperiment", body, {
             headers: this.authenticationService.getAuthorizationHeader()
         });
-
         
     }
 
@@ -58,6 +57,16 @@ import { AuthenticationService } from './authentication.service';
             .get("/api/experiment/GetAllImages", {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
+    }
+
+    // Function Definition to get all Species from DB: tbl Species
+    public getAllSpecies(): any {
+
+        return this.http
+            .get("/api/experiment/GetAllSpecies", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
     }
 
 }
