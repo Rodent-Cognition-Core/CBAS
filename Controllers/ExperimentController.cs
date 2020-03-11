@@ -105,6 +105,7 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         //Function to get all images from DB for PAL and PD
+        [AllowAnonymous]
         [HttpGet("GetAllSpecies")]
         public IActionResult GetAllSpecies()
         {

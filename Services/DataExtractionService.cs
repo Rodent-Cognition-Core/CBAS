@@ -37,7 +37,7 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        public List<Experiment> GetAllExperimentByTaskId(int TaskId, string userID)
+        public List<Experiment> GetAllExperimentByTaskId(int TaskId, string userID, int speciesId)
         {
             List<Experiment> lstExp = new List<Experiment>();
 
@@ -57,7 +57,7 @@ namespace AngularSPAWebAPI.Services
 														) as tt on tt.PSID = PIUserSite.PSID
 														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
 														 as tt2 on tt2.PUSID = Experiment.PUSID
-                                                        WHERE TaskID ={TaskId} and (Experiment.Status = 1 {userIdCondition} )"))
+                                                        WHERE TaskID ={TaskId} and SpeciesID = {speciesId} and (Experiment.Status = 1 {userIdCondition} )"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -719,6 +719,7 @@ namespace AngularSPAWebAPI.Services
                 if (dr.Read())
                 {
                     linkModel.TaskId = Convert.ToInt32(dr["TaskID"].ToString());
+                    linkModel.SpeciesId = Convert.ToInt32(dr["SpeciesID"].ToString());
                     linkModel.SubTaskId = Convert.ToInt32(dr["SubTaskId"].ToString());
                     linkModel.ExpIdCsv = Convert.ToString(dr["ExpIdCsv"]);
                     linkModel.AnimalAgeCsv = Convert.ToString(dr["AnimalAgeCsv"]);
@@ -742,7 +743,8 @@ namespace AngularSPAWebAPI.Services
                         SessionNameDescription = $"SessionName: <b>{Convert.ToString(dr["SessionNameCsv"])}</b><br />";
                     }
 
-                    linkModel.Description = $@"Task Name: <b>{Convert.ToString(dr["TaskName"])}</b><br />
+                    linkModel.Description = $@"Species: <b>{Convert.ToString(dr["Species"])}</b><br />
+                                            Task Name: <b>{Convert.ToString(dr["TaskName"])}</b><br />
                                             Sub Task Name: <b>{Convert.ToString(dr["SubTaskName"])}</b><br /> 
                                             Experiment Name: <b>{String.Join(", ", GetAllExperimentsByExpIdsCsv(Convert.ToString(dr["ExpIdCsv"])).Select(x => x.ExpName.ToString()).ToArray())}</b><br />
                                             Animal Age: <b>{GetAgeCsvFromIdCsv(Convert.ToString(dr["AnimalAgeCsv"]))}</b><br /> 
@@ -759,7 +761,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            var sql = DataExtractionQuery(linkModel.TaskId,linkModel.SubTaskId, linkModel.ExpIdCsv, linkModel.AnimalAgeCsv,
+            var sql = DataExtractionQuery(linkModel.TaskId, linkModel.SpeciesId, linkModel.SubTaskId, linkModel.ExpIdCsv, linkModel.AnimalAgeCsv,
                 linkModel.AnimalSexCsv, linkModel.AnimalGenotypeCsv, linkModel.AnimalStrainCsv,
                 linkModel.PiSiteIdsCsv, linkModel.SessionInfoNamesCsv,
                 linkModel.MarkerInfoNamesCsv.Split('§'),
@@ -982,6 +984,7 @@ namespace AngularSPAWebAPI.Services
         public (string sql, LinkModel linkModel) DecodeDataExtraction(DataExtraction data_extraction)
         {
 
+            int SpeciesID = data_extraction.SpeciesID;
             int TaskID = data_extraction.TaskID;
             string ExpIDcsv = String.Join(",", data_extraction.ExpIDs.Select(x => x.ToString()).ToArray());
             int SubTaskID = data_extraction.SubTaskID;
@@ -1043,6 +1046,8 @@ namespace AngularSPAWebAPI.Services
             {
                 LinkGuid = Guid.NewGuid(),
                 TaskId = TaskID,
+                SpeciesId = SpeciesID,
+                Species = data_extraction.Species,
                 TaskName = data_extraction.TaskName,
                 SubTaskId = SubTaskID,
                 SubTaskName = data_extraction.SubTaskName,
@@ -1063,14 +1068,14 @@ namespace AngularSPAWebAPI.Services
 
             var sql = string.Empty;
 
-            sql = DataExtractionQuery(TaskID, SubTaskID, ExpIDcsv, AnimalAgeCsv, AnimalSexCsv, AnimalGenotypeCsv, AnimalStrainCsv,
+            sql = DataExtractionQuery(TaskID, SpeciesID, SubTaskID, ExpIDcsv, AnimalAgeCsv, AnimalSexCsv, AnimalGenotypeCsv, AnimalStrainCsv,
                                       PiSiteIDsCsv, SessionInfoNamesCsv, MarkerInfoNames, AggNames, isTrialByTrial, SubExpIDcsv, SessionNamesCsv);
 
             return (sql, linkModel);
         }
 
         // Function Definition for dataextractionQuery
-        public string DataExtractionQuery(int TaskID, int subTaskId, string expIDcsv, string animalAgeCsv, string animalSexCsv,
+        public string DataExtractionQuery(int TaskID, int SpeciesID, int subTaskId, string expIDcsv, string animalAgeCsv, string animalSexCsv,
             string animalGenotypeCsv, string animalStrainCsv, string piSiteIdsCsv, string sessionInfoNamesCsv, string[] markerInfoNames,
             string[] aggNames, bool isTrialByTrial, string SubExpIDcsv, string SessionNamesCsv)
         {
@@ -1170,7 +1175,7 @@ namespace AngularSPAWebAPI.Services
                                  From SessionInfo
                                  inner join Animal on Animal.AnimalID = SessionInfo.AnimalID
                                  inner join Experiment on Experiment.ExpID = SessionInfo.ExpID
-								 inner join Genotype on Genotype.ID = Animal.GID
+                                 inner join Genotype on Genotype.ID = Animal.GID
                                  inner join Strain on Strain.ID = Animal.SID
 
 								 inner join (
@@ -1278,11 +1283,11 @@ namespace AngularSPAWebAPI.Services
 
             string sql = $@"insert into Links
                             (
-                                LinkGuid, TaskId, TaskName, SubTaskId, SubTaskName, ExpIdCsv, AnimalAgeCsv, AnimalSexCsv, AnimalGenotypeCsv,
+                                LinkGuid, TaskId, TaskName, SpeciesID, Species, SubTaskId, SubTaskName, ExpIdCsv, AnimalAgeCsv, AnimalSexCsv, AnimalGenotypeCsv,
                                 AnimalStrainCsv, PiSiteIdsCsv, SessionInfoNamesCsv, MarkerInfoNamesCsv, AggNamesCsv, IsTrialByTrial, SubExpIDcsv, SessionNameCsv
                             ) Values 
                             (
-                                @LinkGuid, @TaskId, @TaskName, @SubTaskId, @SubTaskName, @ExpIdCsv, @AnimalAgeCsv, @AnimalSexCsv, @AnimalGenotypeCsv,
+                                @LinkGuid, @TaskId, @TaskName, @SpeciesID, @Species, @SubTaskId, @SubTaskName, @ExpIdCsv, @AnimalAgeCsv, @AnimalSexCsv, @AnimalGenotypeCsv,
                                 @AnimalStrainCsv, @PiSiteIdsCsv, @SessionInfoNamesCsv, @MarkerInfoNamesCsv, @AggNamesCsv, @IsTrialByTrial, @SubExpIDcsv, @SessionNameCsv
                             )";
 
@@ -1291,6 +1296,8 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@LinkGuid", linkModel.LinkGuid));
             parameters.Add(new SqlParameter("@TaskId", linkModel.TaskId));
             parameters.Add(new SqlParameter("@TaskName", linkModel.TaskName));
+            parameters.Add(new SqlParameter("@SpeciesID", linkModel.SpeciesId));
+            parameters.Add(new SqlParameter("@Species", linkModel.Species));
             parameters.Add(new SqlParameter("@SubTaskId", linkModel.SubTaskId));
             parameters.Add(new SqlParameter("@SubTaskName", linkModel.SubTaskName));
             parameters.Add(new SqlParameter("@ExpIdCsv", string.IsNullOrEmpty(linkModel.ExpIdCsv) ? "" : linkModel.ExpIdCsv));

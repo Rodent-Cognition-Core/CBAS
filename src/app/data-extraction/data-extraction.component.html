@@ -12,9 +12,19 @@
             <tr>
                 <td style="padding: 13px 16px;">
 
-                    <!--Task dropDown-->
+                    <!--Species dropDown-->
                     <mat-form-field>
-                        <mat-select placeholder="Select the Task" [formControl]="task" [(ngModel)]="selectedTaskvalue" (selectionChange)="selectedTaskChange(selectedTaskvalue)" required>
+                        <mat-select placeholder="Select the Species" [formControl]="species" [(ngModel)]="selectedSpeciesvalue" (selectionChange)="selectedSpeciesChange()" required>
+                            <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                                <span matTooltip="{{species.species}}">{{species.species}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="species.invalid">{{getErrorMessageSpecies()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp;  &nbsp;
+                    <!--Task dropDown-->
+                    <mat-form-field *ngIf="selectedSpeciesvalue!=null">
+                        <mat-select placeholder="Select the Task" [formControl]="task" [(ngModel)]="selectedTaskvalue" (selectionChange)="selectedTaskChange(selectedTaskvalue, selectedSpeciesvalue)" required>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
                             </mat-option>
@@ -23,7 +33,7 @@
                     </mat-form-field>
 
                     <!--Trial by Trial-->
-                    &nbsp; &nbsp;
+                    &nbsp; &nbsp;  &nbsp;
                     <mat-checkbox [(ngModel)]="isTrialByTrial">Extracting Data Trial by Trial</mat-checkbox>
                     <br /><br />
 
@@ -65,12 +75,12 @@
 
                     <!--Sub-session dropDown for some selected Sub-tasks-->
                     <mat-form-field *ngIf="subSessionList.length > 0">
-                        <mat-select  placeholder="Select the sub-Session" [(ngModel)]="selectedSubSessionValue" multiple>
+                        <mat-select placeholder="Select the sub-Session" [(ngModel)]="selectedSubSessionValue" multiple>
                             <mat-option *ngFor="let subsession of subSessionList" [value]="subsession.sessionName">
                                 <span matTooltip="{{subsession.sessionDescription}}">{{subsession.sessionName}}</span>
                             </mat-option>
                         </mat-select>
-                        
+
                     </mat-form-field>
                     &nbsp; &nbsp; &nbsp;
 

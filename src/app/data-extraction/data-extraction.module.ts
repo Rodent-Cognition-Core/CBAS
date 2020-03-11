@@ -16,7 +16,7 @@ import { DataExtractionService } from '../services/dataextraction.service'
 //import { OrderModule } from 'ngx-order-pipe';
 import { PagerService } from '../services/pager.service';
 import { UploadService } from '../services/upload.service';
-
+import { ExpDialogeService } from '../services/expdialoge.service';
 
 @NgModule({
     imports: [
@@ -36,6 +36,7 @@ import { UploadService } from '../services/upload.service';
         DataExtractionService,
         PagerService,
         UploadService,
+        ExpDialogeService,
         
     ],
     bootstrap: [DataExtractionComponent],

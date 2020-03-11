@@ -25,10 +25,10 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Getting list of all experiments for the selected taslid
-    public getAllExpByTaskID(id: any, userGuid: any): any {
+    public getAllExpByTaskID(id: any, userGuid: any, speciesID: any): any {
 
         return this.http
-            .get("/api/dataExtraction/GetExpByTaskID?taskId=" + id + "&userGuid=" + userGuid, {
+            .get("/api/dataExtraction/GetExpByTaskID?taskId=" + id + "&userGuid=" + userGuid + "&speciesId=" + speciesID, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 

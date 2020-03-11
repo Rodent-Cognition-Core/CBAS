@@ -10,6 +10,8 @@ namespace AngularSPAWebAPI.Models
         public string Description { get; set; }
         public int TaskId { get; set; }
         public string TaskName { get; set; }
+        public int SpeciesId { get; set; }
+        public string Species { get; set; }
         public int SubTaskId { get; set; }
         public string SubTaskName { get; set; }
         public string ExpIdCsv { get; set; }

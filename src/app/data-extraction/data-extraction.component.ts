@@ -16,6 +16,7 @@ import { PagerService } from '../services/pager.service';
 import { Geno } from '../models/geno';
 import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
+import { ExpDialogeService } from '../services/expdialoge.service';
 
 declare var $: any;
 
@@ -36,11 +37,11 @@ export class DataExtractionComponent implements OnInit {
     AnimalInfoListGenotype: any;
     AnimalInfoListStrain: any;
     subSessionList: any[] = [];
-    // Result: any;
     genoIDList: number[] = [];
     _geno = new Geno();
     filteredGenoList: any[] = [];
     InterventionList: any[] = [];
+    speciesList: any
 
     // ngModels vars
     selectedTaskvalue: any;
@@ -58,6 +59,7 @@ export class DataExtractionComponent implements OnInit {
     isTrialByTrial: any;
     selectedInterventionValue: any
     selectedSubSessionValue: any
+    selectedSpeciesvalue: any
 
     // FormControls vars
     task = new FormControl('', [Validators.required]);
@@ -67,6 +69,7 @@ export class DataExtractionComponent implements OnInit {
     markerinfo = new FormControl('', [Validators.required]);
     PISite = new FormControl('', [Validators.required]);
     aggFunc = new FormControl('', [Validators.required]);
+    species = new FormControl('', [Validators.required]);
 
     _dataExtractionObj = new DataExtraction();
 
@@ -127,6 +130,7 @@ export class DataExtractionComponent implements OnInit {
         private pagerService: PagerService,
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
+        private expDialogeService: ExpDialogeService,
     ) {
         this.colNames = [];
         this.showGeneratedLink = false;
@@ -170,13 +174,25 @@ export class DataExtractionComponent implements OnInit {
 
     ngOnInit() {
 
-        // loading TaskList for Task Drop g
+        // loading speciesList for Species Dropdown 
+        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
+
+
+        // loading TaskList for Task Dropdown
         this.dataExtractionService.getAllTask().subscribe(data => { this.taskList = data; });
 
     }
 
+    selectedSpeciesChange() {
+
+
+        this.selectedTaskvalue = '';
+        this.resetDdls();
+
+    }
+
     // Getting Selected Task ID and Pass it to get Explist & SubtaskList
-    selectedTaskChange(selectedTaskVal) {
+    selectedTaskChange(selectedTaskVal, selectedSpeciesvalue) {
 
         var isUser = this.authenticationService.isInRole("user");
         var isAdmin = this.authenticationService.isInRole("administrator");
@@ -187,7 +203,7 @@ export class DataExtractionComponent implements OnInit {
             this.dataExtractionService.getUserGuid().subscribe(userGuid => {
 
                 this.resetDdls();
-                this.getExpList(selectedTaskVal, userGuid);
+                this.getExpList(selectedTaskVal, userGuid, selectedSpeciesvalue);
                 this.getSubTaskList(selectedTaskVal);
                 this.showGeneratedLink = false;
 
@@ -196,7 +212,7 @@ export class DataExtractionComponent implements OnInit {
         } else {
 
             this.resetDdls();
-            this.getExpList(selectedTaskVal, "");
+            this.getExpList(selectedTaskVal, "", selectedSpeciesvalue);
             this.getSubTaskList(selectedTaskVal);
             this.showGeneratedLink = false;
 
@@ -270,9 +286,9 @@ export class DataExtractionComponent implements OnInit {
 
 
     // Getting ExpList for the selected Task ID
-    getExpList(selected_TaskValue, userGuid): any {
+    getExpList(selected_TaskValue, userGuid, selectedSpeciesvalue): any {
 
-        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid).subscribe(data => {
+        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, selectedSpeciesvalue).subscribe(data => {
             this.expList = data;
             //console.log(this.expList);
 
@@ -321,8 +337,13 @@ export class DataExtractionComponent implements OnInit {
         return this.subTakList.find(x => x.id === selValue);
     }
 
+        
     getSelectedTask(selValue) {
         return this.taskList.find(x => x.id === selValue);
+    }
+
+    getSelectedSpecies(selValue) {
+        return this.speciesList.find(x => x.id === selValue);
     }
 
     // Getting MarkerInfoList for the selected SubTaskID & ExpID
@@ -519,7 +540,7 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(34);
 
             }
-                        
+
             //console.log(this.genoIDList);
             //selected_ExpVal
             this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe(data => {
@@ -594,6 +615,14 @@ export class DataExtractionComponent implements OnInit {
             '';
     }
 
+    // Species Dropdown
+    // Aggregation Function DropDown
+    getErrorMessageSpecies() {
+
+        return this.species.hasError('required') ? 'You must enter a value' :
+            '';
+    }
+
     setDisabledVal() {
 
 
@@ -603,6 +632,7 @@ export class DataExtractionComponent implements OnInit {
                 this.subtask.hasError('required') ||
                 this.sessioninfo.hasError('required') ||
                 this.markerinfo.hasError('required') ||
+                this.species.hasError('required') ||
                 (this.aggFunc.hasError('required') && this.isTrialByTrial == false)
             )
 
@@ -678,6 +708,7 @@ export class DataExtractionComponent implements OnInit {
 
         var selectedTask = this.getSelectedTask(this.selectedTaskvalue);
         var selectedSubTask = this.getSelectedSubTask(this.selectedSubTaskValue);
+        var selectedSpeceis = this.getSelectedSpecies(this.selectedSpeciesvalue);
 
         // Function Definition 
         this._dataExtractionObj.isTrialByTrials = this.isTrialByTrial;
@@ -687,6 +718,8 @@ export class DataExtractionComponent implements OnInit {
 
         this._dataExtractionObj.taskID = this.selectedTaskvalue;
         this._dataExtractionObj.taskName = selectedTask.name;
+        this._dataExtractionObj.speciesID = this.selectedSpeciesvalue;
+        this._dataExtractionObj.species = selectedSpeceis.species
         this._dataExtractionObj.expIDs = this.selectedExpvalue;
         this._dataExtractionObj.subtaskID = this.selectedSubTaskValue;
         this._dataExtractionObj.subTaskName = selectedSubTask.originalName;

@@ -22,6 +22,8 @@ namespace AngularSPAWebAPI.Models
         public bool IsTrialByTrials { get; set; }
         public int[] SubExpID { get; set; }
         public string[] SessionName { get; set; }
+        public int SpeciesID { get; set; }
+        public string Species { get; set; }
 
     }
 

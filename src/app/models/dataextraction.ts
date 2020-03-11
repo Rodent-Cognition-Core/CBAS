@@ -16,5 +16,7 @@ export class DataExtraction {
     public isTrialByTrials: boolean;
     public subExpID: Array<number>;
     public sessionName: Array<string>;
+    public species: string;
+    public speciesID: number;
            
 }

@@ -64,7 +64,8 @@ import { AuthenticationService } from './authentication.service';
 
         return this.http
             .get("/api/experiment/GetAllSpecies", {
-                headers: this.authenticationService.getAuthorizationHeader()
+                //headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
     }
