@@ -260,7 +260,6 @@ namespace AngularSPAWebAPI.Services
                 }
             }
             
-
             return markerInfoFeatureslst;
         }
 
@@ -1422,6 +1421,8 @@ namespace AngularSPAWebAPI.Services
                 case 51:
                 case 65:
                 case 70:
+                case 76:
+                case 82:
                     {
                         str = "(SessionName='Habituation_1')";
                         break;
@@ -1435,6 +1436,8 @@ namespace AngularSPAWebAPI.Services
                 case 60:
                 case 66:
                 case 71:
+                case 77:
+                case 83:
                     {
                         str = "(SessionName='Habituation_2')";
                         break;
@@ -1447,6 +1450,7 @@ namespace AngularSPAWebAPI.Services
                 case 61:
                 case 67:
                 case 72:
+                case 84:
                     {
                         str = "(SessionName='Initial_Touch')";
                         break;
@@ -1459,6 +1463,7 @@ namespace AngularSPAWebAPI.Services
                 case 63:
                 case 68:
                 case 73:
+                case 85:
                     {
                         str = "(SessionName='Must_Touch')";
                         break;
@@ -1468,6 +1473,7 @@ namespace AngularSPAWebAPI.Services
                 case 45:
                 case 54:
                 case 62:
+                case 86:
                     {
                         str = "(SessionName='Must_Initiate')";
                         break;
@@ -1479,8 +1485,9 @@ namespace AngularSPAWebAPI.Services
                 case 56:
                 case 64:
                 case 74:
+                case 87:
                     {
-                        str = "(SessionName='Punish_Incorrect')";
+                        str = "(SessionName='Punish_Incorrect') OR (SessionName='Punish Incorrect II')";
                         break;
                     }
                 case 21:
@@ -1494,7 +1501,7 @@ namespace AngularSPAWebAPI.Services
                     }
                 case 31:
                     {
-                        str = @"((SessionName = 'Acquisition') or (SessionName = 'Baseline') or (SessionName = 'Reversal') or (SessionName = 'Re_reversal'))";
+                        str = @"((SessionName = 'PD-Acquisition') or (SessionName = 'Baseline') or (SessionName = 'Reversal') or (SessionName = 'Re_reversal'))";
                         break;
                     }
                 case 40:
@@ -1504,7 +1511,7 @@ namespace AngularSPAWebAPI.Services
                     }
                 case 41:
                     {
-                        str = "((Analysis_Name like '%pal acquisition%') or (SessionName = 'Acquisition'))";
+                        str = "((Analysis_Name like '%pal acquisition%') or (SessionName = 'PAL-Acquisition'))";
                         break;
                     }
 
@@ -1542,7 +1549,32 @@ namespace AngularSPAWebAPI.Services
                         str = "( (Analysis_Name like '%PRL analysis%') OR (SessionName = 'Deterministic Reversal Training') OR (SessionName = 'Probabilistic Feedback') )";
                         break;
                     }
-                                                         
+                case 78: // ICPT Analysis for training stages (stage 1 to satge 4)
+                    {
+                        str = "(  (Analysis_Name like '%ICPT Analysis%') OR (SessionName ='Stage 1 - Stimulus Touch') OR (SessionName ='Stage 2 - Target Stimulus Touch') OR (SessionName ='Stage 3 - One Target and one non-target') OR (SessionName ='Stage 4 - One Target and four non-targets') )";
+                        break;
+                    }
+                case 79:
+                    {
+                        str = "( (Analysis_Name like '%ICPT SD Probe 1 Analysis%') OR (SessionName = 'Probe-1 Variable Stimulus Duration') )";
+                        break;
+                    }
+                case 80:
+                    {
+                        str = "( (Analysis_Name like '%ICPT Contrast Probe Analysis%') OR (SessionName = 'Probe-2 Variable Contrast levels') )";
+                        break;
+                    }
+                case 81:
+                    {
+                        str = "( (Analysis_Name like '%ICPT Distractor Probe Analysis%') OR (SessionName = 'Probe 3 - congruent-flanker') OR (SessionName = 'Probe 3 - non-congruent flanker') OR (SessionName = 'Probe 3 - non-flanker') )";
+                        break;
+                    }
+                case 88:
+                    {
+                        str = "( (Analysis_Name like '%VMCL Analysis%') OR (SessionName = 'VMCL Train') OR (SessionName ='VMCL Test') )";
+                        break;
+                    }
+                    
             }
 
             return str;

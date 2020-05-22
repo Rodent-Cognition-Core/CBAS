@@ -120,11 +120,11 @@ export class UploadComponent implements OnInit {
                 
             }
             case 3: { // PD
-                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 4);
+                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 3);
                 break;
             }
             case 4: { // PAL
-                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 3);
+                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 4);
                 break;
             }
             case 5: {  // LD
@@ -141,6 +141,17 @@ export class UploadComponent implements OnInit {
                 break;
 
             }
+            case 11: { //CPT
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect' );
+                break;
+
+            }
+            case 12: { //VMCL
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 12) );
+                break;
+
+            }
+
             default: {
                 //statements; 
                 break;
@@ -273,15 +284,22 @@ export class UploadComponent implements OnInit {
 
     }
 
+
     onSending(data): void {
 
         this.proceedUpload = true;
         this.spinnerService.show();
 
+       
+        var obj = this.SessionList.filter(x => x.sessionName === this.sessionNameVal);
+        var sessionID = obj[0].id
+       
+
         const formData = data[2];
         formData.append('expId', this.experimentID);
         formData.append('subExpId', this.subExpID);
         formData.append('sessionName', this.sessionNameVal);
+        formData.append('sessionID', sessionID);
 
     }
 

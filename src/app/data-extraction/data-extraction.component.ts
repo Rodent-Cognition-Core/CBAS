@@ -262,6 +262,26 @@ export class DataExtractionComponent implements OnInit {
                         this.subSessionList = this.subSessionList.filter((x => x.taskID === 10));
                         break;
                     }
+                case 78:
+                    { // case CPT Analysis for Stage 1 to Stage 4
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 11) && (x.sessionName == 'Stage 1 - Stimulus Touch') &&
+                            (x.sessionName == 'Stage 2 - Target Stimulus Touch') && (x.sessionName == 'Stage 3 - One Target and one non-target') &&
+                            (x.sessionName == 'Stage 4 - One Target and four non-targets'));
+                        break;
+                    }
+                case 81:
+                    { // CPT Distractor Probe 3 (Congruent Flanker, Non-Congruent, No-Flanker)
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 11) && (x.sessionName == 'Probe 3 - congruent-flanker') &&
+                            (x.sessionName == 'Probe 3 - non-congruent flanker') && (x.sessionName == 'Probe 3 - non-flanker'));
+                        break;
+                    }
+                case 88:
+                    {   // VMLC Analysis
+
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 12) && (x.sessionName != 'Punish Incorrect II'));
+                        break;
+                        
+                    }
 
                 default:
                     {

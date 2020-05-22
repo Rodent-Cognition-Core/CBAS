@@ -46,6 +46,7 @@ namespace AngularSPAWebAPI.Services
             string Whole_Session_Analysis_Trials_Completed;
             string Threshold_Condition;
             string Threshold_Trials;
+            string End_Summary_Hits;
 
 
             string path = Filepath + "\\" + FileName;
@@ -88,11 +89,13 @@ namespace AngularSPAWebAPI.Services
                 //********Threshold - Trials*******************
                 Threshold_Trials = FeatureExtraction("MarkerData", "Marker", "Threshold - Trials", "Results", xdoc);
                 //********Progressive Ratio*******************
-                End_Summary_Schedule_Length = FeatureExtraction("MarkerData", "Marker", "END SUMMARY - Schedule Length", "Results", xdoc);
+                End_Summary_Schedule_Length = FeatureExtraction("MarkerData", "Marker", "END SUMMARY - Schedule Length", "Results", xdoc);  // Also CPT task
                 PR_End_Summary_Trials_Completed = FeatureExtraction("MarkerData", "Marker", "END SUMMARY - TRIALS COMPLETED", "Results", xdoc);
                 //********Probabilistic reversal learning (PRL)*******************
                 Whole_Session_Analysis_Condition = FeatureExtraction("MarkerData", "Marker", "Whole session analysis - Condition", "Results", xdoc);
                 Whole_Session_Analysis_Trials_Completed = FeatureExtraction("MarkerData", "Marker", "Whole session analysis - Trials completed", "Results", xdoc);
+                //********Continous performance Task (CPT)*******************
+                End_Summary_Hits = FeatureExtraction("MarkerData", "Marker", "End Summary - Hits", "Results", xdoc);
 
             }
 
@@ -137,7 +140,20 @@ namespace AngularSPAWebAPI.Services
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
                     break;
+                case "Image Continuous Performance Task (iCPT)":
+                    if(!Analysis_Name.Trim().ToLower().Contains("icpt"))
+                    {
+                        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
+                    }
+                    break;
+                case "Visuomotor Conditional Learning (VMCL)":
+                    if (!Analysis_Name.Trim().ToLower().Contains("vmcl"))
+                    {
+                        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
+                    }
+                    break;
 
+                                       
             }
 
             // If Xml File does have Age then this age value should be checked with the age of Subexperiment for matching purpose
@@ -212,7 +228,7 @@ namespace AngularSPAWebAPI.Services
                 InsertToTblUpload1 = true;
             }
 
-            //***************************"Habituation 1 (5C, PAL, PD, LD)"*************************
+            //***************************"Habituation 1 (5C, PAL, PD, LD, PR, PRL, iCPT, VMCL)"*************************
 
             if (Analysis_Name.Trim().ToLower().Contains("habit 1"))
             {
@@ -236,7 +252,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            //***************************"Habituation 2 (5C, PAL, PD, LD)"*************************
+            //***************************"Habituation 2 (5C, PAL, PD, LD, PR, PRL, iCPT, VMCL)"*************************
 
             else if (Analysis_Name.Trim().ToLower().Contains("habit 2"))
             {
@@ -260,7 +276,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            //************************"Initial Touch" --->"Initial Train" for (5C, PAL, PD, LD)************************
+            //************************"Initial Touch" --->"Initial Train" for (5C, PAL, PD, LD, PR, PRL,VMCL)************************
 
             else if (Analysis_Name.Trim().ToLower().Contains("initial train"))
             {
@@ -270,8 +286,7 @@ namespace AngularSPAWebAPI.Services
                 }
 
                 (bool flag, string ErrMsg) info = Check_Initial_Touch(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_No_Images);
-
-
+                
                 if (info.flag)
                 { }
 
@@ -282,7 +297,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            //************************"Must Touch" for (5C, PAL, PD, LD)************************
+            //************************"Must Touch" for (5C, PAL, PD, LD, PR, PRL, VMCL)************************
 
             else if (Analysis_Name.Trim().ToLower().Contains("must touch"))
             {
@@ -303,7 +318,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            //************************"Must Initiate" for (5C, PAL, PD, LD)************************
+            //************************"Must Initiate" for (5C, PAL, PD, LD, VMCL)************************
 
             else if (Analysis_Name.Trim().ToLower().Contains("must initiate"))
             {
@@ -324,7 +339,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            //**********************Punish Incorrect for (5C, PAL, PD, LD)****************
+            //**********************Punish Incorrect for (5C, PAL, PD, LD, PRL, VMCL)****************
 
             else if (Analysis_Name.Trim().ToLower().Contains("punish"))
             {
@@ -531,10 +546,57 @@ namespace AngularSPAWebAPI.Services
                                 ErrorMessage1 += info.ErrMsg;
                             }
 
-
                         }
 
                         break;
+                    case "Image Continuous Performance Task (iCPT)":
+                        // add iCPT QC codes
+                        if (Analysis_Name.Trim().ToLower().Contains("icpt") || Analysis_Name.Trim().ToLower().Contains("cpt"))
+                        {
+                            if (!(SessionName.Trim().ToLower().Contains("stage 1 - stimulus touch") || SessionName.Trim().ToLower().Contains("stage 2 - target stimulus touch") ||
+                                  SessionName.Trim().ToLower().Contains("stage 3 - one target and one non-target") || SessionName.Trim().ToLower().Contains("stage 4 - one target and four non-targets") ||
+                                  SessionName.Trim().ToLower().Contains("probe-1 variable stimulus duration") || SessionName.Trim().ToLower().Contains("probe-2 variable contrast levels") ||
+                                  SessionName.Trim().ToLower().Contains("probe 3 - congruent-flanker") || SessionName.Trim().ToLower().Contains("probe 3 - non-congruent flanker") ||
+                                  SessionName.Trim().ToLower().Contains("probe 3 - non-flanker")))
+                            {
+                                ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
+                            }
+                            // We can use check_PD function for cpt but sending the parameters realted to CPT. The logic is the same.
+                            //(bool flag, string ErrMsg) info = Check_PD(Max_Number_Trials, Max_Schedule_Time, End_Summary_Schedule_Length, End_Summary_Hits);
+
+                            //if (info.flag)
+                            //{ }
+
+                            //else
+                            //{
+                            //    // type a message 
+                            //    ErrorMessage1 += info.ErrMsg;
+                            //}
+                            
+                        }
+                            break;
+                    case "Visuomotor Conditional Learning (VMCL)":
+                        if (Analysis_Name.Trim().ToLower().Contains("vmcl"))
+                        {
+                            if (!(SessionName.Trim().ToLower().Contains("vmcl train") || SessionName.Trim().ToLower().Contains("vmcl test")))
+                            {
+                                ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
+                            }
+
+                            (bool flag, string ErrMsg) info = Check_VMCL(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_Trials_Completed);
+
+                            if (info.flag)
+                            { }
+
+                            else
+                            {
+                                // type a message 
+                                ErrorMessage1 += info.ErrMsg;
+                            }
+
+
+                        }
+                            break;
 
                 }  // end of switch-case for TaskName
             } // End of else
@@ -1311,11 +1373,54 @@ namespace AngularSPAWebAPI.Services
                 default:
                     return (flag: Flag, ErrMsg: ErrMsg1);
 
+            }
+
+                  
+        } // end of PR function
+
+        // Function definition for checking conditions of sessions belong to VMCL Task
+        private (bool flag, string ErrMsg) Check_VMCL(string Max_Number_Trials, string Max_Schedule_Time, string End_Summary_Condition, string End_Summary_Trials_Completed)
+        {
+            bool Flag = false;
+            string ErrMsg1 = "";
+
+            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 )
+            {
+                Flag = true;
+            }
+            else
+            {
+                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                {
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                }
+
+                
+
+                return (flag: Flag, ErrMsg: ErrMsg1);
+            }
+
+            if ((float.Parse(HandleNullStr(End_Summary_Condition)) > 0) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0))
+
+            {
+                Flag = true;
+            }
+
+            else
+
+            {
+
+                if (float.Parse(HandleNullStr(End_Summary_Condition)) <= 0)
+                { ErrMsg1 += $@"End_Summary_Condition should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Condition))} </b> in the uploaded file. <br />"; }
+
+                if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
+                { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file. <br />"; }
 
 
             }
 
 
+            return (flag: Flag, ErrMsg: ErrMsg1);
 
         }
 

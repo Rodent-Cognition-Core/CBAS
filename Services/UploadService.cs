@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using MathNet;
+using MathNet.Numerics.Distributions;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -26,7 +28,8 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Function Definition to read the file sent by the client, read the content, do some processing (e.g. Quality Control Rules), then insert it into Database
-        public async Task<List<FileUploadResult>> UploadFiles(IFormFileCollection files, string TaskName, int expID, int subExpId, string ExpName, string Username, string userID, string SessionName)
+        public async Task<List<FileUploadResult>> UploadFiles(IFormFileCollection files, string TaskName, int expID, int subExpId, string ExpName,
+                                                                string Username, string userID, string SessionName, int TaskID, int sessionID)
         {
             List<FileUploadResult> uploadResult = new List<FileUploadResult>();
 
@@ -88,6 +91,7 @@ namespace AngularSPAWebAPI.Services
                         SubExpNameAge = SubExpNameAge1,
                         SessionName = SessionName, // this field is coming from client upload page
 
+
                     };
 
                     // Only objects whose errorMessage & warningMessage is not Null returned to client 
@@ -132,7 +136,7 @@ namespace AngularSPAWebAPI.Services
                         if (IsUploaded1 == true)
                         {
                             // write a function to get filename, filepath, uploadid as inputs and then insert to above mentioend tables
-                            InsertFileData(tempFileName, pathString, uploadID, expID, userID, info.SysAnimalID, SessionName);
+                            InsertFileData(tempFileName, pathString, uploadID, expID, userID, info.SysAnimalID, SessionName, TaskID, sessionID);
 
                         }
 
@@ -156,6 +160,12 @@ namespace AngularSPAWebAPI.Services
         {
             string sql = "Select ltrim(rtrim(Task.Name)) as TaskName From Task inner join Experiment on task.ID = Experiment.taskID where Experiment.ExpID =" + ExpID;
             return Dal.ExecScalar(sql).ToString();
+        }
+
+        public int GetTaskID(int ExpID)
+        {
+            string sql = "Select Task.ID as TaskID From Task inner join Experiment on task.ID = Experiment.taskID where Experiment.ExpID =" + ExpID;
+            return Convert.ToInt32( Dal.ExecScalar(sql).ToString());
         }
 
         public string GetExpName(int ExpID)
@@ -201,7 +211,11 @@ namespace AngularSPAWebAPI.Services
 
             foreach (var furInstance in lstFur)
             {
-                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID, furInstance.SessionName);
+                // Get Upload session ID from "Upload_SessionInfo" Table using its SessionName
+                int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
+
+                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
+                               furInstance.SessionName, furInstance.TaskID, UploadSessionID);
 
                 string sql = $"UPDATE Upload " +
                      $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
@@ -214,13 +228,16 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
+        
         public bool SetAsResolvedForEditedAnimalId(int animalId, string userId)
         {
             var lstFur = GetListUploadsByAnimalIDErrorMessege(animalId);
 
             foreach (var furInstance in lstFur)
             {
-                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID, furInstance.SessionName);
+                int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
+                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
+                               furInstance.SessionName, furInstance.TaskID, UploadSessionID);
 
                 string sql = $"UPDATE Upload " +
                      $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
@@ -233,9 +250,18 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
+        private int getUploadSessionIDbySessionName(string sessionName)
+        {
+            string sql = $"Select id from Upload_SessionInfo Where SessionName='{sessionName}";
+
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
+        }
+
         public FileUploadResult GetUploadByUploadID(int uploadID)
         {
-            string sql = "select * from Upload where UploadID = " + uploadID;
+            string sql = $@"select Upload.*, Experiment.TaskID from Upload
+                            Inner join Experiment on Experiment.ExpID = Upload.ExpID
+                            where UploadID ={uploadID} ";
             FileUploadResult retVal;
 
             using (DataTable dt = Dal.GetDataTable(sql))
@@ -255,7 +281,9 @@ namespace AngularSPAWebAPI.Services
 
         public List<FileUploadResult> GetListUploadsByAnimalIDErrorMessege(int animalID)
         {
-            string sql = $"select * from Upload where AnimalID = {animalID} and ErrorMessage like 'Missing Animal Information:%' ";
+            string sql = $@"select Upload.*, Experiment.TaskID from Upload
+                          Inner join Experiment on Experiment.ExpID = Upload.ExpID
+                          where AnimalID = {animalID} and ErrorMessage like 'Missing Animal Information:%' ";
             var retVal = new List<FileUploadResult>();
 
             using (DataTable dt = Dal.GetDataTable(sql))
@@ -302,7 +330,8 @@ namespace AngularSPAWebAPI.Services
         // ****************************************************************************************************************************************************************
         #region "Permanent File Data Operations"
 
-        private void InsertFileData(string fileName, string filePath, int uploadID, int expID, string userID, int animalId, string SessionName)
+        private void InsertFileData(string fileName, string filePath, int uploadID, int expID, string userID, int animalId, string SessionName,
+                                    int TaskID, int sessionIDUpload)
         {
 
             string path = filePath + "\\" + fileName;
@@ -318,13 +347,10 @@ namespace AngularSPAWebAPI.Services
             si.AnimalID = animalId;
             si.SessionName = SessionName;
 
-
-
             int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
 
-
             // Extract Marker Data
-            List<MarkerData> lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid);
+            List<MarkerData> lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName,  sessionIDUpload);
             if (lstMD.Count > 0)
             {
                 InsertMarketDataToTable(lstMD, SessionName);
@@ -413,90 +439,250 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Extrating Marker Data Info
-        public List<MarkerData> ExtractMarkerData(string Tag1, string Tag2, XDocument xdoc1, int SessionInfoID)
+        public List<MarkerData> ExtractMarkerData(string Tag1, string Tag2, XDocument xdoc1, int SessionInfoID, int TaskID,
+                                                    string SessionName, int sessionIDUpload)
         {
+
+            // Call function to get the list of features should be extracted from xml file and saved into the database
+            List<string> lstFeatures = new List<string>();
+            lstFeatures = GetlstFeature(sessionIDUpload);
+
             string xpath = "/LiEvent/" + Tag1 + "/" + Tag2;
             var value = xdoc1.XPathSelectElements(xpath);
 
             List<MarkerData> lstMD = new List<MarkerData>();
 
+            // declare some lists only for CPT
+            List<float?> lstSD = new List<float?>();
+            List<int?> lstHits = new List<int?>();
+            List<int?> lstMiss = new List<int?>();
+            List<int?> lstMistake = new List<int?>();
+            List<int?> lstcCorrectRejection = new List<int?>();
+
+            List<float> lstCorrectLatency = new List<float>();
+            List<float> lstRewatdLatency = new List<float>();
+            List<float> lstIncorLatency = new List<float>();
+
 
             foreach (var val in value)
             {
+
                 int source_type_id = -1;
                 float? result = null;
                 float? time = null;
                 float? duration = null;
                 int? count = null;
-
                 string Attribute = ((System.Xml.Linq.XElement)val.FirstNode).Value.ToString(); // Feature Name
-                string SourceType = ((System.Xml.Linq.XElement)val.FirstNode.NextNode).Value.ToString(); // SourceType
-                switch (SourceType.ToUpper())
+                //  If condition to consider only features exist in lstFeatures (only important features of each task should be considered!)
+                if (lstFeatures.Contains(Attribute)  || lstFeatures == null)
                 {
-                    case "EVALUATION":
+                    
+                    if (TaskID == 11) // Task is iCPT
+                    {
 
-                        source_type_id = 1;
-                        if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                        // add switch case to get the value for features occurring multiple times and save each in a separate list for icpt task
+                        switch (Attribute)
                         {
-                            result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
-                        }
-                        else { result = null; }
+                            case "trial by trial anal - Stimulus Duration":
 
-                        break;
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
 
-                    case "COUNT":
+                                lstSD.Add(result);
 
-                        source_type_id = 2;
-                        if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null )
-                        {
-                            count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
-                        }
-                        else { count = null; }
+                                break;
 
-                        break;
+                            case "trial by trial anal - Hits":
 
-                    case "MEASURE":
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
 
-                        source_type_id = 3;
-                        if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null )
-                        {
-                            time = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                lstHits.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Misses":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstMiss.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Mistakes":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstMistake.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Correct Rejections":
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstcCorrectRejection.Add((int)result);
+                                break;
+
+                            case "Correct Choice Latency":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
+                                lstCorrectLatency.Add((float)result);
+
+                                break;
+
+                            case "Reward Retrieval Latency":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
+                                lstRewatdLatency.Add((float)result);
+                                break;
+
+                            case "Incorrect Choice Latency":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
+                                lstIncorLatency.Add((float)result);
+                                break;
+
+                        }  // End of switch case
 
 
-                            // if time is not null, then check for the value of duration
-                            if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                    }  // end of if(tskID==11) for iCPT task
+
+                    string SourceType = ((System.Xml.Linq.XElement)val.FirstNode.NextNode).Value.ToString(); // SourceType
+                    switch (SourceType.ToUpper())
+                    {
+                        case "EVALUATION":
+
+                            source_type_id = 1;
+                            if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                             {
-                                duration = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
                             }
-                            else { duration = null; }
+                            else { result = null; }
 
-                        }
-                        else { time = null; }
+                            break;
 
-                       
+                        case "COUNT":
 
-                        break;
+                            source_type_id = 2;
+                            if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                            {
+                                count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                            }
+                            else { count = null; }
 
+                            break;
+
+                        case "MEASURE":
+
+                            source_type_id = 3;
+                            if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                            {
+                                time = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+
+
+                                // if time is not null, then check for the value of duration
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                {
+                                    duration = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { duration = null; }
+
+                            }
+                            else { time = null; }
+
+
+
+                            break;
+
+                    }
+
+                    MarkerData MD = new MarkerData
+                    {
+                        SessionID = SessionInfoID,
+                        SourceTypeID = source_type_id,
+                        FeatureName = Attribute,
+                        Results = result,
+                        Time = time,
+                        Duration = duration,
+                        Count = count,
+
+                    };
+
+
+                    lstMD.Add(MD);
+
+                } // end of if to consider only important features of each task
+
+
+            } // and of foreach loop
+
+            // Function call to get the dictionary with all the metrics calculated at each SD
+            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();  // to save all the metrics calculated at each SD
+            cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
+            int sourceType = 1;
+            float? resultVal = null;
+            float? durationVal=null;
+            foreach(KeyValuePair<string, float> entry in cptFeatureDict)
+            {
+                if(entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency") )
+                {
+                    sourceType = 3;
+                    durationVal = entry.Value;
+
+                }
+                else
+                {
+                    resultVal = entry.Value;
+                    durationVal = null;
                 }
 
                 MarkerData MD = new MarkerData
                 {
                     SessionID = SessionInfoID,
-                    SourceTypeID = source_type_id,
-                    FeatureName = Attribute,
-                    Results = result,
-                    Time = time,
-                    Duration = duration,
-                    Count = count,
+                    SourceTypeID = sourceType,
+                    FeatureName = entry.Key,
+                    Results = resultVal,
+                    Time = null,
+                    Duration = durationVal,
+                    Count = null,
 
                 };
 
-
                 lstMD.Add(MD);
-
             }
+
+
             return lstMD;
         }
+
+        
 
         private int InsertSessionInfoToTable(SessionInfo si)
         {
@@ -801,6 +987,282 @@ namespace AngularSPAWebAPI.Services
 
             return lstUploadSession;
         }
+
+        private Dictionary<string, float> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake, List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+        {
+
+            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+
+            var maxIndex = new List<int>() { lstSD.Count, lstHits.Count, lstMiss.Count, lstMistake.Count, lstcCorrectRejection.Count };
+            var maxIndexValue = maxIndex.Max();
+            var distSDValues = lstSD.Distinct();
+
+
+            // **********************Create a new data table based on dt datatable where  hit is greater than 0 for correct latency and reward latency
+            DataTable dt_latency = new DataTable();
+            dt_latency.Columns.Add("SD", typeof(float));
+            dt_latency.Columns.Add("Hit", typeof(int));
+            dt_latency.Columns.Add("CorrectLatency", typeof(int));
+            dt_latency.Columns.Add("RewardLatency", typeof(int));
+
+            // filling data table dt_latency
+            int cnt = 0;
+            for (int j = 0; j < maxIndexValue; j++)
+            {
+
+                if (lstHits[j] > 0)
+                {
+                    DataRow newRow = dt_latency.NewRow();
+                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                    newRow["CorrectLatency"] = lstCorrectLatency[cnt];
+                    newRow["RewardLatency"] = lstRewatdLatency[cnt];
+
+                    dt_latency.Rows.Add(newRow);
+                    cnt = cnt + 1;
+                }
+
+            }
+
+            foreach (var sd in distSDValues)
+            {
+                float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
+                float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
+
+                var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
+                var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
+
+                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+            }
+
+            //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
+            if(lstIncorLatency.Count>0)
+            {
+                DataTable dt_incorrect_latency = new DataTable();
+                dt_incorrect_latency.Columns.Add("SD", typeof(float));
+                dt_incorrect_latency.Columns.Add("Mistake", typeof(int));
+                dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
+
+                // filling data table dt_latency
+                int cnt2 = 0;
+                for (int j = 0; j < maxIndexValue; j++)
+                {
+
+                    if (lstMistake[j] > 0)
+                    {
+                        DataRow newRow = dt_incorrect_latency.NewRow();
+                        newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                        newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                        newRow["IncorrectLatency"] = lstIncorLatency[cnt2];
+
+                        dt_incorrect_latency.Rows.Add(newRow);
+                        cnt2 = cnt2 + 1;
+                    }
+
+                }
+
+                foreach (var sd in distSDValues)
+                {
+                    float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
+
+                    var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
+
+                    cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+
+                }
+            }
+            
+
+            //****************Create dataTable and put all the lists (hits, miss, mistake, correctRejection) inside it
+            DataTable dt = new DataTable();
+            dt.Columns.Add("SD", typeof(float));
+            dt.Columns.Add("Hit", typeof(int));
+            dt.Columns.Add("Miss", typeof(int));
+            dt.Columns.Add("Mistake", typeof(int));
+            dt.Columns.Add("CorrectRejection", typeof(int));
+
+
+            for (int j = 0; j < maxIndexValue; j++)
+            {
+                DataRow newRow = dt.NewRow();
+                newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
+                newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
+                dt.Rows.Add(newRow);
+            }
+
+
+            // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
+            foreach (var sd in distSDValues)
+            {
+                var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
+                var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                // Calculated features
+                float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                var titleSD = $"count at {sd.ToString()}s";
+                var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
+                var titleMiss = $"End Summary - Miss at {sd.ToString()}s SD";
+                var titleMistake = $"End Summary - Mistake at {sd.ToString()}s SD";
+                var titleCorrectRejection = $"End Summary - CorrectRejection at {sd.ToString()}s SD";
+
+                var titleHitRate = $"Hit Rate at {sd.ToString()}s";
+                var titlefalseAlarmRate = $"False Alarm Rate at {sd.ToString()}s";
+                var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {sd.ToString()}s ";
+                var titleResponseBias = $"Response Bias at {sd.ToString()}s";
+
+
+                // Adding key/value pairs in cptFeatureDict 
+                cptFeatureDict.Add(titleSD, countSD);
+                cptFeatureDict.Add(titleHit, sumHit);
+                cptFeatureDict.Add(titleMiss, sumMiss);
+                cptFeatureDict.Add(titleMistake, sumMistake);
+                cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
+
+                cptFeatureDict.Add(titleHitRate, hitRate);
+                cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
+                cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
+                cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+
+            }
+
+
+            return cptFeatureDict;
+        }
+
+        // function definition to get the list of features that should be extracted from xml file and saved into the database
+        public List<string> GetlstFeature(int sessionIDUpload)
+        {
+            List<string> lstFeatures = new List<string>();
+
+            switch (sessionIDUpload)
+            {
+                //***********Pre-training sessions
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                    string[] preTraininglst = {"End Summary - Condition", "Reward Collection Latency", "End Summary - No. images", "End Summary - Corrects",
+                                                "Correct touch latency", "Correct Reward Collection", "End Summary - Trials Completed", "End Summary - No Correction Trials",
+                                                "End Summary - % Correct"};
+                    lstFeatures.AddRange(preTraininglst);
+                    break;
+                //***************5-choice
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                    string[] fiveChoicelst = {"Threshold - Condition", "Threshold - Accuracy %", "Threshold - Omission %", "Threshold - Trials", "Trial Analysis - Accuracy%",
+                                              "Trial Analysis - Omission%", "Trial Analysis - Correct", "Trial Analysis - Incorrect", "Trial Analysis - Omission",
+                                              "Trial Analysis - Premature", "Trial Analysis - Stimulus Duration", "Trial Analysis - Reward Collection Latency",
+                                              "Trial Analysis - Correct Response Latency", "Trial Analysis - Incorrect Response Latency", "Omissions - Total", "Premature Responses - Total",
+                                              "Premature Responses - Total", "Perseverative Correct - Total", "Perseverative Incorrect - Total", "Reward Collection Latency",
+                                              "Trial Analysis - Time To Distraction", "Trial Analysis - Correct Resp Latency with No Distract"};
+
+                    lstFeatures.AddRange(fiveChoicelst);
+                    break;
+                //*****************PAL
+                case 11:
+                case 12:
+                   string[] PALlst = { "End Summary - Condition", "End Summary - Trials Completed", "End Summary - % Correct", "End Summary - Incorrect Touches", "Correct touch latency",
+                                       "Incorrect Touch Latency", "Correct Reward Collection"};
+
+                    lstFeatures.AddRange(PALlst);
+                    break;
+                //******************PD
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                    string[] PDlst = { "End Summary - Condition", "End Summary - Trials Completed", "End Summary - No Correction Trials", "End Summary - % Correct",
+                                       "Correct touch latency", "Incorrect Touch Latency", "Correct Reward Collection" };
+
+                    lstFeatures.AddRange(PDlst);
+                    break;
+                //******************PR
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
+                case 31:
+                case 32:
+                    string[] PRlst = { "END SUMMARY - Schedule Length", "END SUMMARY - TRIALS COMPLETED", "END SUMMARY - Breakpoint", "END SUMMARY - Number of target touches",
+                                       "END SUMMARY - REWARD COLLECTION LATENCY", "END SUMMARY - Revised total response tim",
+                                       "END SUMMARY - Revised post reinf pause (from first head entry after reward delivery until first screen touch)",
+                                       "END SUMMARY - Revised post reinf pause (head out of mag to first screen touch)"};
+                    lstFeatures.AddRange(PRlst);
+                    break;
+                //******************PRL
+                case 33:
+                case 34:
+                case 35:
+                    string[] PRLlst = { "Whole session analysis - Condition", "Whole session analysis - Trials completed", "Whole session analysis - Optimal side chosen",
+                                        "Whole session analysis - REWARD COLLECTION LATENCY", "Whole session analysis - Image response choice latency", "Whole session analysis - Number of Reversals",
+                                        "Trial by trial analysis - One trial", "Trial by trial analysis - Trial type", "Trial by trial analysis - Spurious feedback given",
+                                        "Trial by trial analysis - Spurious with milkshake", "Trial by trial analysis - Spurious no milkshake", "Trial by trial analysis - Optimal side chosen",
+                                        "Trial by trial analysis - Optimal side chosen", "Trial by trial analysis - Optimal side chosen with milkshake given",
+                                        "Trial by trial analysis - Optimal side chosen without milkshake given", "Trial by trial analysis - Left chosen", "Trial by trial analysis - Right chosen",
+                                        "Trial by trial analysis - REWARD COLLECTION LATENCY", "Trial by trial analysis - Image response choice latency" };
+                    
+                    lstFeatures.AddRange(PRLlst);
+                    break;
+
+                //*****************CPT
+                case 36:
+                case 37:
+                case 38:
+                case 39:
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                case 44:
+                    string[] input_CPT = { "End Summary - Schedule length", "End Summary - No of non correction trials", "End Summary - Hits",
+                                       "End Summary - Misses", "End Summary - Mistakes", "End Summary - Correct Rejections", "End Summary - Correct Image",
+                                       "Correct Choice Latency", "Incorrect Choice Latency", "Reward Retrieval Latency", "trial by trial anal - Current image",
+                                       "trial by trial anal - Stimulus Duration", "trial by trial anal - Hits", "trial by trial anal - Misses", "trial by trial anal - Mistakes",
+                                       "trial by trial anal - Correct Rejections"};
+
+                    lstFeatures.AddRange(input_CPT);
+                    break;
+
+                //***************VMCL
+                case 45:
+                case 46:
+                case 47:
+
+                    string[] input_VMCL = { "End Summary - Condition", "End Summary - Trials Completed", "End Summary - Correct Trials", "End Summary - Incorrect Trials",
+                                            "End Summary - Missed Trials", "End Summary - No Correction Trials", "End Summary - % Correct", "End Summary - % Missed",
+                                            "End Summary - Left Corrects - No Correct to Left", "End Summary - Right Correct - No. Corrects to Right",
+                                            "Trial by Trial - Correct touch latency", "Trial by Trial - Incorrect Touch Latency", "Trial by Trial - Correct Reward Collection",
+                                            "Correct touch latency", "Correct Reward Collection"};
+
+                    lstFeatures.AddRange(input_VMCL);
+                    break;
+
+
+            }
+
+            return lstFeatures;
+        }
+
+
+
 
     }
 }

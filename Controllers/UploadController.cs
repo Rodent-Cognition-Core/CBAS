@@ -52,15 +52,17 @@ namespace AngularSPAWebAPI.Controllers
             int expID = Int16.Parse(HttpContext.Request.Form["expId"][0]);
             int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"][0]);
             string SessionName = HttpContext.Request.Form["sessionName"][0];
+            int sessionID = Int16.Parse(HttpContext.Request.Form["sessionID"][0]);
 
             var user = GetCurrentUser();
             var userEmail = user.Result.UserName;
             var userID = user.Result.Id;
 
             string TaskName = _uploadService.GetTaskName(expID);
+            int TaskID = _uploadService.GetTaskID(expID);
             string ExpName = _uploadService.GetExpName(expID);
 
-            List<FileUploadResult> result = await _uploadService.UploadFiles(files, TaskName, expID, subExpId, ExpName, userEmail, userID, SessionName);
+            List<FileUploadResult> result = await _uploadService.UploadFiles(files, TaskName, expID, subExpId, ExpName, userEmail, userID, SessionName, TaskID, sessionID);
 
             return new JsonResult(result);
         }

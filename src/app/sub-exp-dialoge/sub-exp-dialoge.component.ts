@@ -307,7 +307,8 @@ export class SubExpDialogeComponent implements OnInit {
         } else { // Edit Mode: edit sub experiment
 
             // check if number of iamges for PAL or PD are equal to 3 and 2 respectively, clean the value of imageDescription
-            if ((this.taskID == 3 && this._subexperiment.ImageIds.length == 2) || (this.taskID == 4 && this._subexperiment.ImageIds.length == 3))
+            if ((this.taskID == 3 && this._subexperiment.ImageIds.length == 2) || (this.taskID == 4 && this._subexperiment.ImageIds.length == 3) ||
+                (this.taskID == 11 && this._subexperiment.ImageIds.length <=6) || (this.taskID == 12 && this._subexperiment.ImageIds.length <=4))
             {
                 this._subexperiment.ImageDescription = "";
                 console.log(123456);

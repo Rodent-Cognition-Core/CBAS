@@ -87,7 +87,15 @@ namespace AngularSPAWebAPI.Services
                 case 10:
                     // post Processing QC for PRL Task
                     error = ScheduleCount_PRL(subExp.SubExpID);
-                    break; 
+                    break;
+                case 11:
+                    // post Processing QC for VMCL Task
+                    error = ScheduleCount_ICPT(subExp.SubExpID);
+                    break;
+                case 12:
+                    // post Processing QC for VMCL Task
+                    error = ScheduleCount_VMCL(subExp.SubExpID);
+                    break;
 
 
             }
@@ -193,7 +201,7 @@ namespace AngularSPAWebAPI.Services
         public string ScheduleCount_PAL(int expID)
         {
             string error1 = "";
-            error1 = GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Acquisition'", "<b>Acquisition</b>", 3, ">", "at most");
+            error1 = GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'PAL-Acquisition'", "<b>Acquisition</b>", 3, ">", "at most");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Mouse_dpal_spal'", "<b>Mouse dPAL</b> or <b>Mouse sPAL</b>", 45, "<", "at least");
             //error1 += GetScheduleCount_Error(expID, "Schedule_Name like '%retention%'", "<b>Mouse dPAL RETENTION</b> or <b>Mouse sPAL RETENTION</b>", 5, "<", "at least");
             return error1;
@@ -205,7 +213,7 @@ namespace AngularSPAWebAPI.Services
         {
             string error1 = "";
 
-            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Acquisition'", "<b>Acquisition</b>", 2, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'PD-Acquisition'", "<b>Acquisition</b>", 2, "<", "at least");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Baseline'", "<b>Baseline</b>", 2, "!=", "");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Reversal'", "<b>Reversal</b>", 10, "!=", "");
             //error1 += GetScheduleCount_Error(expID, "Schedule_Name like '%RetentionReversal%'", "<b>Retention Reversal</b>", 2, "!=", "");
@@ -242,7 +250,7 @@ namespace AngularSPAWebAPI.Services
             return error1;
         }
 
-        // Function Definition: Post Processing QC for PR experiment
+        // Function Definition: Post Processing QC for PRL experiment
         public string ScheduleCount_PRL(int expID)
         {
             string error1 = "";
@@ -250,6 +258,31 @@ namespace AngularSPAWebAPI.Services
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Probabilistic Feedback'", "<b>Probabilistic Feedback</b>", 3, "<", "at least");
             return error1;
         }
+
+        // Function Definition: Post Processing QC for ICPT experiment
+        public string ScheduleCount_ICPT(int expID)
+        {
+            string error1 = "";
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Stage 1 - Stimulus Touch'", "<b>Stage 1 - Stimulus Touch</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Stage 2 - Target Stimulus Touch'", "<b>Stage 2 - Target Stimulus Touch</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Stage 3 - One Target and one non-target'", "<b>Stage 3 - One Target and one non-target</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Stage 4 - One Target and four non-targets'", "<b>Stage 4 - One Target and four non-targets</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Probe-1 Variable Stimulus Duration'", "<b>Probe-1 Variable Stimulus Duration</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Probe-2 Variable Contrast levels'", "<b>Probe-2 Variable Contrast levels</b>", 1, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Probe 3 - congruent-flanker' OR SessionInfo.SessionName = 'Probe 3 - non-congruent flanker' OR SessionInfo.SessionName = 'Probe 3 - non-flanker'",
+                                                    "<b>Probe 3 - congruent-flanker, Probe 3 - non-congruent flanker or Probe 3 - non-flanker</b>", 1, "<", "at least");
+            return error1;
+        }
+
+        // Function Definition: Post Processing QC for VMCL experiment
+        public string ScheduleCount_VMCL(int expID)
+        {
+            string error1 = "";
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'VMCL Test'", "<b>VMCL Test</b>", 5, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'VMCL Train'", "<b>VMCL Train</b>", 5, "<", "at least");
+            return error1;
+        }
+        
 
         public string GetScheduleCount_Error(int expID, string sessionNameFilter, string SessionName, int minCount, string operand, string str)
         {

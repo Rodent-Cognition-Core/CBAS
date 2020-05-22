@@ -7,6 +7,7 @@ namespace AngularSPAWebAPI.Models
     {
         public int UploadID { get; set; }
         public int ExpID { get; set; }
+        public int TaskID { get; set; }
         public int SubExpID { get; set; }
         public int AnimalID { get; set; }
         public string SessionName { get; set; }

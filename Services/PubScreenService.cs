@@ -13,6 +13,7 @@ using System.Xml;
 using Newtonsoft.Json;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Text;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -20,20 +21,24 @@ namespace AngularSPAWebAPI.Services
     public class PubScreenService
     {
         // Function Definition to get paper info from DOI
-        private static readonly HttpClient client = new HttpClient();
+        // private static readonly HttpClient client = new HttpClient();
 
         public async Task<string> GetPaperInfoByDoi(string doi)
         {
             // Submiy doi to get the pubmedkey
+
+            HttpClient httpClient = new HttpClient();
+
             StringContent content = new System.Net.Http.StringContent(String.Empty);
-            var response = await client.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
+
+            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
             var responseString = await response.Content.ReadAsStringAsync();
 
             XElement incomingXml = XElement.Parse(responseString);
             var pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
 
             //Send pubmedkey to another function to get Paper's info
-            //await GetPaperInfoByPubMedKey(pubMedKey);
+            await GetPaperInfoByPubMedKey(pubMedKey);
 
 
 
@@ -41,19 +46,23 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        // Function Definition to get some paper's info based on PubMedKey
-        //public async Task<string> GetPaperInfoByPubMedKey(string pubMedKey)
-        //{
-        //    StringContent content = new System.Net.Http.StringContent(String.Empty);
-        //    var response = await client.PostAsync("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey +  "&rettype=XML", content);
-        //    var responseString = await response.Content.ReadAsStringAsync();
-        //    XElement incomingXml = XElement.Parse(responseString);
-            
-        //    string result = "";
-        //    return result;
+        //Function Definition to get some paper's info based on PubMedKey
+        public async Task<string> GetPaperInfoByPubMedKey(string pubMedKey)
+        {
+
+            HttpClient httpClient = new HttpClient();
+
+            var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
+
+            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            XElement incomingXml = XElement.Parse(responseString);
+
+            string result = "";
+            return result;
 
 
-        //}
+        }
 
 
 
