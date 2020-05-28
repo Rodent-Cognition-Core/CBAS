@@ -462,7 +462,7 @@ namespace AngularSPAWebAPI.Services
             List<float> lstCorrectLatency = new List<float>();
             List<float> lstRewatdLatency = new List<float>();
             List<float> lstIncorLatency = new List<float>();
-
+            Dictionary<string, float?> cptDictDistractorFeatures = new Dictionary<string, float?>();  // for sessionIDUpload==42 (cpt distractor)
 
             foreach (var val in value)
             {
@@ -476,14 +476,56 @@ namespace AngularSPAWebAPI.Services
                 //  If condition to consider only features exist in lstFeatures (only important features of each task should be considered!)
                 if (lstFeatures.Contains(Attribute)  || lstFeatures == null)
                 {
+
                     
                     if (TaskID == 11) // Task is iCPT
                     {
+
+                        
+                        // find the values for features in the ?list when the task is cpt and session is probe3-distractor
+                        if (sessionIDUpload==42)
+                        {
+                            float? result_distractor = null;
+                            
+
+                            string[] cptDistractorFeatures = {"End Summary - Hits during non-distractor trials - Count #1", "End Summary - Hits during congruent trials - Count #1",
+                                                              "End Summary - Hits during incongruent trials - Count #1", "End Summary - Misses during non-distractor trials - Generic Counter",
+                                                              "End Summary - Misses during congruent trials - Generic Counter", "End Summary - Misses during incongruent trials - Generic Counter",
+                                                              "End Summary - Mistakes during non-distractor trials - Count #1", "End Summary - Mistakes during congruent trials - Count #1",
+                                                              "End Summary - Mistakes during incongruent trials - Count #1", "End Summary - Correct Rejections during non-distractor trials - Count #1",
+                                                              "End Summary - Correct Rejections during congruent trials - Count #1", "End Summary - Correct Rejections during incongruent trials - Count #1",
+                                                              };
+                            if (cptDistractorFeatures.Contains(Attribute))
+                            {
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result_distractor = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result_distractor = null; }
+
+                                cptDictDistractorFeatures.Add(Attribute, result_distractor);
+
+                            }
+                        }
+                        
+
 
                         // add switch case to get the value for features occurring multiple times and save each in a separate list for icpt task
                         switch (Attribute)
                         {
                             case "trial by trial anal - Stimulus Duration":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
+
+                                lstSD.Add(result);
+
+                                break;
+
+                            case "trial by trial anal - Contrast":
 
                                 if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                                 {
@@ -644,8 +686,20 @@ namespace AngularSPAWebAPI.Services
             } // and of foreach loop
 
             // Function call to get the dictionary with all the metrics calculated at each SD
-            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();  // to save all the metrics calculated at each SD
-            cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
+            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();  // to save all the metrics calculated at each SD, or contrast level or distractor
+            if (sessionIDUpload == 40)  // cpt with different SDs
+            {
+                cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
+            }
+            else if (sessionIDUpload == 41) // cpt with different contrast levels
+            {
+                cptFeatureDict = GetDictCPTFeatures_contrastLevel(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
+            }
+            else if ( sessionIDUpload == 42 )  // cpt with distractor
+            {
+                 cptFeatureDict = GetDictCPTFeatures_distractor( cptDictDistractorFeatures);
+            }
+
             int sourceType = 1;
             float? resultVal = null;
             float? durationVal=null;
@@ -683,7 +737,6 @@ namespace AngularSPAWebAPI.Services
         }
 
         
-
         private int InsertSessionInfoToTable(SessionInfo si)
         {
 
@@ -1139,6 +1192,245 @@ namespace AngularSPAWebAPI.Services
             return cptFeatureDict;
         }
 
+        private Dictionary<string, float> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake, List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+        {
+            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+
+            var maxIndex = new List<int>() { lstSD.Count, lstHits.Count, lstMiss.Count, lstMistake.Count, lstcCorrectRejection.Count };
+            var maxIndexValue = maxIndex.Max();
+            var distSDValues = lstSD.Distinct();
+
+
+            // **********************Create a new data table based on dt datatable where  hit is greater than 0 for correct latency and reward latency
+            DataTable dt_latency = new DataTable();
+            dt_latency.Columns.Add("SD", typeof(float));
+            dt_latency.Columns.Add("Hit", typeof(int));
+            dt_latency.Columns.Add("CorrectLatency", typeof(int));
+            dt_latency.Columns.Add("RewardLatency", typeof(int));
+
+            // filling data table dt_latency
+            int cnt = 0;
+            for (int j = 0; j < maxIndexValue; j++)
+            {
+
+                if (lstHits[j] > 0)
+                {
+                    DataRow newRow = dt_latency.NewRow();
+                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                    newRow["CorrectLatency"] = lstCorrectLatency[cnt];
+                    newRow["RewardLatency"] = lstRewatdLatency[cnt];
+
+                    dt_latency.Rows.Add(newRow);
+                    cnt = cnt + 1;
+                }
+
+            }
+
+            double contrastLevel = 0;
+            foreach (var sd in distSDValues)
+            {
+                float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
+                float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
+
+                switch (sd)
+                {
+                    case 1:
+                        contrastLevel = 100;
+                        break;
+                    case 2:
+                        contrastLevel = 50;
+                        break;
+                    case 3:
+                        contrastLevel = 25;
+                        break;
+                    case 4:
+                        contrastLevel = 12.5;
+                        break;
+
+                }
+                var titleCorrectLatency = $"Average - Correct Choice Latency at {contrastLevel.ToString()} contrast level";
+                var titleRewardLatency = $"Average - Reward Retrieval Latency at {contrastLevel.ToString()} contrast level";
+
+                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+            }
+
+            //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
+            DataTable dt_incorrect_latency = new DataTable();
+            dt_incorrect_latency.Columns.Add("SD", typeof(float));
+            dt_incorrect_latency.Columns.Add("Mistake", typeof(int));
+            dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
+
+            // filling data table dt_latency
+            int cnt2 = 0;
+            for (int j = 0; j < maxIndexValue; j++)
+            {
+
+                if (lstMistake[j] > 0)
+                {
+                    DataRow newRow = dt_incorrect_latency.NewRow();
+                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                    newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                    newRow["IncorrectLatency"] = lstCorrectLatency[cnt2];
+
+                    dt_incorrect_latency.Rows.Add(newRow);
+                    cnt2 = cnt2 + 1;
+                }
+
+            }
+
+            foreach (var sd in distSDValues)
+            {
+                float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
+
+                switch (sd)
+                {
+                    case 1:
+                        contrastLevel = 100;
+                        break;
+                    case 2:
+                        contrastLevel = 50;
+                        break;
+                    case 3:
+                        contrastLevel = 25;
+                        break;
+                    case 4:
+                        contrastLevel = 12.5;
+                        break;
+
+                }
+
+                var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {contrastLevel.ToString()} contrast level";
+
+                cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+
+            }
+
+
+            //****************Create dataTable and put all the lists (hits, miss, mistake, correctRejection) inside it
+            DataTable dt = new DataTable();
+            dt.Columns.Add("SD", typeof(float));
+            dt.Columns.Add("Hit", typeof(int));
+            dt.Columns.Add("Miss", typeof(int));
+            dt.Columns.Add("Mistake", typeof(int));
+            dt.Columns.Add("CorrectRejection", typeof(int));
+
+
+            for (int j = 0; j < maxIndexValue; j++)
+            {
+                DataRow newRow = dt.NewRow();
+                newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
+                newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
+                dt.Rows.Add(newRow);
+            }
+
+            // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
+            foreach (var sd in distSDValues)
+            {
+                var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
+                var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                // Calculated features
+                float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                switch (sd)
+                {
+                    case 1:
+                        contrastLevel = 100;
+                        break;
+                    case 2:
+                        contrastLevel = 50;
+                        break;
+                    case 3:
+                        contrastLevel = 25;
+                        break;
+                    case 4:
+                        contrastLevel = 12.5;
+                        break;
+
+                }
+
+                var titleHitRate = $"Hit Rate at {contrastLevel.ToString()} contrast level";
+                var titlefalseAlarmRate = $"False Alarm Rate at {contrastLevel.ToString()} contrast level";
+                var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {contrastLevel.ToString()} contrast level";
+                var titleResponseBias = $"Response Bias at {contrastLevel.ToString()} contrast level";
+
+
+                cptFeatureDict.Add(titleHitRate, hitRate);
+                cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
+                cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
+                cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+
+            }
+
+
+            return cptFeatureDict;
+        }
+
+        private Dictionary<string, float> GetDictCPTFeatures_distractor( Dictionary<string, float?> cptDictDistractorFeatures)
+        {
+            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+
+            // non-distractor trials
+            float? nonDistHitRate = cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"]);
+            float? nonDisFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
+            float? nonDisdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)nonDistHitRate) - Normal.InvCDF(0d, 1d, (float)nonDisFalseALarmRate));
+            float? nonDistresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)nonDistHitRate) + Normal.InvCDF(0d, 1d, (float)nonDisFalseALarmRate)));
+
+            var nonDistTitleHitRate = $"Hit Rate during non-distractor trials";
+            var nonDistTitlefalseAlarmRate = $"False Alarm Rate during non-distractor trials";
+            var nonDistTitleDiscriminationSensitivity = $"Discrimination Sensitivity during non-distractor trials";
+            var nonDistTitleResponseBias = $"Response Bias during non-distractor trials";
+
+            cptFeatureDict.Add(nonDistTitleHitRate, (float)nonDistHitRate);
+            cptFeatureDict.Add(nonDistTitlefalseAlarmRate, (float)nonDisFalseALarmRate);
+            cptFeatureDict.Add(nonDistTitleDiscriminationSensitivity, (float)nonDisdiscriminationSensitivity);
+            cptFeatureDict.Add(nonDistTitleResponseBias, (float)nonDistresponseBias);
+                       
+            // congruent trials
+            float? CongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"]);
+            float? CongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
+            float? CongdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)CongDistHitRate) - Normal.InvCDF(0d, 1d, (float)CongFalseALarmRate));
+            float? CongresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)CongDistHitRate) + Normal.InvCDF(0d, 1d, (float)CongFalseALarmRate)));
+
+            var CongTitleHitRate = $"Hit Rate at during congruent trials";
+            var CongTitlefalseAlarmRate = $"False Alarm Rate during congruent trials";
+            var CongTitleDiscriminationSensitivity = $"Discrimination Sensitivity during congruent trials";
+            var CongTitleResponseBias = $"Response Bias during congruent trials";
+
+            cptFeatureDict.Add(CongTitleHitRate, (float)CongDistHitRate);
+            cptFeatureDict.Add(CongTitlefalseAlarmRate, (float)CongFalseALarmRate);
+            cptFeatureDict.Add(CongTitleDiscriminationSensitivity, (float)CongdiscriminationSensitivity);
+            cptFeatureDict.Add(CongTitleResponseBias, (float)CongresponseBias);
+                       
+            // incongruent trials
+            float? inCongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"]);
+            float? inCongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
+            float? inCongdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)inCongDistHitRate) - Normal.InvCDF(0d, 1d, (float)inCongFalseALarmRate));
+            float? inCongresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)inCongDistHitRate) + Normal.InvCDF(0d, 1d, (float)inCongFalseALarmRate)));
+
+            var inCongTitleHitRate = $"Hit Rate at during incongruent trials";
+            var inCongTitlefalseAlarmRate = $"False Alarm Rate during incongruent trials";
+            var inCongTitleDiscriminationSensitivity = $"Discrimination Sensitivity during incongruent trials";
+            var inCongTitleResponseBias = $"Response Bias during incongruent trials";
+
+            cptFeatureDict.Add(inCongTitleHitRate, (float)inCongDistHitRate);
+            cptFeatureDict.Add(inCongTitlefalseAlarmRate, (float)inCongFalseALarmRate);
+            cptFeatureDict.Add(inCongTitleDiscriminationSensitivity, (float)inCongdiscriminationSensitivity);
+            cptFeatureDict.Add(inCongTitleResponseBias, (float)inCongresponseBias);
+                       
+            return cptFeatureDict;
+        }
+        
         // function definition to get the list of features that should be extracted from xml file and saved into the database
         public List<string> GetlstFeature(int sessionIDUpload)
         {
@@ -1236,7 +1528,26 @@ namespace AngularSPAWebAPI.Services
                                        "End Summary - Misses", "End Summary - Mistakes", "End Summary - Correct Rejections", "End Summary - Correct Image",
                                        "Correct Choice Latency", "Incorrect Choice Latency", "Reward Retrieval Latency", "trial by trial anal - Current image",
                                        "trial by trial anal - Stimulus Duration", "trial by trial anal - Hits", "trial by trial anal - Misses", "trial by trial anal - Mistakes",
-                                       "trial by trial anal - Correct Rejections"};
+                                       "trial by trial anal - Correct Rejections", "End Summary - After Reward Pause", "trial by trial anal - ITI",
+                                       "End Summary - Correction Trial Correct Rejections", "End Summary - Correction Trial Mistakes",
+                                       "End Summary - Hits at 100% contrast - Count #1", "End Summary - Hits at 50% contrast - Count #1", "End Summary - Hits at 25% contrast - Count #1", "End Summary - Hits at 12.5% contrast - Count #1" ,
+                                       "End Summary - Misses at 100% contrast - Generic Counter", "End Summary - Hits at 50% contrast - Count #1", "End Summary - Hits at 25% contrast - Count #1", "End Summary - Hits at 12.5% contrast - Count #1",
+                                       "End Summary - Mistakes at 100% contrast - Count #1", "End Summary - Mistakes at 50% contrast - Count #1", "End Summary - Mistakes at 25% contrast - Count #1", "End Summary - Mistakes at 12.5% contrast - Count #1",
+                                       "End Summary - Correct Rejections at 100% contrast - Count #1", "End Summary - Correct Rejections at 50% contrast - Count #1", "End Summary - Correct Rejections at 25% contrast - Count #1", "End Summary - Correct Rejections at 12.5% contrast - Count #1",
+                                       "trial by trial anal - No of non correction trials", "End Summary - S+ Distractor touches", "End Summary - S- Distractor Touches",
+                                       "End Summary - Hits during non-distractor trials - Count #1", "End Summary - Hits during congruent trials - Count #1", "End Summary - Hits during incongruent trials - Count #1",
+                                       "End Summary - Misses during non-distractor trials - Generic Counter", "End Summary - Misses during congruent trials - Generic Counter",
+                                       "End Summary - Misses during incongruent trials - Generic Counter", "End Summary - Mistakes during non-distractor trials - Count #1",
+                                       "End Summary - Mistakes during congruent trials - Count #1", "End Summary - Mistakes during incongruent trials - Count #1",
+                                       "End Summary - Correct Rejections during non-distractor trials - Count #1", "End Summary - Correct Rejections during congruent trials - Count #1",
+                                       "End Summary - Correct Rejections during incongruent trials - Count #1", "trial by trial anal - Current image", "trial by trial anal - Distractor",
+                                       "trial by trial anal - ITI", "trial by trial anal - Hits", "trial by trial anal - Misses",
+                                       "trial by trial anal - Mistakes", "trial by trial anal - Correct Rejections",
+                                       "Correct Choice Latency non distractor trial", "Correct Choice Latency congruent trial", "Correct Choice Latency incongruent trial",
+                                       "Incorrect Choice Latency non distractor trial", "Incorrect Choice Latency congruent trial", "Incorrect Choice Latency incongruent trial",
+                                       "End Summary - Centre ITI Touches", "End Summary - S+ Distractor touched during congruent trial -  Counter",
+                                       "End Summary - S- Distractor touched during congruent trial -  Counter", "End Summary - S+ Distractor touched during incongruent trial -  Counter",
+                                       "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast"}; 
 
                     lstFeatures.AddRange(input_CPT);
                     break;

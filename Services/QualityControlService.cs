@@ -556,8 +556,7 @@ namespace AngularSPAWebAPI.Services
                             if (!(SessionName.Trim().ToLower().Contains("stage 1 - stimulus touch") || SessionName.Trim().ToLower().Contains("stage 2 - target stimulus touch") ||
                                   SessionName.Trim().ToLower().Contains("stage 3 - one target and one non-target") || SessionName.Trim().ToLower().Contains("stage 4 - one target and four non-targets") ||
                                   SessionName.Trim().ToLower().Contains("probe-1 variable stimulus duration") || SessionName.Trim().ToLower().Contains("probe-2 variable contrast levels") ||
-                                  SessionName.Trim().ToLower().Contains("probe 3 - congruent-flanker") || SessionName.Trim().ToLower().Contains("probe 3 - non-congruent flanker") ||
-                                  SessionName.Trim().ToLower().Contains("probe 3 - non-flanker")))
+                                  SessionName.Trim().ToLower().Contains("probe-3 variable flanking distractor") ))
                             {
                                 ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                             }
