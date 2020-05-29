@@ -7,17 +7,10 @@ import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
 
-
-
-//@NgModule({
-//    imports: [
-//        SharedModule,
-//    ],
-
-//})
 
 @Component({
 
@@ -40,19 +33,19 @@ export class ExpDialogeComponent implements OnInit {
     selectPISvalue: any;
     speciesModel: any;
     taskBatteryModel: any;
-   
+
 
     taskList: any;
     piSiteList: any;
     speciesList: any;
-    
+
 
     private _experiment = new Experiment();
 
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-        private piSiteService: PISiteService, ) { }
+        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, ) { }
 
     ngOnInit() {
         this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; console.log(this.taskList); });
@@ -67,14 +60,14 @@ export class ExpDialogeComponent implements OnInit {
             this.sDateModel = this.data.experimentObj.startExpDate;
             this.eDateModel = this.data.experimentObj.endExpDate;
             this.selectedvalue = this.data.experimentObj.taskID;
-            this.speciesModel = this.data.experimentObj.speciesID  
+            this.speciesModel = this.data.experimentObj.speciesID
             this.taskDesModel = this.data.experimentObj.taskDescription;
             this.taskBatteryModel = this.data.experimentObj.taskBattery;
             this.selectPISvalue = this.data.experimentObj.pusid;
             this.DOIModel = this.data.experimentObj.doi;
             this.statusModel = this.data.experimentObj.status ? "1" : "0";
-            
-           
+
+
         }
     }
 
@@ -86,8 +79,7 @@ export class ExpDialogeComponent implements OnInit {
     }
 
     onCloseSubmit(): void {
-
-        
+        this.spinnerService.show();
 
         this._experiment.ExpName = this.expNameModel;
         this._experiment.StartExpDate = this.sDateModel;
@@ -99,7 +91,7 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
         this._experiment.DOI = this.DOIModel;
         this._experiment.Status = this.statusModel == "1" ? true : false;
-       
+
 
         //console.log(this._experiment.ImageIds);
 
@@ -115,13 +107,24 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe();
+            }).subscribe(data => {
+
+                setTimeout(() => {
+                    this.spinnerService.hide();
+
+
+                }, 500);
+
+            });
         } else { // Edit Mode: edit experiment
 
 
             this.isTaken = false;
             this._experiment.ExpID = this.data.experimentObj.expID;
             this.expDialogeService.updateExp(this._experiment).map(res => {
+
+
+
                 if (res == "Taken") {
                     this.isTaken = true;
                     this.exp.setErrors({ 'taken': true });
@@ -129,13 +132,17 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe();
+            }).subscribe(data => {
+                setTimeout(() => {
+                    this.spinnerService.hide();
+
+                }, 500);
+
+            });
 
         }
 
-
     }
-
 
     exp = new FormControl('', [Validators.required]);
     sDate = new FormControl('', [Validators.required]);
@@ -146,7 +153,7 @@ export class ExpDialogeComponent implements OnInit {
     status = new FormControl('', [Validators.required]);
     expDescription = new FormControl('', [Validators.required]);
     expBattery = new FormControl('', [Validators.required]);
-    
+
     getErrorMessage() {
 
         return this.exp.hasError('required') ? 'You must enter a value' :
@@ -159,7 +166,7 @@ export class ExpDialogeComponent implements OnInit {
             '';
 
     }
-    
+
     getErrorMessagesDate() {
 
         return this.sDate.hasError('required') ? 'You must enter a value' :
@@ -211,7 +218,7 @@ export class ExpDialogeComponent implements OnInit {
 
     }
 
-    
+
     setDisabledVal() {
 
         if (this.exp.hasError('required') ||
@@ -222,13 +229,13 @@ export class ExpDialogeComponent implements OnInit {
             this.status.hasError('required') ||
             this.expDescription.hasError('required') ||
             this.expBattery.hasError('required') ||
-            this.species.hasError('required') 
-                        
+            this.species.hasError('required')
+
         ) {
-            
+
             return true;
         }
-        
+
         return false;
     }
 
@@ -240,7 +247,7 @@ export class ExpDialogeComponent implements OnInit {
         return this.piSiteList.find(x => x.pusid === selectedVal);
     }
 
-    
-   
-    
+
+
+
 }

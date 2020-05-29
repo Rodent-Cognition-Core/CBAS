@@ -3,6 +3,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatDialogModule, MatInputModule, MatFormFieldModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 //import { MatDividerModule } from '@angular/material/divider';
 //import { MatFileUploadModule } from 'angular-material-fileupload';
 
@@ -132,7 +133,8 @@ const ROUTES: Routes = [
 
     ],
     exports: [
-    ],
+
+     ],
     providers: [
         Title,
         OAuthConfig,
