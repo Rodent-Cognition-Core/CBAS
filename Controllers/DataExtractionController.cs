@@ -125,6 +125,9 @@ namespace AngularSPAWebAPI.Controllers
         [HttpPost("GetData")]
         public IActionResult GetData([FromBody] DataExtraction data_extraction)
         {
+
+            _DataExtractionService.IncreaseDLCounter("GetData");
+
             // extract data from database to show in the client
             return new JsonResult(_DataExtractionService.GetDataFromDB(data_extraction));
 
@@ -147,21 +150,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_DataExtractionService.MarkLinkAsSaved(linkGuid));
         }
 
-        //[HttpGet("GetAnimalInfoByExpID")]
-        //public IActionResult GetAnimalInfoByExpID(int expId)
-        //{
-        //    var user = GetCurrentUser();
-        //    var userID = user.Result.Id;
-
-        //    return new JsonResult(_animalService.GetAnimalByExpID(expId));
-        //}
-
-
-
-
-
-
-
-
+        //function definition to increase counter when data is downloaded
+        [AllowAnonymous]
+        [HttpPost("IncreaseCounter")]
+        public IActionResult IncreaseCounter()
+        {
+            _DataExtractionService.IncreaseDLCounter("DLData");
+            return new JsonResult("OK");
+        }
     }
 }

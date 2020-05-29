@@ -151,5 +151,14 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    IncreaseCounter() {
+
+        return this.http
+            .post("/api/dataExtraction/IncreaseCounter", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     
 }

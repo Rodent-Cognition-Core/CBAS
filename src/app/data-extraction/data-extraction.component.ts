@@ -280,7 +280,7 @@ export class DataExtractionComponent implements OnInit {
 
                         this.subSessionList = this.subSessionList.filter(x => (x.taskID === 12) && (x.sessionName != 'Punish Incorrect II'));
                         break;
-                        
+
                     }
 
                 default:
@@ -357,7 +357,7 @@ export class DataExtractionComponent implements OnInit {
         return this.subTakList.find(x => x.id === selValue);
     }
 
-        
+
     getSelectedTask(selValue) {
         return this.taskList.find(x => x.id === selValue);
     }
@@ -864,56 +864,63 @@ export class DataExtractionComponent implements OnInit {
     }
 
     DownloadCsv() {
-        let csv: '';
 
-        //var items = this.result;
-        var items = this.result;
-        // Loop the array of objects
-        for (let row = 0; row < items.length; row++) {
-            let keysAmount = Object.keys(items[row]).length
+        this.dataExtractionService.IncreaseCounter().subscribe(data => {
 
-            let keysCounter = 0
+            let csv: '';
 
-            // If this is the first row, generate the headings
-            if (row === 0) {
+            //var items = this.result;
+            var items = this.result;
+            // Loop the array of objects
+            for (let row = 0; row < items.length; row++) {
+                let keysAmount = Object.keys(items[row]).length
 
-                // Loop each property of the object
+                let keysCounter = 0
+
+                // If this is the first row, generate the headings
+                if (row === 0) {
+
+                    // Loop each property of the object
+                    for (let key in items[row]) {
+                        // This is to not add a comma at the last cell
+                        // The '\r\n' adds a new line
+                        if (key == 'AnimalID') { csv = ''; }
+                        csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
+                        console.log(csv)
+                        keysCounter++
+                    }
+                }
+
+                keysCounter = 0;
                 for (let key in items[row]) {
-                    // This is to not add a comma at the last cell
-                    // The '\r\n' adds a new line
-                    if (key == 'AnimalID') { csv = ''; }
-                    csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                    console.log(csv)
+
+                    csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
+                    //console.log(csv)
                     keysCounter++
                 }
-            }
 
-            keysCounter = 0;
-            for (let key in items[row]) {
 
-                csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                //console.log(csv)
-                keysCounter++
+                keysCounter = 0
             }
 
 
-            keysCounter = 0
-        }
+            var blob = new Blob([csv], { type: 'text/csv' });
+            var filename = 'exported_' + new Date().toLocaleString() + '.csv';
+            if (window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveBlob(blob, filename);
+            }
+            else {
+                var elem = window.document.createElement('a');
+                elem.href = window.URL.createObjectURL(blob);
+                elem.download = filename;
+                document.body.appendChild(elem);
+                elem.click();
+                document.body.removeChild(elem);
+            }
+
+        });
 
 
-        var blob = new Blob([csv], { type: 'text/csv' });
-        var filename = 'exported_' + new Date().toLocaleString() + '.csv';
-        if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveBlob(blob, filename);
-        }
-        else {
-            var elem = window.document.createElement('a');
-            elem.href = window.URL.createObjectURL(blob);
-            elem.download = filename;
-            document.body.appendChild(elem);
-            elem.click();
-            document.body.removeChild(elem);
-        }
 
     }
 

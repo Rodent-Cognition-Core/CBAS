@@ -168,7 +168,7 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-
+        
         // Function Defintion: To get List of features for SessionInfo (on hold)
         public List<SessionInfo> GetSessionInfoDatabyExpID(int ExpId)
         {
@@ -1405,9 +1405,16 @@ namespace AngularSPAWebAPI.Services
             return (Dal.ExecuteNonQuery(CommandType.Text, sql, parameters.ToArray()).ToString() == "1");
         }
 
+        public void IncreaseDLCounter(string buttonName)
+        {
+            string sql = $@"Insert into Metrics (ButtonName) Values('{buttonName}')";
+
+            Dal.ExecuteNonQuery(sql);
+        }
+
 
         #region Getting the Query for making MarkerInfo List
-        // Sara
+
         public string GetQuery_markerInfoList(int SubtaskID)
         {
             string str = "";

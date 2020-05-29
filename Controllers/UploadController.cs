@@ -64,6 +64,8 @@ namespace AngularSPAWebAPI.Controllers
 
             List<FileUploadResult> result = await _uploadService.UploadFiles(files, TaskName, expID, subExpId, ExpName, userEmail, userID, SessionName, TaskID, sessionID);
 
+            // add a function to send an email to inform admin that new data added to the server
+
             return new JsonResult(result);
         }
 
