@@ -55,6 +55,7 @@
                     <label>End date:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).endExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
                     <label>Status:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).status == true ? 'Public' : 'Private'}}</span> <br /><br />
                     <label>Experiment description:</label>&nbsp;&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).taskDescription}}</span><br /><br />
+                    <label>Battery of Tasks:</label>&nbsp;&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).taskBattery}}</span><br /><br />
                     <label>PI and Institution:</label>&nbsp;&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).piSiteName}}</span><br /><br />
                     <label>DOI:</label>&nbsp;&nbsp; <a href="{{'http://www.doi.org/' + getSelectedExp(selectedExpValue).doi}}" target="_blank" style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).doi}}</a>
                 </div>

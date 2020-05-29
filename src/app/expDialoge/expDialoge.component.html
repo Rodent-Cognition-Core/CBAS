@@ -1,8 +1,8 @@
 <div>
-    <h3 mat-dialog-title>Please fill the form:</h3>
+    <h3 mat-dialog-title style="margin-block-end: 0px !important">Please fill the form:</h3>
 
     <mat-dialog-content>
-        <br />
+        
 
         <!--<app-shared-experiment></app-shared-experiment>-->
         <!--<p><strong>{{data}}</strong></p>-->
@@ -67,6 +67,20 @@
         </mat-radio-group>
         <!--</mat-form-field>-->
 
+
+        <!--Battery of Task-->
+        <mat-form-field class="full-width">
+
+            <textarea matInput placeholder="Please enter battery of Tasks in order:" [(ngModel)]="taskBatteryModel" [formControl]="expBattery" required matTextareaAutosize matAutosizeMinRows="2"
+                      matAutosizeMaxRows="5">
+           
+            </textarea>
+            <mat-error *ngIf="expBattery.invalid">{{getErrorMessageExpBattery()}}</mat-error>
+
+        </mat-form-field>
+
+
+        <!--Experiment Description-->
         <mat-form-field class="full-width">
 
             <textarea matInput placeholder="Experiment Description" [(ngModel)]="taskDesModel" [formControl]="expDescription" required matTextareaAutosize matAutosizeMinRows="2"

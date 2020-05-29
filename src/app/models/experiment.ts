@@ -13,6 +13,7 @@ export class Experiment {
     public EndExpDate: Date;
     //public ErrorMessage: string;
     public TaskDescription: string;
+    public TaskBattery: string;
     public DOI: string;
     public Status: boolean;
     public ImageIds: Array<number>;

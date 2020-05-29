@@ -19,6 +19,7 @@ namespace AngularSPAWebAPI.Models
         public DateTime EndExpDate { get; set; }
         //public string ErrorMessage { get; set; }
         public string TaskDescription { get; set; }
+        public string TaskBattery { get; set; }
         public string DOI { get; set; }
         public bool Status { get; set; }
         public int SpeciesID { get; set; }

@@ -39,6 +39,7 @@ export class ExpDialogeComponent implements OnInit {
     selectedvalue: any;
     selectPISvalue: any;
     speciesModel: any;
+    taskBatteryModel: any;
    
 
     taskList: any;
@@ -68,6 +69,7 @@ export class ExpDialogeComponent implements OnInit {
             this.selectedvalue = this.data.experimentObj.taskID;
             this.speciesModel = this.data.experimentObj.speciesID  
             this.taskDesModel = this.data.experimentObj.taskDescription;
+            this.taskBatteryModel = this.data.experimentObj.taskBattery;
             this.selectPISvalue = this.data.experimentObj.pusid;
             this.DOIModel = this.data.experimentObj.doi;
             this.statusModel = this.data.experimentObj.status ? "1" : "0";
@@ -93,6 +95,7 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.TaskID = this.getSelectedTask(this.selectedvalue).id; // should be readonly
         this._experiment.SpeciesID = this.speciesModel;
         this._experiment.TaskDescription = this.taskDesModel;
+        this._experiment.TaskBattery = this.taskBatteryModel;
         this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
         this._experiment.DOI = this.DOIModel;
         this._experiment.Status = this.statusModel == "1" ? true : false;
@@ -142,6 +145,7 @@ export class ExpDialogeComponent implements OnInit {
     piSite = new FormControl('', [Validators.required]);
     status = new FormControl('', [Validators.required]);
     expDescription = new FormControl('', [Validators.required]);
+    expBattery = new FormControl('', [Validators.required]);
     
     getErrorMessage() {
 
@@ -200,6 +204,13 @@ export class ExpDialogeComponent implements OnInit {
             '';
     }
 
+    getErrorMessageExpBattery() {
+
+        return this.expBattery.hasError('required') ? 'Battery of Task is required. Please put NA if it is not applicable' :
+            '';
+
+    }
+
     
     setDisabledVal() {
 
@@ -210,6 +221,7 @@ export class ExpDialogeComponent implements OnInit {
             this.piSite.hasError('required') ||
             this.status.hasError('required') ||
             this.expDescription.hasError('required') ||
+            this.expBattery.hasError('required') ||
             this.species.hasError('required') 
                         
         ) {
