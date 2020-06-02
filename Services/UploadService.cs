@@ -1565,7 +1565,7 @@ namespace AngularSPAWebAPI.Services
                 case 31:
                 case 32:
                     string[] PRlst = { "END SUMMARY - Schedule Length", "END SUMMARY - TRIALS COMPLETED", "END SUMMARY - Breakpoint", "END SUMMARY - Number of target touches",
-                                       "END SUMMARY - REWARD COLLECTION LATENCY", "END SUMMARY - Revised total response tim",
+                                       "END SUMMARY - REWARD COLLECTION LATENCY", "END SUMMARY - Revised total response time",
                                        "END SUMMARY - Revised post reinf pause (from first head entry after reward delivery until first screen touch)",
                                        "END SUMMARY - Revised post reinf pause (head out of mag to first screen touch)"};
                     lstFeatures.AddRange(PRlst);
