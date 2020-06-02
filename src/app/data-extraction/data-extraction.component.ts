@@ -247,7 +247,7 @@ export class DataExtractionComponent implements OnInit {
                     }
                 case 31:
                     { // case PD Analysis
-                        this.subSessionList = this.subSessionList.filter((x => x.taskID === 4));
+                        this.subSessionList = this.subSessionList.filter((x => x.taskID === 3));
                         break;
 
                     }
@@ -269,12 +269,7 @@ export class DataExtractionComponent implements OnInit {
                             (x.sessionName == 'Stage 4 - One Target and four non-targets'));
                         break;
                     }
-                case 81:
-                    { // CPT Distractor Probe 3 (Congruent Flanker, Non-Congruent, No-Flanker)
-                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 11) && (x.sessionName == 'Probe 3 - congruent-flanker') &&
-                            (x.sessionName == 'Probe 3 - non-congruent flanker') && (x.sessionName == 'Probe 3 - non-flanker'));
-                        break;
-                    }
+                
                 case 88:
                     {   // VMLC Analysis
 

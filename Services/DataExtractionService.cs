@@ -1573,7 +1573,7 @@ namespace AngularSPAWebAPI.Services
                     }
                 case 81:
                     {
-                        str = "( (Analysis_Name like '%ICPT Distractor Probe Analysis%') OR (SessionName = 'Probe 3 - congruent-flanker') OR (SessionName = 'Probe 3 - non-congruent flanker') OR (SessionName = 'Probe 3 - non-flanker') )";
+                        str = "( (Analysis_Name like '%ICPT Distractor Probe Analysis%') OR (SessionName = 'Probe-3 Variable Flanking Distractor')  )";
                         break;
                     }
                 case 88:

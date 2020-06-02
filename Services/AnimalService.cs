@@ -17,8 +17,8 @@ namespace AngularSPAWebAPI.Services
             List<Animal> lstAnimal = new List<Animal>();
 
             using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.*, Strain.Strain, Genotype.Genotype From Animal
-                                                        inner join Genotype on Genotype.ID = Animal.GID
-                                                        inner join Strain on Strain.ID = Animal.SID 
+                                                        left join Genotype on Genotype.ID = Animal.GID
+                                                        left join Strain on Strain.ID = Animal.SID 
                                                         WHERE ExpID = {expID}"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -28,8 +28,8 @@ namespace AngularSPAWebAPI.Services
                         ExpID = Int32.Parse(dr["ExpID"].ToString()),
                         AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
                         UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
-                        SID = Int32.Parse(dr["SID"].ToString()),
-                        GID = Int32.Parse(dr["GID"].ToString()),
+                        SID = HelperService.ConvertToNullableInt(dr["SID"].ToString()),
+                        GID = HelperService.ConvertToNullableInt(dr["GID"].ToString()),
                         Sex = Convert.ToString(dr["Sex"].ToString()),
                         Genotype = Convert.ToString(dr["Genotype"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),

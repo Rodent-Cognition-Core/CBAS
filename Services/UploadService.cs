@@ -165,7 +165,7 @@ namespace AngularSPAWebAPI.Services
         public int GetTaskID(int ExpID)
         {
             string sql = "Select Task.ID as TaskID From Task inner join Experiment on task.ID = Experiment.taskID where Experiment.ExpID =" + ExpID;
-            return Convert.ToInt32( Dal.ExecScalar(sql).ToString());
+            return Convert.ToInt32(Dal.ExecScalar(sql).ToString());
         }
 
         public string GetExpName(int ExpID)
@@ -228,7 +228,7 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
-        
+
         public bool SetAsResolvedForEditedAnimalId(int animalId, string userId)
         {
             var lstFur = GetListUploadsByAnimalIDErrorMessege(animalId);
@@ -350,7 +350,7 @@ namespace AngularSPAWebAPI.Services
             int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
 
             // Extract Marker Data
-            List<MarkerData> lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName,  sessionIDUpload);
+            List<MarkerData> lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName, sessionIDUpload);
             if (lstMD.Count > 0)
             {
                 InsertMarketDataToTable(lstMD, SessionName);
@@ -474,19 +474,31 @@ namespace AngularSPAWebAPI.Services
                 int? count = null;
                 string Attribute = ((System.Xml.Linq.XElement)val.FirstNode).Value.ToString(); // Feature Name
                 //  If condition to consider only features exist in lstFeatures (only important features of each task should be considered!)
-                if (lstFeatures.Contains(Attribute)  || lstFeatures == null)
+                if (lstFeatures.Contains(Attribute) || lstFeatures == null)
                 {
 
-                    
+
                     if (TaskID == 11) // Task is iCPT
                     {
 
-                        
+                        if ((Attribute.Equals("End Summary - Stimulus Duration")) && (sessionIDUpload == 38 || sessionIDUpload == 39))
+                        {
+
+                            if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                            {
+                                result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                            }
+                            else { result = null; }
+
+                            lstSD.Add(result);
+
+                        }
+
                         // find the values for features in the ?list when the task is cpt and session is probe3-distractor
-                        if (sessionIDUpload==42)
+                        if (sessionIDUpload == 42)
                         {
                             float? result_distractor = null;
-                            
+
 
                             string[] cptDistractorFeatures = {"End Summary - Hits during non-distractor trials - Count #1", "End Summary - Hits during congruent trials - Count #1",
                                                               "End Summary - Hits during incongruent trials - Count #1", "End Summary - Misses during non-distractor trials - Generic Counter",
@@ -507,13 +519,14 @@ namespace AngularSPAWebAPI.Services
 
                             }
                         }
-                        
+
 
 
                         // add switch case to get the value for features occurring multiple times and save each in a separate list for icpt task
                         switch (Attribute)
                         {
                             case "trial by trial anal - Stimulus Duration":
+
 
                                 if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                                 {
@@ -687,25 +700,25 @@ namespace AngularSPAWebAPI.Services
 
             // Function call to get the dictionary with all the metrics calculated at each SD
             Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();  // to save all the metrics calculated at each SD, or contrast level or distractor
-            if (sessionIDUpload == 40)  // cpt with different SDs
+            if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39)  // cpt with different SDs
             {
-                cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
+                cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, sessionIDUpload);
             }
             else if (sessionIDUpload == 41) // cpt with different contrast levels
             {
                 cptFeatureDict = GetDictCPTFeatures_contrastLevel(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency);
             }
-            else if ( sessionIDUpload == 42 )  // cpt with distractor
+            else if (sessionIDUpload == 42)  // cpt with distractor
             {
-                 cptFeatureDict = GetDictCPTFeatures_distractor( cptDictDistractorFeatures);
+                cptFeatureDict = GetDictCPTFeatures_distractor(cptDictDistractorFeatures);
             }
 
             int sourceType = 1;
             float? resultVal = null;
-            float? durationVal=null;
-            foreach(KeyValuePair<string, float> entry in cptFeatureDict)
+            float? durationVal = null;
+            foreach (KeyValuePair<string, float> entry in cptFeatureDict)
             {
-                if(entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency") )
+                if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency"))
                 {
                     sourceType = 3;
                     durationVal = entry.Value;
@@ -736,7 +749,7 @@ namespace AngularSPAWebAPI.Services
             return lstMD;
         }
 
-        
+
         private int InsertSessionInfoToTable(SessionInfo si)
         {
 
@@ -1021,27 +1034,29 @@ namespace AngularSPAWebAPI.Services
 
             string sql = "Select * From Upload_SessionInfo;";
 
-                using (DataTable dt = Dal.GetDataTable(sql))
+            using (DataTable dt = Dal.GetDataTable(sql))
+            {
+                foreach (DataRow dr in dt.Rows)
                 {
-                    foreach (DataRow dr in dt.Rows)
+                    lstUploadSession.Add(new UploadSession
                     {
-                        lstUploadSession.Add(new UploadSession
-                            {
-                                Id = Int32.Parse(dr["Id"].ToString()),
-                                TaskID = Int32.Parse(dr["TaskID"].ToString()),
-                                TaskName= Convert.ToString(dr["TaskName"].ToString()),
-                                SessionName = Convert.ToString(dr["SessionName"].ToString()),
-                                SessionDescription = Convert.ToString(dr["SessionDescription"].ToString()),
+                        Id = Int32.Parse(dr["Id"].ToString()),
+                        TaskID = Int32.Parse(dr["TaskID"].ToString()),
+                        TaskName = Convert.ToString(dr["TaskName"].ToString()),
+                        SessionName = Convert.ToString(dr["SessionName"].ToString()),
+                        SessionDescription = Convert.ToString(dr["SessionDescription"].ToString()),
 
-                            });
-                    }
-
+                    });
                 }
+
+            }
 
             return lstUploadSession;
         }
 
-        private Dictionary<string, float> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake, List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+        // **********************Function definition to extract cpt features with different stimulation duration and stage 3 & 4
+        private Dictionary<string, float> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
+                       List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency, int uploadsessionID)
         {
 
             Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
@@ -1050,149 +1065,204 @@ namespace AngularSPAWebAPI.Services
             var maxIndexValue = maxIndex.Max();
             var distSDValues = lstSD.Distinct();
 
-
-            // **********************Create a new data table based on dt datatable where  hit is greater than 0 for correct latency and reward latency
-            DataTable dt_latency = new DataTable();
-            dt_latency.Columns.Add("SD", typeof(float));
-            dt_latency.Columns.Add("Hit", typeof(int));
-            dt_latency.Columns.Add("CorrectLatency", typeof(int));
-            dt_latency.Columns.Add("RewardLatency", typeof(int));
-
-            // filling data table dt_latency
-            int cnt = 0;
-            for (int j = 0; j < maxIndexValue; j++)
+            // if the file belongs to stage 3 and 4 for cpt task
+            if (uploadsessionID == 38 || uploadsessionID == 39)
             {
+                float avgCorrectLatency = lstCorrectLatency.Average(x => Convert.ToSingle(x));
+                float avgRewardLatency = lstRewatdLatency.Average(x => Convert.ToSingle(x));
+                var titleCorrectLatency = $"Average - Correct Choice Latency at {distSDValues.ToList()[0].ToString()}s SD";
+                var titleRewardLatency = $"Average - Reward Retrieval Latency at {distSDValues.ToList()[0].ToString()}s SD";
 
-                if (lstHits[j] > 0)
-                {
-                    DataRow newRow = dt_latency.NewRow();
-                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                    newRow["CorrectLatency"] = lstCorrectLatency[cnt];
-                    newRow["RewardLatency"] = lstRewatdLatency[cnt];
+                float avgIncorrectLatency = lstIncorLatency.Average(x => Convert.ToSingle(x));
+                var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {distSDValues.ToList()[0].ToString()}s SD";
 
-                    dt_latency.Rows.Add(newRow);
-                    cnt = cnt + 1;
-                }
-
-            }
-
-            foreach (var sd in distSDValues)
-            {
-                float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
-                float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
-
-                var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
-                var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
-
-                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
-            }
-
-            //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
-            if(lstIncorLatency.Count>0)
-            {
-                DataTable dt_incorrect_latency = new DataTable();
-                dt_incorrect_latency.Columns.Add("SD", typeof(float));
-                dt_incorrect_latency.Columns.Add("Mistake", typeof(int));
-                dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
-
-                // filling data table dt_latency
-                int cnt2 = 0;
-                for (int j = 0; j < maxIndexValue; j++)
-                {
-
-                    if (lstMistake[j] > 0)
-                    {
-                        DataRow newRow = dt_incorrect_latency.NewRow();
-                        newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                        newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                        newRow["IncorrectLatency"] = lstIncorLatency[cnt2];
-
-                        dt_incorrect_latency.Rows.Add(newRow);
-                        cnt2 = cnt2 + 1;
-                    }
-
-                }
-
-                foreach (var sd in distSDValues)
-                {
-                    float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
-
-                    var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
-
-                    cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
-
-                }
-            }
-            
-
-            //****************Create dataTable and put all the lists (hits, miss, mistake, correctRejection) inside it
-            DataTable dt = new DataTable();
-            dt.Columns.Add("SD", typeof(float));
-            dt.Columns.Add("Hit", typeof(int));
-            dt.Columns.Add("Miss", typeof(int));
-            dt.Columns.Add("Mistake", typeof(int));
-            dt.Columns.Add("CorrectRejection", typeof(int));
-
-
-            for (int j = 0; j < maxIndexValue; j++)
-            {
-                DataRow newRow = dt.NewRow();
-                newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
-                newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
-                dt.Rows.Add(newRow);
-            }
-
-
-            // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
-            foreach (var sd in distSDValues)
-            {
-                var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
-                var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
-                var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
-                var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
-                var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                var sumHit = lstHits.Sum(x => Convert.ToInt32(x));
+                var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
+                var sumMistake = lstMistake.Sum(x => Convert.ToInt32(x));
+                var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
                 // Calculated features
                 float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
                 float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
                 float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
                 float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
 
-                var titleSD = $"count at {sd.ToString()}s";
-                var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
-                var titleMiss = $"End Summary - Miss at {sd.ToString()}s SD";
-                var titleMistake = $"End Summary - Mistake at {sd.ToString()}s SD";
-                var titleCorrectRejection = $"End Summary - CorrectRejection at {sd.ToString()}s SD";
 
-                var titleHitRate = $"Hit Rate at {sd.ToString()}s";
-                var titlefalseAlarmRate = $"False Alarm Rate at {sd.ToString()}s";
-                var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {sd.ToString()}s ";
-                var titleResponseBias = $"Response Bias at {sd.ToString()}s";
+                var titleHit = $"End Summary - Hits at {distSDValues.ToList()[0]}s SD";
+                var titleMiss = $"End Summary - Miss at {distSDValues.ToList()[0]}s SD";
+                var titleMistake = $"End Summary - Mistake at {distSDValues.ToList()[0]}s SD";
+                var titleCorrectRejection = $"End Summary - CorrectRejection at {distSDValues.ToList()[0]}s SD";
 
+                var titleHitRate = $"Hit Rate at {distSDValues.ToList()[0]}s";
+                var titlefalseAlarmRate = $"False Alarm Rate at {distSDValues.ToList()[0]}s";
+                var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {distSDValues.ToList()[0]}s ";
+                var titleResponseBias = $"Response Bias at {distSDValues.ToList()[0]}s";
 
                 // Adding key/value pairs in cptFeatureDict 
-                cptFeatureDict.Add(titleSD, countSD);
-                cptFeatureDict.Add(titleHit, sumHit);
-                cptFeatureDict.Add(titleMiss, sumMiss);
-                cptFeatureDict.Add(titleMistake, sumMistake);
-                cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
+                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+
+                //cptFeatureDict.Add(titleHit, sumHit);
+                //cptFeatureDict.Add(titleMiss, sumMiss);
+                //cptFeatureDict.Add(titleMistake, sumMistake);
+                //cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
 
                 cptFeatureDict.Add(titleHitRate, hitRate);
                 cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
                 cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
                 cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+            }
 
+            else
+            {
+
+
+
+                // **********************Create a new data table based on dt datatable where  hit is greater than 0 for correct latency and reward latency
+                DataTable dt_latency = new DataTable();
+                dt_latency.Columns.Add("SD", typeof(float));
+                dt_latency.Columns.Add("Hit", typeof(int));
+                dt_latency.Columns.Add("CorrectLatency", typeof(int));
+                dt_latency.Columns.Add("RewardLatency", typeof(int));
+
+                // filling data table dt_latency
+                int cnt = 0;
+                for (int j = 0; j < maxIndexValue; j++)
+                {
+
+                    if (lstHits[j] > 0)
+                    {
+                        DataRow newRow = dt_latency.NewRow();
+                        newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                        newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                        newRow["CorrectLatency"] = lstCorrectLatency[cnt];
+                        newRow["RewardLatency"] = lstRewatdLatency[cnt];
+
+                        dt_latency.Rows.Add(newRow);
+                        cnt = cnt + 1;
+                    }
+
+                }
+
+                foreach (var sd in distSDValues)
+                {
+                    float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
+                    float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
+
+                    var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
+                    var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
+
+                    cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                    cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                }
+
+                //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
+                if (lstIncorLatency.Count > 0)
+                {
+                    DataTable dt_incorrect_latency = new DataTable();
+                    dt_incorrect_latency.Columns.Add("SD", typeof(float));
+                    dt_incorrect_latency.Columns.Add("Mistake", typeof(int));
+                    dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
+
+                    // filling data table dt_latency
+                    int cnt2 = 0;
+                    for (int j = 0; j < maxIndexValue; j++)
+                    {
+
+                        if (lstMistake[j] > 0)
+                        {
+                            DataRow newRow = dt_incorrect_latency.NewRow();
+                            newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                            newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                            newRow["IncorrectLatency"] = lstIncorLatency[cnt2];
+
+                            dt_incorrect_latency.Rows.Add(newRow);
+                            cnt2 = cnt2 + 1;
+                        }
+
+                    }
+
+                    foreach (var sd in distSDValues)
+                    {
+                        float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
+
+                        var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
+
+                        cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+
+                    }
+                }
+
+
+                //****************Create dataTable and put all the lists (hits, miss, mistake, correctRejection) inside it
+                DataTable dt = new DataTable();
+                dt.Columns.Add("SD", typeof(float));
+                dt.Columns.Add("Hit", typeof(int));
+                dt.Columns.Add("Miss", typeof(int));
+                dt.Columns.Add("Mistake", typeof(int));
+                dt.Columns.Add("CorrectRejection", typeof(int));
+
+
+                for (int j = 0; j < maxIndexValue; j++)
+                {
+                    DataRow newRow = dt.NewRow();
+                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
+                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                    newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
+                    newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                    newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
+                    dt.Rows.Add(newRow);
+                }
+
+
+                // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
+                foreach (var sd in distSDValues)
+                {
+                    var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
+                    var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                    var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                    var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                    var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                    // Calculated features
+                    float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                    float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                    float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                    float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                    var titleSD = $"count at {sd.ToString()}s";
+                    var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
+                    var titleMiss = $"End Summary - Miss at {sd.ToString()}s SD";
+                    var titleMistake = $"End Summary - Mistake at {sd.ToString()}s SD";
+                    var titleCorrectRejection = $"End Summary - CorrectRejection at {sd.ToString()}s SD";
+
+                    var titleHitRate = $"Hit Rate at {sd.ToString()}s";
+                    var titlefalseAlarmRate = $"False Alarm Rate at {sd.ToString()}s";
+                    var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {sd.ToString()}s ";
+                    var titleResponseBias = $"Response Bias at {sd.ToString()}s";
+
+
+                    // Adding key/value pairs in cptFeatureDict 
+                    cptFeatureDict.Add(titleSD, countSD);
+                    cptFeatureDict.Add(titleHit, sumHit);
+                    cptFeatureDict.Add(titleMiss, sumMiss);
+                    cptFeatureDict.Add(titleMistake, sumMistake);
+                    cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
+
+                    cptFeatureDict.Add(titleHitRate, hitRate);
+                    cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
+                    cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
+                    cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+
+                }
             }
 
 
             return cptFeatureDict;
         }
 
-        private Dictionary<string, float> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake, List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+        // Function definition to extract calculated metrics for cpt task when the contrast level is different
+        private Dictionary<string, float> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
+                        List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
         {
             Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
 
@@ -1376,7 +1446,8 @@ namespace AngularSPAWebAPI.Services
             return cptFeatureDict;
         }
 
-        private Dictionary<string, float> GetDictCPTFeatures_distractor( Dictionary<string, float?> cptDictDistractorFeatures)
+        // function definiton to extract calculated metrics for cpt with different distractor
+        private Dictionary<string, float> GetDictCPTFeatures_distractor(Dictionary<string, float?> cptDictDistractorFeatures)
         {
             Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
 
@@ -1395,7 +1466,7 @@ namespace AngularSPAWebAPI.Services
             cptFeatureDict.Add(nonDistTitlefalseAlarmRate, (float)nonDisFalseALarmRate);
             cptFeatureDict.Add(nonDistTitleDiscriminationSensitivity, (float)nonDisdiscriminationSensitivity);
             cptFeatureDict.Add(nonDistTitleResponseBias, (float)nonDistresponseBias);
-                       
+
             // congruent trials
             float? CongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"]);
             float? CongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
@@ -1411,7 +1482,7 @@ namespace AngularSPAWebAPI.Services
             cptFeatureDict.Add(CongTitlefalseAlarmRate, (float)CongFalseALarmRate);
             cptFeatureDict.Add(CongTitleDiscriminationSensitivity, (float)CongdiscriminationSensitivity);
             cptFeatureDict.Add(CongTitleResponseBias, (float)CongresponseBias);
-                       
+
             // incongruent trials
             float? inCongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"]);
             float? inCongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
@@ -1427,10 +1498,10 @@ namespace AngularSPAWebAPI.Services
             cptFeatureDict.Add(inCongTitlefalseAlarmRate, (float)inCongFalseALarmRate);
             cptFeatureDict.Add(inCongTitleDiscriminationSensitivity, (float)inCongdiscriminationSensitivity);
             cptFeatureDict.Add(inCongTitleResponseBias, (float)inCongresponseBias);
-                       
+
             return cptFeatureDict;
         }
-        
+
         // function definition to get the list of features that should be extracted from xml file and saved into the database
         public List<string> GetlstFeature(int sessionIDUpload)
         {
@@ -1467,7 +1538,7 @@ namespace AngularSPAWebAPI.Services
                 //*****************PAL
                 case 11:
                 case 12:
-                   string[] PALlst = { "End Summary - Condition", "End Summary - Trials Completed", "End Summary - % Correct", "End Summary - Incorrect Touches", "Correct touch latency",
+                    string[] PALlst = { "End Summary - Condition", "End Summary - Trials Completed", "End Summary - % Correct", "End Summary - Incorrect Touches", "Correct touch latency",
                                        "Incorrect Touch Latency", "Correct Reward Collection"};
 
                     lstFeatures.AddRange(PALlst);
@@ -1510,7 +1581,7 @@ namespace AngularSPAWebAPI.Services
                                         "Trial by trial analysis - Optimal side chosen", "Trial by trial analysis - Optimal side chosen with milkshake given",
                                         "Trial by trial analysis - Optimal side chosen without milkshake given", "Trial by trial analysis - Left chosen", "Trial by trial analysis - Right chosen",
                                         "Trial by trial analysis - REWARD COLLECTION LATENCY", "Trial by trial analysis - Image response choice latency" };
-                    
+
                     lstFeatures.AddRange(PRLlst);
                     break;
 
@@ -1547,7 +1618,7 @@ namespace AngularSPAWebAPI.Services
                                        "Incorrect Choice Latency non distractor trial", "Incorrect Choice Latency congruent trial", "Incorrect Choice Latency incongruent trial",
                                        "End Summary - Centre ITI Touches", "End Summary - S+ Distractor touched during congruent trial -  Counter",
                                        "End Summary - S- Distractor touched during congruent trial -  Counter", "End Summary - S+ Distractor touched during incongruent trial -  Counter",
-                                       "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast"}; 
+                                       "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast", "End Summary - Stimulus Duration"};
 
                     lstFeatures.AddRange(input_CPT);
                     break;
