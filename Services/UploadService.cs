@@ -252,7 +252,7 @@ namespace AngularSPAWebAPI.Services
 
         private int getUploadSessionIDbySessionName(string sessionName)
         {
-            string sql = $"Select id from Upload_SessionInfo Where SessionName='{sessionName}";
+            string sql = $"Select id from Upload_SessionInfo Where SessionName='{sessionName}'";
 
             return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }

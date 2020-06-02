@@ -79,10 +79,11 @@ export class AnimalInfoComponent implements OnInit {
         });
         this.dialogRefDelAnimal.componentInstance.confirmMessage = "Are you sure you want to delete?"
 
-        this.spinnerService.show();
+
 
         this.dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
+                this.spinnerService.show();
                 this.animalService.deleteAnimalbyID(animalID).map(res => {
 
 
