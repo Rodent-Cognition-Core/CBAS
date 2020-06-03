@@ -726,6 +726,7 @@ namespace AngularSPAWebAPI.Services
                 }
                 else
                 {
+                    sourceType = 1;
                     resultVal = entry.Value;
                     durationVal = null;
                 }
