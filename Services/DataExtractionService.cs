@@ -1491,10 +1491,14 @@ namespace AngularSPAWebAPI.Services
                 case 47:
                 case 56:
                 case 64:
-                case 74:
                 case 87:
                     {
                         str = "(SessionName='Punish_Incorrect') OR (SessionName='Punish Incorrect II')";
+                        break;
+                    }
+                case 74:
+                    {
+                        str = "(SessionName='PRL Punish Incorrect')";
                         break;
                     }
                 case 21:

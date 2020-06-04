@@ -137,7 +137,7 @@ export class UploadComponent implements OnInit {
 
             }
             case 10: { //PRL
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 10) && x.sessionName != 'Must_Initiate');
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 10) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
