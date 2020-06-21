@@ -15,6 +15,13 @@ namespace CBAS.Helpers
             return null;
         }
 
+        public static string NullToString(object Value)
+        {
+
+            return Value == null ? "" : Value.ToString();
+            
+        }
+
         public static DateTime? ConvertToNullableDateTime(string s)
         {
             if (string.IsNullOrEmpty(s))

@@ -10,6 +10,10 @@ namespace AngularSPAWebAPI.Models
         public string Keywords { get; set; }
         public string DOI { get; set; }
         public string Year { get; set; }
+        public string AuthorString { get; set; }
+        public string PaperType { get; set; }
+        public string Reference { get; set; }
+                      
         public string[] Years { get; set; }
         public int?[] AuthourID { get; set; }
         public int? PaperTypeID { get; set; }

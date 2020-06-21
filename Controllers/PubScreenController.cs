@@ -171,7 +171,15 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetPaperInfoByDOI(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
+             return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
+        }
+
+        // Getting some paper information based on Doi
+        [HttpGet("GetPaperInfoByPubKey")]
+        [AllowAnonymous]
+        public IActionResult GetPaperInfoByPubKey(string PubKey)
+        {
+            return new JsonResult(_pubScreenService.GetPaperInfoByPubMedKey(PubKey));
         }
 
     }

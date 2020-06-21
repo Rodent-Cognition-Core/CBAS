@@ -1,3 +1,5 @@
+import { PubscreenAuthor } from "./pubscreenAuthor";
+
 export class Pubscreen {
 
     public id: number;
@@ -8,7 +10,9 @@ export class Pubscreen {
     public year: string;
     public years: Array<string>;
     public authourID: Array<number>;
+    public authorString: string;
     public paperTypeID: Array<number>;
+    public paperType: string;
     public taskID: Array<number>;
     public specieID: Array<number>;
     public sexID: Array<number>;
@@ -19,6 +23,8 @@ export class Pubscreen {
     public cellTypeID: Array<number>;
     public methodID: Array<number>;
     public transmitterID: Array<number>;
+    public author: Array<PubscreenAuthor>;
+    public reference: string;
               
 
 }

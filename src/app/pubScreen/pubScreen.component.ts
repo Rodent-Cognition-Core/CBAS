@@ -44,6 +44,9 @@ export class PubScreenComponent implements OnInit {
     authorMultiSelect: any;
     doiKeyModel: any;
     PubMedKeyModel: any;
+    authorModel2: any;
+    paperTypeModel2: any;
+    referenceModel: any;
 
     //Models Variables for searching publication
     yearSearchModel: any
@@ -62,6 +65,7 @@ export class PubScreenComponent implements OnInit {
     methodList: any;
     neurotransmitterList: any;
     authorList: any;
+    authorList2: any;
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
@@ -73,8 +77,8 @@ export class PubScreenComponent implements OnInit {
     doiKey = new FormControl('', [Validators.required]);
     paperType = new FormControl('', [Validators.required]);
     cognitiveTask = new FormControl('', [Validators.required]);
-    specie = new FormControl('', [Validators.required]);
-    sex = new FormControl('', [Validators.required]);
+    //specie = new FormControl('', [Validators.required]);
+    //sex = new FormControl('', [Validators.required]);
     addingOption = new FormControl('', [Validators.required]);
     year = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
     pubMedKey = new FormControl('', [Validators.required]);
@@ -98,7 +102,7 @@ export class PubScreenComponent implements OnInit {
 
     ngOnInit() {
 
-        this.GetAuthorList();
+        //this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
@@ -113,7 +117,7 @@ export class PubScreenComponent implements OnInit {
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
 
-         
+
     }
 
     // Function Definition to open a dialog for adding new cognitive task to the system
@@ -139,6 +143,8 @@ export class PubScreenComponent implements OnInit {
 
     GetAuthorList() {
 
+        this.resetFormVals();
+
         this.pubScreenService.getAuthor().subscribe(data => {
             this.authorList = data;
 
@@ -156,11 +162,11 @@ export class PubScreenComponent implements OnInit {
         return this.authorList;
     }
 
-    // Getting list of all years  in database
+    // Getting list of all years  in database ???
     getAllYears() {
         return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
     }
-    
+
 
     // handling multi filtered Author list
     private filterAuthor() {
@@ -178,7 +184,7 @@ export class PubScreenComponent implements OnInit {
             searchAuthor = searchAuthor.toLowerCase();
         }
 
-        // filter the Experiment
+        // filter the Author
         this.filteredAutorList.next(
             this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
@@ -197,7 +203,6 @@ export class PubScreenComponent implements OnInit {
             //console.log(filtered);
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
-
 
         console.log(this.subRegionList);
     }
@@ -235,20 +240,20 @@ export class PubScreenComponent implements OnInit {
         return this.cognitiveTask.hasError('required') ? 'You must enter a value' : '';
     }
 
-    getErrorMessageSpecie() {
-        return this.specie.hasError('required') ? 'You must enter a value' : '';
-    }
+    //getErrorMessageSpecie() {
+    //    return this.specie.hasError('required') ? 'You must enter a value' : '';
+    //}
 
-    getErrorMessageSex() {
-        return this.sex.hasError('required') ? 'You must enter a value' : '';
-    }
+    //getErrorMessageSex() {
+    //    return this.sex.hasError('required') ? 'You must enter a value' : '';
+    //}
 
     getErrorMessagePaperOption() {
-        return this.addingOption.hasError('required') ? 'You must select one of the options': '';
+        return this.addingOption.hasError('required') ? 'You must select one of the options' : '';
     }
 
     getErrorMessageDOIKey() {
-        return this.doiKey.hasError('required') ? 'You must enter the value' : ''; 
+        return this.doiKey.hasError('required') ? 'You must enter the value' : '';
     }
 
     getErrorMessagePubMedKey() {
@@ -257,22 +262,46 @@ export class PubScreenComponent implements OnInit {
 
     setDisabledVal() {
 
-        if (this.title.hasError('required') ||
-            this.author.hasError('required') ||
+        if (this.authorModel == null && this.author.hasError('required')) {
+
+            return true;
+        }
+
+        if (this.paperTypeModel == null && this.paperType.hasError('required')) {
+            return true;
+        }
+
+        if (this.addingOptionModel == 1 && this.doiKey.hasError('required')) {
+            return true;
+
+        }
+
+        if (this.addingOptionModel == 2 && this.pubMedKey.hasError('required')) {
+            return true;
+
+        }
+
+        else if (this.title.hasError('required') ||
             this.doi.hasError('required') ||
-            this.paperType.hasError('required') ||
+
             this.cognitiveTask.hasError('required') ||
-            this.specie.hasError('required') ||
-            this.sex.hasError('required') ||
+            //this.specie.hasError('required') ||
+            //this.sex.hasError('required') ||
             this.year.hasError('required') ||
             this.year.hasError('pattern') ||
             this.addingOption.hasError('required')
             //this.doiKey.hasError('required') 
 
         ) {
+
             return true;
         }
-        return false;
+
+        else {
+
+            return false;
+        }
+
     }
 
     setDisabledAddDOI() {
@@ -294,7 +323,59 @@ export class PubScreenComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
 
-            this.paperInfoFromDoiList = data;
+            console.log(data);
+            console.log(data.result);
+
+            if (data.result == null) {
+                alert("DOI is not valid or has not been found!");
+
+            }
+            else {
+
+                this.authorModel2 = data.result.authorString;
+                this.titleModel = data.result.title;
+                this.abstractModel = data.result.abstract;
+                this.yearModel = data.result.year;
+                this.keywordsModel = data.result.keywords;
+                this.doiModel = data.result.doi;
+                this.paperTypeModel2 = data.result.paperType;
+                this.referenceModel = data.result.reference;
+                this.authorList2 = data.result.author;
+                console.log(this.authorList2);
+                this.paperTypeModel = data.result.paperType;
+            }
+
+        });
+
+    }
+
+    // Adding pubmed key to get paper information
+    addPubMedID(PubMedKey) {
+
+        this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
+
+            console.log(data);
+            console.log(data.result);
+
+            if (data.result == null) {
+                alert("Pubmed Key is not valid or has not been found!");
+
+            }
+            else {
+
+                this.authorModel2 = data.result.authorString;
+                this.titleModel = data.result.title;
+                this.abstractModel = data.result.abstract;
+                this.yearModel = data.result.year;
+                this.keywordsModel = data.result.keywords;
+                this.doiModel = data.result.doi;
+                this.paperTypeModel2 = data.result.paperType;
+                this.referenceModel = data.result.reference;
+
+                this.authorList2 = data.result.author;
+                console.log(this.authorList2);
+                this.paperTypeModel = data.result.paperType;
+            }
 
         });
 
@@ -303,13 +384,34 @@ export class PubScreenComponent implements OnInit {
     // Adding a new publication to DB by cliking on Submit button
     AddPublication() {
 
+        if (this.authorModel != null && this.authorModel.length != 0) {
+            this._pubscreen.authourID = this.authorModel;
+            console.log(this.authorModel)
+        }
+        else {
+
+            this._pubscreen.author = this.authorList2;
+            this._pubscreen.authorString = this.authorModel2;
+            console.log(this._pubscreen.author)
+            console.log(this.authorList2);
+
+        }
+
+        if (this.paperTypeModel != null) {
+            this._pubscreen.paperType = this.paperTypeModel;
+        }
+        else {
+            this._pubscreen.paperType = this.paperTypeModel2;
+        }
+        if (this.referenceModel != null) {
+            this._pubscreen.reference = this.referenceModel;
+        }
+
         this._pubscreen.title = this.titleModel;
         this._pubscreen.abstract = this.abstractModel;
         this._pubscreen.keywords = this.keywordsModel;
         this._pubscreen.doi = this.doiModel;
         this._pubscreen.year = this.yearModel;
-        this._pubscreen.authourID = this.authorModel;
-        this._pubscreen.paperTypeID = this.paperTypeModel;
         this._pubscreen.taskID = this.cognitiveTaskModel;
         this._pubscreen.specieID = this.specieModel;
         this._pubscreen.sexID = this.sexModel;
@@ -323,14 +425,14 @@ export class PubScreenComponent implements OnInit {
 
         this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {
 
+            if (data == null) {
+                alert("Publication with the same DOI exists in the database!")
+            }
             this.resetFormVals();
-            this.getAllYears();
 
-            
-                        
         });
 
-        
+
 
     }
 
@@ -354,7 +456,11 @@ export class PubScreenComponent implements OnInit {
         this.cellTypeModel = [];
         this.methodModel = [];
         this.neurotransmitterModel = [];
-    
+        this.doiKeyModel = '';
+        this.authorModel2 = '';
+        this.paperTypeModel2 = '';
+        this.referenceModel = '';
+
     }
 
     // Checking the errorMessage for searching publication
@@ -367,7 +473,7 @@ export class PubScreenComponent implements OnInit {
             return true;
         }
         return false;
-       
+
 
     }
 

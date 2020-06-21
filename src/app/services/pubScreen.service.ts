@@ -199,6 +199,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Get some paper info based on PubmedKey
+    public getPaparInfoFromPubmedKey(pubKey: any): any {
+        return this.http
+            .get("/api/pubScreen/GetPaperInfoByPubKey?PubKey=" + pubKey, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
 
 
 

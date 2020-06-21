@@ -23,7 +23,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
 
-        public async Task<string> GetPaperInfoByDoi(string doi)
+        public async Task<PubScreen> GetPaperInfoByDoi(string doi)
         {
             // Submiy doi to get the pubmedkey
 
@@ -33,23 +33,28 @@ namespace AngularSPAWebAPI.Services
 
             var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
             var responseString = await response.Content.ReadAsStringAsync();
+            if (responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1)
+            {
+                return null;
+            }
 
             XElement incomingXml = XElement.Parse(responseString);
-            var pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
+            string pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
 
-            //Send pubmedkey to another function to get Paper's info
-            await GetPaperInfoByPubMedKey(pubMedKey);
-
-
-
-            return pubMedKey;
+            //If pubmedkey is available, Send it to another function to get Paper's info
+            if(!string.IsNullOrEmpty(pubMedKey))
+            {
+                return await GetPaperInfoByPubMedKey(pubMedKey);
+            }
+                     
+            return null;
 
         }
 
         //Function Definition to get some paper's info based on PubMedKey
-        public async Task<string> GetPaperInfoByPubMedKey(string pubMedKey)
+        public async Task<PubScreen> GetPaperInfoByPubMedKey(string pubMedKey)
         {
-
+            // if IskeyPumbed is true then get doi and add it to object
             HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
@@ -58,8 +63,111 @@ namespace AngularSPAWebAPI.Services
             var responseString = await response.Content.ReadAsStringAsync();
             XElement incomingXml = XElement.Parse(responseString);
 
-            string result = "";
-            return result;
+            string articleAbstract = "";
+            string articleYear = "";
+
+            // journal name
+            string articleName = "";
+            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("Title")!=null)
+            {
+                articleName = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("Title").Value;
+            }
+
+            //title
+            string articleTitle = "";
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleTitle")!=null)
+            {
+                articleTitle = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleTitle").Value;
+            }
+
+            //abstract
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Abstract") != null)
+            {
+                 articleAbstract = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Abstract").Element("AbstractText").Value;
+            }
+
+            //articletype
+            string articleType = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("PublicationTypeList").Element("PublicationType").Value;
+
+            //year
+            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate")!=null)
+            {
+                articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate").Element("Year").Value;
+            }
+            else if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate") != null)
+            {
+                articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate").Element("Year").Value;
+
+            }
+
+
+
+            //string keywords = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList").Value;
+            XmlDocument xml = new XmlDocument();
+
+            // Extracting list of keywords
+            string keyWordString = "";
+
+            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList") !=null)
+            {
+                string xmlStringKeywords = Convert.ToString(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList"));
+                xml.LoadXml(xmlStringKeywords);
+                XmlNodeList keyList = xml.SelectNodes("/KeywordList/Keyword");
+                List<string> keyWordList = new List<string>();
+                foreach (XmlNode keyword in keyList)
+                {
+                    keyWordList.Add(keyword.InnerText);
+                }
+
+                keyWordString = string.Join(", ", keyWordList);
+            }
+
+            // Extracting list of Authors and add them to author object list
+            List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
+            List<string> authorListString = new List<string>();
+            string xmlStringAuthor = Convert.ToString(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("AuthorList"));
+            xml.LoadXml(xmlStringAuthor);
+            XmlNodeList xnList = xml.SelectNodes("/AuthorList/Author");
+
+            foreach (XmlNode xn in xnList)
+            {
+                authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
+
+                authorList.Add(new PubScreenAuthor
+                {
+                    FirstName = xn["ForeName"].InnerText,
+                    LastName = xn["LastName"].InnerText,
+                    Affiliation = xn["AffiliationInfo"] ==  null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
+
+                });
+
+            }
+
+            //doi
+           string doi = ((System.Xml.Linq.XElement)(incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode)).Value;
+            
+
+            string authorString = string.Join(", ", authorListString);
+
+            // initialize PubScreenSearch object and fill it
+            var pubscreenObj = new PubScreen
+            {
+                Title = articleTitle,
+                Abstract = articleAbstract,
+                Keywords = keyWordString,
+                Year = articleYear,
+                AuthorString = authorString,
+                PaperType = articleType,
+                Author = authorList,
+                Reference = articleName,
+                DOI = doi,
+
+
+            };
+
+            // Actually two outputs should be returned (authorList should be also returned)
+
+            return pubscreenObj;
 
 
         }
@@ -330,16 +438,33 @@ namespace AngularSPAWebAPI.Services
 
             return AuthorList;
         }
-        //*************************************************************************************************************************************************************************
+
+
+        //************************************************************************************Adding Publication*************************************************************************************
         // Function Definition to add a new publication to database Pubscreen
-        public int AddPublications(PubScreen publication)
+        public int? AddPublications(PubScreen publication)
         {
-            string sqlPublication = $@"Insert into Publication (Title, Abstract, Keywords, DOI, Year) Values
-                                    ('{publication.Title}', '{publication.Abstract}', '{publication.Keywords}', '{publication.DOI}', '{publication.Year}' ); SELECT @@IDENTITY AS 'Identity'; ";
+            // Check for duplication based o nthe dOI
+            string sqlDOI = $@"Select ID From Publication Where DOI = '{publication.DOI}'";
+            object ID = Dal.ExecScalarPub(sqlDOI);
+            if( ID!=null)
+            {
+                return null;
+            }
+
+
+            string sqlPublication = $@"Insert into Publication (Title, Abstract, Keywords, DOI, Year, Reference) Values
+                                    ('{HelperService.EscapeSql((HelperService.NullToString(publication.Title)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.Abstract)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.Keywords)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.DOI)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.Year)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.Reference)))}'); SELECT @@IDENTITY AS 'Identity'; ";
 
             int PublicationID = Int32.Parse(Dal.ExecScalarPub(sqlPublication).ToString());
 
-            //Adding to Publication_Author Table
+            // Adding Author **********************************************************************************************************************
+            //Adding to Publication_Author Table if Author ID is not null or empty (it happens when DOI or pubmedID is not available)
             if (publication.AuthourID != null && publication.AuthourID.Length != 0)
             {
                 string sqlAuthor = "";
@@ -351,10 +476,102 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-            //Adding to Publication_PaperType Table
-            string sqlPaperType = "";
-            sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {PublicationID});";
-            Dal.ExecuteNonQueryPub(sqlPaperType);
+            //When pubmedID or DOI is avaialble, add Authors to Publication_Author Table and also to "Author" table if the author in publication.Author does not already exist in Author table in DB
+            if(publication.Author !=null && publication.Author.Count()!=0)
+
+            {
+                // Get list of all autohrs from DB in the following format "firstname-lastname"
+                List<string> allAuthorList = new List<string>();
+                using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        allAuthorList.Add((Convert.ToString(dr["FirstName"].ToString())).ToLower() + '-' + (Convert.ToString(dr["LastName"].ToString()).ToLower()));
+                        
+                    }
+                }
+
+                // loop through  publication.Author if author does not exist in allAuthorList then add it to DB
+                string sqlAuthor = "";
+                for (int i= 0; i < publication.Author.Count(); i++ )
+                {
+                    
+                    if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()) )
+                    {
+                        sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
+                                                                                                      '{publication.Author[i].LastName}',
+                                                                                                      '{publication.Author[i].Affiliation}');";
+                    }
+
+                }
+
+                if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor).ToString(); };
+
+                //Add all authors to publication-author table in DB
+                string strCondition = ("'" + (publication.AuthorString.ToLower()).Replace(",", "', '") + "'").Replace("' ", "'");
+                string sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName) , '-' , LOWER(Author.LastName)) in ({strCondition})";
+                string sqlauthor3 = "";
+                if (sqlauthor2 != "")
+                {
+                    using (DataTable dt = Dal.GetDataTablePub(sqlauthor2))
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            sqlauthor3 += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({Int32.Parse(dr["ID"].ToString())}, {PublicationID});";
+
+                        }
+                    }
+
+                    if (sqlauthor3 != "") { Dal.ExecuteNonQueryPub(sqlauthor3).ToString(); };
+
+                }
+            } // End of if statement when DOI OR Pubmed is available
+
+
+            //Adding to Publication_PaperType Table**********************************************************************************************
+
+            // When DOI or Pubmedkey is not available
+            if(publication.PaperTypeID !=null)
+            {
+                string sqlPaperType = "";
+                sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {PublicationID});";
+                Dal.ExecuteNonQueryPub(sqlPaperType);
+            }
+
+            // When DOI or Pubmedkey is available
+            if (publication.PaperType!=null && publication.PaperType.Length!=0)
+            {
+                // check to see if papertype exist in DB, if so just insert it into Publication_PaperType; otherwise, insert it into both PrperType and Publication_PaperType tables in DB.
+
+                //Get list of all paperType form DB
+                List<string> allPTList = new List<string>();
+                using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType"))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower() );
+
+                    }
+                }
+
+                // if paper type is new and is not available in DB, insert it to DB
+                if (!allPTList.Contains(publication.PaperType))
+                {
+                    // Insert into paper type table i ndB
+                    string sqlPT = $@"Insert into PaperType (PaperType) Values ('{publication.PaperType}');";
+                    if (sqlPT != "") { Dal.ExecuteNonQueryPub(sqlPT); };
+                }
+
+                // Get the ID of new or existing paperType
+                string sqlPT2 = $@"Select ID from PaperType Where PaperType = '{publication.PaperType}'";
+                int PaperTypeID = Int32.Parse(Dal.ExecScalarPub(sqlPT2).ToString());
+
+                //Insert paperTypeID itno Publication_PaperType tbl in DB
+                string sqlPT3 = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({PaperTypeID}, {PublicationID});";
+                Dal.ExecuteNonQueryPub(sqlPT3);
+
+            }
+
 
             //Adding to Publication_Task
             if (publication.TaskID != null && publication.TaskID.Length != 0)
