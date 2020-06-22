@@ -1142,7 +1142,7 @@ namespace AngularSPAWebAPI.Services
             {
                 StimulusDurationCondition1 = ", Stimulus_Duration ";
                 
-                StimulusDurationCondition2 = "and stimulus_Duration is not null ";
+                //StimulusDurationCondition2 = "and stimulus_Duration is not null ";
 
             }
 
@@ -1196,7 +1196,7 @@ namespace AngularSPAWebAPI.Services
 								 ) as ss on  ss.UploadID = SessionInfo.UploadID
                                 inner join Age on Age.ID = ss.AgeID
 
-                                 Where {str}  (SessionInfo.ExpID in ({expIDcsv}) {AgeCondition} {SexCondition} {GenotypeCondition} {StrainCondition} {PiSiteCondition} {StimulusDurationCondition2} {SessionNameCondition})";
+                                 Where {str}  (SessionInfo.ExpID in ({expIDcsv}) {AgeCondition} {SexCondition} {GenotypeCondition} {StrainCondition} {PiSiteCondition} {SessionNameCondition})";
 
             // Creating subQuery 2 from RBT_TouchScreen_Features
 

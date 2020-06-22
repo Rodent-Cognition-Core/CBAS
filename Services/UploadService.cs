@@ -1529,7 +1529,7 @@ namespace AngularSPAWebAPI.Services
                 case 10:
                     string[] fiveChoicelst = {"Threshold - Condition", "Threshold - Accuracy %", "Threshold - Omission %", "Threshold - Trials", "Trial Analysis - Accuracy%",
                                               "Trial Analysis - Omission%", "Trial Analysis - Correct", "Trial Analysis - Incorrect", "Trial Analysis - Omission",
-                                              "Trial Analysis - Premature", "Trial Analysis - Stimulus Duration", "Trial Analysis - Reward Collection Latency",
+                                              "Trial Analysis - Premature", "Threshold - Stimulus Duration", "Trial Analysis - Stimulus Duration", "Trial Analysis - Reward Collection Latency",
                                               "Trial Analysis - Correct Response Latency", "Trial Analysis - Incorrect Response Latency", "Omissions - Total", "Premature Responses - Total",
                                               "Premature Responses - Total", "Perseverative Correct - Total", "Perseverative Incorrect - Total", "Reward Collection Latency",
                                               "Trial Analysis - Time To Distraction", "Trial Analysis - Correct Resp Latency with No Distract"};
