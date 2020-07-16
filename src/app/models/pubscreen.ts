@@ -25,6 +25,7 @@ export class Pubscreen {
     public transmitterID: Array<number>;
     public author: Array<PubscreenAuthor>;
     public reference: string;
+    public source: string;
               
 
 }

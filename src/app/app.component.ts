@@ -45,13 +45,16 @@ export class AppComponent implements OnInit {
         { name: 'Genomics', route: 'genomics' }
     ];
 
+    navItemsPubscreen: any[] = [
+        { name: 'Searching Publications', route: 'pubScreen-search' }
+    ];
+
     signedIn: Observable<boolean>;
 
     name: string;
     isAdmin: boolean;
     isUser: boolean;
     key: any;
-
     showFooter: boolean;
 
     constructor(

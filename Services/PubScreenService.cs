@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Text;
 
+
 namespace AngularSPAWebAPI.Services
 {
 
@@ -100,8 +101,6 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-
-
             //string keywords = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList").Value;
             XmlDocument xml = new XmlDocument();
 
@@ -172,7 +171,54 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        //Function Definition to get some paper's info based on DOI from BioRxiv
+        public async Task<PubScreen> GetPaperInfoByDOIBIO(string doi)
+        {
+            // Submiy doi to get the pubmedkey
 
+            HttpClient httpClient = new HttpClient();
+
+            StringContent content = new System.Net.Http.StringContent(String.Empty);
+
+            var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
+
+            List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
+            List<string> authorListString = new List<string>();
+            List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
+            foreach (var name in authorTempList)
+            {
+                authorListString.Add(name.Split(',')[1] + '-' + name.Split(',')[0]);
+
+                authorList.Add(new PubScreenAuthor
+                {
+                    FirstName = name.Split(',')[1],
+                    LastName = name.Split(',')[0],
+
+                });
+
+            }
+
+            string authorString = string.Join(", ", authorListString);
+
+            var pubscreenObj = new PubScreen
+            {
+                Title = jsonPubscreen.collection[0].title,
+                Abstract = jsonPubscreen.collection[0].@abstract,
+                Year = (jsonPubscreen.collection[jsonPubscreen.collection.Count() - 1].date).Split('-')[0],
+                AuthorString = authorString,
+                PaperType = jsonPubscreen.collection[0].@type,
+                Author = authorList,
+                Reference = "bioRxiv",
+                DOI = doi,
+
+            };
+
+            return pubscreenObj;
+
+        }
 
         // Function Definition to extract list of all Paper Types
         public List<PubScreenPaperType> GetPaperTypes()
@@ -740,7 +786,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for Year
-            if (pubScreen.Years.Length != 0)
+            if (pubScreen.Years != null && pubScreen.Years.Length != 0)
             {
                 for (int i = 0; i < pubScreen.Years.Length; i++)
                 {

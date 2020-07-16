@@ -166,7 +166,7 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetAllYears());
         }
 
-        // Getting some paper information based on Doi
+        // Getting some paper information based on Doi from pubMed
         [HttpGet("GetPaperInfoByDOI")]
         [AllowAnonymous]
         public IActionResult GetPaperInfoByDOI(string DOI)
@@ -174,12 +174,20 @@ namespace AngularSPAWebAPI.Controllers
              return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
         }
 
-        // Getting some paper information based on Doi
+        // Getting some paper information based on pubMed key 
         [HttpGet("GetPaperInfoByPubKey")]
         [AllowAnonymous]
         public IActionResult GetPaperInfoByPubKey(string PubKey)
         {
             return new JsonResult(_pubScreenService.GetPaperInfoByPubMedKey(PubKey));
+        }
+
+        // Getting some paper information based on Doi from BioRxiv
+        [HttpGet("GetPaparInfoFromDOIBio")]
+        [AllowAnonymous]
+        public IActionResult GetPaparInfoFromDOIBio(string DOI)
+        {
+            return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
         }
 
     }

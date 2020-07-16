@@ -191,7 +191,7 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
-    // Get some paper info based on Doi
+    // Get some paper info based on Doi from pubMed
     public getPaparInfoFromDOI(doi: any): any {
         return this.http
             .get("/api/pubScreen/GetPaperInfoByDOI?DOI=" + doi, {
@@ -203,6 +203,14 @@ import { AuthenticationService } from './authentication.service';
     public getPaparInfoFromPubmedKey(pubKey: any): any {
         return this.http
             .get("/api/pubScreen/GetPaperInfoByPubKey?PubKey=" + pubKey, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
+    // Get some paper info based on Doi from Biorxiv
+    public getPaparInfoFromDOIBio(doi: any): any {
+        return this.http
+            .get("/api/pubScreen/GetPaparInfoFromDOIBio?DOI=" + doi, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
     }
