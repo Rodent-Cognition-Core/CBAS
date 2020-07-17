@@ -699,7 +699,7 @@ namespace AngularSPAWebAPI.Services
             } // and of foreach loop
 
             // Function call to get the dictionary with all the metrics calculated at each SD
-            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();  // to save all the metrics calculated at each SD, or contrast level or distractor
+            Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();  // to save all the metrics calculated at each SD, or contrast level or distractor
             if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39)  // cpt with different SDs
             {
                 cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, sessionIDUpload);
@@ -716,7 +716,7 @@ namespace AngularSPAWebAPI.Services
             int sourceType = 1;
             float? resultVal = null;
             float? durationVal = null;
-            foreach (KeyValuePair<string, float> entry in cptFeatureDict)
+            foreach (KeyValuePair<string, float?> entry in cptFeatureDict)
             {
                 if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency"))
                 {
@@ -1056,11 +1056,11 @@ namespace AngularSPAWebAPI.Services
         }
 
         // **********************Function definition to extract cpt features with different stimulation duration and stage 3 & 4
-        private Dictionary<string, float> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
+        private Dictionary<string, float?> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
                        List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency, int uploadsessionID)
         {
 
-            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+            Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
             var maxIndex = new List<int>() { lstSD.Count, lstHits.Count, lstMiss.Count, lstMistake.Count, lstcCorrectRejection.Count };
             var maxIndexValue = maxIndex.Max();
@@ -1084,8 +1084,12 @@ namespace AngularSPAWebAPI.Services
                 // Calculated features
                 float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
                 float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
-                float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
-                float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
+
+                float? responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+                responseBias = double.IsInfinity((double)responseBias) ? null : responseBias;
 
 
                 var titleHit = $"End Summary - Hits at {distSDValues.ToList()[0]}s SD";
@@ -1111,7 +1115,7 @@ namespace AngularSPAWebAPI.Services
                 cptFeatureDict.Add(titleHitRate, hitRate);
                 cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
                 cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
-                cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                cptFeatureDict.Add(titleResponseBias, (float?)responseBias);
             }
 
             else
@@ -1240,8 +1244,12 @@ namespace AngularSPAWebAPI.Services
                         // Calculated features
                         float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
                         float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
-                        float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
-                        float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                        float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                        discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
+
+                        float? responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+                        responseBias = double.IsInfinity((double)responseBias) ? null : responseBias;
 
                         var titleSD = $"count at {sd.ToString()}s";
                         var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
@@ -1265,7 +1273,7 @@ namespace AngularSPAWebAPI.Services
                         cptFeatureDict.Add(titleHitRate, hitRate);
                         cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
                         cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
-                        cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                        cptFeatureDict.Add(titleResponseBias, (float?)responseBias);
                     }
                    
 
@@ -1277,10 +1285,10 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Function definition to extract calculated metrics for cpt task when the contrast level is different
-        private Dictionary<string, float> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
+        private Dictionary<string, float?> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
                         List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
         {
-            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+            Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
             var maxIndex = new List<int>() { lstSD.Count, lstHits.Count, lstMiss.Count, lstMistake.Count, lstcCorrectRejection.Count };
             var maxIndexValue = maxIndex.Max();
@@ -1435,8 +1443,12 @@ namespace AngularSPAWebAPI.Services
                     // Calculated features
                     float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
                     float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
-                    float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
-                    float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                    float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                    discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
+
+                    float? responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+                    responseBias = double.IsInfinity((double)responseBias) ? null : responseBias;
 
                     switch (sd)
                     {
@@ -1464,7 +1476,7 @@ namespace AngularSPAWebAPI.Services
                     cptFeatureDict.Add(titleHitRate, hitRate);
                     cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
                     cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
-                    cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                    cptFeatureDict.Add(titleResponseBias, (float?)responseBias);
 
 
                 }
@@ -1478,15 +1490,19 @@ namespace AngularSPAWebAPI.Services
         }
 
         // function definiton to extract calculated metrics for cpt with different distractor
-        private Dictionary<string, float> GetDictCPTFeatures_distractor(Dictionary<string, float?> cptDictDistractorFeatures)
+        private Dictionary<string, float?> GetDictCPTFeatures_distractor(Dictionary<string, float?> cptDictDistractorFeatures)
         {
-            Dictionary<string, float> cptFeatureDict = new Dictionary<string, float>();
+            Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
             // non-distractor trials
             float? nonDistHitRate = cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"]);
             float? nonDisFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
+
             float? nonDisdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)nonDistHitRate) - Normal.InvCDF(0d, 1d, (float)nonDisFalseALarmRate));
+            nonDisdiscriminationSensitivity = double.IsInfinity((double)nonDisdiscriminationSensitivity) ? null : nonDisdiscriminationSensitivity;
+
             float? nonDistresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)nonDistHitRate) + Normal.InvCDF(0d, 1d, (float)nonDisFalseALarmRate)));
+            nonDistresponseBias = double.IsInfinity((double)nonDistresponseBias) ? null : nonDistresponseBias;
 
             var nonDistTitleHitRate = $"Hit Rate during non-distractor trials";
             var nonDistTitlefalseAlarmRate = $"False Alarm Rate during non-distractor trials";
@@ -1527,8 +1543,8 @@ namespace AngularSPAWebAPI.Services
 
             cptFeatureDict.Add(inCongTitleHitRate, (float)inCongDistHitRate);
             cptFeatureDict.Add(inCongTitlefalseAlarmRate, (float)inCongFalseALarmRate);
-            cptFeatureDict.Add(inCongTitleDiscriminationSensitivity, (float)inCongdiscriminationSensitivity);
-            cptFeatureDict.Add(inCongTitleResponseBias, (float)inCongresponseBias);
+            cptFeatureDict.Add(inCongTitleDiscriminationSensitivity, (float?)inCongdiscriminationSensitivity);
+            cptFeatureDict.Add(inCongTitleResponseBias, (float?)inCongresponseBias);
 
             return cptFeatureDict;
         }
