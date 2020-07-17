@@ -1147,14 +1147,18 @@ namespace AngularSPAWebAPI.Services
 
                 foreach (var sd in distSDValues)
                 {
-                    float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
-                    float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
+                    if (dt_latency.Select("SD = " + sd).Count() > 0)
+                    {
+                        float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
+                        float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
 
-                    var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
-                    var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
+                        var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
+                        var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
 
-                    cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                    cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                        cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                        cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                    }
+                    
                 }
 
                 //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1185,11 +1189,18 @@ namespace AngularSPAWebAPI.Services
 
                     foreach (var sd in distSDValues)
                     {
-                        float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
+                        if (dt_incorrect_latency.Select("SD = " + sd).Count() > 0)
+                        {
+                            float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
 
-                        var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
+                            var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
 
-                        cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+                            cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+                        }
+                        else {
+                            // TODO: what needs to be done here?
+                        }
+                        
 
                     }
                 }
@@ -1219,40 +1230,44 @@ namespace AngularSPAWebAPI.Services
                 // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
                 foreach (var sd in distSDValues)
                 {
-                    var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
-                    var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
-                    var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
-                    var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
-                    var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
-                    // Calculated features
-                    float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
-                    float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
-                    float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
-                    float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+                    if (dt.Select("SD = " + sd).Count() > 0)
+                    {
+                        var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
+                        var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                        var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                        var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                        var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                        // Calculated features
+                        float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                        float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                        float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                        float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
 
-                    var titleSD = $"count at {sd.ToString()}s";
-                    var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
-                    var titleMiss = $"End Summary - Miss at {sd.ToString()}s SD";
-                    var titleMistake = $"End Summary - Mistake at {sd.ToString()}s SD";
-                    var titleCorrectRejection = $"End Summary - CorrectRejection at {sd.ToString()}s SD";
+                        var titleSD = $"count at {sd.ToString()}s";
+                        var titleHit = $"End Summary - Hits at {sd.ToString()}s SD";
+                        var titleMiss = $"End Summary - Miss at {sd.ToString()}s SD";
+                        var titleMistake = $"End Summary - Mistake at {sd.ToString()}s SD";
+                        var titleCorrectRejection = $"End Summary - CorrectRejection at {sd.ToString()}s SD";
 
-                    var titleHitRate = $"Hit Rate at {sd.ToString()}s";
-                    var titlefalseAlarmRate = $"False Alarm Rate at {sd.ToString()}s";
-                    var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {sd.ToString()}s ";
-                    var titleResponseBias = $"Response Bias at {sd.ToString()}s";
+                        var titleHitRate = $"Hit Rate at {sd.ToString()}s";
+                        var titlefalseAlarmRate = $"False Alarm Rate at {sd.ToString()}s";
+                        var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {sd.ToString()}s ";
+                        var titleResponseBias = $"Response Bias at {sd.ToString()}s";
 
 
-                    // Adding key/value pairs in cptFeatureDict 
-                    cptFeatureDict.Add(titleSD, countSD);
-                    cptFeatureDict.Add(titleHit, sumHit);
-                    cptFeatureDict.Add(titleMiss, sumMiss);
-                    cptFeatureDict.Add(titleMistake, sumMistake);
-                    cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
+                        // Adding key/value pairs in cptFeatureDict 
+                        cptFeatureDict.Add(titleSD, countSD);
+                        cptFeatureDict.Add(titleHit, sumHit);
+                        cptFeatureDict.Add(titleMiss, sumMiss);
+                        cptFeatureDict.Add(titleMistake, sumMistake);
+                        cptFeatureDict.Add(titleCorrectRejection, sumCorrectRejection);
 
-                    cptFeatureDict.Add(titleHitRate, hitRate);
-                    cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
-                    cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
-                    cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                        cptFeatureDict.Add(titleHitRate, hitRate);
+                        cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
+                        cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
+                        cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                    }
+                   
 
                 }
             }
@@ -1301,30 +1316,34 @@ namespace AngularSPAWebAPI.Services
             double contrastLevel = 0;
             foreach (var sd in distSDValues)
             {
-                float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
-                float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
-
-                switch (sd)
+                if (dt_latency.Select("SD = " + sd).Count() > 0)
                 {
-                    case 1:
-                        contrastLevel = 100;
-                        break;
-                    case 2:
-                        contrastLevel = 50;
-                        break;
-                    case 3:
-                        contrastLevel = 25;
-                        break;
-                    case 4:
-                        contrastLevel = 12.5;
-                        break;
+                    float avgCorrectLatency = Convert.ToSingle(dt_latency.Compute("AVG(CorrectLatency)", "SD = " + sd));
+                    float avgRewardLatency = Convert.ToSingle(dt_latency.Compute("AVG(RewardLatency)", "SD = " + sd));
 
+                    switch (sd)
+                    {
+                        case 1:
+                            contrastLevel = 100;
+                            break;
+                        case 2:
+                            contrastLevel = 50;
+                            break;
+                        case 3:
+                            contrastLevel = 25;
+                            break;
+                        case 4:
+                            contrastLevel = 12.5;
+                            break;
+
+                    }
+                    var titleCorrectLatency = $"Average - Correct Choice Latency at {contrastLevel.ToString()} contrast level";
+                    var titleRewardLatency = $"Average - Reward Retrieval Latency at {contrastLevel.ToString()} contrast level";
+
+                    cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
+                    cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                 }
-                var titleCorrectLatency = $"Average - Correct Choice Latency at {contrastLevel.ToString()} contrast level";
-                var titleRewardLatency = $"Average - Reward Retrieval Latency at {contrastLevel.ToString()} contrast level";
-
-                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                
             }
 
             //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1353,28 +1372,32 @@ namespace AngularSPAWebAPI.Services
 
             foreach (var sd in distSDValues)
             {
-                float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
-
-                switch (sd)
+                if (dt_incorrect_latency.Select("SD = " + sd).Count() > 0)
                 {
-                    case 1:
-                        contrastLevel = 100;
-                        break;
-                    case 2:
-                        contrastLevel = 50;
-                        break;
-                    case 3:
-                        contrastLevel = 25;
-                        break;
-                    case 4:
-                        contrastLevel = 12.5;
-                        break;
+                    float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
 
+                    switch (sd)
+                    {
+                        case 1:
+                            contrastLevel = 100;
+                            break;
+                        case 2:
+                            contrastLevel = 50;
+                            break;
+                        case 3:
+                            contrastLevel = 25;
+                            break;
+                        case 4:
+                            contrastLevel = 12.5;
+                            break;
+
+                    }
+
+                    var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {contrastLevel.ToString()} contrast level";
+
+                    cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
                 }
-
-                var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {contrastLevel.ToString()} contrast level";
-
-                cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+                
 
             }
 
@@ -1402,44 +1425,51 @@ namespace AngularSPAWebAPI.Services
             // This loop is used to extract features that occures the exact # of times that SD occures in the session. 
             foreach (var sd in distSDValues)
             {
-                var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
-                var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
-                var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
-                var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
-                var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
-                // Calculated features
-                float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
-                float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
-                float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
-                float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
-
-                switch (sd)
+                if (dt.Select("SD = " + sd).Count() > 0)
                 {
-                    case 1:
-                        contrastLevel = 100;
-                        break;
-                    case 2:
-                        contrastLevel = 50;
-                        break;
-                    case 3:
-                        contrastLevel = 25;
-                        break;
-                    case 4:
-                        contrastLevel = 12.5;
-                        break;
+                    var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
+                    var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                    var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                    var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                    var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                    // Calculated features
+                    float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                    float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                    float discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
+                    float responseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, hitRate) + Normal.InvCDF(0d, 1d, falseAlarmRate)));
+
+                    switch (sd)
+                    {
+                        case 1:
+                            contrastLevel = 100;
+                            break;
+                        case 2:
+                            contrastLevel = 50;
+                            break;
+                        case 3:
+                            contrastLevel = 25;
+                            break;
+                        case 4:
+                            contrastLevel = 12.5;
+                            break;
+
+                    }
+
+                    var titleHitRate = $"Hit Rate at {contrastLevel.ToString()} contrast level";
+                    var titlefalseAlarmRate = $"False Alarm Rate at {contrastLevel.ToString()} contrast level";
+                    var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {contrastLevel.ToString()} contrast level";
+                    var titleResponseBias = $"Response Bias at {contrastLevel.ToString()} contrast level";
+
+
+                    cptFeatureDict.Add(titleHitRate, hitRate);
+                    cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
+                    cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
+                    cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+
 
                 }
 
-                var titleHitRate = $"Hit Rate at {contrastLevel.ToString()} contrast level";
-                var titlefalseAlarmRate = $"False Alarm Rate at {contrastLevel.ToString()} contrast level";
-                var titleDiscriminationSensitivity = $"Discrimination Sensitivity at {contrastLevel.ToString()} contrast level";
-                var titleResponseBias = $"Response Bias at {contrastLevel.ToString()} contrast level";
-
-
-                cptFeatureDict.Add(titleHitRate, hitRate);
-                cptFeatureDict.Add(titlefalseAlarmRate, falseAlarmRate);
-                cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
-                cptFeatureDict.Add(titleResponseBias, (float)responseBias);
+                
 
             }
 
