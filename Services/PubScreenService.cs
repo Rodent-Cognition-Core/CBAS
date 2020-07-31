@@ -900,7 +900,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     lstPubScreen.Add(new PubScreenSearch
                     {
-
+                        ID = Int32.Parse(dr["ID"].ToString()),
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
                         DOI = Convert.ToString(dr["DOI"].ToString()),

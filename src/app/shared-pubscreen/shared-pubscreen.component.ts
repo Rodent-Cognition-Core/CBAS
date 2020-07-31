@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
+import { Component, OnInit, Inject, NgModule, Input } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { NgModel } from '@angular/forms';
@@ -21,6 +21,7 @@ import { Pubscreen } from '../models/pubscreen';
     styleUrls: ['./shared-pubscreen.component.scss']
 })
 export class SharedPubscreenComponent implements OnInit {
+
 
     //Models Variables for adding Publication
     authorModel: any;
@@ -50,6 +51,7 @@ export class SharedPubscreenComponent implements OnInit {
     sourceOptionModel: any;
     bioAddingOptionModel: any;
     bioDoiKeyModel: any;
+
 
 
     //Models Variables for searching publication

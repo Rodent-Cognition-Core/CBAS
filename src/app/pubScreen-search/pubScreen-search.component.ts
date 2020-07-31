@@ -14,7 +14,7 @@ import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
-//import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
+import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 
 @Component({
     selector: 'app-pubScreen-search',
@@ -164,20 +164,20 @@ export class PubScreenSearchComponent implements OnInit {
 
     }
 
-    //openDialog(Publication): void {
-    //    let dialogref = this.dialog.open(PubscreenDialogeComponent, {
-    //        height: '900px',
-    //        width: '1100px',
-    //        data: { publicationObj: Publication }
+    openDialog(Publication): void {
+        let dialogref = this.dialog.open(PubscreenDialogeComponent, {
+            height: '900px',
+            width: '1100px',
+            data: { publicationObj: Publication }
 
-    //    });
+        });
 
-    //    dialogref.afterClosed().subscribe(result => {
-    //        console.log('the dialog was closed');
-    //        //this.DialogResult = result;
-    //        //this.GetExpSelect();
-    //    });
-    //}
+        dialogref.afterClosed().subscribe(result => {
+            console.log('the dialog was closed');
+            //this.DialogResult = result;
+            //this.GetExpSelect();
+        });
+    }
 
     // Function definition for searching publications based on search criteria
     search() {

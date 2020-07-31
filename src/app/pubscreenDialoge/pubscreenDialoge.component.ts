@@ -29,6 +29,8 @@ export class PubscreenDialogeComponent implements OnInit {
         private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, ) { }
 
     ngOnInit() {
+
+        //console.log(this.data)
       
     }
 
