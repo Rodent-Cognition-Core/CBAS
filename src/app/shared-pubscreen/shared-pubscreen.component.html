@@ -1,0 +1,316 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>PUBSCREEN</h1></div>
+
+<div class="guideline" id="guideline">
+    <br />
+
+
+    <br />
+    <div class="content">
+        PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
+        that match the search criteria.
+    </div>
+    <div class="account-card-container2">
+        <mat-card>
+            <mat-toolbar color="primary">Adding Publication</mat-toolbar>
+
+            <mat-card-content>
+
+                <div>
+                    <br />
+                    <label>Please fill the following form to add a new touchscreen-based publication:</label>
+                    <hr /><br />
+
+
+                    <!--Adding Paper information ********************************************-->
+                    <label style="color:#566573">Paper Information:</label><br /><br />
+
+                    <!--Source-->
+                    <mat-radio-group [formControl]="sourceOption" [(ngModel)]="sourceOptionModel" required>
+                        <span>Please indicate which of the following sources you want to use for adding the paper:</span>
+                        <mat-radio-button value="1" (change)="resetFormVals()">PubMed</mat-radio-button>
+                        <mat-radio-button value="2" (change)="resetFormVals()">bioRxiv</mat-radio-button>
+                        <mat-error style="font-size:small" *ngIf="sourceOption.invalid">{{getErrorMessagePaperSource()}}</mat-error>
+                    </mat-radio-group>
+                    <br /> <br />
+
+                    <!--Adding Paper option for pubmed-->
+                    <mat-radio-group [formControl]="addingOption" [(ngModel)]="addingOptionModel" required *ngIf="sourceOptionModel == 1">
+                        <span>Please indicate which of the following options you want to use for adding the paper:</span>
+                        <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
+                        <mat-radio-button value="2" (change)="resetFormVals()">PubMedID</mat-radio-button>
+                        <mat-radio-button value="3" (change)="GetAuthorList()">None</mat-radio-button>
+                        <mat-error style="font-size:small" *ngIf="addingOption.invalid">{{getErrorMessagePaperOption()}}</mat-error>
+                    </mat-radio-group>
+
+                    <!--Adding Paper option for bioRxiv-->
+                    <mat-radio-group [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 2">
+                        <span>Please indicate which of the following options you want to use for adding the paper:</span>
+                        <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
+                        <mat-radio-button value="3" (change)="GetAuthorList()">None</mat-radio-button>
+                        <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
+                    </mat-radio-group>
+
+                    <br /><br />
+
+                    <!--Submitting Paper DOI to get Author List, Title, Abstract, Year, Keywords -->
+                    <!--Paper DOI if DOI is available for pubMed-->
+                    <mat-form-field *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'">
+
+                        <input matInput placeholder="Paper's DOI" [(ngModel)]="doiKeyModel" [formControl]="doiKey" required>
+                        <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKey()}}</mat-error>
+
+                    </mat-form-field>&nbsp;
+                    <button mat-raised-button *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'" matTooltip="Add DOI to get some information of paper from pubMed" (click)="addDOI(doiKeyModel)" [disabled]="setDisabledAddDOI()">Add DOI</button>
+
+                    <!--Paper's PubMedID if PubmedID is available for pubMed-->
+                    <mat-form-field *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'">
+
+                        <input matInput placeholder="Paper's PubMedID" [(ngModel)]="PubMedKeyModel" [formControl]="pubMedKey" required>
+                        <mat-error *ngIf="pubMedKey.invalid">{{getErrorMessagePubMedKey()}}</mat-error>
+
+                    </mat-form-field>&nbsp;
+                    <button mat-raised-button *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'" matTooltip="Add PubMedID to get some information of paper from pubMed" (click)="addPubMedID(PubMedKeyModel)" [disabled]="setDisabledAddPubMedID()">Add PubMedID</button>
+
+                    <!--Paper's PubMedID if PubmedID is available for bioRxiv-->
+                    <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'">
+
+                        <input matInput placeholder="Paper's DOI" [(ngModel)]="bioDoiKeyModel" [formControl]="doiKeyBio" required>
+                        <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKeyBio()}}</mat-error>
+
+                    </mat-form-field>&nbsp;
+                    <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
+                    <br />
+
+                    <!--Paper Author if either pubmedI or DOI is not available-->
+                    <div *ngIf="addingOptionModel=='3'">
+                        <mat-form-field>
+                            <mat-select [formControl]="author" placeholder="Select Author" [(ngModel)]="authorModel" required multiple>
+
+                                <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+
+                                <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                    {{author.firstName}}-{{author.lastName}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
+                        </mat-form-field>&nbsp;
+
+                        <button mat-icon-button *ngIf="addingOptionModel=='3'" matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
+
+                        <br /><br />
+                    </div>
+
+                    <!--Paper Author-->
+                    <mat-form-field style="width:62%" *ngIf="addingOptionModel!='3'">
+
+                        <textarea matInput placeholder="Paper's Author" [(ngModel)]="authorModel2" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+    
+                                        </textarea>
+
+                    </mat-form-field>
+
+                    <!--paper reference-->
+                    <mat-form-field style="width:31%; padding-left:30px" *ngIf="addingOptionModel!='3'">
+
+                        <textarea matInput placeholder="Paper's Reference" [(ngModel)]="referenceModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+    
+                                        </textarea>
+
+                    </mat-form-field>
+                    <br />
+
+                    <!--Paper Title-->
+                    <mat-form-field style="width:30%">
+
+                        <textarea matInput placeholder="Paper's Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+    
+                                        </textarea>
+                        <mat-error *ngIf="title.invalid">{{getErrorMessageTitle()}}</mat-error>
+
+                    </mat-form-field>
+
+                    <!--Paper Abstract-->
+                    <mat-form-field style="width:30%; padding-left:35px">
+
+                        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+    
+                                        </textarea>
+                    </mat-form-field>
+
+                    <!--Paper year-->
+                    <mat-form-field style="width:30%; padding-left:30px">
+
+                        <input matInput placeholder="Paper's Year" [formControl]="year" [(ngModel)]="yearModel" required>
+                        <mat-error *ngIf="year.invalid">{{getErrorMessageYear()}}</mat-error>
+                        <mat-error *ngIf="year.invalid">{{getErrorMessageYearVal()}}</mat-error>
+
+                    </mat-form-field><br />
+
+                    <!--Paper Keywords-->
+                    <mat-form-field style="width:30%;">
+
+                        <textarea matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+    
+                                        </textarea>
+
+
+                    </mat-form-field>
+
+                    <!--Paper DOI-->
+                    <mat-form-field style="width:30%; padding-left:35px">
+
+                        <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel" [formControl]="doi" required>
+                        <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
+
+                    </mat-form-field>
+
+                    <!--Paper Type-->
+                    <mat-form-field style="width:30%; padding-left:30px" *ngIf="addingOptionModel=='3'">
+                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel" required>
+                            <mat-option *ngFor="let type of paperTypeList" [value]="type.paperType">
+                                {{type.paperType}}
+                            </mat-option>
+                        </mat-select>
+
+                        <mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>
+                    </mat-form-field>
+
+                    <!--Paper Type 2-->
+                    <mat-form-field style="width:30%; padding-left:35px" *ngIf="addingOptionModel!='3'">
+
+                        <input matInput placeholder="Paper's Type" [(ngModel)]="paperTypeModel2">
+
+                    </mat-form-field>
+
+                    <br /><br />
+
+                    <!--Adding Key Features ********************************************-->
+                    <label style="color:#566573">Key Features:</label><br />
+
+                    <!--Cognitive Task-->
+                    <mat-form-field style="width:15%; ">
+                        <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
+                            <mat-option *ngFor="let task of taskList" [value]="task.id">
+                                {{task.task}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
+                    </mat-form-field>
+
+                    <!--Species-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                            <mat-option *ngFor="let specie of specieList" [value]="specie.id">
+                                {{specie.species}}
+                            </mat-option>
+                        </mat-select>
+
+                        <!--<mat-error *ngIf="specie.invalid">{{getErrorMessageSpecie()}}</mat-error>-->
+                    </mat-form-field>
+
+                    <!--Sex-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                            mu
+                            <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+
+                                {{sex.sex}}
+                            </mat-option>
+                        </mat-select>
+                        <!--<mat-error *ngIf="sex.invalid">{{getErrorMessageSex()}}</mat-error>-->
+                    </mat-form-field>
+
+                    <!--Strain-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                            in
+                            <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                                {{strain.strain}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                    <!--DiseaseModel-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
+                            <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
+                                {{disease.diseaseModel}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field> <br />
+
+                    <!--BrainRegion-->
+                    <mat-form-field style="width:15%;">
+                        <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                            <mat-option *ngFor="let region of regionList" [value]="region.id">
+                                {{region.brainRegion}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                    <!--SubRegion-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
+                            <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
+                                {{subregion.subRegion}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                    <!--CellType-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
+                            <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
+                                {{cell.cellType}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                    <!--Method-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
+                            <mat-option *ngFor="let method of methodList" [value]="method.id">
+                                {{method.method}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+
+                    <!--NeuroTransmitter Systems-->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
+                            <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
+                                {{neuro.neuroTransmitter}}
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                </div>
+                <br />
+                <div>
+                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddPublication()">Submit</button>
+                </div>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+    <!--***********************************************************************************************************
+    ***************************************************************************************************************-->
+
+
+
+    <br />
+    <br />
+    <br />
+
+</div>

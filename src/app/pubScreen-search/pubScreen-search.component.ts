@@ -14,7 +14,7 @@ import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
-import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
+//import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 
 @Component({
     selector: 'app-pubScreen-search',

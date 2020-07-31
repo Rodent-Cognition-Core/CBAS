@@ -22,6 +22,7 @@ import { HomeComponent } from './home/home.component';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { OAuthConfig } from './oauth.config';
 import { ExpDialogeComponent } from './expDialoge/expDialoge.component';
+import { PubscreenDialogeComponent } from './pubscreenDialoge/pubscreenDialoge.component';
 import { AnimalDialogComponent } from './animal-dialog/animal-dialog.component';
 import { PasswordDialogComponent } from './password-dialog/password-dialog.component';
 import { ReqTaskDialogeComponent } from './reqTaskDialoge/reqTaskDialoge.component';
@@ -114,6 +115,7 @@ const ROUTES: Routes = [
         AppComponent,
         HomeComponent,
         ExpDialogeComponent,
+        PubscreenDialogeComponent,
         AnimalDialogComponent,
         PasswordDialogComponent,
         ReqTaskDialogeComponent,
@@ -154,6 +156,7 @@ const ROUTES: Routes = [
     ],
     entryComponents: [
         ExpDialogeComponent,
+        PubscreenDialogeComponent,
         AnimalDialogComponent,
         PasswordDialogComponent,
         UploadResultDialogComponent,

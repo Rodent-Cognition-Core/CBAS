@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { SharedExperimentComponent } from '../shared-experiment/shared-experiment.component';
+import { SharedPubscreenComponent } from '../shared-pubscreen/shared-pubscreen.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 //import { OwlModule } from 'ngx-owl-carousel';
@@ -23,9 +24,9 @@ const sharedModules: any[] = [
 
 @NgModule({
     imports: sharedModules,
-    exports: [sharedModules, SharedExperimentComponent],
+    exports: [sharedModules, SharedExperimentComponent, SharedPubscreenComponent],
     declarations: [
-        SharedExperimentComponent
+        SharedExperimentComponent, SharedPubscreenComponent
     ]
 })
 
