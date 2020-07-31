@@ -8,10 +8,11 @@ export class Pubscreen {
     public keywords: string;
     public doi: string;
     public year: string;
-    public years: Array<string>;
+    public yearID: Array<string>;
     public authourID: Array<number>;
     public authorString: string;
     public paperTypeID: Array<number>;
+    public paperTypeIdSearch: Array<number>;
     public paperType: string;
     public taskID: Array<number>;
     public specieID: Array<number>;

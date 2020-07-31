@@ -10,13 +10,12 @@ namespace AngularSPAWebAPI.Models
         public string Keywords { get; set; }
         public string DOI { get; set; }
         public string Year { get; set; }
-        public string AuthorString { get; set; }
-        public string PaperType { get; set; }
-        public string Reference { get; set; }
-                      
-        public string[] Years { get; set; }
+        public int?[] YearID { get; set; }
         public int?[] AuthourID { get; set; }
+        public string AuthorString { get; set; }
         public int? PaperTypeID { get; set; }
+        public int?[] PaperTypeIdSearch { get; set; }
+        public string PaperType { get; set; }
         public int?[] TaskID { get; set; }
         public int?[] SpecieID { get; set; }
         public int?[] sexID { get; set; }
@@ -27,6 +26,8 @@ namespace AngularSPAWebAPI.Models
         public int?[] CellTypeID { get; set; }
         public int?[] MethodID { get; set; }
         public int?[] TransmitterID { get; set; }
+        public string Reference { get; set; }
+        public string Source { get; set; }
 
         public System.Collections.Generic.List<PubScreenAuthor> Author { get; set; }
 

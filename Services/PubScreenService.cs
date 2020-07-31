@@ -224,15 +224,13 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenPaperType> GetPaperTypes()
         {
             List<PubScreenPaperType> PaperTypeList = new List<PubScreenPaperType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From PaperType"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select distinct(PaperType) From PaperType"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     PaperTypeList.Add(new PubScreenPaperType
                     {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
-
+                       PaperType = Convert.ToString(dr["PaperType"].ToString()),
 
                     });
                 }
@@ -490,7 +488,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to add a new publication to database Pubscreen
         public int? AddPublications(PubScreen publication)
         {
-            // Check for duplication based o nthe dOI
+            // Check for duplication based on the DOI
             string sqlDOI = $@"Select ID From Publication Where DOI = '{publication.DOI}'";
             object ID = Dal.ExecScalarPub(sqlDOI);
             if( ID!=null)
@@ -603,7 +601,7 @@ namespace AngularSPAWebAPI.Services
                 // if paper type is new and is not available in DB, insert it to DB
                 if (!allPTList.Contains(publication.PaperType))
                 {
-                    // Insert into paper type table i ndB
+                    // Insert into paper type table in DB
                     string sqlPT = $@"Insert into PaperType (PaperType) Values ('{publication.PaperType}');";
                     if (sqlPT != "") { Dal.ExecuteNonQueryPub(sqlPT); };
                 }
@@ -786,11 +784,11 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for Year
-            if (pubScreen.Years != null && pubScreen.Years.Length != 0)
+            if (pubScreen.YearID != null && pubScreen.YearID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.Years.Length; i++)
+                for (int i = 0; i < pubScreen.YearID.Length; i++)
                 {
-                    sql += $@"SearchPub.Year = '{pubScreen.Years[i]}' OR ";
+                    sql += $@"SearchPub.Year = '{pubScreen.YearID[i]}' OR ";
                 }
             }
 
@@ -904,7 +902,6 @@ namespace AngularSPAWebAPI.Services
                     {
 
                         Title = Convert.ToString(dr["Title"].ToString()),
-                        Abstract = Convert.ToString(dr["Abstract"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
                         DOI = Convert.ToString(dr["DOI"].ToString()),
                         Year = Convert.ToString(dr["Year"].ToString()),

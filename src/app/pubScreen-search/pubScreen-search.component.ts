@@ -13,6 +13,8 @@ import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component
 import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
+import { AuthenticationService } from '../services/authentication.service';
+import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 
 @Component({
     selector: 'app-pubScreen-search',
@@ -42,8 +44,6 @@ export class PubScreenSearchComponent implements OnInit {
     yearSearchModel: any
     authorMultiSelect: any;
 
-    _pubSCreenSearch = new Pubscreen();
-
     // Definiing List Variables 
     paperTypeList: any;
     taskList: any;
@@ -62,14 +62,25 @@ export class PubScreenSearchComponent implements OnInit {
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
-    filteredAutorList: any;
+
+    isAdmin: boolean;
+   
+
+    _pubSCreenSearch = new Pubscreen();
+
+    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    /** Subject that emits when the component has been destroyed. */
+    private _onDestroy = new Subject<void>();
 
     constructor(public dialog: MatDialog,
+        private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService, public dialogAuthor: MatDialog)
     { }
 
     ngOnInit() {
 
+        this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
@@ -81,6 +92,54 @@ export class PubScreenSearchComponent implements OnInit {
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
         this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
 
+        this.isAdmin = this.authenticationService.isInRole("administrator");
+    }
+
+    ngOnDestroy() {
+        this._onDestroy.next();
+        this._onDestroy.complete();
+    }
+
+    GetAuthorList() {
+
+
+        this.pubScreenService.getAuthor().subscribe(data => {
+            this.authorList = data;
+
+            // load the initial expList
+            this.filteredAutorList.next(this.authorList.slice());
+
+            this.authorMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterAuthor();
+                });
+
+        });
+
+        return this.authorList;
+    }
+
+    // handling multi filtered Author list
+    private filterAuthor() {
+        if (!this.authorList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchAuthor = this.authorMultiFilterCtrl.value;
+
+        if (!searchAuthor) {
+            this.filteredAutorList.next(this.authorList.slice());
+            return;
+        } else {
+            searchAuthor = searchAuthor.toLowerCase();
+        }
+
+        // filter the Author
+        this.filteredAutorList.next(
+            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+        );
     }
 
     selectedRegionChange(SelectedRegion) {
@@ -105,17 +164,31 @@ export class PubScreenSearchComponent implements OnInit {
 
     }
 
+    //openDialog(Publication): void {
+    //    let dialogref = this.dialog.open(PubscreenDialogeComponent, {
+    //        height: '900px',
+    //        width: '1100px',
+    //        data: { publicationObj: Publication }
+
+    //    });
+
+    //    dialogref.afterClosed().subscribe(result => {
+    //        console.log('the dialog was closed');
+    //        //this.DialogResult = result;
+    //        //this.GetExpSelect();
+    //    });
+    //}
+
     // Function definition for searching publications based on search criteria
     search() {
 
+        this._pubSCreenSearch.authourID = this.authorModel;
         this._pubSCreenSearch.title = this.titleModel;
-        this._pubSCreenSearch.abstract = this.abstractModel;
         this._pubSCreenSearch.keywords = this.keywordsModel;
         this._pubSCreenSearch.doi = this.doiModel;
-        this._pubSCreenSearch.year = this.yearModel;
-        this._pubSCreenSearch.years = this.yearSearchModel;
-        this._pubSCreenSearch.authourID = this.authorModel;
-        this._pubSCreenSearch.paperTypeID = this.paperTypeModel;
+        //this._pubSCreenSearch.year = this.yearModel;
+        //this._pubSCreenSearch.years = this.yearSearchModel;
+        this._pubSCreenSearch.paperTypeIdSearch = this.paperTypeModel;
         this._pubSCreenSearch.taskID = this.cognitiveTaskModel;
         this._pubSCreenSearch.specieID = this.specieModel;
         this._pubSCreenSearch.sexID = this.sexModel;
