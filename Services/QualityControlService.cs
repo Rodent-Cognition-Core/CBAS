@@ -500,6 +500,7 @@ namespace AngularSPAWebAPI.Services
                             SessionName.Trim().ToLower().Contains("multiple responding training fr-5") ||
                             SessionName.Trim().ToLower().Contains("basic pr (pr4)") ||
                             SessionName.Trim().ToLower().Contains("baseline fr-5") ||
+                            SessionName.Trim().ToLower().Contains("high demand pr (pr4)") ||
                             SessionName.Trim().ToLower().Contains("high demand pr (pr8)") ||
                             SessionName.Trim().ToLower().Contains("high demand pr (pr12)") ||
                             SessionName.Trim().ToLower().Contains("uncapped fr-5")

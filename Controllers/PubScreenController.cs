@@ -33,7 +33,6 @@ namespace AngularSPAWebAPI.Controllers
             return await _manager.GetUserAsync(HttpContext.User);
         }
 
-
         // Extracting paper type list
         [HttpGet("GetPaperType")]
         [AllowAnonymous]

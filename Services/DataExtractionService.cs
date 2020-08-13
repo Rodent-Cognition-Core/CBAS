@@ -1493,7 +1493,7 @@ namespace AngularSPAWebAPI.Services
                 case 64:
                 case 87:
                     {
-                        str = "(SessionName='Punish_Incorrect') OR (SessionName='Punish Incorrect II')";
+                        str = "((SessionName='Punish_Incorrect') OR (SessionName='Punish Incorrect II'))";
                         break;
                     }
                 case 74:

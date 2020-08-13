@@ -185,6 +185,11 @@ namespace AngularSPAWebAPI.Services
 
             JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
 
+            if (jsonPubscreen.collection == null || jsonPubscreen.collection.Length == 0)
+            {
+                return null;
+            }
+
             List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
             List<string> authorListString = new List<string>();
             List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
@@ -788,7 +793,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.YearID.Length; i++)
                 {
-                    sql += $@"SearchPub.Year = '{pubScreen.YearID[i]}' OR ";
+                    sql += $@"SearchPub.Year = '{pubScreen.YearID[i]}' AND ";
                 }
             }
 
@@ -796,7 +801,7 @@ namespace AngularSPAWebAPI.Services
             if (pubScreen.PaperTypeID != null)
             {
 
-                sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' OR ";
+                sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
             }
 
             // search query for Task
@@ -804,7 +809,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.TaskID.Length; i++)
                 {
-                    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' AND ";
                 }
             }
 
@@ -813,7 +818,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.SpecieID.Length; i++)
                 {
-                    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' AND ";
                 }
             }
 
@@ -822,7 +827,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.sexID.Length; i++)
                 {
-                    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' AND ";
                 }
             }
 
@@ -831,7 +836,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.StrainID.Length; i++)
                 {
-                    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' AND ";
                 }
             }
 
@@ -840,7 +845,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
                 {
-                    sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' AND ";
                 }
             }
 
@@ -849,7 +854,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.RegionID.Length; i++)
                 {
-                    sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' AND ";
                 }
             }
 
@@ -858,7 +863,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
                 {
-                    sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' AND ";
                 }
             }
 
@@ -867,7 +872,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
                 {
-                    sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' AND ";
                 }
             }
 
@@ -876,7 +881,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.MethodID.Length; i++)
                 {
-                    sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' AND ";
                 }
             }
 
@@ -885,7 +890,7 @@ namespace AngularSPAWebAPI.Services
             {
                 for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
                 {
-                    sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' AND ";
                 }
             }
 
