@@ -1,19 +1,275 @@
-<!--<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>PUBSCREEN</h1></div>-->
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>PUBSCREEN</h1></div>
 
-<div class="guideline" id="guideline">
-    <!--<br />
+<div>
 
-
-    <br />
     <div class="content">
-        PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
-        that match the search criteria.
-    </div>-->
-    <app-shared-pubscreen></app-shared-pubscreen>
+        <p style="padding-left:50px">
+            PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
+            that match the search criteria.
+        </p>
 
+    </div>
+
+
+    <!--<app-shared-pubscreen></app-shared-pubscreen>-->
     <!--***********************************************************************************************************
     ***************************************************************************************************************-->
+    <div style="padding-top:30px">
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="color:white; background-color:#795D9C; font-size:large;">PUBSCREEN PUBLICATIONS</th>
 
+                </tr>
+            </thead>
+            <tbody class="docs-markdown-tbody">
+                <tr>
+                    <td style="padding: 13px 16px;">
+
+                        <div >
+                            <div style="padding-bottom:10px" *ngIf="isAdmin || isUser">
+                                <label>Adding Publication: </label>
+                                <button mat-icon-button matTooltip="Add new publication" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
+                                <hr />
+                            </div>
+                            
+                            <label>You can search and extract publications based on the following search criteria:</label><br/><br />
+                            <hr /><br />
+
+                            <!--Searching Author information ********************************************-->
+                            <label style="color:#566573">Authour Information:</label><br />
+
+                            <mat-form-field>
+                                <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                        {{author.firstName}}-{{author.lastName}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>&nbsp;
+
+                            <br /><br />
+
+                            <!--Searching Paper information ********************************************-->
+                            <label style="color:#566573">Paper Information:</label><br />
+
+                            <!--Paper Title-->
+                            <mat-form-field style="width:30%">
+
+                                <textarea matInput placeholder="Paper's Title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+    
+                                        </textarea>
+
+                            </mat-form-field>
+
+                            <!--Paper Abstract-->
+                            <!--<mat-form-field style="width:30%; padding-left:35px">
+
+        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+
+        </textarea>
+    </mat-form-field>-->
+                            <!--Paper year-->
+                            <mat-form-field style="width:14%; padding-left:30px">
+
+                                <mat-select placeholder="Select Years(s)" [(ngModel)]="yearSearchModel" multiple>
+                                    <mat-option *ngFor="let val of yearList" [value]="val.year">
+                                        {{val.year}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Paper Type-->
+                            <mat-form-field style="width:14%; padding-left:30px">
+                                <mat-select placeholder="Select Type of Paper" [(ngModel)]="paperTypeModel" multiple>
+                                    <mat-option *ngFor="let type of paperTypeList" [value]="type.id">
+                                        {{type.paperType}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field><br />
+
+                            <!--Paper Keywords-->
+                            <mat-form-field style="width:30%;">
+
+                                <input matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel">
+
+                            </mat-form-field>
+
+                            <!--Paper DOI-->
+                            <mat-form-field style="width:30%; padding-left:35px">
+
+                                <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel">
+
+                            </mat-form-field><br /><br />
+
+                            <!--Adding Key Features ********************************************-->
+                            <label style="color:#566573">Key Features:</label><br />
+
+                            <!--Cognitive Task-->
+                            <mat-form-field style="width:15%; ">
+                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" required multiple>
+                                    <mat-option *ngFor="let task of taskList" [value]="task.id">
+                                        {{task.task}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Species-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                                    <mat-option *ngFor="let specie of specieList" [value]="specie.id">
+                                        {{specie.species}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Sex-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                                    <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                                        {{sex.sex}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Strain-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                                    <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                                        {{strain.strain}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--DiseaseModel-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
+                                    <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
+                                        {{disease.diseaseModel}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field> <br />
+
+                            <!--BrainRegion-->
+                            <mat-form-field style="width:15%;">
+                                <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                                    <mat-option *ngFor="let region of regionList" [value]="region.id">
+                                        {{region.brainRegion}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--SubRegion-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
+                                    <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
+                                        {{subregion.subRegion}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--CellType-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
+                                    <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
+                                        {{cell.cellType}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Method-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
+                                    <mat-option *ngFor="let method of methodList" [value]="method.id">
+                                        {{method.method}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+
+                            <!--NeuroTransmitter Systems-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
+                                    <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
+                                        {{neuro.neuroTransmitter}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                        </div>
+                        <br />
+                        <div>
+                            <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledValSearch()" (click)="search()">Search</button>
+                        </div>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--<div>{{isAdmin}}</div>-->
+    <!--Adding table to show result of search-->
+    <br /><br />
+    <div *ngIf="searchResultList?.length > 0">
+        <!--<app-shared-experiment></app-shared-experiment>-->
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications</th>
+
+                </tr>
+            </thead>
+            <tbody class="docs-markdown-tbody">
+                <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of searchResultList">
+                    <td>
+                        <label style="color:#8D8E90"><b>Paper Information:</b></label>
+                        <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialog(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                        <br /><br />
+
+                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
+                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
+                        <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( row.keywords =="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( row.doi =="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Year:</label> &nbsp; <span style="color:#909497;">{{( row.year =="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Paper Type:</label> &nbsp; <span style="color:#909497;">{{( row.paperType =="") ?  "N/A" : row.paperType}}</span><br /><br />
+
+                        <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
+
+                        <label>Task(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Specie(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sex:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+
+                        <label>Strain(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Disease Model(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> <br /><br />
+
+                        <label>Brain Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-brain Region(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+
+                        <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br />
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
 
     <br />

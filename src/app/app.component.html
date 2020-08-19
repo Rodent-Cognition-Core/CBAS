@@ -45,18 +45,7 @@
             </li>
             <br />-->
 
-            <li>
-                <b>pubscreen</b>
-                <ul>
-                    <li *ngFor="let item of navItemsPubscreen">
-                        <a [routerLink]="[item.route]">{{ item.name}}</a>
-                    </li>
-
-                    <li *ngIf="isAdmin || isUser"><a  href="/pubScreen">Adding Publications</a></li>
-                    
-                </ul>
-            </li>
-
+            <li><a routerLink="/pubScreen">PUBSCREEN</a></li>
             <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
 
             <li>
@@ -71,7 +60,7 @@
                     <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/animal-info">Animal</a></li>
                     <li *ngIf="isAdmin || isUser"><a style="color: #354248;" routerLink="/dashboard">Upload Log</a></li>
                     <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/manage-user">User Management</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/pubScreen">PUBSCREEN</a></li>
+                    <!--<li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/pubScreen">PUBSCREEN</a></li>-->
                 </ul>
             </li>
         </ul>
@@ -121,22 +110,14 @@
                                     <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
                                     <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
                                     <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>
+                                    <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
                                 </ul>
                             </li>
 
                             <li><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
-                            <li>
-                                <b>pubscreen</b>
-                                <ul>
-                                    <li *ngFor="let item of navItemsPubscreen">
-                                        <a [routerLink]="[item.route]">{{ item.name}}</a>
-                                    </li>
 
-                                    <li *ngIf="isAdmin || isUser"><a href="/pubScreen">Adding Publications</a></li>
-                                </ul>
-                            </li>
+                            <li><a routerLink="/pubScreen">PUBSCREEN</a></li>
 
                             <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
@@ -177,24 +158,14 @@
                                     <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
                                     <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
                                     <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>
+                                    <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
                                 </ul>
                             </li>
-
 
 
                             <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
-                            <li>
-                                <b>pubscreen</b>
-                                <ul>
-                                    <li *ngFor="let item of navItemsPubscreen">
-                                        <a [routerLink]="[item.route]">{{ item.name}}</a>
-                                    </li>
-
-                                    <li *ngIf="isAdmin || isUser"><a href="/pubScreen">Adding Publications</a></li>
-                                </ul>
-                            </li>
+                            <li><a routerLink="/pubScreen">PUBSCREEN</a></li>
                             <!--<li>
                                 DATA INTEGRATION
                                 <ul>

@@ -6,7 +6,7 @@ import { PubScreenComponent } from './pubScreen.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: PubScreenComponent, pathMatch: 'full', canActivate: [AuthGuard] }
+    { path: '', component: PubScreenComponent, pathMatch: 'full'}
 ];
 
 @NgModule({

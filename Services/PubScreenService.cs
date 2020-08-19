@@ -894,10 +894,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-
-            sql = sql.Substring(0, sql.Length - 3);
-
-
+            sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
 
             using (DataTable dt = Dal.GetDataTablePub(sql))
             {

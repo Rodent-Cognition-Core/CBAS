@@ -55,8 +55,6 @@ export class PubscreenDialogeComponent implements OnInit {
     bioAddingOptionModel: any;
     bioDoiKeyModel: any;
 
-
-
     //Models Variables for searching publication
     yearSearchModel: any
 
@@ -103,17 +101,15 @@ export class PubscreenDialogeComponent implements OnInit {
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
-    private _onDestroy = new Subject<void>()
+    private _onDestroy = new Subject<void>();
 
-
-    
-
-    constructor(public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any,  private location: Location,
-        private taskAnalysisService: TaskAnalysisService, 
-        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService,
+    constructor(
+        // private pagerService: PagerService,
         public dialog: MatDialog,
-        private pubScreenService: PubScreenService, public dialogAuthor: MatDialog) { }
+        private pubScreenService: PubScreenService, public dialogAuthor: MatDialog) {
+
+        this.resetFormVals();
+    }
 
     ngOnInit() {
 
@@ -130,32 +126,10 @@ export class PubscreenDialogeComponent implements OnInit {
         this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
 
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
-        //this.getAllYears();
+        this.getAllYears();
 
-        console.log(this.data)
-        if (this.data.publicationObj != null) {
-            this.titleModel = this.data.publicationObj.title;
-
-
-            }
-      
-    }
-
-
-
-    onCloseCancel(): void {
-
-
-        this.thisDialogRef.close('Cancel');
 
     }
-
-    onCloseSubmit(): void {
-        
-
-    }
-
-
 
     // Function Definition to open a dialog for adding new cognitive task to the system
     openDialogAuthor(): void {
@@ -580,7 +554,6 @@ export class PubscreenDialogeComponent implements OnInit {
 
 
     }
-
     
 
 
