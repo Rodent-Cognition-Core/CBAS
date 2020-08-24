@@ -43,11 +43,11 @@ namespace AngularSPAWebAPI.Services
             string pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
 
             //If pubmedkey is available, Send it to another function to get Paper's info
-            if(!string.IsNullOrEmpty(pubMedKey))
+            if (!string.IsNullOrEmpty(pubMedKey))
             {
                 return await GetPaperInfoByPubMedKey(pubMedKey);
             }
-                     
+
             return null;
 
         }
@@ -69,14 +69,14 @@ namespace AngularSPAWebAPI.Services
 
             // journal name
             string articleName = "";
-            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("Title")!=null)
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("Title") != null)
             {
                 articleName = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("Title").Value;
             }
 
             //title
             string articleTitle = "";
-            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleTitle")!=null)
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleTitle") != null)
             {
                 articleTitle = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleTitle").Value;
             }
@@ -84,14 +84,14 @@ namespace AngularSPAWebAPI.Services
             //abstract
             if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Abstract") != null)
             {
-                 articleAbstract = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Abstract").Element("AbstractText").Value;
+                articleAbstract = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Abstract").Element("AbstractText").Value;
             }
 
             //articletype
             string articleType = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("PublicationTypeList").Element("PublicationType").Value;
 
             //year
-            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate")!=null)
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate") != null)
             {
                 articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate").Element("Year").Value;
             }
@@ -107,7 +107,7 @@ namespace AngularSPAWebAPI.Services
             // Extracting list of keywords
             string keyWordString = "";
 
-            if(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList") !=null)
+            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList") != null)
             {
                 string xmlStringKeywords = Convert.ToString(incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("KeywordList"));
                 xml.LoadXml(xmlStringKeywords);
@@ -136,15 +136,15 @@ namespace AngularSPAWebAPI.Services
                 {
                     FirstName = xn["ForeName"].InnerText,
                     LastName = xn["LastName"].InnerText,
-                    Affiliation = xn["AffiliationInfo"] ==  null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
+                    Affiliation = xn["AffiliationInfo"] == null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
 
                 });
 
             }
 
             //doi
-           string doi = ((System.Xml.Linq.XElement)(incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode)).Value;
-            
+            string doi = ((System.Xml.Linq.XElement)(incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode)).Value;
+
 
             string authorString = string.Join(", ", authorListString);
 
@@ -235,7 +235,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     PaperTypeList.Add(new PubScreenPaperType
                     {
-                       PaperType = Convert.ToString(dr["PaperType"].ToString()),
+                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
 
                     });
                 }
@@ -496,7 +496,7 @@ namespace AngularSPAWebAPI.Services
             // Check for duplication based on the DOI
             string sqlDOI = $@"Select ID From Publication Where DOI = '{publication.DOI}'";
             object ID = Dal.ExecScalarPub(sqlDOI);
-            if( ID!=null)
+            if (ID != null)
             {
                 return null;
             }
@@ -526,7 +526,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             //When pubmedID or DOI is avaialble, add Authors to Publication_Author Table and also to "Author" table if the author in publication.Author does not already exist in Author table in DB
-            if(publication.Author !=null && publication.Author.Count()!=0)
+            if (publication.Author != null && publication.Author.Count() != 0)
 
             {
                 // Get list of all autohrs from DB in the following format "firstname-lastname"
@@ -536,16 +536,16 @@ namespace AngularSPAWebAPI.Services
                     foreach (DataRow dr in dt.Rows)
                     {
                         allAuthorList.Add((Convert.ToString(dr["FirstName"].ToString())).ToLower() + '-' + (Convert.ToString(dr["LastName"].ToString()).ToLower()));
-                        
+
                     }
                 }
 
                 // loop through  publication.Author if author does not exist in allAuthorList then add it to DB
                 string sqlAuthor = "";
-                for (int i= 0; i < publication.Author.Count(); i++ )
+                for (int i = 0; i < publication.Author.Count(); i++)
                 {
-                    
-                    if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()) )
+
+                    if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
                     {
                         sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
                                                                                                       '{publication.Author[i].LastName}',
@@ -580,7 +580,7 @@ namespace AngularSPAWebAPI.Services
             //Adding to Publication_PaperType Table**********************************************************************************************
 
             // When DOI or Pubmedkey is not available
-            if(publication.PaperTypeID !=null)
+            if (publication.PaperTypeID != null)
             {
                 string sqlPaperType = "";
                 sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {PublicationID});";
@@ -588,7 +588,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // When DOI or Pubmedkey is available
-            if (publication.PaperType!=null && publication.PaperType.Length!=0)
+            if (publication.PaperType != null && publication.PaperType.Length != 0)
             {
                 // check to see if papertype exist in DB, if so just insert it into Publication_PaperType; otherwise, insert it into both PrperType and Publication_PaperType tables in DB.
 
@@ -598,7 +598,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower() );
+                        allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower());
 
                     }
                 }
@@ -766,26 +766,37 @@ namespace AngularSPAWebAPI.Services
 
             if (!string.IsNullOrEmpty(pubScreen.Title))
             {
-                sql += $@"SearchPub.Title = '{pubScreen.Title}' OR ";
+                sql += $@"SearchPub.Title = '{HelperService.EscapeSql(pubScreen.Title)}' AND ";
             }
 
             if (!string.IsNullOrEmpty(pubScreen.Keywords))
             {
-                sql += $@"SearchPub.Keywords like '%{pubScreen.Keywords}%' OR ";
+                sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
             }
 
             if (!string.IsNullOrEmpty(pubScreen.DOI))
             {
-                sql += $@"SearchPub.DOI = '{pubScreen.DOI}' OR ";
+                sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
             }
 
             // search query for Author
             if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.AuthourID.Length; i++)
+                if (pubScreen.AuthourID.Length == 1)
                 {
-                    sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
+                    sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
                 }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.AuthourID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
             }
 
             // search query for Year
@@ -800,98 +811,206 @@ namespace AngularSPAWebAPI.Services
             // search query for PaperType
             if (pubScreen.PaperTypeID != null)
             {
-
                 sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
             }
 
             // search query for Task
             if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.TaskID.Length; i++)
+
+                if (pubScreen.TaskID.Length == 1)
                 {
-                    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
                 }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.TaskID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
             }
 
             // search query for Species
             if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.SpecieID.Length; i++)
+                if (pubScreen.SpecieID.Length == 1)
                 {
-                    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.SpecieID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for Sex
             if (pubScreen.sexID != null && pubScreen.sexID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.sexID.Length; i++)
+                if (pubScreen.sexID.Length == 1)
                 {
-                    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.sexID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for Strain
             if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.StrainID.Length; i++)
+                if (pubScreen.StrainID.Length == 1)
                 {
-                    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.StrainID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for Disease
             if (pubScreen.DiseaseID != null && pubScreen.DiseaseID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
+                if (pubScreen.DiseaseID.Length == 1)
                 {
-                    sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
+                    {
+                        sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' OR ";
+
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for BrainRegion
             if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.RegionID.Length; i++)
+                if (pubScreen.RegionID.Length == 1)
                 {
-                    sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.RegionID.Length; i++)
+                    {
+                        sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for SubRegion
             if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
+                if (pubScreen.SubRegionID.Length == 1)
                 {
-                    sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}) +  '%' AND ";
                 }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
+                    {
+                        sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
             }
 
             // search query for CellType
             if (pubScreen.CellTypeID != null && pubScreen.CellTypeID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
+                if (pubScreen.CellTypeID.Length == 1)
                 {
-                    sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
+                    {
+                        sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
 
             // search query for Method
             if (pubScreen.MethodID != null && pubScreen.MethodID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.MethodID.Length; i++)
+                if (pubScreen.MethodID.Length == 1)
                 {
-                    sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}) +  '%' AND ";
+                }
+
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.MethodID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
                 }
             }
-
             // search query for Neuro Transmitter
             if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
             {
-                for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
+                if (pubScreen.TransmitterID.Length == 1)
                 {
-                    sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' AND ";
+                    sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}) +  '%' AND ";
                 }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
             }
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query

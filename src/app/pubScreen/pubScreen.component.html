@@ -114,7 +114,7 @@
                             <mat-form-field style="width:15%; ">
                                 <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" required multiple>
                                     <mat-option *ngFor="let task of taskList" [value]="task.id">
-                                        {{task.task}}
+                                        <span matTooltip="{{task.task}}">{{task.task}}</span>
                                     </mat-option>
                                 </mat-select>
 
