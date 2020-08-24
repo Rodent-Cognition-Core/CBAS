@@ -42,7 +42,7 @@
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
