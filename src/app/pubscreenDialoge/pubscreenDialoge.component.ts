@@ -113,7 +113,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     ngOnInit() {
 
-        //this.GetAuthorList();
+        this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
