@@ -1058,6 +1058,7 @@ namespace AngularSPAWebAPI.Services
                         CellType = Convert.ToString(dr["CellType"].ToString()),
                         Method = Convert.ToString(dr["Method"].ToString()),
                         NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
+                        Reference = Convert.ToString(dr["Reference"].ToString()),
 
                     });
                 }

@@ -180,7 +180,7 @@ export class PubScreenComponent implements OnInit {
             width: '1200px',
             data: {
                 publicationObj: Publication,
-                sourceOptionModel: this.sourceOptionModel,
+                //sourceOptionModel: this.sourceOptionModel,
 
             }
 
@@ -229,6 +229,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
+
         console.log(this._pubSCreenSearch);
 
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {

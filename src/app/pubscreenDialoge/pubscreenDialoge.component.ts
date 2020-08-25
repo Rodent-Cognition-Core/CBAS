@@ -55,6 +55,8 @@ export class PubscreenDialogeComponent implements OnInit {
     bioAddingOptionModel: any;
     bioDoiKeyModel: any;
 
+    isEditMode: boolean;
+
     //Models Variables for searching publication
     yearSearchModel: any
 
@@ -104,6 +106,7 @@ export class PubscreenDialogeComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     constructor(
+        public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
         // private pagerService: PagerService,
         public dialog: MatDialog,
         private pubScreenService: PubScreenService,
@@ -114,6 +117,8 @@ export class PubscreenDialogeComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        this.isEditMode = false;
 
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
@@ -133,11 +138,16 @@ export class PubscreenDialogeComponent implements OnInit {
         console.log(this.data);
         // if it is an Edit model
         if (this.data.publicationObj != null) {
+
+            this.isEditMode = true;
+
             this.doiModel = this.data.publicationObj.doi;
             this.keywordsModel = this.data.publicationObj.keywords;
             this.titleModel = this.data.publicationObj.title;
             this.abstractModel = this.data.publicationObj.abstract;
             this.yearModel = this.data.publicationObj.year;
+            this.referenceModel = this.data.publicationObj.reference;
+
 
  
         }
@@ -521,6 +531,9 @@ export class PubscreenDialogeComponent implements OnInit {
 
             if (data == null) {
                 alert("Publication with the same DOI exists in the database!")
+            } else {
+                this.thisDialogRef.close();
+                alert("Publication was successfully added to the system!")
             }
             this.resetFormVals();
 
