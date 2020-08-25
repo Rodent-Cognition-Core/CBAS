@@ -239,7 +239,7 @@
                 <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of searchResultList">
                     <td>
                         <label style="color:#8D8E90"><b>Paper Information:</b></label>
-                        <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialog(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                        <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
                         <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
                         <div style="clear:both"></div>
                         <br /><br />

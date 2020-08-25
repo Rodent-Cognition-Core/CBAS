@@ -178,6 +178,26 @@ export class PubScreenComponent implements OnInit {
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '850px',
             width: '1200px',
+            data: {
+                publicationObj: Publication,
+                sourceOptionModel: this.sourceOptionModel,
+
+            }
+
+        });
+
+        dialogref.afterClosed().subscribe(result => {
+            console.log('the dialog was closed');
+            //this.DialogResult = result;
+            //this.GetExpSelect();
+        });
+    }
+
+    // Edit publication
+    openDialogEditPublication(Publication): void {
+        let dialogref = this.dialog.open(PubscreenDialogeComponent, {
+            height: '850px',
+            width: '1200px',
             data: { publicationObj: Publication }
 
         });

@@ -106,7 +106,9 @@ export class PubscreenDialogeComponent implements OnInit {
     constructor(
         // private pagerService: PagerService,
         public dialog: MatDialog,
-        private pubScreenService: PubScreenService, public dialogAuthor: MatDialog) {
+        private pubScreenService: PubScreenService,
+        public dialogAuthor: MatDialog,
+        @Inject(MAT_DIALOG_DATA) public data: any,) {
 
         this.resetFormVals();
     }
@@ -128,8 +130,24 @@ export class PubscreenDialogeComponent implements OnInit {
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
 
+        console.log(this.data);
+        // if it is an Edit model
+        if (this.data.publicationObj != null) {
+            this.doiModel = this.data.publicationObj.doi;
+            this.keywordsModel = this.data.publicationObj.keywords;
+            this.titleModel = this.data.publicationObj.title;
+            this.abstractModel = this.data.publicationObj.abstract;
+            this.yearModel = this.data.publicationObj.year;
+
+ 
+        }
 
     }
+
+    //ngAfterViewInit() {
+    //    console.log("ngAfterViewInit");
+    //}
+
 
     // Function Definition to open a dialog for adding new cognitive task to the system
     openDialogAuthor(): void {
