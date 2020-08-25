@@ -149,6 +149,15 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.AddPublications(publication));
         }
 
+        // Deleting publication
+        [HttpDelete("DeletePublicationById")]
+        public IActionResult DeletePublicationById(int pubId)
+        {
+            _pubScreenService.DeletePublicationById(pubId);
+            return new JsonResult("Done!");
+        }
+        
+
         // searching Publications based on search criteria
         [HttpPost("SearchPublication")]
         [AllowAnonymous]

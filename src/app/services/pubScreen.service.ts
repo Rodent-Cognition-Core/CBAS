@@ -169,6 +169,17 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Deleting a publication when Del button is clicked!
+    public deletePublicationById(id: any): any {
+
+        return this.http
+            .delete("/api/pubScreen/DeletePublicationById?pubId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
+
     // Searching publication based on search criteria
     public searchPublication(searchPubscreenObj: Pubscreen) {
 

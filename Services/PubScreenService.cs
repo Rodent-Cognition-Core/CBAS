@@ -488,6 +488,26 @@ namespace AngularSPAWebAPI.Services
             return AuthorList;
         }
 
+        // Delete publication
+        public void DeletePublicationById(int pubId)
+        {
+            string sql = $@" 
+                             Delete From Publication_Author Where PublicationID = {pubId};
+                             Delete From Publication_CellType Where PublicationID = {pubId};
+                             Delete From Publication_Disease Where PublicationID = {pubId};
+                             Delete From Publication_Method Where PublicationID = {pubId};
+                             Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
+                             Delete From Publication_PaperType Where PublicationID = {pubId};
+                             Delete From Publication_Region Where PublicationID = {pubId};
+                             Delete From Publication_Sex Where PublicationID = {pubId};
+                             Delete From Publication_Specie Where PublicationID = {pubId};
+                             Delete From Publication_Strain Where PublicationID = {pubId};
+                             Delete From Publication_SubRegion Where PublicationID = {pubId};
+                             Delete From Publication_Task Where PublicationID = {pubId};
+                             Delete From Publication Where id = { pubId};";
+
+            Dal.ExecuteNonQueryPub(sql);
+        }
 
         //************************************************************************************Adding Publication*************************************************************************************
         // Function Definition to add a new publication to database Pubscreen
