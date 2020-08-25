@@ -786,7 +786,7 @@ namespace AngularSPAWebAPI.Services
 
             if (!string.IsNullOrEmpty(pubScreen.Title))
             {
-                sql += $@"SearchPub.Title = '{HelperService.EscapeSql(pubScreen.Title)}' AND ";
+                sql += $@"SearchPub.Title like '%{HelperService.EscapeSql(pubScreen.Title)}%' AND ";
             }
 
             if (!string.IsNullOrEmpty(pubScreen.Keywords))
