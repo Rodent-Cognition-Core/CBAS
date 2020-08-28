@@ -18,7 +18,7 @@ import { AuthenticationService } from './authentication.service';
         private authenticationService: AuthenticationService) { }
 
 
-    
+
     // Extracting PaperType List From DB
     public getPaperType(): any {
 
@@ -97,7 +97,7 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
-    } 
+    }
 
     // Extracting Cell types List From DB
     public getCellType(): any {
@@ -107,7 +107,7 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
-    } 
+    }
 
     // Extracting Method List From DB
     public getMethod(): any {
@@ -117,7 +117,7 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
-    } 
+    }
 
     // Extracting NeuroTransmitter List From DB
     public getNeurotransmitter(): any {
@@ -145,7 +145,7 @@ import { AuthenticationService } from './authentication.service';
             .post("/api/pubScreen/AddAuthor", body, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
-        
+
     }
 
     // Extracting List of Autors from database
@@ -163,10 +163,19 @@ import { AuthenticationService } from './authentication.service';
 
         const body: string = JSON.stringify(pubscreenObj);
         // Sends an authenticated request.
-        return this.http
-            .post("/api/pubScreen/AddPublication", body, {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            });
+        return this.http.post("/api/pubScreen/AddPublication", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
+    // Editing a publication 
+    public EditPublication(publicationId: number, pubscreenObj: Pubscreen) {
+
+        const body: string = JSON.stringify(pubscreenObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/pubScreen/EditPublication?publicationId=" + publicationId, body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
     }
 
     // Deleting a publication when Del button is clicked!
@@ -225,6 +234,17 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
     }
+
+
+    // Get some paper info based on Doi from Biorxiv
+    public getPaperInfo(id: any): any {
+        return this.http
+            .get("/api/pubScreen/GetPaparInfoByID?ID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+
 
 
 

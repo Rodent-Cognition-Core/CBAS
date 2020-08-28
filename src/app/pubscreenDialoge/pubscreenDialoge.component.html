@@ -103,7 +103,7 @@
                     </mat-form-field>
 
                     <!--paper reference-->
-                    <mat-form-field style="width:31%; padding-left:30px" *ngIf="sourceOptionModel!='3'">
+                    <mat-form-field [ngStyle]="{'width': '31%', 'padding-left': (data.publicationObj!=null) ? '0px' : '30px'}" *ngIf="sourceOptionModel!='3'">
 
                         <textarea matInput placeholder="Paper's Reference" [(ngModel)]="referenceModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     
@@ -152,7 +152,7 @@
                     <!--Paper DOI-->
                     <mat-form-field style="width:30%; padding-left:35px">
 
-                        <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel" [formControl]="doi" required>
+                        <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel" [formControl]="doi" [readonly]="data.publicationObj!=null" required>
                         <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
                     </mat-form-field>
@@ -288,7 +288,7 @@
                 </div>
                 <br />
                 <div>
-                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddPublication()">Submit</button>
+                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddEditPublication()">Submit</button>
                 </div>
 
             </mat-card-content>

@@ -204,8 +204,7 @@ export class PubScreenComponent implements OnInit {
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
-            //this.DialogResult = result;
-            //this.GetExpSelect();
+            this.search();
         });
     }
 

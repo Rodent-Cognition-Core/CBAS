@@ -141,12 +141,23 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetAuthors());
         }
 
-        // Adding new author to database
+        // Adding new publication to database
         [HttpPost("AddPublication")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult AddPublication([FromBody] PubScreen publication)
         {
-            return new JsonResult(_pubScreenService.AddPublications(publication));
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.AddPublications(publication, userEmail));
+        }
+
+        // Edit an existing publication
+        [HttpPost("EditPublication")]
+        public IActionResult EditPublication(int publicationId, [FromBody] PubScreen publication)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, userEmail));
         }
 
         // Deleting publication
@@ -196,6 +207,12 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult GetPaparInfoFromDOIBio(string DOI)
         {
             return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
+        }
+
+        [HttpGet("GetPaparInfoByID")]
+        public IActionResult GetPaparInfoByID(int ID)
+        {
+            return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
         }
 
     }

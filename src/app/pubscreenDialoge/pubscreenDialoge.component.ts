@@ -56,6 +56,7 @@ export class PubscreenDialogeComponent implements OnInit {
     bioDoiKeyModel: any;
 
     isEditMode: boolean;
+    publicationId: number;
 
     //Models Variables for searching publication
     yearSearchModel: any
@@ -78,22 +79,10 @@ export class PubscreenDialogeComponent implements OnInit {
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
+    paperInfo: any;
 
-    //Form Validation Variables for adding publications
-    author = new FormControl('', [Validators.required]);
-    title = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
-    doiKey = new FormControl('', [Validators.required]);
-    paperType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
-    //specie = new FormControl('', [Validators.required]);
-    //sex = new FormControl('', [Validators.required]);
-    addingOption = new FormControl('', [Validators.required]);
-    year = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    pubMedKey = new FormControl('', [Validators.required]);
-    sourceOption = new FormControl('', [Validators.required]);
-    bioAddingOption = new FormControl('', [Validators.required]);
-    doiKeyBio = new FormControl('', [Validators.required]);
+    private form: FormGroup;
+
 
 
     //onbj variable from Models
@@ -108,6 +97,7 @@ export class PubscreenDialogeComponent implements OnInit {
     constructor(
         public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
         // private pagerService: PagerService,
+        private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
@@ -140,13 +130,46 @@ export class PubscreenDialogeComponent implements OnInit {
         if (this.data.publicationObj != null) {
 
             this.isEditMode = true;
+            this.publicationId = this.data.publicationObj.id;
 
-            this.doiModel = this.data.publicationObj.doi;
-            this.keywordsModel = this.data.publicationObj.keywords;
-            this.titleModel = this.data.publicationObj.title;
-            this.abstractModel = this.data.publicationObj.abstract;
-            this.yearModel = this.data.publicationObj.year;
-            this.referenceModel = this.data.publicationObj.reference;
+            this.spinnerService.show();
+
+            this.pubScreenService.getPaperInfo(this.publicationId).subscribe(data => {
+                this.paperInfo = data;
+
+                this.doiModel = this.paperInfo.doi;
+                this.keywordsModel = this.paperInfo.keywords;
+                this.titleModel = this.paperInfo.title;
+                this.abstractModel = this.paperInfo.abstract;
+                this.yearModel = this.paperInfo.year;
+                this.referenceModel = this.paperInfo.reference;
+
+                this.authorModel = this.paperInfo.authourID;
+                this.cellTypeModel = this.paperInfo.cellTypeID;
+                this.diseaseModel = this.paperInfo.diseaseID;
+                this.methodModel = this.paperInfo.methodID;
+                this.paperTypeModel = this.paperInfo.paperType;
+                this.regionModel = this.paperInfo.regionID;
+                this.sexModel = this.paperInfo.sexID;
+                this.specieModel = this.paperInfo.specieID;
+                this.strainModel = this.paperInfo.strainID;
+
+                this.pubScreenService.getRegionSubRegion().subscribe(dataSubRegion => {
+                    this.selectedRegionChange(this.regionModel)
+                    this.subRegionModel = this.paperInfo.subRegionID;
+                });
+
+                this.cognitiveTaskModel = this.paperInfo.taskID;
+                this.neurotransmitterModel = this.paperInfo.transmitterID;
+
+                this.sourceOptionModel = 3;
+
+                this.setDisabledVal();
+
+                this.spinnerService.hide();
+            });
+
+
 
 
  
@@ -246,6 +269,23 @@ export class PubscreenDialogeComponent implements OnInit {
         console.log(this.subRegionList);
     }
 
+
+    //Form Validation Variables for adding publications
+    author = new FormControl('', [Validators.required]);
+    title = new FormControl('', [Validators.required]);
+    doi = new FormControl('', [Validators.required]);
+    doiKey = new FormControl('', [Validators.required]);
+    paperType = new FormControl('', [Validators.required]);
+    cognitiveTask = new FormControl('', [Validators.required]);
+    //specie = new FormControl('', [Validators.required]);
+    //sex = new FormControl('', [Validators.required]);
+    addingOption = new FormControl('', [Validators.required]);
+    year = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    pubMedKey = new FormControl('', [Validators.required]);
+    sourceOption = new FormControl('', [Validators.required]);
+    bioAddingOption = new FormControl('', [Validators.required]);
+    doiKeyBio = new FormControl('', [Validators.required]);
+
     // Handling Error for the required fields
     getErrorMessageAuthor() {
 
@@ -305,47 +345,58 @@ export class PubscreenDialogeComponent implements OnInit {
 
     setDisabledVal() {
 
-        if (this.authorModel == null && this.author.hasError('required')) {
+        if (this.authorModel === null && this.author.hasError('required')) {
 
             return true;
         }
 
-        if (this.paperTypeModel == null && this.paperType.hasError('required')) {
+        if (this.paperTypeModel === null && this.paperType.hasError('required')) {
             return true;
         }
 
-        if (this.sourceOptionModel == 1 && this.addingOption.hasError('required')) {
-            return true;
-
-        }
-
-        if (this.sourceOptionModel == 2 && this.bioAddingOption.hasError('required')) {
+        if (this.sourceOptionModel === 1 && this.addingOption.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.addingOptionModel == 1 && this.doiKey.hasError('required')) {
+        if (this.sourceOptionModel === 2 && this.bioAddingOption.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.addingOptionModel == 2 && this.pubMedKey.hasError('required')) {
+        if (this.sourceOptionModel === 3 && this.author.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.bioAddingOptionModel == 1 && this.doiKeyBio.hasError('required')) {
+        if (this.addingOptionModel === 1 && this.doiKey.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        else if (this.title.hasError('required') ||
-            this.doi.hasError('required') ||
-            this.cognitiveTask.hasError('required') ||
-            this.year.hasError('required') ||
-            this.year.hasError('pattern') ||
-            this.sourceOption.hasError('required')
+        if (this.addingOptionModel === 2 && this.pubMedKey.hasError('required') && !this.isEditMode) {
+            return true;
 
+        }
+
+        if (this.bioAddingOptionModel === 1 && this.doiKeyBio.hasError('required') && !this.isEditMode) {
+            return true;
+
+        }
+
+        else if (
+            //this.title.hasError('required') ||
+            //this.doi.hasError('required') ||
+            //this.cognitiveTask.hasError('required') ||
+            //this.year.hasError('required') ||
+            //this.year.hasError('pattern') ||
+            //this.sourceOption.hasError('required')
+            ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required')) ||
+            ((this.doiModel == null || this.doiModel == "") && this.doi.hasError('required'))||
+            ((this.cognitiveTaskModel == null || this.cognitiveTaskModel.length == 0) && this.cognitiveTask.hasError('required'))||
+            ((this.yearModel == null || this.yearModel == "") && this.year.hasError('required')) ||
+            ((this.yearModel == null || this.yearModel == "") && this.year.hasError('pattern')) ||
+            ((this.sourceOptionModel == null || this.sourceOptionModel == "") && this.sourceOption.hasError('required'))
 
         ) {
 
@@ -403,7 +454,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+                //this.paperTypeModel = data.result.paperType;
 
             }
 
@@ -471,10 +522,11 @@ export class PubscreenDialogeComponent implements OnInit {
 
     }
 
-    // Adding a new publication to DB by cliking on Submit button
-    AddPublication() {
 
-        if (this.authorModel != null && this.authorModel.length != 0) {
+    // Adding a new publication to DB by cliking on Submit button
+    AddEditPublication() {
+
+        if (this.authorModel !== null && this.authorModel.length !== 0) {
             this._pubscreen.authourID = this.authorModel;
             console.log(this.authorModel)
         }
@@ -487,13 +539,13 @@ export class PubscreenDialogeComponent implements OnInit {
 
         }
 
-        if (this.paperTypeModel != null) {
+        if (this.paperTypeModel !== null) {
             this._pubscreen.paperType = this.paperTypeModel;
         }
         else {
             this._pubscreen.paperType = this.paperTypeModel2;
         }
-        if (this.referenceModel != null) {
+        if (this.referenceModel !== null) {
             this._pubscreen.reference = this.referenceModel;
         }
 
@@ -512,6 +564,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.cellTypeID = this.cellTypeModel;
         this._pubscreen.methodID = this.methodModel;
         this._pubscreen.transmitterID = this.neurotransmitterModel;
+        
 
         switch (this.sourceOptionModel) {
 
@@ -523,23 +576,38 @@ export class PubscreenDialogeComponent implements OnInit {
                 this._pubscreen.source = 'BioRxiv';
                 break;
             }
+            case 3: {
+                this._pubscreen.source = 'None';
+                break;
+            }
 
         }
 
+        if (this.isEditMode) {
+            this.pubScreenService.EditPublication(this.publicationId, this._pubscreen).subscribe(data => {
 
-        this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {
+                if (data === true) {
+                    alert("Publication was successfully edited!");
+                    this.thisDialogRef.close();
+                } else {
+                    alert("Error in editing publication! Please try again, if this happens again contact admin.")
+                }
+ 
+            });
 
-            if (data == null) {
-                alert("Publication with the same DOI exists in the database!")
-            } else {
-                this.thisDialogRef.close();
-                alert("Publication was successfully added to the system!")
-            }
-            this.resetFormVals();
+        } else {
+            this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {
 
-        });
+                if (data === null) {
+                    alert("Publication with the same DOI exists in the database!");
+                } else {
+                    this.thisDialogRef.close();
+                    alert("Publication was successfully added to the system!");
+                }
+                this.resetFormVals();
 
-
+            });
+        }
 
     }
 
