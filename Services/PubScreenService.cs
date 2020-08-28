@@ -1282,31 +1282,31 @@ namespace AngularSPAWebAPI.Services
                 
                 foreach (DataRow dr in dt.Rows)
                 {
-                    //sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                    //           Inner join Task on Task.ID = Experiment.TaskID
-                    //           Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
+                    sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                               Inner join Task on Task.ID = Experiment.TaskID
+                               Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
 
-                    //// empty lstExperiment list
-                    
-                    //using (DataTable dtExp = Dal.GetDataTable(sqlMB))
-                    //{
-                    //    foreach (DataRow drExp in dtExp.Rows)
-                    //    {
+                    // empty lstExperiment list
+                    lstExperiment.Clear();
+                    using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    {
+                        foreach (DataRow drExp in dtExp.Rows)
+                        {
 
-                    //        lstExperiment.Add(new Experiment
-                    //        {
-                    //            ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                    //            ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                    //            StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                    //            TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                    //            DOI = Convert.ToString(drExp["DOI"].ToString()),
-                    //            Status = Convert.ToBoolean(drExp["Status"]),
-                    //            TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+                            lstExperiment.Add(new Experiment
+                            {
+                                ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                                ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                                StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                                TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                                DOI = Convert.ToString(drExp["DOI"].ToString()),
+                                Status = Convert.ToBoolean(drExp["Status"]),
+                                TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
 
-                    //        });
-                    //    }
+                            });
+                        }
 
-                    //}
+                    }
 
                     lstPubScreen.Add(new PubScreenSearch
                     {
@@ -1328,7 +1328,7 @@ namespace AngularSPAWebAPI.Services
                         Method = Convert.ToString(dr["Method"].ToString()),
                         NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
                         Reference = Convert.ToString(dr["Reference"].ToString()),
-                        //Experiment = lstExperiment,
+                        Experiment = new List<Experiment>(lstExperiment),
 
 
                     });

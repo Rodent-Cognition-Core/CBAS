@@ -26,14 +26,14 @@
                 <tr>
                     <td style="padding: 13px 16px;">
 
-                        <div >
+                        <div>
                             <div style="padding-bottom:10px" *ngIf="isAdmin || isUser">
                                 <label>Adding Publication: </label>
                                 <button mat-icon-button matTooltip="Add new publication" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
                                 <hr />
                             </div>
-                            
-                            <label>You can search and extract publications based on the following search criteria:</label><br/><br />
+
+                            <label>You can search and extract publications based on the following search criteria:</label><br /><br />
                             <hr /><br />
 
                             <!--Searching Author information ********************************************-->
@@ -68,10 +68,10 @@
                             <!--Paper Abstract-->
                             <!--<mat-form-field style="width:30%; padding-left:35px">
 
-        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                                <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
 
-        </textarea>
-    </mat-form-field>-->
+                                </textarea>
+                            </mat-form-field>-->
                             <!--Paper year-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -266,7 +266,26 @@
 
                         <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br />
+                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
+
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <span style="color: #A569BD;">MouseBytes datasets associate to this publicaton:</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                            <table>
+                                <tr *ngFor="let exp of row.experiment">
+                                    <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
+                                    <td>Taske Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                </tr>
+                            </table>
+
+                        </mat-expansion-panel>
+                        <br />
+
 
                     </td>
                 </tr>

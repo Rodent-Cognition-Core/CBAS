@@ -48,6 +48,8 @@ export class PubScreenComponent implements OnInit {
     yearSearchModel: any
     authorMultiSelect: any;
 
+    panelOpenState = false;
+
     // Definiing List Variables 
     paperTypeList: any;
     taskList: any;
