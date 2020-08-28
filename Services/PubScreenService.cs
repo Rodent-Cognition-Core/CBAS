@@ -589,23 +589,23 @@ namespace AngularSPAWebAPI.Services
                 if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor).ToString(); };
 
                 //Add all authors to publication-author table in DB
-                string strCondition = ("'" + (publication.AuthorString.ToLower()).Replace(",", "', '") + "'").Replace("' ", "'");
-                string sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName) , '-' , LOWER(Author.LastName)) in ({strCondition})";
+                List<string> AuthorList = publication.AuthorString.Split(',').ToList();
+                int? authorID = 0;
+                string sqlauthor2 = "";
                 string sqlauthor3 = "";
-                if (sqlauthor2 != "")
+                int j = 1;
+                foreach (string author in AuthorList)
                 {
-                    using (DataTable dt = Dal.GetDataTablePub(sqlauthor2))
-                    {
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            sqlauthor3 += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({Int32.Parse(dr["ID"].ToString())}, {PublicationID});";
+                    sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
+                    authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
 
-                        }
-                    }
-
-                    if (sqlauthor3 != "") { Dal.ExecuteNonQueryPub(sqlauthor3).ToString(); };
-
+                    sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
+                    Dal.ExecuteNonQueryPub(sqlauthor3).ToString();
+                    j++;
                 }
+
+                
+               
             } // End of if statement when DOI OR Pubmed is available
 
 
@@ -1038,6 +1038,8 @@ namespace AngularSPAWebAPI.Services
                 sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
             }
 
+            
+
             // search query for Author
             if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
             {
@@ -1273,11 +1275,39 @@ namespace AngularSPAWebAPI.Services
             }
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
-
+            string sqlMB = "";
+            List<Experiment> lstExperiment = new List<Experiment>();
             using (DataTable dt = Dal.GetDataTablePub(sql))
             {
+                
                 foreach (DataRow dr in dt.Rows)
                 {
+                    //sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                    //           Inner join Task on Task.ID = Experiment.TaskID
+                    //           Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
+
+                    //// empty lstExperiment list
+                    
+                    //using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    //{
+                    //    foreach (DataRow drExp in dtExp.Rows)
+                    //    {
+
+                    //        lstExperiment.Add(new Experiment
+                    //        {
+                    //            ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                    //            ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                    //            StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                    //            TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                    //            DOI = Convert.ToString(drExp["DOI"].ToString()),
+                    //            Status = Convert.ToBoolean(drExp["Status"]),
+                    //            TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                    //        });
+                    //    }
+
+                    //}
+
                     lstPubScreen.Add(new PubScreenSearch
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
@@ -1298,11 +1328,17 @@ namespace AngularSPAWebAPI.Services
                         Method = Convert.ToString(dr["Method"].ToString()),
                         NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
                         Reference = Convert.ToString(dr["Reference"].ToString()),
+                        //Experiment = lstExperiment,
+
 
                     });
+                    //lstExperiment.Clear();
                 }
 
             }
+
+            // search MouseBytes database to see if the dataset exists********************************************
+            
 
             return lstPubScreen;
 
