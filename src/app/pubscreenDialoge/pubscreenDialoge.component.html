@@ -159,13 +159,13 @@
 
                     <!--Paper Type-->
                     <mat-form-field style="width:30%; padding-left:30px" *ngIf="sourceOptionModel=='3' || isEditMode">
-                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel" required>
+                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel">
                             <mat-option *ngFor="let type of paperTypeList" [value]="type.paperType">
                                 {{type.paperType}}
                             </mat-option>
                         </mat-select>
 
-                        <mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>
+                        <!--<mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>-->
                     </mat-form-field>
 
                     <!--Paper Type 2-->

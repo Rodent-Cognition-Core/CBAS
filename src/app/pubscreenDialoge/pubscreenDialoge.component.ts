@@ -195,6 +195,7 @@ export class PubscreenDialogeComponent implements OnInit {
         dialogref.afterClosed().subscribe(result => {
 
             this.GetAuthorList();
+
         });
     }
 
@@ -205,7 +206,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     GetAuthorList() {
 
-        this.resetFormVals();
+        //this.resetFormVals();
 
         this.pubScreenService.getAuthor().subscribe(data => {
             this.authorList = data;
@@ -280,7 +281,7 @@ export class PubscreenDialogeComponent implements OnInit {
     //specie = new FormControl('', [Validators.required]);
     //sex = new FormControl('', [Validators.required]);
     addingOption = new FormControl('', [Validators.required]);
-    year = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    year = new FormControl('', [Validators.required]);
     pubMedKey = new FormControl('', [Validators.required]);
     sourceOption = new FormControl('', [Validators.required]);
     bioAddingOption = new FormControl('', [Validators.required]);
@@ -395,7 +396,6 @@ export class PubscreenDialogeComponent implements OnInit {
             ((this.doiModel == null || this.doiModel == "") && this.doi.hasError('required'))||
             ((this.cognitiveTaskModel == null || this.cognitiveTaskModel.length == 0) && this.cognitiveTask.hasError('required'))||
             ((this.yearModel == null || this.yearModel == "") && this.year.hasError('required')) ||
-            ((this.yearModel == null || this.yearModel == "") && this.year.hasError('pattern')) ||
             ((this.sourceOptionModel == null || this.sourceOptionModel == "") && this.sourceOption.hasError('required'))
 
         ) {
@@ -525,6 +525,11 @@ export class PubscreenDialogeComponent implements OnInit {
 
     // Adding a new publication to DB by cliking on Submit button
     AddEditPublication() {
+
+        if (!this.yearModel.match(/^(19|20)\d{2}$/)) {
+            alert('year is not valid!');
+            return;
+        }
 
         if (this.authorModel !== null && this.authorModel.length !== 0) {
             this._pubscreen.authourID = this.authorModel;

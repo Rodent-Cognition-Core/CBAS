@@ -28,7 +28,11 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<PubScreen> GetPaperInfoByDoi(string doi)
         {
-            // Submiy doi to get the pubmedkey
+            // Submit doi to get the pubmedkey
+            if (doi.ToLower().Contains("https://doi.org/"))
+            {
+                doi = doi.Replace("https://doi.org/", "", StringComparison.OrdinalIgnoreCase);
+            }
 
             HttpClient httpClient = new HttpClient();
 
@@ -132,16 +136,18 @@ namespace AngularSPAWebAPI.Services
 
             foreach (XmlNode xn in xnList)
             {
-                authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
-
-                authorList.Add(new PubScreenAuthor
+                if(xn["ForeName"] !=null && xn["LastName"]!=null)
                 {
-                    FirstName = xn["ForeName"].InnerText,
-                    LastName = xn["LastName"].InnerText,
-                    Affiliation = xn["AffiliationInfo"] == null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
+                    authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
 
-                });
+                    authorList.Add(new PubScreenAuthor
+                    {
+                        FirstName = xn["ForeName"].InnerText,
+                        LastName = xn["LastName"].InnerText,
+                        Affiliation = xn["AffiliationInfo"] == null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
 
+                    });
+                }
             }
 
             //doi
@@ -150,8 +156,8 @@ namespace AngularSPAWebAPI.Services
             {
                 doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID").Value;
             }
-            
-            
+
+
 
 
             string authorString = string.Join(", ", authorListString);
@@ -604,8 +610,8 @@ namespace AngularSPAWebAPI.Services
                     j++;
                 }
 
-                
-               
+
+
             } // End of if statement when DOI OR Pubmed is available
 
 
@@ -835,7 +841,7 @@ namespace AngularSPAWebAPI.Services
             {
                 var sql = $"select id from PaperType where ltrim(rtrim(papertype)) = '{HelperService.NullToString(HelperService.EscapeSql(publication.PaperType)).Trim()}'";
                 var retPaperType = Dal.ExecScalarPub(sql);
-                if(retPaperType != null)
+                if (retPaperType != null)
                 {
                     paperTypeId = Int32.Parse(Dal.ExecScalarPub(sql).ToString());
 
@@ -1038,7 +1044,7 @@ namespace AngularSPAWebAPI.Services
                 sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
             }
 
-            
+
 
             // search query for Author
             if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
@@ -1279,7 +1285,7 @@ namespace AngularSPAWebAPI.Services
             List<Experiment> lstExperiment = new List<Experiment>();
             using (DataTable dt = Dal.GetDataTablePub(sql))
             {
-                
+
                 foreach (DataRow dr in dt.Rows)
                 {
                     sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
@@ -1338,7 +1344,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search MouseBytes database to see if the dataset exists********************************************
-            
+
 
             return lstPubScreen;
 
