@@ -769,7 +769,7 @@ export class DataExtractionComponent implements OnInit {
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
-                        if (this.selectedTaskvalue == 3 || this.selectedTaskvalue == 4) {
+                        if (this.selectedTaskvalue == 3 || this.selectedTaskvalue == 4 || this.selectedTaskvalue == 11) {
                             this.colNames.push(key);
                         } // else -> do not push Image col 
                     } else {
@@ -843,13 +843,17 @@ export class DataExtractionComponent implements OnInit {
                 }
 
                 keysCounter = 0;
+                
                 for (let key in items[row]) {
 
-                    csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                    //console.log(csv)
-                    keysCounter++
-                }
+                    var csvToAdd = items[row][key].toString();
+                    csvToAdd = csvToAdd.split(",").join("-");
 
+                    csv += csvToAdd + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
+
+                    keysCounter++
+
+                }
 
                 keysCounter = 0
             }

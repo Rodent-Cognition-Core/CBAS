@@ -256,7 +256,7 @@
                             <tr *ngFor="let res of pagedItems; let i = index">
                                 <!--<tr *ngFor="let res of result">-->
                                 <td *ngFor="let col of colNames">
-                                    <span *ngIf="col=='Image' && (selectedTaskvalue==3||selectedTaskvalue==4)" [innerHTML]="res[col]"></span>
+                                    <span *ngIf="col=='Image' && (selectedTaskvalue==3||selectedTaskvalue==4 || selectedTaskvalue==11 )" [innerHTML]="res[col]"></span>
                                     <!--<span *ngIf="col=='Image_Description' && (selectedTaskvalue==3||selectedTaskvalue==4)">{{res[col]}}</span>-->
                                     <span *ngIf="col!='Image'">{{res[col]}}</span>
                                 </td>
