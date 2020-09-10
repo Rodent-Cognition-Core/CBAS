@@ -45,7 +45,8 @@ export class PubScreenComponent implements OnInit {
     addingOptionModel: any;
     methodModel: any;
     neurotransmitterModel: any;
-    yearSearchModel: any
+    yearFromSearchModel: any;
+    yearToSearchModel: any;
     authorMultiSelect: any;
 
     panelOpenState = false;
@@ -68,10 +69,13 @@ export class PubScreenComponent implements OnInit {
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
+    checkYear: boolean;
 
     isAdmin: boolean;
     isUser: boolean;
 
+    //yearFrom = new FormControl('', []);
+    yearTo = new FormControl('', []);
 
     _pubSCreenSearch = new Pubscreen();
 
@@ -104,12 +108,27 @@ export class PubScreenComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
+        this.yearList = this.GetYear(1970).sort().reverse();
+
+        
+
     }
 
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
     }
+
+    // Function definition to get list of years
+    GetYear(startYear) {
+        var currentYear = new Date().getFullYear(), years = [];
+        startYear = startYear || 1980;
+        while (startYear <= currentYear) {
+            years.push(startYear++);
+        }
+        return years;
+    }
+
 
     GetAuthorList() {
 
@@ -209,6 +228,20 @@ export class PubScreenComponent implements OnInit {
             this.search();
         });
     }
+    
+    selectYearToChange(yearFromVal, yearToVal) {
+        console.log(yearToVal)
+        yearFromVal = yearFromVal === null ? 0 : yearFromVal;
+        
+        yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
+
+    }
+
+    
+    getErrorMessageYearTo() {
+        //return this.yearTo.getError('Year To should be greater than Year From');
+        return 'Year To should be greater than Year From'
+    }
 
     // Function definition for searching publications based on search criteria
     search() {
@@ -230,6 +263,8 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
+        this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
+        this._pubSCreenSearch.yearTo = this.yearToSearchModel;
 
         console.log(this._pubSCreenSearch);
 
@@ -278,3 +313,5 @@ export class PubScreenComponent implements OnInit {
 
 
 }
+
+

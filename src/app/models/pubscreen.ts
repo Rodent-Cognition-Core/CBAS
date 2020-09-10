@@ -27,7 +27,8 @@ export class Pubscreen {
     public author: Array<PubscreenAuthor>;
     public reference: string;
     public source: string;
-    
-              
+    public yearFrom: number;
+    public yearTo: number;
+                 
 
 }

@@ -72,14 +72,27 @@
 
                                 </textarea>
                             </mat-form-field>-->
-                            <!--Paper year-->
+                            <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Select Years(s)" [(ngModel)]="yearSearchModel" multiple>
-                                    <mat-option *ngFor="let val of yearList" [value]="val.year">
-                                        {{val.year}}
+                                <mat-select placeholder="Year From" [(ngModel)]="yearFromSearchModel">
+                                    <mat-option *ngFor="let val of yearList" [value]="val">
+                                        {{val}}
                                     </mat-option>
                                 </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Paper year To-->
+                            <mat-form-field style="width:14%; padding-left:30px">
+
+                                <mat-select placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
+                                            (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
+                                    <mat-option *ngFor="let val of yearList" [value]="val">
+                                        {{val}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error >{{getErrorMessageYearTo()}}</mat-error>
 
                             </mat-form-field>
 

@@ -40,7 +40,9 @@ namespace AngularSPAWebAPI.Services
 
             var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
             var responseString = await response.Content.ReadAsStringAsync();
-            if (responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1)
+
+            if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
+                (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
             {
                 return null;
             }
@@ -157,8 +159,14 @@ namespace AngularSPAWebAPI.Services
                 doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID").Value;
             }
 
-
-
+            if (String.IsNullOrEmpty(doi))
+            {
+                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") !=null)
+                {
+                    doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
+                }
+                
+            }
 
             string authorString = string.Join(", ", authorListString);
 
@@ -1029,16 +1037,19 @@ namespace AngularSPAWebAPI.Services
 
             string sql = "Select * From SearchPub Where ";
 
+            // Title
             if (!string.IsNullOrEmpty(pubScreen.Title))
             {
-                sql += $@"SearchPub.Title like '%{HelperService.EscapeSql(pubScreen.Title)}%' AND ";
+                sql += $@"SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.Title)).Trim()}%' AND ";
             }
 
+            //Keywords
             if (!string.IsNullOrEmpty(pubScreen.Keywords))
             {
                 sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
             }
 
+            // DOI
             if (!string.IsNullOrEmpty(pubScreen.DOI))
             {
                 sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
@@ -1067,12 +1078,19 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for Year
-            if (pubScreen.YearID != null && pubScreen.YearID.Length != 0)
+            if (pubScreen.YearFrom != null && pubScreen.YearTo!=null)
             {
-                for (int i = 0; i < pubScreen.YearID.Length; i++)
-                {
-                    sql += $@"SearchPub.Year = '{pubScreen.YearID[i]}' AND ";
-                }
+                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
+            }
+
+            if (pubScreen.YearFrom != null && pubScreen.YearTo == null)
+            {
+                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
+            }
+
+            if(pubScreen.YearTo != null && pubScreen.YearFrom == null)
+            {
+                sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
             }
 
             // search query for PaperType

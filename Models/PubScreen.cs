@@ -28,6 +28,8 @@ namespace AngularSPAWebAPI.Models
         public int?[] TransmitterID { get; set; }
         public string Reference { get; set; }
         public string Source { get; set; }
+        public int? YearFrom { get; set; }
+        public int? YearTo { get; set; }
 
         public System.Collections.Generic.List<PubScreenAuthor> Author { get; set; }
 

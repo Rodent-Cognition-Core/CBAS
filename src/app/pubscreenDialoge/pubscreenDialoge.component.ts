@@ -296,6 +296,7 @@ export class PubscreenDialogeComponent implements OnInit {
     getErrorMessageTitle() {
 
         return this.title.hasError('required') ? 'You must enter a value' : '';
+        
     }
 
     getErrorMessageYear() {
