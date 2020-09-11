@@ -15,7 +15,7 @@
 
                     <!--Adding Paper information ********************************************-->
                     <label style="color:#566573">Paper Information:</label><br /><br />
-                    <div [hidden] ="isEditMode">
+                    <div [hidden]="isEditMode">
                         <!--Source-->
                         <mat-radio-group [formControl]="sourceOption" [(ngModel)]="sourceOptionModel" required>
                             <span>Please indicate which of the following sources you want to use for adding the paper:</span>
@@ -189,6 +189,15 @@
                         </mat-select>
                         <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
                     </mat-form-field>
+                    <span *ngIf="cognitiveTaskModel.includes(26)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Task." [(ngModel)]="taskOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one task, separate them by semi colo ( ; )"></fa>
+                    </span>
 
                     <!--Species-->
                     <mat-form-field style="width:15%; padding-left:30px">

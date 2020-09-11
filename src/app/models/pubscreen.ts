@@ -29,6 +29,7 @@ export class Pubscreen {
     public source: string;
     public yearFrom: number;
     public yearTo: number;
+    public taskOther: string;
                  
 
 }

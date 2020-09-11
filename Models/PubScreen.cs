@@ -30,6 +30,7 @@ namespace AngularSPAWebAPI.Models
         public string Source { get; set; }
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
+        public string TaskOther {get; set;}
 
         public System.Collections.Generic.List<PubScreenAuthor> Author { get; set; }
 

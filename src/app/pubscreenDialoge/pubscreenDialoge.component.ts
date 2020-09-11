@@ -54,6 +54,7 @@ export class PubscreenDialogeComponent implements OnInit {
     sourceOptionModel: any;
     bioAddingOptionModel: any;
     bioDoiKeyModel: any;
+    taskOtherModel: string;
 
     isEditMode: boolean;
     publicationId: number;
@@ -80,6 +81,7 @@ export class PubscreenDialogeComponent implements OnInit {
     yearList: any;
     paperInfoFromDoiList: any;
     paperInfo: any;
+    
 
     private form: FormGroup;
 
@@ -112,15 +114,15 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
-        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
-        this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
+        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task"); this.processList(this.taskList, "Other", "task");  });
+        this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; this.processList(this.specieList, "Other", "species"); });
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
-        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; });
-        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; });
+        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; this.processList(this.strainList, "Other", "strain"); });
+        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; this.processList(this.diseaseList, "Other", "diseaseModel"); });
         this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
-        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
+        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; this.processList(this.cellTypeList, "Other", "cellType"); });
+        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; this.processList(this.methodList, "Other", "method"); });
+        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; this.processList(this.neurotransmitterList, "Other", "neuroTransmitter"); });
 
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
@@ -258,7 +260,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.pubScreenService.getRegionSubRegion().subscribe(data => {
             this.regionSubregionList = data;
-            //console.log(this.regionSubregionList);
+            console.log(this.regionSubregionList);
             var filtered = this.regionSubregionList.filter(function (item) {
                 return SelectedRegion.indexOf(item.rid) !== -1;
             });
@@ -570,6 +572,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.cellTypeID = this.cellTypeModel;
         this._pubscreen.methodID = this.methodModel;
         this._pubscreen.transmitterID = this.neurotransmitterModel;
+        this._pubscreen.taskOther = this.taskOtherModel;
         
 
         switch (this.sourceOptionModel) {
@@ -657,7 +660,17 @@ export class PubscreenDialogeComponent implements OnInit {
         }
         return false;
 
+    }
 
+    processList(data, item, propertyName) {
+
+        const ret = data.filter(row => (row[propertyName] === item));
+        if (ret.length > 0) {
+            data.splice(data.findIndex(row => (row[propertyName] === item)), 1);
+            data.push(ret[0])
+        }
+        
+        return data
     }
     
 

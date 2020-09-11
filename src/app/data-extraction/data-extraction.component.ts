@@ -846,11 +846,14 @@ export class DataExtractionComponent implements OnInit {
                 
                 for (let key in items[row]) {
 
-                    var csvToAdd = items[row][key].toString();
-                    csvToAdd = csvToAdd.split(",").join("-");
+                    var csvToAdd = "";
+                    if (items[row][key] !== null) {
+                        csvToAdd = items[row][key].toString();
+                        csvToAdd = csvToAdd.split(",").join("-");
+
+                    }
 
                     csv += csvToAdd + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-
                     keysCounter++
 
                 }

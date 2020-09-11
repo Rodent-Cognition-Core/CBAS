@@ -666,9 +666,12 @@ namespace AngularSPAWebAPI.Services
                 Dal.ExecuteNonQueryPub(sqlPT3);
 
             }
-
+            //******************************Key Features**************
 
             //Adding to Publication_Task
+            //Handling othet for Task
+            ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID);
+
             if (publication.TaskID != null && publication.TaskID.Length != 0)
             {
                 string sqlTask = "";
@@ -1462,6 +1465,31 @@ namespace AngularSPAWebAPI.Services
             }
 
             return retVal;
+        }
+
+        public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication, string tblPublicationField, int PublicationID)
+        {
+            if (inputOther != null)
+            {
+                List<string> ItemList = inputOther.Split(';').Select(p => p.Trim()).ToList();
+                foreach (string item in ItemList)
+                {
+                    string sqlOther = $@"Select ID From {tableOther} Where ltrim(rtrim({fieldOther})) = '{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}';";
+                    var IDOther = Dal.ExecScalarPub(sqlOther);
+
+                    if (IDOther == null)
+                    {
+                        string sqlOther2 = $@"Insert Into {tableOther} ({fieldOther}) Values
+                                            ('{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}'); SELECT @@IDENTITY AS 'Identity';";
+                        int IDOther2 = Int32.Parse((Dal.ExecScalarPub(sqlOther2).ToString()));
+
+                        string sqlOther3 = $@"Insert into {tblPublication} ({tblPublicationField}, PublicationID) Values ({IDOther2}, {PublicationID}); ";
+                        Dal.ExecuteNonQueryPub(sqlOther3);
+                    }
+
+                }
+
+            }
         }
 
 
