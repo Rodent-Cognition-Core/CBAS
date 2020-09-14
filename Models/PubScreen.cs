@@ -31,6 +31,13 @@ namespace AngularSPAWebAPI.Models
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string TaskOther {get; set;}
+        public string SpecieOther { get; set; }
+        public string StrainOther { get; set; }
+        public string DiseaseOther { get; set; }
+        public string CelltypeOther { get; set; }
+        public string MethodOther { get; set; }
+        public string NeurotransOther { get; set; }
+
 
         public System.Collections.Generic.List<PubScreenAuthor> Author { get; set; }
 

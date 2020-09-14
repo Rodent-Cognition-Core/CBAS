@@ -55,6 +55,12 @@ export class PubscreenDialogeComponent implements OnInit {
     bioAddingOptionModel: any;
     bioDoiKeyModel: any;
     taskOtherModel: string;
+    specieOtherModel: string;
+    strainOtherModel: string;
+    diseaseOtherModel: string;
+    cellOtherModel: string;
+    methodOtherModel: string;
+    neurotransmitterOtherModel: string;
 
     isEditMode: boolean;
     publicationId: number;
@@ -573,7 +579,14 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.methodID = this.methodModel;
         this._pubscreen.transmitterID = this.neurotransmitterModel;
         this._pubscreen.taskOther = this.taskOtherModel;
-        
+        this._pubscreen.specieOther = this.specieOtherModel;
+        this._pubscreen.strainOther = this.strainOtherModel;
+        this._pubscreen.diseaseOther = this.diseaseOtherModel;
+        this._pubscreen.celltypeOther = this.cellOtherModel;
+        this._pubscreen.methodOther = this.methodOtherModel;
+        this._pubscreen.neurotransOther = this.neurotransmitterOtherModel;
+
+                    
 
         switch (this.sourceOptionModel) {
 
@@ -646,6 +659,14 @@ export class PubscreenDialogeComponent implements OnInit {
         this.referenceModel = '';
         this.PubMedKeyModel = '';
         this.bioDoiKeyModel = '';
+
+        this.taskOtherModel = '';
+        this.specieOtherModel = '';
+        this.strainOtherModel = '';
+        this.diseaseOtherModel = '';
+        this.cellOtherModel = '';
+        this.methodOtherModel = '';
+        this.neurotransmitterOtherModel = '';
 
     }
 

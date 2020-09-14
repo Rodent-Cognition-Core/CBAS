@@ -30,6 +30,13 @@ export class Pubscreen {
     public yearFrom: number;
     public yearTo: number;
     public taskOther: string;
+    public specieOther: string;
+    public strainOther: string;
+    public diseaseOther: string;
+    public celltypeOther: string;
+    public methodOther: string;
+    public neurotransOther: string;
+
                  
 
 }

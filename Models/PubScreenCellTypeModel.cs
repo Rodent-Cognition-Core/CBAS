@@ -6,6 +6,8 @@ namespace AngularSPAWebAPI.Models
     {
         public int ID { get; set; }
         public string CellType { get; set; }
+
+        public string username { get; set; }
         
     }
 }

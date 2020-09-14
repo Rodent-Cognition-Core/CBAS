@@ -123,10 +123,11 @@ namespace AngularSPAWebAPI.Controllers
 
         // Adding new author to database
         [HttpPost("AddAuthor")]
-        [AllowAnonymous]
         public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
         {
-            return new JsonResult(_pubScreenService.AddAuthors(author));
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
         }
 
 

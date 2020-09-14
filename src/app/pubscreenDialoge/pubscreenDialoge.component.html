@@ -180,7 +180,7 @@
                     <!--Adding Key Features ********************************************-->
                     <label style="color:#566573">Key Features:</label><br />
 
-                    <!--Cognitive Task-->
+                    <!--Cognitive Task--------------------------------->
                     <mat-form-field style="width:15%; ">
                         <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
@@ -193,13 +193,13 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Task." [(ngModel)]="taskOtherModel" required>
+                            <input matInput placeholder="Insert a new value for Task" [(ngModel)]="taskOtherModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one task, separate them by semi colo ( ; )"></fa>
                     </span>
 
-                    <!--Species-->
+                    <!--Species---------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
                             <mat-option *ngFor="let specie of specieList" [value]="specie.id">
@@ -210,10 +210,20 @@
                         <!--<mat-error *ngIf="specie.invalid">{{getErrorMessageSpecie()}}</mat-error>-->
                     </mat-form-field>
 
-                    <!--Sex-->
+                    <span *ngIf="specieModel.includes(3)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Species" [(ngModel)]="specieOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one specie, separate them by semi colo ( ; )"></fa>
+                    </span>
+
+                    <!--Sex---------------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
-                            mu
+
                             <mat-option *ngFor="let sex of sexList" [value]="sex.id">
 
                                 {{sex.sex}}
@@ -222,7 +232,7 @@
                         <!--<mat-error *ngIf="sex.invalid">{{getErrorMessageSex()}}</mat-error>-->
                     </mat-form-field>
 
-                    <!--Strain-->
+                    <!--Strain----------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                             in
@@ -233,7 +243,17 @@
 
                     </mat-form-field>
 
-                    <!--DiseaseModel-->
+                    <span *ngIf="strainModel.includes(19)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Strain" [(ngModel)]="strainOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semi colo ( ; )"></fa>
+                    </span>
+
+                    <!--DiseaseModel----------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
                             <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
@@ -243,7 +263,17 @@
 
                     </mat-form-field> <br />
 
-                    <!--BrainRegion-->
+                    <span *ngIf="diseaseModel.includes(14)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Disease Model" [(ngModel)]="diseaseOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one disease model, separate them by semi colo ( ; )"></fa>
+                    </span>
+
+                    <!--BrainRegion----------------------------------->
                     <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
                             <mat-option *ngFor="let region of regionList" [value]="region.id">
@@ -253,7 +283,7 @@
 
                     </mat-form-field>
 
-                    <!--SubRegion-->
+                    <!--SubRegion------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
                             <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
@@ -263,7 +293,7 @@
 
                     </mat-form-field>
 
-                    <!--CellType-->
+                    <!--CellType------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
                             <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
@@ -273,7 +303,17 @@
 
                     </mat-form-field>
 
-                    <!--Method-->
+                    <span *ngIf="cellTypeModel.includes(4)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Cell Type" [(ngModel)]="cellOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one cell type, separate them by semi colo ( ; )"></fa>
+                    </span>
+
+                    <!--Method--------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
                             <mat-option *ngFor="let method of methodList" [value]="method.id">
@@ -283,8 +323,18 @@
 
                     </mat-form-field>
 
+                    <span *ngIf="methodModel.includes(23)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
 
-                    <!--NeuroTransmitter Systems-->
+                            <input matInput placeholder="Insert a new value for Method" [(ngModel)]="methodOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one method, separate them by semi colo ( ; )"></fa>
+                    </span>
+
+
+                    <!--NeuroTransmitter Systems------------------------>
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                             <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
@@ -293,6 +343,16 @@
                         </mat-select>
 
                     </mat-form-field>
+
+                    <span *ngIf="neurotransmitterModel.includes(8)">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="Insert a new value for Neurotransmitter" [(ngModel)]="neurotransmitterOtherModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one neurotransmitter, separate them by semi colo ( ; )"></fa>
+                    </span>
 
                 </div>
                 <br />

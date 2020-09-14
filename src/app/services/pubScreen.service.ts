@@ -143,7 +143,7 @@ import { AuthenticationService } from './authentication.service';
         // Sends an authenticated request.
         return this.http
             .post("/api/pubScreen/AddAuthor", body, {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
+                headers: this.authenticationService.getAuthorizationHeader()
             });
 
     }

@@ -480,9 +480,10 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Function defintion to add a new author to database
-        public int AddAuthors(PubScreenAuthor author)
+        public int AddAuthors(PubScreenAuthor author, string userEmail)
         {
-            string sql = $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}'); SELECT @@IDENTITY AS 'Identity';";
+            string sql = $@"Insert into Author (FirstName, LastName, Affiliation, username) Values
+                            ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
 
             return Int32.Parse(Dal.ExecScalarPub(sql).ToString());
         }
@@ -667,10 +668,9 @@ namespace AngularSPAWebAPI.Services
 
             }
             //******************************Key Features**************
-
             //Adding to Publication_Task
             //Handling othet for Task
-            ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID);
+            ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID, Username);
 
             if (publication.TaskID != null && publication.TaskID.Length != 0)
             {
@@ -685,6 +685,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_Specie
+            // Handling other for species
+            ProcessOther(publication.SpecieOther, "Species", "Species", "Publication_Specie", "SpecieID", PublicationID, Username);
+
             if (publication.SpecieID != null && publication.SpecieID.Length != 0)
             {
                 string sqlSpecie = "";
@@ -712,6 +715,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_Strain
+            // handling other for strain
+            ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", PublicationID, Username);
+
             if (publication.StrainID != null && publication.StrainID.Length != 0)
             {
                 string sqlStrain = "";
@@ -725,6 +731,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_Disease
+            // handling other for disease model
+            ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", PublicationID, Username);
+
             if (publication.DiseaseID != null && publication.DiseaseID.Length != 0)
             {
                 string sqlDiease = "";
@@ -764,6 +773,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_CellType
+            // handling other for cell type
+            ProcessOther(publication.CelltypeOther, "CellType", "CellType", "Publication_CellType", "CelltypeID", PublicationID, Username);
+
             if (publication.CellTypeID != null && publication.CellTypeID.Length != 0)
             {
                 string sqlCelltype = "";
@@ -777,6 +789,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_Method
+            // handling other for method
+            ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", PublicationID, Username);
+
             if (publication.MethodID != null && publication.MethodID.Length != 0)
             {
                 string sqlMethod = "";
@@ -790,6 +805,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             //Adding to Publication_NeuroTransmitter
+            //hanlding other for NeuroTransmitter
+            ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", PublicationID, Username);
+
             if (publication.TransmitterID != null && publication.TransmitterID.Length != 0)
             {
                 string sqlTransmitter = "";
@@ -1467,9 +1485,10 @@ namespace AngularSPAWebAPI.Services
             return retVal;
         }
 
-        public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication, string tblPublicationField, int PublicationID)
+        public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication,
+                                string tblPublicationField, int PublicationID, string Username)
         {
-            if (inputOther != null)
+            if (!String.IsNullOrEmpty(inputOther))
             {
                 List<string> ItemList = inputOther.Split(';').Select(p => p.Trim()).ToList();
                 foreach (string item in ItemList)
@@ -1479,8 +1498,8 @@ namespace AngularSPAWebAPI.Services
 
                     if (IDOther == null)
                     {
-                        string sqlOther2 = $@"Insert Into {tableOther} ({fieldOther}) Values
-                                            ('{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}'); SELECT @@IDENTITY AS 'Identity';";
+                        string sqlOther2 = $@"Insert Into {tableOther} ({fieldOther}, Username) Values
+                                            ('{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}', '{Username}'); SELECT @@IDENTITY AS 'Identity';";
                         int IDOther2 = Int32.Parse((Dal.ExecScalarPub(sqlOther2).ToString()));
 
                         string sqlOther3 = $@"Insert into {tblPublication} ({tblPublicationField}, PublicationID) Values ({IDOther2}, {PublicationID}); ";
