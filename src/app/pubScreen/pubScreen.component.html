@@ -27,11 +27,13 @@
                     <td style="padding: 13px 16px;">
 
                         <div>
-                            <div style="padding-bottom:10px" *ngIf="isAdmin || isUser">
+                            <div style="padding-bottom:10px" *ngIf="(isAdmin || isUser); else other_content">
                                 <label>Adding Publication: </label>
                                 <button mat-icon-button matTooltip="Add new publication" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
                                 <hr />
                             </div>
+
+                            <ng-template #other_content><span style="color:red">You should be logged into the sytem in order to add a publication!</span> <hr /></ng-template>
 
                             <label>You can search and extract publications based on the following search criteria:</label><br /><br />
                             <hr /><br />
@@ -68,10 +70,10 @@
                             <!--Paper Abstract-->
                             <!--<mat-form-field style="width:30%; padding-left:35px">
 
-                                <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
 
-                                </textarea>
-                            </mat-form-field>-->
+        </textarea>
+    </mat-form-field>-->
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -92,7 +94,7 @@
                                         {{val}}
                                     </mat-option>
                                 </mat-select>
-                                <mat-error >{{getErrorMessageYearTo()}}</mat-error>
+                                <mat-error>{{getErrorMessageYearTo()}}</mat-error>
 
                             </mat-form-field>
 
