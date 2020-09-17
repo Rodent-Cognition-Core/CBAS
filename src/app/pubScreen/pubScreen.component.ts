@@ -185,7 +185,7 @@ export class PubScreenComponent implements OnInit {
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
 
-        console.log(this.subRegionList);
+       
     }
 
     setDisabledValSearch() {
