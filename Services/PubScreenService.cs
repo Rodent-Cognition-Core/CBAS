@@ -138,7 +138,7 @@ namespace AngularSPAWebAPI.Services
 
             foreach (XmlNode xn in xnList)
             {
-                if(xn["ForeName"] !=null && xn["LastName"]!=null)
+                if (xn["ForeName"] != null && xn["LastName"] != null)
                 {
                     authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
 
@@ -161,11 +161,11 @@ namespace AngularSPAWebAPI.Services
 
             if (String.IsNullOrEmpty(doi))
             {
-                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") !=null)
+                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") != null)
                 {
                     doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
                 }
-                
+
             }
 
             string authorString = string.Join(", ", authorListString);
@@ -677,7 +677,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlTask = "";
                 for (int i = 0; i < publication.TaskID.Length; i++)
                 {
-                    sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {PublicationID});";
+                    if (publication.TaskID[i] != 26)
+                    {
+                        sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
@@ -693,7 +696,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlSpecie = "";
                 for (int i = 0; i < publication.SpecieID.Length; i++)
                 {
-                    sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
+                    if (publication.SpecieID[i] != 3)
+                    {
+                        sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
@@ -723,7 +729,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
+                    if (publication.StrainID[i] != 19)
+                    {
+                        sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
@@ -739,7 +748,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlDiease = "";
                 for (int i = 0; i < publication.DiseaseID.Length; i++)
                 {
-                    sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
+                    if (publication.DiseaseID[i] != 14)
+                    {
+                        sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
@@ -781,7 +793,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlCelltype = "";
                 for (int i = 0; i < publication.CellTypeID.Length; i++)
                 {
-                    sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
+                    if (publication.CellTypeID[i] != 4)
+                    {
+                        sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
@@ -797,7 +812,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlMethod = "";
                 for (int i = 0; i < publication.MethodID.Length; i++)
                 {
-                    sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
+                    if (publication.MethodID[i] != 23)
+                    {
+                        sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
@@ -813,7 +831,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlTransmitter = "";
                 for (int i = 0; i < publication.TransmitterID.Length; i++)
                 {
-                    sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
+                    if (publication.TransmitterID[i] != 8)
+                    {
+                        sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
@@ -896,12 +917,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlTask = "";
                 for (int i = 0; i < publication.TaskID.Length; i++)
                 {
-                    sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {publicationId});";
+                    if (publication.TaskID[i] != 26)
+                    {
+                        sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
 
             }
+
+            // Handling Other for Task
+            ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", publicationId, Username);
 
             //Editing to Publication_Specie
             sqlDelete = $"DELETE From Publication_Specie where PublicationID = {publicationId}";
@@ -912,11 +939,17 @@ namespace AngularSPAWebAPI.Services
                 string sqlSpecie = "";
                 for (int i = 0; i < publication.SpecieID.Length; i++)
                 {
-                    sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {publicationId});";
+                    if (publication.SpecieID[i] != 3)
+                    {
+                        sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
             }
+
+            // Handling Other for Species
+            ProcessOther(publication.SpecieOther, "Species", "Species", "Publication_Specie", "SpecieID", publicationId, Username);
 
             //Editing to Publication_Sex
             sqlDelete = $"DELETE From Publication_Sex where PublicationID = {publicationId}";
@@ -944,12 +977,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
+                    if (publication.StrainID[i] != 19)
+                    {
+                        sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
 
             }
+
+            // Handking Other for Strain
+            ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", publicationId, Username);
 
             //Editing to Publication_Disease
             sqlDelete = $"DELETE From Publication_Disease where PublicationID = {publicationId}";
@@ -960,12 +999,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlDiease = "";
                 for (int i = 0; i < publication.DiseaseID.Length; i++)
                 {
-                    sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {publicationId});";
+                    if (publication.DiseaseID[i] != 14)
+                    {
+                        sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
 
             }
+
+            // Handling Other for Disease
+            ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", publicationId, Username);
 
             //Editing to Publication_Region
             sqlDelete = $"DELETE From Publication_Region where PublicationID = {publicationId}";
@@ -1008,12 +1053,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlCelltype = "";
                 for (int i = 0; i < publication.CellTypeID.Length; i++)
                 {
-                    sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {publicationId});";
+                    if (publication.CellTypeID[i] != 4)
+                    {
+                        sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
 
             }
+
+            //Handling Other for Cell Type
+            ProcessOther(publication.CelltypeOther, "CellType", "CellType", "Publication_CellType", "CelltypeID", publicationId, Username);
 
             //Editing to Publication_Method
             sqlDelete = $"DELETE From Publication_Method where PublicationID = {publicationId}";
@@ -1024,12 +1075,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlMethod = "";
                 for (int i = 0; i < publication.MethodID.Length; i++)
                 {
-                    sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {publicationId});";
+                    if (publication.MethodID[i] != 23)
+                    {
+                        sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
 
             }
+
+            //Handling Other for method
+            ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", publicationId, Username);
 
             //Editing to Publication_NeuroTransmitter
             sqlDelete = $"DELETE From Publication_NeuroTransmitter where PublicationID = {publicationId}";
@@ -1040,12 +1097,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlTransmitter = "";
                 for (int i = 0; i < publication.TransmitterID.Length; i++)
                 {
-                    sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {publicationId});";
+                    if (publication.TransmitterID[i] != 8)
+                    {
+                        sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
 
             }
+
+            // Handling Other for NeuroTransmitter
+            ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", publicationId, Username);
 
             return true;
 
@@ -1099,7 +1162,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for Year
-            if (pubScreen.YearFrom != null && pubScreen.YearTo!=null)
+            if (pubScreen.YearFrom != null && pubScreen.YearTo != null)
             {
                 sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
             }
@@ -1109,7 +1172,7 @@ namespace AngularSPAWebAPI.Services
                 sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
             }
 
-            if(pubScreen.YearTo != null && pubScreen.YearFrom == null)
+            if (pubScreen.YearTo != null && pubScreen.YearFrom == null)
             {
                 sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
             }
