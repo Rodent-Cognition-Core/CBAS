@@ -49,7 +49,7 @@ export class PubscreenDialogeComponent implements OnInit {
     doiKeyModel: any;
     PubMedKeyModel: any;
     authorModel2: any;
-    paperTypeModel2: any;
+    //paperTypeModel2: any;
     referenceModel: any;
     sourceOptionModel: any;
     bioAddingOptionModel: any;
@@ -395,17 +395,13 @@ export class PubscreenDialogeComponent implements OnInit {
         }
 
         else if (
-            //this.title.hasError('required') ||
-            //this.doi.hasError('required') ||
-            //this.cognitiveTask.hasError('required') ||
-            //this.year.hasError('required') ||
-            //this.year.hasError('pattern') ||
-            //this.sourceOption.hasError('required')
-            ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required')) ||
-            ((this.doiModel == null || this.doiModel == "") && this.doi.hasError('required'))||
-            ((this.cognitiveTaskModel == null || this.cognitiveTaskModel.length == 0) && this.cognitiveTask.hasError('required'))||
-            ((this.yearModel == null || this.yearModel == "") && this.year.hasError('required')) ||
-            ((this.sourceOptionModel == null || this.sourceOptionModel == "") && this.sourceOption.hasError('required'))
+            
+            ((this.titleModel === null || this.titleModel === "") && this.title.hasError('required')) ||
+            ((this.doiModel === null || this.doiModel === "") && this.doi.hasError('required'))||
+            ((this.cognitiveTaskModel === null || this.cognitiveTaskModel.length === 0) && this.cognitiveTask.hasError('required'))||
+            ((this.yearModel === null || this.yearModel === "") && this.year.hasError('required')) ||
+            ((this.sourceOptionModel === null || this.sourceOptionModel === "") && this.sourceOption.hasError('required')) ||
+            (this.paperType.hasError('required'))
 
         ) {
 
@@ -445,8 +441,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("DOI is not valid or has not been found!");
@@ -460,7 +456,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                this.paperTypeModel2 = data.result.paperType;
+                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
                 //this.paperTypeModel = data.result.paperType;
@@ -491,7 +487,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                this.paperTypeModel2 = data.result.paperType;
+                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
                 this.paperTypeModel = data.result.paperType;
@@ -520,7 +516,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                this.paperTypeModel2 = data.result.paperType;
+                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
                 this.paperTypeModel = data.result.paperType;
@@ -553,12 +549,13 @@ export class PubscreenDialogeComponent implements OnInit {
 
         }
 
-        if (this.paperTypeModel !== null) {
-            this._pubscreen.paperType = this.paperTypeModel;
-        }
-        else {
-            this._pubscreen.paperType = this.paperTypeModel2;
-        }
+        //if (this.paperTypeModel !== null) {
+        //    this._pubscreen.paperType = this.paperTypeModel;
+        //}
+        //else {
+        //    this._pubscreen.paperType = this.paperTypeModel2;
+        //}
+
         if (this.referenceModel !== null) {
             this._pubscreen.reference = this.referenceModel;
         }
@@ -568,6 +565,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.keywords = this.keywordsModel;
         this._pubscreen.doi = this.doiModel;
         this._pubscreen.year = this.yearModel;
+        this._pubscreen.paperType = this.paperTypeModel;
         this._pubscreen.taskID = this.cognitiveTaskModel;
         this._pubscreen.specieID = this.specieModel;
         this._pubscreen.sexID = this.sexModel;
@@ -655,7 +653,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.neurotransmitterModel = [];
         this.doiKeyModel = '';
         this.authorModel2 = '';
-        this.paperTypeModel2 = '';
+        this.paperTypeModel = '';
         this.referenceModel = '';
         this.PubMedKeyModel = '';
         this.bioDoiKeyModel = '';

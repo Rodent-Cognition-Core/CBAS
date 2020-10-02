@@ -146,7 +146,6 @@
     
                                         </textarea>
 
-
                     </mat-form-field>
 
                     <!--Paper DOI-->
@@ -158,7 +157,7 @@
                     </mat-form-field>
 
                     <!--Paper Type-->
-                    <mat-form-field style="width:30%; padding-left:30px" *ngIf="sourceOptionModel=='3' || isEditMode">
+                    <mat-form-field style="width:30%; padding-left:30px">
                         <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel">
                             <mat-option *ngFor="let type of paperTypeList" [value]="type.paperType">
                                 {{type.paperType}}
@@ -168,12 +167,12 @@
                         <!--<mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>-->
                     </mat-form-field>
 
-                    <!--Paper Type 2-->
+                    <!--Paper Type 2
                     <mat-form-field style="width:30%; padding-left:35px" *ngIf="sourceOptionModel!='3' && !isEditMode">
 
                         <input matInput placeholder="Paper's Type" [(ngModel)]="paperTypeModel2">
 
-                    </mat-form-field>
+                    </mat-form-field>-->
 
                     <br /><br />
 
