@@ -19,7 +19,7 @@
             <table class="docs-markdown-table">
                 <thead>
                     <tr>
-                        <th class="docs-markdown-th" style="color:white; background-color:#795D9C; font-size:large;">YOUR REPOSITORIES</th>
+                        <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">Your Repositories</th>
 
                     </tr>
                 </thead>
@@ -32,7 +32,7 @@
                                     <label>Add new repository: </label>
                                     <button mat-icon-button matTooltip="Add new repository" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
                                     <br />
-                                    <mat-form-field style="width:25%; padding-left:0px">
+                                    <mat-form-field style="width:35%; padding-left:0px">
 
                                         <mat-select placeholder="Your repositories" [(ngModel)]="yearFromSearchModel">
                                             <mat-option *ngFor="let val of yearList" [value]="val">
@@ -41,9 +41,11 @@
                                         </mat-select>
 
                                     </mat-form-field>
+                                    <span style="padding-left: 20px;"><button mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                                    <span style="padding-left: 0px;"><button mat-icon-button matTooltip="Delete Repository" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
                                 </div>
 
-                                <ng-template #other_content><span style="color:red">You must log in to create a repository!</span> <hr /></ng-template>
+                                <ng-template #other_content><span style="color:red">You must log in to create a repository!</span></ng-template>
 
                             </div>
                         </td>
@@ -56,7 +58,7 @@
             <table class="docs-markdown-table">
                 <thead>
                     <tr>
-                        <th class="docs-markdown-th" style="color:white; background-color:#795D9C; font-size:large;">SEARCH REPOSITORIES</th>
+                        <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">Search Repositories</th>
 
                     </tr>
                 </thead>

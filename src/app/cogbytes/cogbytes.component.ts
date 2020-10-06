@@ -14,7 +14,7 @@ import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
-import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
+import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 
@@ -196,7 +196,7 @@ export class CogbytesComponent implements OnInit {
 
     // Opening Dialog for adding a new publication.
     openDialogAddPublication(Publication): void {
-        let dialogref = this.dialog.open(PubscreenDialogeComponent, {
+        let dialogref = this.dialog.open(CogbytesDialogueComponent, {
             height: '850px',
             width: '1200px',
             data: {
@@ -216,7 +216,7 @@ export class CogbytesComponent implements OnInit {
 
     // Edit publication
     openDialogEditPublication(Publication): void {
-        let dialogref = this.dialog.open(PubscreenDialogeComponent, {
+        let dialogref = this.dialog.open(CogbytesDialogueComponent, {
             height: '850px',
             width: '1200px',
             data: { publicationObj: Publication }
