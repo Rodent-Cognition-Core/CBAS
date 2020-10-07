@@ -1,0 +1,170 @@
+<div class="guideline" id="guideline">
+    <br />
+
+    <div class="account-card-container2">
+        <mat-card>
+            <mat-toolbar color=#d0d0d0>Adding Repository</mat-toolbar>
+
+            <mat-card-content>
+
+                <div>
+                    <br />
+                    <hr /><br />
+
+                          <mat-expansion-panel [expanded]="true">
+                              <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                      Basic Information:
+                                  </mat-panel-title>
+                              </mat-expansion-panel-header>
+                              <!--Adding Paper information ********************************************-->
+                              <!--<label style="color:#566573">Basic Information:</label><br /><br />-->
+                              <!--Repository Author-->
+                              <!--<div *ngIf="sourceOptionModel=='3' || isEditMode">-->
+                              <div>
+                                  <mat-form-field>
+                                      <!--<mat-select [formControl]="author" placeholder="Select Author" [(ngModel)]="authorModel" required multiple>-->
+                                      <mat-select placeholder="Select Author" required multiple>
+
+                                          <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>-->
+                                          <ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>
+
+                                      </mat-select>
+                                      <!--<mat-error *ngIf="author.invalid"></mat-error>-->
+                                  </mat-form-field>&nbsp;
+
+                                  <!--<button mat-icon-button matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>-->
+                                  <button mat-icon-button matTooltip="Add new author"><mat-icon>add</mat-icon></button>
+
+                                  <br /><br />
+                              </div>
+
+
+                              <!--Repository Authors-->
+                              <!--<mat-form-field style="width: 65%; padding-left: 25px">-->
+                              <!--<textarea matInput placeholder="Author(s)" [formcontrol]="author" [(ngModel)]="authorModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>-->
+                              <!--<textarea matInput placeholder="Author(s)" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+        </textarea>
+
+    </mat-form-field>
+
+    <br />-->
+                              <!--Paper Title-->
+                              <mat-form-field style="width: 30%">
+
+                                  <!--<textarea matInput placeholder="Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>-->
+                                  <textarea matInput placeholder="Title" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+
+                                  </textarea>
+                              </mat-form-field>
+
+                              <!--Repository PI-->
+                              <mat-form-field style="width: 30%; padding-left: 25px">
+
+                                  <mat-select matInput placeholder="PI">
+                                  </mat-select>
+
+                              </mat-form-field>
+
+
+                              <!--Repository Date-->
+                              <mat-form-field style="width:30%; padding-left: 25px">
+
+                                  <!--<input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" required>-->
+                                  <input matInput placeholder="Date" required>
+                                  <!--<mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>-->
+                                  <!--<mat-error *ngIf="date.invalid">{{getErrorMessageDateVal()}}</mat-error>-->
+
+                              </mat-form-field>
+
+                              <br />
+
+                              <!--Paper Keywords-->
+                              <mat-form-field style="width:65%; padding-left: 0px">
+
+                                  <textarea matInput placeholder="Keywords" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+    
+                                  </textarea>
+
+                              </mat-form-field>
+
+                              <!--Paper DOI-->
+                              <mat-form-field style="width:30%; padding-left:25px">
+
+                                  <input matInput placeholder="DOI">
+                                  <!--<mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>-->
+
+                              </mat-form-field> <br />
+
+                              <!--Description-->
+                              <mat-form-field style="width:47%">
+
+                                  <textarea matInput placeholder="Description" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+                                    </textarea>
+                              </mat-form-field>
+
+                              <!--Additional Notes-->
+                              <mat-form-field style="width:47%; padding-left:25px">
+
+                                  <textarea matInput placeholder="Additional Notes" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+                                    </textarea>
+                              </mat-form-field>
+
+                              <br />
+
+                              <!--URL Link-->
+                              <mat-form-field style="width:60%">
+
+                                  <input matInput placeholder="URL Link (if multiple, please seperate by semicolon)">
+                              </mat-form-field>
+
+                              <br /><br />
+
+                              <!--Privacy Status-->
+                              <span>Privacy Status: </span>
+                              <!--<mat-radio-group [formControl]="privacyStatus" [(ngModel)]="privacyStatusModel" required>-->
+                              <mat-radio-group required>
+                                  <mat-radio-button value="0">Private</mat-radio-button>
+                                  <mat-radio-button value="1">Public</mat-radio-button>
+                              </mat-radio-group>
+
+                              <br />
+                              <br />
+
+
+                          </mat-expansion-panel>  <br />
+
+                    <ng-template #uploadContainer>
+                    </ng-template>
+
+                    <div>
+                        <label>Add file: </label>
+                        <button mat-icon-button matTooltip="Add file" (click)="createUploadComponent()"><mat-icon>add</mat-icon></button>
+                        <br />
+                    </div>
+
+                </div>
+                <br />
+                <div>
+                    <!--<button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddEditPublication()">Save Repository</button>-->
+                    <button mat-raised-button color="accent" class="full-width">Save Repository</button>
+                </div>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+    <!--***********************************************************************************************************
+    ***************************************************************************************************************-->
+
+
+
+    <br />
+    <br />
+    <br />
+
+</div>

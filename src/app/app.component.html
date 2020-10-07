@@ -8,6 +8,7 @@
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
             <li><a style="text-decoration: underline;" routerLink="/home">Home</a></li>
             <li><a routerLink="/mb-dashboard">Dashboard</a></li>
+            <li><a routerLink="/cogbytes">Cogbytes</a></li>
             <li>
                 <br />
                 <b>TUTORIALS</b>
@@ -36,14 +37,14 @@
             <br />
 
             <!--<li>
-                <b>DATA INTEGRATION</b>
-                <ul>
-                    <li *ngFor="let item of navItemsIntegration">
-                        <a [routerLink]="[item.route]">{{ item.name}}</a>
-                    </li>
-                </ul>
+        <b>DATA INTEGRATION</b>
+        <ul>
+            <li *ngFor="let item of navItemsIntegration">
+                <a [routerLink]="[item.route]">{{ item.name}}</a>
             </li>
-            <br />-->
+        </ul>
+    </li>
+    <br />-->
 
             <li><a routerLink="/pubScreen">PUBSCREEN</a></li>
             <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
@@ -122,6 +123,7 @@
                             <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
+                            <li class="liright"><a routerLink="/cogbytes">Cogbytes</a></li>
                             <li class="liright">
                                 TUTORIALS
                                 <ul>
@@ -182,6 +184,7 @@
                             <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
+                            <li class="liright"><a routerLink="/cogbytes">Cogbytes</a></li>
 
                             <li class="liright">
                                 TUTORIALS

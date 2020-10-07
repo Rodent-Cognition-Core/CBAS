@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="src\app\cogbytesUpload\cogbytesUpload.component.ts" />
     <None Remove="src\app\shared\scroll.service.ts" />
   </ItemGroup>
 
@@ -42,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\cogbytesUpload\cogbytesUpload.component.ts" />
     <TypeScriptCompile Include="src\app\shared\scroll.service.ts" />
   </ItemGroup>
 
