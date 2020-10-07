@@ -10,8 +10,8 @@ namespace AngularSPAWebAPI.Services
     public class Dal
     {
         // Local server
-        private static string _cnnString = "Server=.\\SQLEXPRESS;Database=Mousebytes;Trusted_Connection=True;MultipleActiveResultSets=true";
-        private static string _cnnString_PubScreen = "Server=.\\SQLEXPRESS;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString = "Server=.;Database=MouseBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString_PubScreen = "Server=.;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public Dal()
         {
