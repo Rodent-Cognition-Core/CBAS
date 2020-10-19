@@ -38,17 +38,17 @@ export class CogbytesUploadComponent implements OnInit {
     public taskBatteryModel: any;
 
     // Definiing List Variables 
-    taskList: any;
+    public taskList: any;
 
     _cogbytesUpload = new CogbytesUpload();
 
 
     constructor(
-        //public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
+        public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
         //private spinnerService: Ng4LoadingSpinnerService,
-        //public dialog: MatDialog,
-        //private cogbytesService: CogbytesService,
-        //@Inject(MAT_DIALOG_DATA) public data: any,
+        public dialog: MatDialog,
+        private cogbytesService: CogbytesService,
+        @Inject(MAT_DIALOG_DATA) public data: any,
     )
     {
         this.resetFormVals();
