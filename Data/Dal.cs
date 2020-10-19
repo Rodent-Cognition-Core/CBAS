@@ -12,6 +12,7 @@ namespace AngularSPAWebAPI.Services
         // Local server
         private static string _cnnString = "Server=.\\SQLEXPRESS;Database=Mousebytes;Trusted_Connection=True;MultipleActiveResultSets=true";
         private static string _cnnString_PubScreen = "Server=.\\SQLEXPRESS;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString_Cogbytes = "Server=.\\SQLEXPRESS;Database=Cogbytes;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public Dal()
         {
@@ -105,6 +106,40 @@ namespace AngularSPAWebAPI.Services
             return retval;
         }
 
+        public static int ExecuteNonQueryCog(string cmdTxt)
+        {
+            return ExecuteNonQueryCog(CommandType.Text, cmdTxt, (SqlParameter[])null);
+        }
+
+        public static int ExecuteNonQueryCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
+            {
+                cn.Open();
+
+                return ExecuteNonQueryCog(cn, cmdType, cmdTxt, cmdParams);
+            }
+        }
+
+        public static int ExecuteNonQueryCog(SqlConnection connection, CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            //LogHelper.Log(cmdTxt);
+
+            int retval = -1;
+
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandTimeout = 300;
+                ProcCmd(cmd, connection, cmdType, cmdTxt, cmdParams);
+
+                retval = cmd.ExecuteNonQuery();
+
+                cmd.Parameters.Clear();
+            }
+
+            return retval;
+        }
+
         public static DataSet ExecDS(CommandType cmdType, string cmdTxt, bool logEnabled = true)
         {
             logEnabled = true;
@@ -139,6 +174,26 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public static DataSet ExecDSCog(CommandType cmdType, string cmdTxt, bool logEnabled = true)
+        {
+            logEnabled = true;
+            if (logEnabled)
+            {
+                //LogHelper.Log(cmdTxt);
+            }
+
+            return ExecDSCog(cmdType, cmdTxt, (SqlParameter[])null);
+        }
+
+        public static DataSet ExecDSCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
+            {
+                cn.Open();
+
+                return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+            }
+        }
 
         public static DataSet ExecDS(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
@@ -225,6 +280,22 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public static SqlDataReader GetReaderCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            SqlConnection cn = new SqlConnection(_cnnString_Cogbytes);
+            cn.Open();
+
+            try
+            {
+                return GetReader(cn, cmdType, cmdTxt, cmdParams);
+            }
+            catch
+            {
+                cn.Close();
+                throw;
+            }
+        }
+
         public static SqlDataReader GetReader(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
             SqlConnection cn = new SqlConnection(_cnnString);
@@ -264,6 +335,19 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public static object ExecScalarCog(string cmdTxt)
+        {
+            return ExecScalarCog(CommandType.Text, cmdTxt);
+        }
+
+        public static object ExecScalarCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
+            {
+                cn.Open();
+                return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+            }
+        }
 
         public static object ExecScalar(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
@@ -323,6 +407,20 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
+        public static DataTable GetDataTableCog(string cmdTxt, bool logEnabled = true)
+        {
+            return GetDataTableCog(CommandType.Text, cmdTxt, logEnabled);
+        }
+        public static DataTable GetDataTableCog(CommandType cmdType, string cmdTxt, bool logEnabled = true)
+        {
+            DataSet ds = null;
+            ds = ExecDSCog(cmdType, cmdTxt, logEnabled);
+            if ((ds != null))
+                if (ds.Tables.Count > 0)
+                    return ds.Tables[0];
+
+            return null;
+        }
         private static void ProcCmd(SqlCommand cmd, SqlConnection connection, CommandType cmdType, string cmdTxt, SqlParameter[] cmdParams)
         {
             if (connection.State != ConnectionState.Open)

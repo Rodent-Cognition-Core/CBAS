@@ -20,6 +20,8 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { take, takeUntil } from 'rxjs/operators';
+import { ReqPIDialogeComponent } from '../reqPIDialoge/reqPIDialoge.component'
+//import { CogbytesService } from '../services/cogbytes.service';
 
 @Component({
 
@@ -33,15 +35,13 @@ export class CogbytesDialogueComponent implements OnInit {
 
     //Models Variables for adding Publication
     authorModel: any;
-    authorModel2: any;
     titleModel: any;
     dateModel: any;
     keywordsModel: any;
     doiModel: any;
     authorMultiSelect: any;
-    doiKeyModel: any;
     isEditMode: boolean;
-    privacyStatusModel: boolean;
+    privacyStatusModel: any;
     descriptionModel: any;
     additionalNotesModel: any;
     linkModel: any;
@@ -79,6 +79,7 @@ export class CogbytesDialogueComponent implements OnInit {
         private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
         private pubScreenService: PubScreenService,
+        //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
 
         private resolver: ComponentFactoryResolver,
@@ -92,8 +93,10 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.isEditMode = false;
 
-/*        this.GetAuthorList();
-        this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
+        this.resetFormVals();
+        this.GetAuthorList(); // PUBSCREEN FUNCTION : TO BE REPLACED
+
+/*      this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task"); this.processList(this.taskList, "Other", "task");  });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; this.processList(this.specieList, "Other", "species"); });
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
@@ -196,143 +199,166 @@ export class CogbytesDialogueComponent implements OnInit {
 
 
     // Function Definition to open a dialog for adding new cognitive task to the system
-    //openDialogAuthor(): void {
+    openDialogAuthor(): void {
 
-    //    let dialogref = this.dialogAuthor.open(AuthorDialogeComponent, {
-    //        height: '500px',
-    //        width: '700px',
-    //        data: {}
+        let dialogref = this.dialogAuthor.open(AuthorDialogeComponent, {
+            height: '500px',
+            width: '700px',
+            data: {}
 
-    //    });
+        });
 
-    //    dialogref.afterClosed().subscribe(result => {
+        //dialogref.afterClosed().subscribe(result => {
 
-    //        this.GetAuthorList();
+        //    this.GetAuthorList();
 
-    //    });
-    //}
+        //});
+    }
+
+    openDialogPI(): void { //PI Dialog Component must be implemented!
+
+        //let dialogref = this.dialogAuthor.open(AuthorDialogeComponent, {
+        let dialogref = this.dialogAuthor.open(ReqPIDialogeComponent, {
+            height: '500px',
+            width: '700px',
+            data: {}
+
+        });
+
+        //dialogref.afterClosed().subscribe(result => {
+
+        //    this.GetAuthorList();
+
+        //});
+    }
 
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
     }
 
-    //GetAuthorList() {
+    GetAuthorList() {
 
-    //    //this.resetFormVals();
+        this.pubScreenService.getAuthor().subscribe(data => {
+            this.authorList = data;
 
-    //    this.pubScreenService.getAuthor().subscribe(data => {
-    //        this.authorList = data;
+            // load the initial expList
+            this.filteredAutorList.next(this.authorList.slice());
 
-    //        // load the initial expList
-    //        this.filteredAutorList.next(this.authorList.slice());
+            this.authorMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterAuthor();
+                });
 
-    //        this.authorMultiFilterCtrl.valueChanges
-    //            .pipe(takeUntil(this._onDestroy))
-    //            .subscribe(() => {
-    //                this.filterAuthor();
-    //            });
+        });
 
-    //    });
-
-    //    return this.authorList;
-    //}
+        return this.authorList;
+    }
 
     //// handling multi filtered Author list
-    //private filterAuthor() {
-    //    if (!this.authorList) {
-    //        return;
-    //    }
+    private filterAuthor() {
+        if (!this.authorList) {
+            return;
+        }
 
-    //    // get the search keyword
-    //    let searchAuthor = this.authorMultiFilterCtrl.value;
+        // get the search keyword
+        let searchAuthor = this.authorMultiFilterCtrl.value;
 
-    //    if (!searchAuthor) {
-    //        this.filteredAutorList.next(this.authorList.slice());
-    //        return;
-    //    } else {
-    //        searchAuthor = searchAuthor.toLowerCase();
-    //    }
+        if (!searchAuthor) {
+            this.filteredAutorList.next(this.authorList.slice());
+            return;
+        } else {
+            searchAuthor = searchAuthor.toLowerCase();
+        }
 
-    //    // filter the Author
-    //    this.filteredAutorList.next(
-    //        this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-    //    );
-    //}
+        // filter the Author
+        this.filteredAutorList.next(
+            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+        );
+    }
 
 
 
     //Form Validation Variables for adding publications
-    //author = new FormControl('', [Validators.required]);
-    //title = new FormControl('', [Validators.required]);
-    //doi = new FormControl('', [Validators.required]);
-    //pi = new FormControl('', [Validators.required]);
-    //keywords = new FormControl('', [Validators.required]);
-    //date = new FormControl('', [Validators.required]);
-    //link = new FormControl('', [Validators.required]);
-    //description = new FormControl('', [Validators.required]);
-    //additionalNotes = new FormControl('', [Validators.required]);
-    //privacyStatus = new FormControl('', [Validators.required]);
+    author = new FormControl('', [Validators.required]);
+    title = new FormControl('', [Validators.required]);
+    date = new FormControl('', [Validators.required]);
+    privacyStatus = new FormControl('', [Validators.required]);
 
     // Handling Error for the required fields
-    //getErrorMessageAuthor() {
+    getErrorMessageAuthor() {
 
-    //    return this.author.hasError('required') ? 'You must enter a value' : '';
-    //}
+        return this.author.hasError('required') ? 'You must enter a value' : '';
+    }
 
-    //getErrorMessageTitle() {
+    getErrorMessageTitle() {
 
-    //    return this.title.hasError('required') ? 'You must enter a value' : '';
+        return this.title.hasError('required') ? 'You must enter a value' : '';
         
-    //}
+    }
 
-    //getErrorMessageDate() {
-    //    return this.date.hasError('required') ? 'You must enter a value' : '';
-    //}
+    getErrorMessageDate() {
+        return this.date.hasError('required') ? 'You must enter a value' : '';
+    }
 
-    //getErrorMessageDateVal() {
-    //    return this.date.hasError('pattern') ? 'You must enter a valid value' : '';
-    //}
+    getErrorMessagePrivacyStatus() {
+        return this.privacyStatus.hasError('required') ? 'You must select a value' : '';
+    }
 
-    //setDisabledVal() {
+    setDisabledVal() {
 
-    //    if (this.authorModel === null && this.author.hasError('required')) {
+        //if (this.authorModel === null && this.author.hasError('required')) {
 
-    //        return true;
-    //    }
-
-
-    //    else if (
-    //        this.title.hasError('required') ||
-    //        this.privacyStatus.hasError('required') ||
-    //        //this.cognitiveTask.hasError('required') ||
-    //        this.date.hasError('required') ||
-    //        this.date.hasError('pattern') ||
-    //        //this.sourceOption.hasError('required')
-    //        ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required'))
-
-    //    ) {
-
-    //        return true;
-    //    }
-
-    //    else {
-
-    //        return false;
-    //    }
-
-    //}
+        //    return true;
+        //}
 
 
-    //AddRepository() {
-    //    if (this.authorModel !== null && this.authorModel.length !== 0) {
-    //        this._cogbytes.authourID = this.authorModel;
-    //        console.log(this.authorModel)
-    //    }
-    //    this._cogbytes.title = this.titleModel;
-    //    this._cogbytes.keywords = this.keywordsModel;
-    //    this._cogbytes.doi = this.doiModel;
-    //}
+        //else if (
+        if (
+            this.title.hasError('required') ||
+            this.author.hasError('required') ||
+            this.privacyStatus.hasError('required') ||
+            this.date.hasError('required') ||
+            ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required'))
+
+        ) {
+
+            return true;
+        }
+
+        else {
+
+            return false;
+        }
+
+    }
+
+
+    AddRepository() {
+
+        if (this.authorModel !== null && this.authorModel.length !== 0) {
+            this._cogbytes.authourID = this.authorModel;
+            console.log(this.authorModel)
+        }
+        this._cogbytes.title = this.titleModel;
+        this._cogbytes.keywords = this.keywordsModel;
+        this._cogbytes.doi = this.doiModel;
+        this._cogbytes.piString = this.piModel;
+        this._cogbytes.link = this.linkModel;
+        this._cogbytes.privacyStatus = this.privacyStatusModel;
+        this._cogbytes.description = this.descriptionModel;
+        this._cogbytes.additionalNotes = this.additionalNotesModel;
+        this._cogbytes.date = this.dateModel;
+
+        // ADD LINK TO COGBYTES DATABASE HERE
+
+        this.thisDialogRef.close();
+        alert("Repository was successfully added to the system!");
+
+        this.resetFormVals();
+    }
+
 /* **********************************************************************
     // Adding a new publication to DB by cliking on Submit button
    AddEditPublication() {
@@ -443,13 +469,11 @@ export class CogbytesDialogueComponent implements OnInit {
         this.keywordsModel = '';
         this.doiModel = '';
         this.dateModel = '';
-        //this.authorModel = [];
-        this.authorModel = '';
-        this.doiKeyModel = '';
+        this.authorModel = [];
         this.descriptionModel = '';
         this.additionalNotesModel = '';
         this.linkModel = '';
-        this.piModel = '';
+        this.piModel = [];
     }
 
 

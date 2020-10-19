@@ -4,6 +4,7 @@ export class Cogbytes {
 
     public id: number;
     public title: string;
+    public date: Date;
     public keywords: string;
     public doi: string;
     public authourID: Array<number>;
