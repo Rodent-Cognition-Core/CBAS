@@ -60,7 +60,7 @@ namespace CBAS.Helpers
                 {
                     toEmailAddress = "smemarko@uwo.ca";
                 }
-
+                
                 mail.From = new MailAddress(fromEmailAddress);
                 mail.To.Add(toEmailAddress);
                 mail.Subject = subject;
