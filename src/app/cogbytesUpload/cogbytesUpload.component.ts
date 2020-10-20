@@ -47,7 +47,7 @@ export class CogbytesUploadComponent implements OnInit {
         public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
         //private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
-        private cogbytesService: CogbytesService,
+        //private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
     )
     {
