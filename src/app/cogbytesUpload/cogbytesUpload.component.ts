@@ -12,6 +12,7 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
     selector: 'app-cogbytesUpload',
     templateUrl: './cogbytesUpload.component.html',
     styleUrls: ['./cogbytesUpload.component.scss'],
+    providers: [CogbytesService],
 })
 
 export class CogbytesUploadComponent implements OnInit {
@@ -47,7 +48,7 @@ export class CogbytesUploadComponent implements OnInit {
         public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
         //private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
-        //private cogbytesService: CogbytesService,
+        private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
     )
     {
