@@ -41,44 +41,54 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Extracting Species List From DB
-    //public getSpecie(): any {
+    public getSpecies(): any {
 
-    //    return this.http
-    //        .get("/api/pubScreen/GetSpecie", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        return this.http
+            .get("/api/cogbytes/GetSpecies", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
 
-    //}
+    }
 
     //// Extracting Sex List From DB
-    //public getSex(): any {
+    public getSex(): any {
 
-    //    return this.http
-    //        .get("/api/pubScreen/GetSex", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        return this.http
+            .get("/api/cogbytes/GetSex", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
 
-    //}
-
-    //// Extracting Strain List From DB
-    //public getStrain(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetStrain", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
+    }
 
     //// Extracting Strain List From DB
-    //public getDisease(): any {
+    public getStrain(): any {
 
-    //    return this.http
-    //        .get("/api/pubScreen/GetDisease", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        return this.http
+            .get("/api/cogbytes/GetStrain", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
 
-    //}
+    }
+
+    //// Extracting Genos List From DB
+    public getGenos(): any {
+
+        return this.http
+            .get("/api/cogbytes/GetGenos", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
+    // Extracting Strain List From DB
+    public getAges(): any {
+
+        return this.http
+            .get("/api/cogbytes/GetAges", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
 
     //// Extracting Regions & Sub-regions List From DB
     //public getRegionSubRegion(): any {

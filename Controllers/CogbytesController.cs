@@ -50,29 +50,44 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         //// Extracting species list
-        //[HttpGet("GetSpecie")]
-        //[AllowAnonymous]
-        //public IActionResult GetSpecie()
-        //{
-        //    return new JsonResult(_pubScreenService.GetSpecies());
-        //}
+        [HttpGet("GetSpecies")]
+        [AllowAnonymous]
+        public IActionResult GetSpecies()
+        {
+            return new JsonResult(_cogbytesService.GetSpecies());
+        }
 
         //// Extracting sex list
-        //[HttpGet("GetSex")]
-        //[AllowAnonymous]
-        //public IActionResult GetSex()
-        //{
-        //    return new JsonResult(_pubScreenService.GetSex());
-        //}
+        [HttpGet("GetSex")]
+        [AllowAnonymous]
+        public IActionResult GetSex()
+        {
+            return new JsonResult(_cogbytesService.GetSex());
+        }
 
         //// Extracting strain list
-        //[HttpGet("GetStrain")]
-        //[AllowAnonymous]
-        //public IActionResult GetStrain()
-        //{
-        //    return new JsonResult(_pubScreenService.GetStrains());
-        //}
+        [HttpGet("GetStrain")]
+        [AllowAnonymous]
+        public IActionResult GetStrain()
+        {
+            return new JsonResult(_cogbytesService.GetStrains());
+        }
 
+        //// Extracting genotype list
+        [HttpGet("GetGenos")]
+        [AllowAnonymous]
+        public IActionResult GetGenos()
+        {
+            return new JsonResult(_cogbytesService.GetGenos());
+        }
+
+        //// Extracting age list
+        [HttpGet("GetAges")]
+        [AllowAnonymous]
+        public IActionResult GetAges()
+        {
+            return new JsonResult(_cogbytesService.GetAges());
+        }
         //// Extracting Disease Models list
         //[HttpGet("GetDisease")]
         //[AllowAnonymous]
@@ -168,7 +183,7 @@ namespace AngularSPAWebAPI.Controllers
         //    _pubScreenService.DeletePublicationById(pubId);
         //    return new JsonResult("Done!");
         //}
-        
+
 
         //// searching Publications based on search criteria
         //[HttpPost("SearchPublication")]

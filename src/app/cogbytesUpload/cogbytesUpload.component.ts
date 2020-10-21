@@ -40,6 +40,11 @@ export class CogbytesUploadComponent implements OnInit {
 
     // Definiing List Variables 
     public taskList: any;
+    public speciesList: any;
+    public sexList: any;
+    public strainList: any;
+    public genosList: any;
+    public ageList: any;
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -57,7 +62,12 @@ export class CogbytesUploadComponent implements OnInit {
         
     
     ngOnInit() {
-        //this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
+        this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
+        this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe(data => { this.genosList = data; });
+        this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
     }
 
     //name = new FormControl('', [Validators.required]);

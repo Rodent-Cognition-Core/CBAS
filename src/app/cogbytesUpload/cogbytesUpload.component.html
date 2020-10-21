@@ -75,12 +75,10 @@
                 <!--Adding Key Features ********************************************-->
 
                 <mat-form-field style="width:20%; ">
-                    <!--<mat-select placeholder="Select Cognitive Task(s)" required multiple>
-        </mat-select>-->
                     <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
-                        <!--<mat-option *ngFor="let task of taskList" [value]="task.id">
-                {{task.task}}
-            </mat-option>-->
+                        <mat-option *ngFor="let task of taskList" [value]="task.id">
+                            {{task.task}}
+                        </mat-option>
                     </mat-select>
                     <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
 
@@ -88,16 +86,25 @@
 
                 <mat-form-field style="width:20%; padding-left:30px">
                     <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" multiple>
+                        <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                            {{species.species}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field style="width:20%; padding-left:30px">
                     <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                        <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                            {{sex.sex}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field style="width:20%; padding-left:30px">
                     <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                        <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                            {{strain.strain}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
@@ -105,11 +112,17 @@
 
                 <mat-form-field style="width:20%; padding-left:0px">
                     <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
+                        <mat-option *ngFor="let geno of genosList" [value]="geno.id">
+                            {{geno.genotype}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
                 <mat-form-field style="width:20%; padding-left:30px">
                     <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                        <mat-option *ngFor="let age of ageList" [value]="age.id">
+                            {{age.ageInMonth}}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 

@@ -56,8 +56,8 @@ namespace AngularSPAWebAPI.Services
                 {
                     TaskList.Add(new PubScreenTask
                     {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
+                        ID = Int32.Parse(dr["TaskID"].ToString()),
+                        Task = Convert.ToString(dr["Name"].ToString()),
 
 
                     });
@@ -68,195 +68,110 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Function Definition to extract list of all Species
-        //public List<PubScreenSpecie> GetSpecies()
-        //{
-        //    List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            SpecieList.Add(new PubScreenSpecie
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                Species = Convert.ToString(dr["Species"].ToString()),
+        public List<PubScreenSpecie> GetSpecies()
+        {
+            List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Species"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    SpecieList.Add(new PubScreenSpecie
+                    {
+                        ID = Int32.Parse(dr["SpeciesID"].ToString()),
+                        Species = Convert.ToString(dr["Species"].ToString()),
 
 
-        //            });
-        //        }
-        //    }
+                    });
+                }
+            }
 
-        //    return SpecieList;
-        //}
+            return SpecieList;
+        }
 
         //// Function Definition to extract list of all Sex
-        //public List<PubScreenSex> GetSex()
-        //{
-        //    List<PubScreenSex> SexList = new List<PubScreenSex>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Sex"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            SexList.Add(new PubScreenSex
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                Sex = Convert.ToString(dr["Sex"].ToString()),
+        public List<PubScreenSex> GetSex()
+        {
+            List<PubScreenSex> SexList = new List<PubScreenSex>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Sex"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    SexList.Add(new PubScreenSex
+                    {
+                        ID = Int32.Parse(dr["SexID"].ToString()),
+                        Sex = Convert.ToString(dr["Sex"].ToString()),
 
 
-        //            });
-        //        }
-        //    }
+                    });
+                }
+            }
 
-        //    return SexList;
-        //}
+            return SexList;
+        }
 
         //// Function Definition to extract list of all Strains
-        //public List<PubScreenStrain> GetStrains()
-        //{
-        //    List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Strain"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            StrainList.Add(new PubScreenStrain
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                Strain = Convert.ToString(dr["Strain"].ToString()),
+        public List<PubScreenStrain> GetStrains()
+        {
+            List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Strain"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    StrainList.Add(new PubScreenStrain
+                    {
+                        ID = Int32.Parse(dr["StrainID"].ToString()),
+                        Strain = Convert.ToString(dr["Strain"].ToString()),
 
 
-        //            });
-        //        }
-        //    }
+                    });
+                }
+            }
 
-        //    return StrainList;
-        //}
+            return StrainList;
+        }
 
-
-        //// Function Definition to extract list of all Disease Models
-        //public List<PubScreenDisease> GetDisease()
-        //{
-        //    List<PubScreenDisease> DiseaseList = new List<PubScreenDisease>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            DiseaseList.Add(new PubScreenDisease
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-
-
-        //            });
-        //        }
-        //    }
-
-        //    return DiseaseList;
-        //}
-
-        //// Function Definition to extract list of all Regions & Sub-regions
-        //public List<PubScreenRegion> GetAllRegions()
-        //{
-        //    List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion.ID, SubRegion.RID, BrainRegion.BrainRegion, SubRegion.SubRegion 
-        //                                                     From SubRegion
-        //                                                     Inner join BrainRegion on BrainRegion.ID = SubRegion.RID"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            RegionList.Add(new PubScreenRegion
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                RID = Int32.Parse(dr["RID"].ToString()),
-        //                BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-        //                SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
+        //// Function Definition to extract list of all Genotypes
+        public List<Geno> GetGenos()
+        {
+            List<Geno> GenoList = new List<Geno>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Genotype"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    GenoList.Add(new Geno
+                    {
+                        ID = Int32.Parse(dr["GenoID"].ToString()),
+                        Genotype = Convert.ToString(dr["Genotype"].ToString()),
 
 
-        //            });
-        //        }
-        //    }
+                    });
+                }
+            }
 
-        //    return RegionList;
-        //}
+            return GenoList;
+        }
 
-        //// Function Definition to extract list of all Regions only
-        //public List<PubScreenRegion> GetRegions()
-        //{
-        //    List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            RegionList.Add(new PubScreenRegion
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-
-        //            });
-        //        }
-        //    }
-
-        //    return RegionList;
-        //}
-
-        //// Function Definition to extract list of Celltypes 
-        //public List<PubScreenCellType> GetCellTypes()
-        //{
-        //    List<PubScreenCellType> CelltypeList = new List<PubScreenCellType>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            CelltypeList.Add(new PubScreenCellType
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                CellType = Convert.ToString(dr["CellType"].ToString()),
-
-        //            });
-        //        }
-        //    }
-
-        //    return CelltypeList;
-        //}
+        //// Function Definition to extract list of all ages
+        public List<Age> GetAges()
+        {
+            List<Age> AgeList = new List<Age>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Age"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    AgeList.Add(new Age
+                    {
+                        ID = Int32.Parse(dr["AgeID"].ToString()),
+                        AgeInMonth = Convert.ToString(dr["AgeInMonth"].ToString()),
 
 
-        //// Function Definition to extract list of Methods 
-        //public List<PubScreenMethod> GetMethods()
-        //{
-        //    List<PubScreenMethod> MethodList = new List<PubScreenMethod>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            MethodList.Add(new PubScreenMethod
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                Method = Convert.ToString(dr["Method"].ToString()),
+                    });
+                }
+            }
 
-        //            });
-        //        }
-        //    }
+            return AgeList;
+        }
 
-        //    return MethodList;
-        //}
-
-        //// Function Definition to extract list of Neurotransmitter 
-        //public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
-        //{
-        //    List<PubScreenNeuroTransmitter> NeuroTransmitterList = new List<PubScreenNeuroTransmitter>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            NeuroTransmitterList.Add(new PubScreenNeuroTransmitter
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-
-        //            });
-        //        }
-        //    }
-
-        //    return NeuroTransmitterList;
-        //}
 
         //// Function defintion to add a new author to database
         //public int AddAuthors(PubScreenAuthor author, string userEmail)
