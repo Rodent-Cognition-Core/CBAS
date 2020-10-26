@@ -45,6 +45,25 @@ namespace AngularSPAWebAPI.Services
         //    return PaperTypeList;
         //}
 
+        // Function Definition to extract list of all file types
+        public List<CogbytesFileType> GetFileTypes()
+        {
+            List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From FileType"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    FileTypeList.Add(new CogbytesFileType
+                    {
+                        ID = Int32.Parse(dr["FileTypeID"].ToString()),
+                        FileType = Convert.ToString(dr["FileType"].ToString()),
+
+                    });
+                }
+            }
+
+            return FileTypeList;
+        }
 
         // Function Definition to extract list of all Cognitive Tasks
         public List<PubScreenTask> GetTasks()

@@ -20,15 +20,15 @@ import { AuthenticationService } from './authentication.service';
 
 
 
-    // Extracting PaperType List From DB
-    //public getPaperType(): any {
+    // Extracting file type List From DB
+    public getFileTypes(): any {
 
-    //    return this.http
-    //        .get("/api/pubScreen/GetPaperType", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        return this.http
+            .get("/api/cogbytes/GetFileTypes", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
 
-    //}
+    }
 
     // Extractingl ist of Task List From DB
     public getTask(): any {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component'
 import { CogbytesUpload } from '../models/cogbytesUpload'
@@ -12,13 +12,14 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
     selector: 'app-cogbytesUpload',
     templateUrl: './cogbytesUpload.component.html',
     styleUrls: ['./cogbytesUpload.component.scss'],
-    providers: [CogbytesService],
+    //providers: [CogbytesService],
 })
 
 export class CogbytesUploadComponent implements OnInit {
 
     public uploadKey: number;
-    public parentRef: CogbytesDialogueComponent;
+    //public parentRef: CogbytesDialogueComponent;
+    panelOpenState: boolean;
 
     //public nameModel: any;
     //public dateModel: any;
@@ -39,6 +40,7 @@ export class CogbytesUploadComponent implements OnInit {
     public taskBatteryModel: any;
 
     // Definiing List Variables 
+    public fileTypeList: any;
     public taskList: any;
     public speciesList: any;
     public sexList: any;
@@ -50,7 +52,7 @@ export class CogbytesUploadComponent implements OnInit {
 
 
     constructor(
-        public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
+        //public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
         //private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
@@ -62,6 +64,7 @@ export class CogbytesUploadComponent implements OnInit {
         
     
     ngOnInit() {
+        this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
         this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
         this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
         this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
@@ -100,6 +103,7 @@ export class CogbytesUploadComponent implements OnInit {
     //}
 
     resetFormVals() {
+        this.panelOpenState = false;
 
         this.fileTypeModel = '';
         this.descriptionModel = '';
@@ -116,8 +120,8 @@ export class CogbytesUploadComponent implements OnInit {
     }
 
 
-    remove() {
-        this.parentRef.removeUploadComponent(this.uploadKey);
-    }
+    //remove() {
+    //    this.parentRef.removeUploadComponent(this.uploadKey);
+    //}
 
 }

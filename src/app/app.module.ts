@@ -132,7 +132,7 @@ const ROUTES: Routes = [
         SubExpDialogeComponent,
         NotificationDialogComponent,
         CogbytesDialogueComponent,
-        CogbytesUploadComponent,
+        //CogbytesUploadComponent,
        
 
     ],

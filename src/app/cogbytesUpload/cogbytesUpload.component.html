@@ -1,249 +1,210 @@
-<mat-expansion-panel [expanded]="true">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            File {{uploadKey}}:
-        </mat-panel-title>
-    </mat-expansion-panel-header>
+<div>
+    <button mat-raised-button>Upload File</button>
+    <button mat-raised-button color="warn" style="float:right" (click)="remove()">Delete file</button>
+</div>
 
-    <div>
-        <button mat-raised-button>Upload File</button>
-        <button mat-raised-button color="warn" style="float:right" (click)="remove()">Delete file</button>
-    </div>
-
-    <br />
-
-    <div>
-        <mat-accordion multi>
-
-            <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        File Information:
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!--File Name-->
-                <!--<mat-form-field style="width: 30%">
-                    <input matInput placeholder="Name" [formControl]="name" [(ngModel)]="nameModel" required>
-                    <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
-                </mat-form-field>-->
-
-                <!--Date-->
-                <!--<mat-form-field style="width: 30%; padding-left:25px">
-                    <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
-                </mat-form-field>-->
-
-                <!--File Type-->
-                <mat-form-field style="width: 30%; padding-left:0px">
-                    <mat-select matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" required>
-                    </mat-select>
-                    <mat-error *ngIf="fileType.invalid">{{getErrorMessageFileType()}}</mat-error>
-
-                </mat-form-field>
-
-                <br />
-
-                <!--Description-->
-                <mat-form-field style="width:44%">
-
-                    <textarea matInput placeholder="Description" [(ngModel)]="descriptionModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
-    
-                </textarea>
-                </mat-form-field>
-
-                <!--Additional Notes-->
-                <mat-form-field style="width:44%; padding-left:25px">
-
-                    <textarea matInput placeholder="Additional Notes"  [(ngModel)]="additionalNotesModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
-    
-                </textarea>
-                </mat-form-field>
-
-
-            </mat-expansion-panel>
-
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        Key Features:
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!--Adding Key Features ********************************************-->
-
-                <mat-form-field style="width:20%; ">
-                    <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
-                        <mat-option *ngFor="let task of taskList" [value]="task.id">
-                            {{task.task}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
-
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" multiple>
-                        <mat-option *ngFor="let species of speciesList" [value]="species.id">
-                            {{species.species}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
-                        <mat-option *ngFor="let sex of sexList" [value]="sex.id">
-                            {{sex.sex}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-                        <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                            {{strain.strain}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <br />
-
-                <mat-form-field style="width:20%; padding-left:0px">
-                    <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
-                        <mat-option *ngFor="let geno of genosList" [value]="geno.id">
-                            {{geno.genotype}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
-                        <mat-option *ngFor="let age of ageList" [value]="age.id">
-                            {{age.ageInMonth}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Housing Info" [(ngModel)]="housingModel" multiple>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field style="width:20%; padding-left:30px">
-                    <mat-select placeholder="Select Light Cycle" [(ngModel)]="lightModel" multiple>
-                    </mat-select>
-                </mat-form-field>
-                <br />
-
-                <br /><br />
-
-                <span style="font-size:small">-  Please indicate if the experiment has intervention?</span>
-                <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
-                    <!--<mat-radio-group required>-->
-                    <mat-radio-button value="0">No</mat-radio-button>
-                    <mat-radio-button value="1">Yes</mat-radio-button>
-                    <mat-error *ngIf="intervention.invalid">{{getErrorMessageIntervention()}}</mat-error>
-                </mat-radio-group>
-
-                <br />
-                <br />
-
-                <mat-form-field class="full-width" *ngIf="interventionModel=='1'">
-                    <!--<mat-form-field class="full-width">-->
-                    <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
-                              matAutosizeMaxRows="5"></textarea>
-                    <!--<textarea matInput placeholder="Intervention Description" matTextareaAutosize matAutosizeMinRows="2"
-                  matAutosizeMaxRows="5"></textarea>-->
-                    <!--<mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>-->
-                </mat-form-field>
-
-                <br />
-                <br />
-
-                <!--Image Drop-down list if the selected task is PAL or PD-->
-                <!--<div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">-->
-                <div>
-                    <mat-form-field class="full-width">
-                        <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
-                        <mat-select placeholder="Select the images">
-                            <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
-                    <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
-                </mat-option>-->
-                        </mat-select>
-                        <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
-                    </mat-form-field>
-
-                </div>
-
-                <!--providing description if for example more than 2 iamges selected for PD and more than 3 iamges selected for PAL-->
-                <!--<div [hidden]="!((taskID==3 && selectedImageResult!=2) || (taskID==4 && selectedImageResult != 3) || (taskID==11 && selectedImageResult > 6) || (taskID==12 && selectedImageResult > 4))">-->
-                <div>
-                    <mat-form-field class="full-width">
-
-                        <!--<textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
-              [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
-              matAutosizeMaxRows="5">-->
-                        <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
-                                  matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
-           
-                        </textarea>
-                        <!--<mat-error *ngIf="imageDescription.invalid">{{getErrorMessageImageDescription()}}</mat-error>-->
-                    </mat-form-field>
-
-                </div>
-
-                <div>
-                    <mat-form-field class="full-width">
-
-                        <textarea matInput placeholder="Task Battery" [(ngModel)]="taskBatteryModel"
-                                  matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
-           
-                        </textarea>
-                    </mat-form-field>
-
-                </div>
-
-
-                <!--
-        <span style="font-size:small" *ngIf="interventionModel=='1'">- Please indicate if the intervention is medication/drug?</span>
-        <mat-radio-group [formControl]="isDrug" [(ngModel)]="isDrugModel" required *ngIf="interventionModel=='1'">
-            <mat-radio-button value="0">No</mat-radio-button>
-            <mat-radio-button value="1">Yes</mat-radio-button>
-            <mat-error *ngIf="isDrug.invalid">{{getErrorMessageIsDrug()}}</mat-error>
-        </mat-radio-group>
-
-        <br />
-
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
-            <input matInput placeholder="Enter drug name" [formControl]="drug" [(ngModel)]="drugModel" required>
-            <mat-error *ngIf="drug.invalid">{{getErrorMessageDrug()}}</mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1'&& interventionModel=='1'">
-            <input matInput placeholder="Enter drug quantity" [formControl]="drugQuantity" [(ngModel)]="drugQuantityModel" required>
-            <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatity()}}</mat-error>
-            <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatityNumber()}}</mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
-            <input matInput placeholder="Enter drug unit" [formControl]="drugUnit" [(ngModel)]="drugUnitModel" required>
-            <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageDrugUnit()}}</mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="full-width" *ngIf="interventionModel=='1' && isDrugModel=='0'">
-            <textarea matInput placeholder="Intervention Description" [formControl]="intDes" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
-                        matAutosizeMaxRows="5"></textarea>
-            <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>
-        </mat-form-field>-->
-
-
-
-            </mat-expansion-panel>
-
-        </mat-accordion>
-    </div>
-</mat-expansion-panel>
 <br />
+
+<div>
+    <mat-accordion multi>
+
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    File Information:
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!--File Name-->
+                        <!--<mat-form-field style="width: 30%">
+                <input matInput placeholder="Name" [formControl]="name" [(ngModel)]="nameModel" required>
+                <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
+            </mat-form-field>-->
+                        <!--Date-->
+                        <!--<mat-form-field style="width: 30%; padding-left:25px">
+                <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
+            </mat-form-field>-->
+
+            <!--File Type-->
+            <mat-form-field style="width: 30%; padding-left:0px">
+                <mat-select matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" required>
+                    <mat-option *ngFor="let type of fileTypeList" [value]="type.id">
+                        {{type.fileType}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="fileType.invalid">{{getErrorMessageFileType()}}</mat-error>
+
+            </mat-form-field>
+
+
+            <br />
+
+            <!--Description-->
+            <mat-form-field style="width:44%">
+
+                <textarea matInput placeholder="Description" [(ngModel)]="descriptionModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+            </textarea>
+            </mat-form-field>
+
+            <!--Additional Notes-->
+            <mat-form-field style="width:44%; padding-left:25px">
+
+                <textarea matInput placeholder="Additional Notes" [(ngModel)]="additionalNotesModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+            </textarea>
+            </mat-form-field>
+
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="fileTypeModel===1">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Key Features:
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <!--Adding Key Features ********************************************-->
+
+            <mat-form-field style="width:20%; ">
+                <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
+                    <mat-option *ngFor="let task of taskList" [value]="task.id">
+                        {{task.task}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
+
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" multiple>
+                    <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                        {{species.species}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                    <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                        {{sex.sex}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                    <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                        {{strain.strain}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <br />
+
+            <mat-form-field style="width:20%; padding-left:0px">
+                <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
+                    <mat-option *ngFor="let geno of genosList" [value]="geno.id">
+                        {{geno.genotype}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                    <mat-option *ngFor="let age of ageList" [value]="age.id">
+                        {{age.ageInMonth}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Housing Info" [(ngModel)]="housingModel" multiple>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field style="width:20%; padding-left:30px">
+                <mat-select placeholder="Select Light Cycle" [(ngModel)]="lightModel" multiple>
+                </mat-select>
+            </mat-form-field>
+            <br />
+
+            <br /><br />
+
+            <span style="font-size:small">-  Please indicate if the experiment has intervention?</span>
+            <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
+                <!--<mat-radio-group required>-->
+                <mat-radio-button value="0">No</mat-radio-button>
+                <mat-radio-button value="1">Yes</mat-radio-button>
+                <mat-error *ngIf="intervention.invalid">{{getErrorMessageIntervention()}}</mat-error>
+            </mat-radio-group>
+
+            <br />
+            <br />
+
+            <mat-form-field class="full-width" *ngIf="interventionModel=='1'">
+                <!--<mat-form-field class="full-width">-->
+                <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
+                            matAutosizeMaxRows="5"></textarea>
+                <!--<textarea matInput placeholder="Intervention Description" matTextareaAutosize matAutosizeMinRows="2"
+                matAutosizeMaxRows="5"></textarea>-->
+                <!--<mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>-->
+            </mat-form-field>
+
+            <br />
+            <br />
+
+            <!--Image Drop-down list if the selected task is PAL or PD-->
+            <!--<div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">-->
+            <div>
+                <mat-form-field class="full-width">
+                    <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
+                    <mat-select placeholder="Select the images">
+                        <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
+                <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
+            </mat-option>-->
+                    </mat-select>
+                    <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
+                </mat-form-field>
+
+            </div>
+
+            <!--providing description if for example more than 2 iamges selected for PD and more than 3 iamges selected for PAL-->
+            <!--<div [hidden]="!((taskID==3 && selectedImageResult!=2) || (taskID==4 && selectedImageResult != 3) || (taskID==11 && selectedImageResult > 6) || (taskID==12 && selectedImageResult > 4))">-->
+            <div>
+                <mat-form-field class="full-width">
+
+                    <!--<textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
+            [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
+            matAutosizeMaxRows="5">-->
+                    <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
+                                matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+           
+                    </textarea>
+                    <!--<mat-error *ngIf="imageDescription.invalid">{{getErrorMessageImageDescription()}}</mat-error>-->
+                </mat-form-field>
+
+            </div>
+
+            <div>
+                <mat-form-field class="full-width">
+
+                    <textarea matInput placeholder="Task Battery" [(ngModel)]="taskBatteryModel"
+                                matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+           
+                    </textarea>
+                </mat-form-field>
+
+            </div>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+</div>
+
+
 

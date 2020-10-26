@@ -34,12 +34,12 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         // Extracting paper type list
-        //[HttpGet("GetPaperType")]
-        //[AllowAnonymous]
-        //public IActionResult GetPaperType()
-        //{
-        //    return new JsonResult(_pubScreenService.GetPaperTypes());
-        //}
+        [HttpGet("GetFileTypes")]
+        [AllowAnonymous]
+        public IActionResult GetFileTypes()
+        {
+            return new JsonResult(_cogbytesService.GetFileTypes());
+        }
 
         // Extracting cognitive task list
         [HttpGet("GetTask")]

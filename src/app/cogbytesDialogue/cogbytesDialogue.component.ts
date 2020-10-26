@@ -69,9 +69,9 @@ export class CogbytesDialogueComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     // container for child components (cogbytesUpload)
-    @ViewChild('uploadContainer', { read: ViewContainerRef }) entry: ViewContainerRef;
-    child_unique_key: number = 0;
-    componentReferences = Array<ComponentRef<CogbytesUploadComponent>>();
+    //@ViewChild('uploadContainer', { read: ViewContainerRef }) entry: ViewContainerRef;
+    //child_unique_key: number = 0;
+    //componentReferences = Array<ComponentRef<CogbytesUploadComponent>>();
 
     constructor(
         public thisDialogRef: MatDialogRef<CogbytesDialogueComponent>,
@@ -82,7 +82,7 @@ export class CogbytesDialogueComponent implements OnInit {
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
 
-        private resolver: ComponentFactoryResolver,
+        //private resolver: ComponentFactoryResolver,
         
         @Inject(MAT_DIALOG_DATA) public data: any,) {
 
@@ -169,33 +169,33 @@ export class CogbytesDialogueComponent implements OnInit {
     //    console.log("ngAfterViewInit");
     //}
 
-    createUploadComponent() {
-        const factory = this.resolver.resolveComponentFactory(CogbytesUploadComponent);
-        const componentRef = this.entry.createComponent(factory);
-        let childComponent = componentRef.instance;
-        childComponent.uploadKey = ++this.child_unique_key;
-        childComponent.parentRef = this;
+    //createUploadComponent() {
+    //    const factory = this.resolver.resolveComponentFactory(CogbytesUploadComponent);
+    //    const componentRef = this.entry.createComponent(factory);
+    //    let childComponent = componentRef.instance;
+    //    childComponent.uploadKey = ++this.child_unique_key;
+    //    childComponent.parentRef = this;
 
-        this.componentReferences.push(componentRef);
-    }
+    //    this.componentReferences.push(componentRef);
+    //}
 
-    removeUploadComponent(key: number) {
+    //removeUploadComponent(key: number) {
 
-        if (this.entry.length < 1) return;
+    //    if (this.entry.length < 1) return;
 
-        let componentRef = this.componentReferences.filter(
-            x => x.instance.uploadKey == key
-        )[0];
+    //    let componentRef = this.componentReferences.filter(
+    //        x => x.instance.uploadKey == key
+    //    )[0];
 
-        let uploadIndex: number = this.entry.indexOf(componentRef as any);
+    //    let uploadIndex: number = this.entry.indexOf(componentRef as any);
 
-        this.entry.remove(uploadIndex);
+    //    this.entry.remove(uploadIndex);
 
-        this.componentReferences = this.componentReferences.filter(
-            x => x.instance.uploadKey !== key
-        );
+    //    this.componentReferences = this.componentReferences.filter(
+    //        x => x.instance.uploadKey !== key
+    //    );
 
-    }
+    //}
 
 
     // Function Definition to open a dialog for adding new cognitive task to the system
