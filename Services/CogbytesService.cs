@@ -26,26 +26,6 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
 
-        // Function Definition to extract list of all Paper Types
-        //public List<PubScreenPaperType> GetPaperTypes()
-        //{
-        //    List<PubScreenPaperType> PaperTypeList = new List<PubScreenPaperType>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select distinct(PaperType) From PaperType"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            PaperTypeList.Add(new PubScreenPaperType
-        //            {
-        //                PaperType = Convert.ToString(dr["PaperType"].ToString()),
-
-        //            });
-        //        }
-        //    }
-
-        //    return PaperTypeList;
-        //}
-
-        // Function Definition to extract list of all file types
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
@@ -193,13 +173,13 @@ namespace AngularSPAWebAPI.Services
 
 
         //// Function defintion to add a new author to database
-        //public int AddAuthors(PubScreenAuthor author, string userEmail)
-        //{
-        //    string sql = $@"Insert into Author (FirstName, LastName, Affiliation, username) Values
-        //                    ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
+        public int AddAuthors(PubScreenAuthor author, string userEmail)
+        {
+            string sql = $@"Insert into Author (FirstName, LastName, Affiliation, Username) Values
+                            ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
 
-        //    return Int32.Parse(Dal.ExecScalarPub(sql).ToString());
-        //}
+            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+        }
 
 
         //// Function Definition to extract list of Authors 

@@ -33,6 +33,7 @@ import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
 import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
+import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
 
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
@@ -132,6 +133,7 @@ const ROUTES: Routes = [
         SubExpDialogeComponent,
         NotificationDialogComponent,
         CogbytesDialogueComponent,
+        CogbytesAuthorDialogueComponent,
         //CogbytesUploadComponent,
        
 
@@ -174,6 +176,7 @@ const ROUTES: Routes = [
         AuthorDialogeComponent,
         CogbytesDialogueComponent,
         CogbytesUploadComponent,
+        CogbytesAuthorDialogueComponent,
     ],
     bootstrap: [AppComponent]
 })

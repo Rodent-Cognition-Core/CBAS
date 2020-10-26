@@ -88,62 +88,15 @@ namespace AngularSPAWebAPI.Controllers
         {
             return new JsonResult(_cogbytesService.GetAges());
         }
-        //// Extracting Disease Models list
-        //[HttpGet("GetDisease")]
-        //[AllowAnonymous]
-        //public IActionResult GetDisease()
-        //{
-        //    return new JsonResult(_pubScreenService.GetDisease());
-        //}
-
-        //// Extracting Regions  list
-        //[HttpGet("GetRegion")]
-        //[AllowAnonymous]
-        //public IActionResult GetRegion()
-        //{
-        //    return new JsonResult(_pubScreenService.GetRegions());
-        //}
-
-        //// Extracting Regions & Sub-Regions list
-        //[HttpGet("GetRegionSubRegion")]
-        //[AllowAnonymous]
-        //public IActionResult GetRegionSubRegion()
-        //{
-        //    return new JsonResult(_pubScreenService.GetAllRegions());
-        //}
-
-        //// Extracting Celltype list
-        //[HttpGet("GetCellType")]
-        //[AllowAnonymous]
-        //public IActionResult GetCellType()
-        //{
-        //    return new JsonResult(_pubScreenService.GetCellTypes());
-        //}
-
-        //// Extracting Method list
-        //[HttpGet("GetMethod")]
-        //[AllowAnonymous]
-        //public IActionResult GetMethod()
-        //{
-        //    return new JsonResult(_pubScreenService.GetMethods());
-        //}
-
-        //// Extracting NeuroTransmitter list
-        //[HttpGet("GetNeurotransmitter")]
-        //[AllowAnonymous]
-        //public IActionResult GetNeurotransmitter()
-        //{
-        //    return new JsonResult(_pubScreenService.GetNeurotransmitters());
-        //}
 
         //// Adding new author to database
-        //[HttpPost("AddAuthor")]
-        //public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
-        //{
-        //    var user = GetCurrentUser();
-        //    var userEmail = user.Result.UserName;
-        //    return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
-        //}
+        [HttpPost("AddAuthor")]
+        public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_cogbytesService.AddAuthors(author, userEmail));
+        }
 
 
         //// Extracting Author list from Database (pubScreen)

@@ -18,7 +18,7 @@ import { CogbytesUploadComponent } from '../cogbytesUpload/cogbytesUpload.compon
 import { IdentityService } from '../services/identity.service';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
+import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
 import { take, takeUntil } from 'rxjs/operators';
 import { ReqPIDialogeComponent } from '../reqPIDialoge/reqPIDialoge.component'
 //import { CogbytesService } from '../services/cogbytes.service';
@@ -201,7 +201,7 @@ export class CogbytesDialogueComponent implements OnInit {
     // Function Definition to open a dialog for adding new cognitive task to the system
     openDialogAuthor(): void {
 
-        let dialogref = this.dialogAuthor.open(AuthorDialogeComponent, {
+        let dialogref = this.dialogAuthor.open(CogbytesAuthorDialogueComponent, {
             height: '500px',
             width: '700px',
             data: {}

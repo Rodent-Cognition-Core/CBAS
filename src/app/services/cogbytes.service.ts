@@ -90,74 +90,24 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
-    //// Extracting Regions & Sub-regions List From DB
-    //public getRegionSubRegion(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetRegionSubRegion", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
-    //// Extracting Regions List Only From DB
-    //public getRegion(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetRegion", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
-    //// Extracting Cell types List From DB
-    //public getCellType(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetCellType", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
-    //// Extracting Method List From DB
-    //public getMethod(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetMethod", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
-    //// Extracting NeuroTransmitter List From DB
-    //public getNeurotransmitter(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetNeurotransmitter", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
     //// Adding New Author to the database
-    //public addAuthor(authorFirstName: string, authorLastName: string, authorAffilation: string): any {
+    public addAuthor(authorFirstName: string, authorLastName: string, authorAffilation: string): any {
 
-    //    var obj = {
-    //        'firstName': authorFirstName,
-    //        'lastName': authorLastName,
-    //        'affiliation': authorAffilation,
-    //    }; 
+        var obj = {
+            'firstName': authorFirstName,
+            'lastName': authorLastName,
+            'affiliation': authorAffilation,
+        }; 
 
-    //    const body: string = JSON.stringify(obj);
+        const body: string = JSON.stringify(obj);
 
-    //    // Sends an authenticated request.
-    //    return this.http
-    //        .post("/api/pubScreen/AddAuthor", body, {
-    //            headers: this.authenticationService.getAuthorizationHeader()
-    //        });
+        // Sends an authenticated request.
+        return this.http
+            .post("/api/cogbytes/AddAuthor", body, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
 
-    //}
+    }
 
     //// Extracting List of Autors from database
     //public getAuthor(): any {
