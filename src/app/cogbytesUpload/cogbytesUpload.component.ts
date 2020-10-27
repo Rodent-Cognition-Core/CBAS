@@ -19,7 +19,6 @@ export class CogbytesUploadComponent implements OnInit {
 
     public uploadKey: number;
     //public parentRef: CogbytesDialogueComponent;
-    panelOpenState: boolean;
 
     //public nameModel: any;
     //public dateModel: any;
@@ -103,7 +102,6 @@ export class CogbytesUploadComponent implements OnInit {
     //}
 
     resetFormVals() {
-        this.panelOpenState = false;
 
         this.fileTypeModel = '';
         this.descriptionModel = '';

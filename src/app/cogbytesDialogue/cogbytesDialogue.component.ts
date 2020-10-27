@@ -11,7 +11,7 @@ import { PISiteService } from '../services/piSite.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
-import { PubScreenService } from '../services/pubScreen.service';
+import { CogbytesService } from '../services/cogbytes.service';
 import { Pubscreen } from '../models/pubscreen';
 import { Cogbytes } from '../models/cogbytes'
 import { CogbytesUploadComponent } from '../cogbytesUpload/cogbytesUpload.component'
@@ -20,7 +20,7 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
 import { take, takeUntil } from 'rxjs/operators';
-import { ReqPIDialogeComponent } from '../reqPIDialoge/reqPIDialoge.component'
+import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialoge.component'
 //import { CogbytesService } from '../services/cogbytes.service';
 
 @Component({
@@ -46,10 +46,11 @@ export class CogbytesDialogueComponent implements OnInit {
     additionalNotesModel: any;
     linkModel: any;
     piModel: any;
+    piMultiSelect: any;
 
     // Definiing List Variables 
     authorList: any;
-    authorList2: any;
+    piList: any;
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
@@ -65,6 +66,9 @@ export class CogbytesDialogueComponent implements OnInit {
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public piMultiFilterCtrl: FormControl = new FormControl();
+    public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -78,7 +82,7 @@ export class CogbytesDialogueComponent implements OnInit {
         // private pagerService: PagerService,
         private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
-        private pubScreenService: PubScreenService,
+        private cogbytesService: CogbytesService,
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
 
@@ -94,7 +98,8 @@ export class CogbytesDialogueComponent implements OnInit {
         this.isEditMode = false;
 
         this.resetFormVals();
-        this.GetAuthorList(); // PUBSCREEN FUNCTION : TO BE REPLACED
+        this.GetAuthorList();
+        this.GetPIList();
 
 /*      this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task"); this.processList(this.taskList, "Other", "task");  });
@@ -208,28 +213,27 @@ export class CogbytesDialogueComponent implements OnInit {
 
         });
 
-        //dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe(result => {
 
-        //    this.GetAuthorList();
+            this.GetAuthorList();
 
-        //});
+        });
     }
 
     openDialogPI(): void { //PI Dialog Component must be implemented!
 
         //let dialogref = this.dialogAuthor.open(AuthorDialogeComponent, {
-        let dialogref = this.dialogAuthor.open(ReqPIDialogeComponent, {
+        let dialogref = this.dialogAuthor.open(CogbytesPIDialogeComponent, {
             height: '500px',
             width: '700px',
             data: {}
 
         });
 
-        //dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe(result => {
 
-        //    this.GetAuthorList();
-
-        //});
+            //this.GetAuthorList();
+        });
     }
 
     ngOnDestroy() {
@@ -239,7 +243,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
     GetAuthorList() {
 
-        this.pubScreenService.getAuthor().subscribe(data => {
+        this.cogbytesService.getAuthor().subscribe(data => {
             this.authorList = data;
 
             // load the initial expList
@@ -255,6 +259,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         return this.authorList;
     }
+
 
     //// handling multi filtered Author list
     private filterAuthor() {
@@ -279,6 +284,46 @@ export class CogbytesDialogueComponent implements OnInit {
     }
 
 
+    GetPIList() {
+
+        this.cogbytesService.getPI().subscribe(data => {
+            this.piList = data;
+
+            // load the initial expList
+            //this.filteredPIList.next(this.piList.slice());
+
+            //this.piMultiFilterCtrl.valueChanges
+            //    .pipe(takeUntil(this._onDestroy))
+            //    .subscribe(() => {
+            //        this.filterPI();
+            //    });
+
+        });
+
+        return this.piList;
+    }
+
+    //// handling multi filtered PI list
+    private filterPI() {
+        if (!this.piList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchPI = this.piMultiFilterCtrl.value;
+
+        if (!searchPI) {
+            this.filteredPIList.next(this.piList.slice());
+            return;
+        } else {
+            searchPI = searchPI.toLowerCase();
+        }
+
+        // filter the PI
+        this.filteredPIList.next(
+            this.piList.filter(x => x.lastName.toLowerCase().indexOf(searchPI) > -1)
+        );
+    }
 
     //Form Validation Variables for adding publications
     author = new FormControl('', [Validators.required]);

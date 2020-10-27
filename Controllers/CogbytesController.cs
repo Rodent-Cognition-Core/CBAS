@@ -99,16 +99,36 @@ namespace AngularSPAWebAPI.Controllers
         }
 
 
-        //// Extracting Author list from Database (pubScreen)
-        //[HttpGet("GetAuthor")]
-        //[AllowAnonymous]
-        //public IActionResult GetAuthor()
-        //{
-        //    //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
-        //    //var b = a;
+        //// Extracting Author list from Database (Cogbytes)
+        [HttpGet("GetAuthor")]
+        [AllowAnonymous]
+        public IActionResult GetAuthor()
+        {
+            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
+            //var b = a;
 
-        //    return new JsonResult(_pubScreenService.GetAuthors());
-        //}
+            return new JsonResult(_cogbytesService.GetAuthors());
+        }
+
+        //// Adding new PI to database
+        [HttpPost("AddPI")]
+        public IActionResult AddPI([FromBody] Request request)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_cogbytesService.AddNewPI(request, userEmail));
+        }
+
+        //// Extracting PI list from Database (Cogbytes)
+        [HttpGet("GetPI")]
+        [AllowAnonymous]
+        public IActionResult GetPI()
+        {
+            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
+            //var b = a;
+
+            return new JsonResult(_cogbytesService.GetPIs());
+        }
 
         //// Adding new publication to database
         //[HttpPost("AddPublication")]

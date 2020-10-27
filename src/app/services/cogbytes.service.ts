@@ -110,14 +110,43 @@ import { AuthenticationService } from './authentication.service';
     }
 
     //// Extracting List of Autors from database
-    //public getAuthor(): any {
+    public getAuthor(): any {
 
-    //    return this.http
-    //        .get("/api/pubScreen/GetAuthor", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        return this.http
+            .get("/api/cogbytes/GetAuthor", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
 
-    //}
+    }
+
+    //// Adding New PI to the database
+    public addPI(piFullName: string, piAffiliation: string, piEmail: string): any {
+
+        var obj = {
+            'PIFullName': piFullName,
+            'PIEmail': piEmail,
+            'PIInstitution': piAffiliation,
+        };
+
+        const body: string = JSON.stringify(obj);
+
+        // Sends an authenticated request.
+        return this.http
+            .post("/api/cogbytes/AddPI", body, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
+    //// Extracting List of PIs from database
+    public getPI(): any {
+
+        return this.http
+            .get("/api/cogbytes/GetPI", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
 
     //// Adding a new publication to System
     //public addPublication(pubscreenObj: Pubscreen) {

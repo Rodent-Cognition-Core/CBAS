@@ -30,34 +30,18 @@ const DATASETFILE = 1;
 export class CogbytesComponent implements OnInit {
 
     public uploadKey: number;
-    public parentRef: CogbytesDialogueComponent;
+    panelOpenState: boolean;
 
     //public nameModel: any;
     //public dateModel: any;
     public fileTypeModel: any;
     public descriptionModel: any;
     public additionalNotesModel: any;
-    public cognitiveTaskModel: any;
-    public speciesModel: any;
-    public sexModel: any;
-    public strainModel: any;
-    public genotypeModel: any;
-    public ageModel: any;
-    public housingModel: any;
-    public lightModel: any;
-    public interventionModel: any;
-    public intDesModel: any;
-    public imgDesModel: any;
-    public taskBatteryModel: any;
+
 
     // Definiing List Variables
     public fileTypeList: any;
-    public taskList: any;
-    public speciesList: any;
-    public sexList: any;
-    public strainList: any;
-    public genosList: any;
-    public ageList: any;
+
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -82,13 +66,8 @@ export class CogbytesComponent implements OnInit {
     }
 
     ngOnInit() {
-        //this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
-        //this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
-        //this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
-        //this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
-        //this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
-        //this.cogbytesService.getGenos().subscribe(data => { this.genosList = data; });
-        //this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+        this.panelOpenState = false;
+
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
@@ -97,19 +76,9 @@ export class CogbytesComponent implements OnInit {
     }
 
     fileType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
-    intervention = new FormControl('', [Validators.required]);
 
     getErrorMessageFileType() {
         return this.fileType.hasError('required') ? 'You must enter a value' : '';
-    }
-
-    getErrorMessageTask() {
-        return this.cognitiveTask.hasError('required') ? 'You must enter a value' : '';
-    }
-
-    getErrorMessageIntervention() {
-        return this.intervention.hasError('required') ? 'You must enter a value!' : '';
     }
 
     ngOnDestroy() {
@@ -122,15 +91,6 @@ export class CogbytesComponent implements OnInit {
         this.fileTypeModel = '';
         this.descriptionModel = '';
         this.additionalNotesModel = '';
-        this.cognitiveTaskModel = [];
-        this.speciesModel = [];
-        this.sexModel = [];
-        this.strainModel = [];
-        this.genotypeModel = [];
-        this.ageModel = [];
-        this.housingModel = [];
-        this.lightModel = [];
-        this.intDesModel = '';
     }
 
     //// Opening Dialog for adding a new publication.

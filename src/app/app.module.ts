@@ -34,6 +34,7 @@ import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
 import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
 import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
+import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
 
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
@@ -134,6 +135,7 @@ const ROUTES: Routes = [
         NotificationDialogComponent,
         CogbytesDialogueComponent,
         CogbytesAuthorDialogueComponent,
+        CogbytesPIDialogeComponent,
         //CogbytesUploadComponent,
        
 
@@ -177,6 +179,7 @@ const ROUTES: Routes = [
         CogbytesDialogueComponent,
         CogbytesUploadComponent,
         CogbytesAuthorDialogueComponent,
+        CogbytesPIDialogeComponent,
     ],
     bootstrap: [AppComponent]
 })

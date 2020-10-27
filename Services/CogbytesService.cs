@@ -183,27 +183,60 @@ namespace AngularSPAWebAPI.Services
 
 
         //// Function Definition to extract list of Authors 
-        //public List<PubScreenAuthor> GetAuthors()
-        //{
-        //    List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            AuthorList.Add(new PubScreenAuthor
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                FirstName = Convert.ToString(dr["FirstName"].ToString()),
-        //                LastName = Convert.ToString(dr["LastName"].ToString()),
-        //                Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
+        public List<PubScreenAuthor> GetAuthors()
+        {
+            List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Author Order By AuthorID"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    AuthorList.Add(new PubScreenAuthor
+                    {
+                        ID = Int32.Parse(dr["AuthorID"].ToString()),
+                        FirstName = Convert.ToString(dr["FirstName"].ToString()),
+                        LastName = Convert.ToString(dr["LastName"].ToString()),
+                        Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
 
-        //            });
-        //        }
-        //    }
+                    });
+                }
+            }
 
-        //    return AuthorList;
-        //}
+            return AuthorList;
+        }
 
+        public int AddNewPI(Request request, string userEmail)
+        {
+
+
+            string sql = $@"Insert into PI (Username, FullName, Email, Affiliation) Values
+                            ('{userEmail}', '{HelperService.EscapeSql(request.PIFullName)}',
+                             '{HelperService.EscapeSql(request.PIEmail)}', '{HelperService.EscapeSql(request.PIInstitution)}'); SELECT @@IDENTITY AS 'Identity';";
+
+            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+
+        }
+
+        //// Function Definition to extract list of PIs 
+        public List<Request> GetPIs()
+        {
+            List<Request> PIList = new List<Request>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From PI Order By PIID"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    PIList.Add(new Request
+                    {
+                        ID = Int32.Parse(dr["PIID"].ToString()),
+                        PIFullName = Convert.ToString(dr["FullName"].ToString()),
+                        PIEmail = Convert.ToString(dr["Email"].ToString()),
+                        PIInstitution = Convert.ToString(dr["Affiliation"].ToString()),
+
+                    });
+                }
+            }
+
+            return PIList;
+        }
         //// Delete publication
         //public void DeletePublicationById(int pubId)
         //{

@@ -23,7 +23,7 @@
                         <!--<div *ngIf="sourceOptionModel=='3' || isEditMode">-->
                         <div>
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" [(ngModel)]="authorModel" required multiple>
+                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" [(ngModel)]="authorModel" (openedChange)="GetAuthorList()" required multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
                                     <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
@@ -36,22 +36,35 @@
                                 <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
                             </mat-form-field>&nbsp;
 
-                            <button mat-icon-button matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button> 
+                            <button mat-icon-button matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
                             <!--<button mat-icon-button matTooltip="Add  new author"><mat-icon>add</mat-icon></button>-->
 
                             <mat-form-field style="width: 40%; padding-left: 25px">
-                                <mat-select placeholder="Select PIs" [(ngModel)]="piModel" multiple>
+                                <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" (openedChange)="GetPIList()" multiple>
 
-                                    <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>-->
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>
+                                    <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>-->
+                                    <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
 
-                                    <!--<mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
-                                        {{author.firstName}}-{{author.lastName}}
-                                    </mat-option>-->
+                                    <mat-option *ngFor="let pi of piList" [value]="pi.id">
+                                        {{pi.piFullName}}
+                                    </mat-option>
 
                                 </mat-select>
+                            </mat-form-field>&nbsp;
+
+                            <!--<mat-form-field style="width: 40%; padding-left: 25px">
+                                <mat-select placeholder="Select PIs" [(ngModel)]="piModel" multiple>-->
+
+                                    <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>-->
+                                    <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
+
+                                                        <!--<mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                    {{author.firstName}}-{{author.lastName}}
+                                </mat-option>-->
+
+                                <!--</mat-select>-->
                                 <!--<mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>-->
-                            </mat-form-field>
+                            <!--</mat-form-field>-->
 
                             <button mat-icon-button matTooltip="Add new PI" (click)="openDialogPI()"><mat-icon>add</mat-icon></button>
                             <!--<button mat-icon-button matTooltip="Add  new author"><mat-icon>add</mat-icon></button>-->
