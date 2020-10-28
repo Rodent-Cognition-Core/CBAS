@@ -130,15 +130,15 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.GetPIs());
         }
 
-        //// Adding new publication to database
-        //[HttpPost("AddPublication")]
-        ////[AllowAnonymous]
-        //public IActionResult AddPublication([FromBody] PubScreen publication)
-        //{
-        //    var user = GetCurrentUser();
-        //    var userEmail = user.Result.UserName;
-        //    return new JsonResult(_pubScreenService.AddPublications(publication, userEmail));
-        //}
+        // Adding new publication to database
+        [HttpPost("AddRepository")]
+        //[AllowAnonymous]
+        public IActionResult AddRepository([FromBody] Cogbytes repository)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_cogbytesService.AddRepository(repository, userEmail));
+        }
 
         //// Edit an existing publication
         //[HttpPost("EditPublication")]

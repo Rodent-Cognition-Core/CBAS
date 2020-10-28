@@ -259,296 +259,289 @@ namespace AngularSPAWebAPI.Services
         //}
 
         ////************************************************************************************Adding Publication*************************************************************************************
-        //// Function Definition to add a new publication to database Pubscreen
-        //public int? AddPublications(PubScreen publication, string Username)
-        //{
-        //    // Check for duplication based on the DOI
-        //    string sqlDOI = $@"Select ID From Publication Where DOI = '{publication.DOI}'";
-        //    object ID = Dal.ExecScalarPub(sqlDOI);
-        //    if (ID != null)
-        //    {
-        //        return null;
-        //    }
-
-
-        //    string sqlPublication = $@"Insert into Publication (Title, Abstract, Keywords, DOI, Year, Reference, Username, Source) Values
-        //                            ('{HelperService.EscapeSql((HelperService.NullToString(publication.Title)).Trim())}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.Abstract)).Trim())}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.Keywords)).Trim())}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.DOI)).Trim())}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.Year)).Trim())}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.Reference)))}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(Username)))}',
-        //                             '{HelperService.EscapeSql((HelperService.NullToString(publication.Source)))}'
-
-        //                              ); SELECT @@IDENTITY AS 'Identity'; ";
-
-        //    int PublicationID = Int32.Parse(Dal.ExecScalarPub(sqlPublication).ToString());
-
-        //    // Adding Author **********************************************************************************************************************
-        //    //Adding to Publication_Author Table if Author ID is not null or empty (it happens when DOI or pubmedID is not available)
-        //    if (publication.AuthourID != null && publication.AuthourID.Length != 0)
-        //    {
-        //        string sqlAuthor = "";
-        //        for (int i = 0; i < publication.AuthourID.Length; i++)
-        //        {
-        //            sqlAuthor += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({publication.AuthourID[i]}, {PublicationID});";
-        //        }
-        //        if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor); };
-
-        //    }
-
-        //    //When pubmedID or DOI is avaialble, add Authors to Publication_Author Table and also to "Author" table if the author in publication.Author does not already exist in Author table in DB
-        //    if (publication.Author != null && publication.Author.Count() != 0)
-
-        //    {
-        //        // Get list of all autohrs from DB in the following format "firstname-lastname"
-        //        List<string> allAuthorList = new List<string>();
-        //        using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
-        //        {
-        //            foreach (DataRow dr in dt.Rows)
-        //            {
-        //                allAuthorList.Add((Convert.ToString(dr["FirstName"].ToString())).ToLower() + '-' + (Convert.ToString(dr["LastName"].ToString()).ToLower()));
-
-        //            }
-        //        }
-
-        //        // loop through  publication.Author if author does not exist in allAuthorList then add it to DB
-        //        string sqlAuthor = "";
-        //        for (int i = 0; i < publication.Author.Count(); i++)
-        //        {
-
-        //            if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
-        //            {
-        //                sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
-        //                                                                                              '{publication.Author[i].LastName}',
-        //                                                                                              '{publication.Author[i].Affiliation}');";
-        //            }
-
-        //        }
-
-        //        if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor).ToString(); };
-
-        //        //Add all authors to publication-author table in DB
-        //        List<string> AuthorList = publication.AuthorString.Split(',').ToList();
-        //        int? authorID = 0;
-        //        string sqlauthor2 = "";
-        //        string sqlauthor3 = "";
-        //        int j = 1;
-        //        foreach (string author in AuthorList)
-        //        {
-        //            sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
-        //            authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
-
-        //            sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
-        //            Dal.ExecuteNonQueryPub(sqlauthor3).ToString();
-        //            j++;
-        //        }
-
-
-
-        //    } // End of if statement when DOI OR Pubmed is available
-
-
-        //    //Adding to Publication_PaperType Table**********************************************************************************************
-
-        //    // When DOI or Pubmedkey is not available
-        //    if (publication.PaperTypeID != null)
-        //    {
-        //        string sqlPaperType = "";
-        //        sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {PublicationID});";
-        //        Dal.ExecuteNonQueryPub(sqlPaperType);
-        //    }
-
-        //    // When DOI or Pubmedkey is available
-        //    if (publication.PaperType != null && publication.PaperType.Length != 0)
-        //    {
-        //        // check to see if papertype exist in DB, if so just insert it into Publication_PaperType; otherwise, insert it into both PrperType and Publication_PaperType tables in DB.
-
-        //        //Get list of all paperType form DB
-        //        List<string> allPTList = new List<string>();
-        //        using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType"))
-        //        {
-        //            foreach (DataRow dr in dt.Rows)
-        //            {
-        //                allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower());
-
-        //            }
-        //        }
-
-        //        // if paper type is new and is not available in DB, insert it to DB
-        //        if (!allPTList.Contains(publication.PaperType))
-        //        {
-        //            // Insert into paper type table in DB
-        //            string sqlPT = $@"Insert into PaperType (PaperType) Values ('{publication.PaperType}');";
-        //            if (sqlPT != "") { Dal.ExecuteNonQueryPub(sqlPT); };
-        //        }
-
-        //        // Get the ID of new or existing paperType
-        //        string sqlPT2 = $@"Select ID from PaperType Where PaperType = '{publication.PaperType}'";
-        //        int PaperTypeID = Int32.Parse(Dal.ExecScalarPub(sqlPT2).ToString());
-
-        //        //Insert paperTypeID itno Publication_PaperType tbl in DB
-        //        string sqlPT3 = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({PaperTypeID}, {PublicationID});";
-        //        Dal.ExecuteNonQueryPub(sqlPT3);
-
-        //    }
-        //    //******************************Key Features**************
-        //    //Adding to Publication_Task
-        //    //Handling othet for Task
-        //    ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID, Username);
-
-        //    if (publication.TaskID != null && publication.TaskID.Length != 0)
-        //    {
-        //        string sqlTask = "";
-        //        for (int i = 0; i < publication.TaskID.Length; i++)
-        //        {
-        //            sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
-
-        //    }
-
-        //    //Adding to Publication_Specie
-        //    // Handling other for species
-        //    ProcessOther(publication.SpecieOther, "Species", "Species", "Publication_Specie", "SpecieID", PublicationID, Username);
-
-        //    if (publication.SpecieID != null && publication.SpecieID.Length != 0)
-        //    {
-        //        string sqlSpecie = "";
-        //        for (int i = 0; i < publication.SpecieID.Length; i++)
-        //        {
-        //            sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
-
-        //    }
-
-        //    //Adding to Publication_Sex
-        //    if (publication.sexID != null && publication.sexID.Length != 0)
-        //    {
-        //        string sqlSex = "";
-        //        for (int i = 0; i < publication.sexID.Length; i++)
-        //        {
-        //            sqlSex += $@"Insert into Publication_Sex (sexID, PublicationID) Values ({publication.sexID[i]}, {PublicationID});";
-
-
-        //        }
-        //        if (sqlSex != "") { Dal.ExecuteNonQueryPub(sqlSex); };
-
-        //    }
-
-        //    //Adding to Publication_Strain
-        //    // handling other for strain
-        //    ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", PublicationID, Username);
-
-        //    if (publication.StrainID != null && publication.StrainID.Length != 0)
-        //    {
-        //        string sqlStrain = "";
-        //        for (int i = 0; i < publication.StrainID.Length; i++)
-        //        {
-        //            sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
-
-        //    }
-
-        //    //Adding to Publication_Disease
-        //    // handling other for disease model
-        //    ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", PublicationID, Username);
-
-        //    if (publication.DiseaseID != null && publication.DiseaseID.Length != 0)
-        //    {
-        //        string sqlDiease = "";
-        //        for (int i = 0; i < publication.DiseaseID.Length; i++)
-        //        {
-        //            sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
-
-        //    }
-
-        //    //Adding to Publication_Region
-        //    if (publication.RegionID != null && publication.RegionID.Length != 0)
-        //    {
-        //        string sqlRegion = "";
-        //        for (int i = 0; i < publication.RegionID.Length; i++)
-        //        {
-        //            sqlRegion += $@"Insert into Publication_Region (RegionID, PublicationID) Values ({publication.RegionID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlRegion != "") { Dal.ExecuteNonQueryPub(sqlRegion); };
-
-        //    }
-
-        //    //Adding to Publication_SubRegion
-        //    if (publication.SubRegionID != null && publication.SubRegionID.Length != 0)
-        //    {
-        //        string sqlSubRegion = "";
-        //        for (int i = 0; i < publication.SubRegionID.Length; i++)
-        //        {
-        //            sqlSubRegion += $@"Insert into Publication_SubRegion (SubRegionID, PublicationID) Values ({publication.SubRegionID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlSubRegion != "") { Dal.ExecuteNonQueryPub(sqlSubRegion); };
-
-        //    }
-
-        //    //Adding to Publication_CellType
-        //    // handling other for cell type
-        //    ProcessOther(publication.CelltypeOther, "CellType", "CellType", "Publication_CellType", "CelltypeID", PublicationID, Username);
-
-        //    if (publication.CellTypeID != null && publication.CellTypeID.Length != 0)
-        //    {
-        //        string sqlCelltype = "";
-        //        for (int i = 0; i < publication.CellTypeID.Length; i++)
-        //        {
-        //            sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
-
-        //    }
-
-        //    //Adding to Publication_Method
-        //    // handling other for method
-        //    ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", PublicationID, Username);
-
-        //    if (publication.MethodID != null && publication.MethodID.Length != 0)
-        //    {
-        //        string sqlMethod = "";
-        //        for (int i = 0; i < publication.MethodID.Length; i++)
-        //        {
-        //            sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
-
-        //    }
-
-        //    //Adding to Publication_NeuroTransmitter
-        //    //hanlding other for NeuroTransmitter
-        //    ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", PublicationID, Username);
-
-        //    if (publication.TransmitterID != null && publication.TransmitterID.Length != 0)
-        //    {
-        //        string sqlTransmitter = "";
-        //        for (int i = 0; i < publication.TransmitterID.Length; i++)
-        //        {
-        //            sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
-
-        //        }
-        //        if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
-
-        //    }
-
-        //    return PublicationID;
-
-        //}
+        // Function Definition to add a new publication to database Pubscreen
+        public int? AddRepository(Cogbytes repository, string Username)
+        {
+
+            string sqlRepository = $@"Insert into UserRepository (Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
+                                    ('{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
+                                     '{repository.Date}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.DOI)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Keywords)).Trim())}',
+                                     '{repository.PrivacyStatus}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Description)))}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.AdditionalNotes)))}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Link)))}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(Username)))}',
+                                     '{repository.DateRepositoryCreated}'
+                                      ); SELECT @@IDENTITY AS 'Identity'; ";
+
+            int RepositoryID = Int32.Parse(Dal.ExecScalarCog(sqlRepository).ToString());
+
+            //// Adding Author **********************************************************************************************************************
+            ////Adding to Publication_Author Table if Author ID is not null or empty (it happens when DOI or pubmedID is not available)
+            //if (publication.AuthourID != null && publication.AuthourID.Length != 0)
+            //{
+            //    string sqlAuthor = "";
+            //    for (int i = 0; i < publication.AuthourID.Length; i++)
+            //    {
+            //        sqlAuthor += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({publication.AuthourID[i]}, {PublicationID});";
+            //    }
+            //    if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor); };
+
+            //}
+
+            ////When pubmedID or DOI is avaialble, add Authors to Publication_Author Table and also to "Author" table if the author in publication.Author does not already exist in Author table in DB
+            //if (publication.Author != null && publication.Author.Count() != 0)
+
+            //{
+            //    // Get list of all autohrs from DB in the following format "firstname-lastname"
+            //    List<string> allAuthorList = new List<string>();
+            //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            allAuthorList.Add((Convert.ToString(dr["FirstName"].ToString())).ToLower() + '-' + (Convert.ToString(dr["LastName"].ToString()).ToLower()));
+
+            //        }
+            //    }
+
+            //    // loop through  publication.Author if author does not exist in allAuthorList then add it to DB
+            //    string sqlAuthor = "";
+            //    for (int i = 0; i < publication.Author.Count(); i++)
+            //    {
+
+            //        if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
+            //        {
+            //            sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
+            //                                                                                          '{publication.Author[i].LastName}',
+            //                                                                                          '{publication.Author[i].Affiliation}');";
+            //        }
+
+            //    }
+
+            //    if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor).ToString(); };
+
+            //    //Add all authors to publication-author table in DB
+            //    List<string> AuthorList = publication.AuthorString.Split(',').ToList();
+            //    int? authorID = 0;
+            //    string sqlauthor2 = "";
+            //    string sqlauthor3 = "";
+            //    int j = 1;
+            //    foreach (string author in AuthorList)
+            //    {
+            //        sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
+            //        authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
+
+            //        sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
+            //        Dal.ExecuteNonQueryPub(sqlauthor3).ToString();
+            //        j++;
+            //    }
+
+
+
+            //} // End of if statement when DOI OR Pubmed is available
+
+
+            ////Adding to Publication_PaperType Table**********************************************************************************************
+
+            //// When DOI or Pubmedkey is not available
+            //if (publication.PaperTypeID != null)
+            //{
+            //    string sqlPaperType = "";
+            //    sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {PublicationID});";
+            //    Dal.ExecuteNonQueryPub(sqlPaperType);
+            //}
+
+            //// When DOI or Pubmedkey is available
+            //if (publication.PaperType != null && publication.PaperType.Length != 0)
+            //{
+            //    // check to see if papertype exist in DB, if so just insert it into Publication_PaperType; otherwise, insert it into both PrperType and Publication_PaperType tables in DB.
+
+            //    //Get list of all paperType form DB
+            //    List<string> allPTList = new List<string>();
+            //    using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType"))
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower());
+
+            //        }
+            //    }
+
+            //    // if paper type is new and is not available in DB, insert it to DB
+            //    if (!allPTList.Contains(publication.PaperType))
+            //    {
+            //        // Insert into paper type table in DB
+            //        string sqlPT = $@"Insert into PaperType (PaperType) Values ('{publication.PaperType}');";
+            //        if (sqlPT != "") { Dal.ExecuteNonQueryPub(sqlPT); };
+            //    }
+
+            //    // Get the ID of new or existing paperType
+            //    string sqlPT2 = $@"Select ID from PaperType Where PaperType = '{publication.PaperType}'";
+            //    int PaperTypeID = Int32.Parse(Dal.ExecScalarPub(sqlPT2).ToString());
+
+            //    //Insert paperTypeID itno Publication_PaperType tbl in DB
+            //    string sqlPT3 = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({PaperTypeID}, {PublicationID});";
+            //    Dal.ExecuteNonQueryPub(sqlPT3);
+
+            //}
+            ////******************************Key Features**************
+            ////Adding to Publication_Task
+            ////Handling othet for Task
+            //ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID, Username);
+
+            //if (publication.TaskID != null && publication.TaskID.Length != 0)
+            //{
+            //    string sqlTask = "";
+            //    for (int i = 0; i < publication.TaskID.Length; i++)
+            //    {
+            //        sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
+
+            //}
+
+            ////Adding to Publication_Specie
+            //// Handling other for species
+            //ProcessOther(publication.SpecieOther, "Species", "Species", "Publication_Specie", "SpecieID", PublicationID, Username);
+
+            //if (publication.SpecieID != null && publication.SpecieID.Length != 0)
+            //{
+            //    string sqlSpecie = "";
+            //    for (int i = 0; i < publication.SpecieID.Length; i++)
+            //    {
+            //        sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
+
+            //}
+
+            ////Adding to Publication_Sex
+            //if (publication.sexID != null && publication.sexID.Length != 0)
+            //{
+            //    string sqlSex = "";
+            //    for (int i = 0; i < publication.sexID.Length; i++)
+            //    {
+            //        sqlSex += $@"Insert into Publication_Sex (sexID, PublicationID) Values ({publication.sexID[i]}, {PublicationID});";
+
+
+            //    }
+            //    if (sqlSex != "") { Dal.ExecuteNonQueryPub(sqlSex); };
+
+            //}
+
+            ////Adding to Publication_Strain
+            //// handling other for strain
+            //ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", PublicationID, Username);
+
+            //if (publication.StrainID != null && publication.StrainID.Length != 0)
+            //{
+            //    string sqlStrain = "";
+            //    for (int i = 0; i < publication.StrainID.Length; i++)
+            //    {
+            //        sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
+
+            //}
+
+            ////Adding to Publication_Disease
+            //// handling other for disease model
+            //ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", PublicationID, Username);
+
+            //if (publication.DiseaseID != null && publication.DiseaseID.Length != 0)
+            //{
+            //    string sqlDiease = "";
+            //    for (int i = 0; i < publication.DiseaseID.Length; i++)
+            //    {
+            //        sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
+
+            //}
+
+            ////Adding to Publication_Region
+            //if (publication.RegionID != null && publication.RegionID.Length != 0)
+            //{
+            //    string sqlRegion = "";
+            //    for (int i = 0; i < publication.RegionID.Length; i++)
+            //    {
+            //        sqlRegion += $@"Insert into Publication_Region (RegionID, PublicationID) Values ({publication.RegionID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlRegion != "") { Dal.ExecuteNonQueryPub(sqlRegion); };
+
+            //}
+
+            ////Adding to Publication_SubRegion
+            //if (publication.SubRegionID != null && publication.SubRegionID.Length != 0)
+            //{
+            //    string sqlSubRegion = "";
+            //    for (int i = 0; i < publication.SubRegionID.Length; i++)
+            //    {
+            //        sqlSubRegion += $@"Insert into Publication_SubRegion (SubRegionID, PublicationID) Values ({publication.SubRegionID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlSubRegion != "") { Dal.ExecuteNonQueryPub(sqlSubRegion); };
+
+            //}
+
+            ////Adding to Publication_CellType
+            //// handling other for cell type
+            //ProcessOther(publication.CelltypeOther, "CellType", "CellType", "Publication_CellType", "CelltypeID", PublicationID, Username);
+
+            //if (publication.CellTypeID != null && publication.CellTypeID.Length != 0)
+            //{
+            //    string sqlCelltype = "";
+            //    for (int i = 0; i < publication.CellTypeID.Length; i++)
+            //    {
+            //        sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
+
+            //}
+
+            ////Adding to Publication_Method
+            //// handling other for method
+            //ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", PublicationID, Username);
+
+            //if (publication.MethodID != null && publication.MethodID.Length != 0)
+            //{
+            //    string sqlMethod = "";
+            //    for (int i = 0; i < publication.MethodID.Length; i++)
+            //    {
+            //        sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
+
+            //}
+
+            ////Adding to Publication_NeuroTransmitter
+            ////hanlding other for NeuroTransmitter
+            //ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", PublicationID, Username);
+
+            //if (publication.TransmitterID != null && publication.TransmitterID.Length != 0)
+            //{
+            //    string sqlTransmitter = "";
+            //    for (int i = 0; i < publication.TransmitterID.Length; i++)
+            //    {
+            //        sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
+
+            //    }
+            //    if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
+
+            //}
+
+            return RepositoryID;
+
+        }
         ////*******************************************************************************************************************************************************************
 
         //// Edit publication

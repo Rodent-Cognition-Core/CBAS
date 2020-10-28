@@ -382,24 +382,32 @@ export class CogbytesDialogueComponent implements OnInit {
 
     AddRepository() {
 
-        if (this.authorModel !== null && this.authorModel.length !== 0) {
-            this._cogbytes.authourID = this.authorModel;
-            console.log(this.authorModel)
-        }
+        this._cogbytes.authourID = this.authorModel;
         this._cogbytes.title = this.titleModel;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piString = this.piModel;
+        this._cogbytes.piID = this.piModel;
         this._cogbytes.link = this.linkModel;
         this._cogbytes.privacyStatus = this.privacyStatusModel;
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel;
+        this._cogbytes.date = this.dateModel.toDateString();
+
+        let today = new Date();
+        this._cogbytes.dateRepositoryCreated = today.toDateString();
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.thisDialogRef.close();
-        alert("Repository was successfully added to the system!");
+        this.cogbytesService.addRepository(this._cogbytes).subscribe(data => {
+
+            if (data === null) {
+                alert("Failed to add repository to Cogbytes");
+            }
+            else {
+                this.thisDialogRef.close();
+                alert("Repository was successfully added to the system!");
+            }
+        });
 
         this.resetFormVals();
     }

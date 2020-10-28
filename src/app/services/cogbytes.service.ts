@@ -148,15 +148,15 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
-    //// Adding a new publication to System
-    //public addPublication(pubscreenObj: Pubscreen) {
+    // Adding a new publication to System
+    public addRepository(repObj: Cogbytes) {
 
-    //    const body: string = JSON.stringify(pubscreenObj);
-    //    // Sends an authenticated request.
-    //    return this.http.post("/api/pubScreen/AddPublication", body, {
-    //        headers: this.authenticationService.getAuthorizationHeader()
-    //    });
-    //}
+        const body: string = JSON.stringify(repObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/cogbytes/AddRepository", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
 
     //// Editing a publication 
     //public EditPublication(publicationId: number, pubscreenObj: Pubscreen) {
