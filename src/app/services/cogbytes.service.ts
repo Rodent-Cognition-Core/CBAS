@@ -149,8 +149,9 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Adding a new publication to System
-    public addRepository(repObj: Cogbytes) {
+    public addRepository(repObj: Cogbytes) : any {
 
+        
         const body: string = JSON.stringify(repObj);
         // Sends an authenticated request.
         return this.http.post("/api/cogbytes/AddRepository", body, {

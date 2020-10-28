@@ -388,7 +388,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.doi = this.doiModel;
         this._cogbytes.piID = this.piModel;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel;
+        this._cogbytes.privacyStatus = this.privacyStatusModel == "1" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
         this._cogbytes.date = this.dateModel.toDateString();

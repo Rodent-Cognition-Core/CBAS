@@ -11,8 +11,8 @@ namespace AngularSPAWebAPI.Models
         public string DOI { get; set; }
         public int?[] AuthourID { get; set; }
         public string AuthorString { get; set; }
-        public int?[] piID { get; set; }
-        public string piString { get; set; }
+        public int?[] PIID { get; set; }
+        public string PIString { get; set; }
         public string Link { get; set; }
         public bool PrivacyStatus { get; set; }
         public string Description { get; set; }
