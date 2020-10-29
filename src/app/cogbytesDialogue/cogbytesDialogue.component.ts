@@ -55,7 +55,8 @@ export class CogbytesDialogueComponent implements OnInit {
     yearList: any;
     paperInfoFromDoiList: any;
     paperInfo: any;
-    
+
+    repID: any;
 
     private form: FormGroup;
 
@@ -100,73 +101,29 @@ export class CogbytesDialogueComponent implements OnInit {
         this.resetFormVals();
         this.GetAuthorList();
         this.GetPIList();
-
-/*      this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
-        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task"); this.processList(this.taskList, "Other", "task");  });
-        this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; this.processList(this.specieList, "Other", "species"); });
-        this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
-        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; this.processList(this.strainList, "Other", "strain"); });
-        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; this.processList(this.diseaseList, "Other", "diseaseModel"); });
-        this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; this.processList(this.cellTypeList, "Other", "cellType"); });
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; this.processList(this.methodList, "Other", "method"); });
-        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; this.processList(this.neurotransmitterList, "Other", "neuroTransmitter"); });
-*/
-
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         //this.getAllYears();
 
         console.log(this.data);
         // if it is an Edit model
-        /*if (this.data.publicationObj != null) {
+
+        if (this.data.repObj != null) {
 
             this.isEditMode = true;
-            this.publicationId = this.data.publicationObj.id;
-
-            this.spinnerService.show();
-
-            this.pubScreenService.getPaperInfo(this.publicationId).subscribe(data => {
-                this.paperInfo = data;
-
-                this.doiModel = this.paperInfo.doi;
-                this.keywordsModel = this.paperInfo.keywords;
-                this.titleModel = this.paperInfo.title;
-                this.abstractModel = this.paperInfo.abstract;
-                this.yearModel = this.paperInfo.year;
-                this.referenceModel = this.paperInfo.reference;
-
-                this.authorModel = this.paperInfo.authourID;
-                this.cellTypeModel = this.paperInfo.cellTypeID;
-                this.diseaseModel = this.paperInfo.diseaseID;
-                this.methodModel = this.paperInfo.methodID;
-                this.paperTypeModel = this.paperInfo.paperType;
-                this.regionModel = this.paperInfo.regionID;
-                this.sexModel = this.paperInfo.sexID;
-                this.specieModel = this.paperInfo.specieID;
-                this.strainModel = this.paperInfo.strainID;
-
-                this.pubScreenService.getRegionSubRegion().subscribe(dataSubRegion => {
-                    this.selectedRegionChange(this.regionModel)
-                    this.subRegionModel = this.paperInfo.subRegionID;
-                });
-
-                this.cognitiveTaskModel = this.paperInfo.taskID;
-                this.neurotransmitterModel = this.paperInfo.transmitterID;
-
-                this.sourceOptionModel = 3;
-
-                this.setDisabledVal();
-
-                this.spinnerService.hide();
-            });
-
-
-
-
- 
+            this.repID = this.data.repObj.id;
+            this.titleModel = this.data.repObj.title;
+            this.dateModel = new Date(this.data.repObj.date);
+            this.keywordsModel = this.data.repObj.keywords;
+            this.doiModel = this.data.repObj.doi;
+            this.linkModel = this.data.repObj.link;
+            this.privacyStatusModel = this.data.repObj.privacyStatus;
+            this.descriptionModel = this.data.repObj.description;
+            this.additionalNotesModel = this.data.repObj.additionalNotes;
+            this.authorModel = this.data.repObj.authourID;
+            this.piModel = this.data.repObj.piid;
         }
 
-        */
+
 
     }
 
@@ -388,7 +345,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.doi = this.doiModel;
         this._cogbytes.piID = this.piModel;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel == "1" ? true : false; 
+        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
         this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
@@ -406,6 +363,36 @@ export class CogbytesDialogueComponent implements OnInit {
             else {
                 this.thisDialogRef.close();
                 alert("Repository was successfully added to the system!");
+            }
+        });
+    }
+
+    EditRepository() {
+
+        this._cogbytes.authourID = this.authorModel;
+        this._cogbytes.title = this.titleModel;
+        this._cogbytes.keywords = this.keywordsModel;
+        this._cogbytes.doi = this.doiModel;
+        this._cogbytes.piID = this.piModel;
+        this._cogbytes.link = this.linkModel;
+        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false;
+        this._cogbytes.description = this.descriptionModel;
+        this._cogbytes.additionalNotes = this.additionalNotesModel;
+        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
+
+        let today = new Date();
+        //this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
+
+        // ADD LINK TO COGBYTES DATABASE HERE
+
+        this.cogbytesService.editRepository(this.repID, this._cogbytes).subscribe(data => {
+
+            if (data === null) {
+                alert("Failed to edit repository in Cogbytes");
+            }
+            else {
+                this.thisDialogRef.close();
+                alert("Repository was successfully edited to the system!");
             }
         });
     }

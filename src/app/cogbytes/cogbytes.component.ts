@@ -18,7 +18,6 @@ import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
-const DATASETFILE = 1;
 
 @Component({
     selector: 'app-cogbytes',
@@ -32,16 +31,11 @@ export class CogbytesComponent implements OnInit {
     public uploadKey: number;
     panelOpenState: boolean;
 
-    //public nameModel: any;
-    //public dateModel: any;
-    public fileTypeModel: any;
-    public descriptionModel: any;
-    public additionalNotesModel: any;
+    public repModel: any;
 
 
     // Definiing List Variables
-    public fileTypeList: any;
-
+    repList: any;
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -58,7 +52,7 @@ export class CogbytesComponent implements OnInit {
         public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         //public dialogAuthor: MatDialog,
-        //private cogbytesService: CogbytesService,
+        private cogbytesService: CogbytesService,
         private spinnerService: Ng4LoadingSpinnerService,
     )
     {
@@ -71,15 +65,13 @@ export class CogbytesComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
-        //this.yearList = this.GetYear(1970).sort().reverse();  
 
+        if (this.isAdmin || this.isUser) {
+
+            this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+        }
     }
 
-    fileType = new FormControl('', [Validators.required]);
-
-    getErrorMessageFileType() {
-        return this.fileType.hasError('required') ? 'You must enter a value' : '';
-    }
 
     ngOnDestroy() {
         this._onDestroy.next();
@@ -88,26 +80,45 @@ export class CogbytesComponent implements OnInit {
 
     resetFormVals() {
 
-        this.fileTypeModel = '';
-        this.descriptionModel = '';
-        this.additionalNotesModel = '';
     }
 
-    //// Opening Dialog for adding a new publication.
-    openDialogAddRepository(Repository): void {
+    GetRepositories() {
+        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+        return this.repList;
+    }
+
+    //// Opening Dialog for adding a new repository.
+    openDialogAddRepository(): void {
         let dialogref = this.dialog.open(CogbytesDialogueComponent, {
             height: '850px',
             width: '1200px',
             data: {
-                repositoryObj: Repository,
-                //sourceOptionModel: this.sourceOptionModel,
-
+                repObj: null,
             }
 
         });
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
+            //this.DialogResult = result;
+            //this.GetAuthorList();
+        });
+    }
+
+    //// Opening Dialog for editing an existing repository.
+    openDialogEditRepository(): void {
+        let dialogref = this.dialog.open(CogbytesDialogueComponent, {
+            height: '850px',
+            width: '1200px',
+            data: {
+                repObj: this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)],
+            }
+
+        });
+
+        dialogref.afterClosed().subscribe(result => {
+            console.log('the dialog was closed');
+            this.repModel = null;
             //this.DialogResult = result;
             //this.GetAuthorList();
         });

@@ -28,15 +28,23 @@
                                 <label>Add new repository: </label>
                                 <button mat-icon-button matTooltip="Add new repository" (click)="openDialogAddRepository()"><mat-icon>add</mat-icon></button>
                                 <br />
-                                <mat-form-field style="width:35%; padding-left:0px">
 
-                                    <mat-select placeholder="Your repositories">
-
+                                <!--Repository List-->
+                                <mat-form-field style="width: 35%; padding-left:0px">
+                                    <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()">
+                                        <mat-option>-</mat-option>
+                                        <mat-option *ngFor="let rep of repList" [value]="rep.title">
+                                            {{rep.title}}
+                                        </mat-option>
                                     </mat-select>
 
                                 </mat-form-field>
-                                <span style="padding-left: 20px;"><button mat-icon-button matTooltip="Edit Repository"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                                <span style="padding-left: 0px;"><button mat-icon-button matTooltip="Delete Repository" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
+
+                                <span *ngIf="repModel != null" style="padding-left: 20px;">
+                                    <button mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditRepository()"><mat-icon>edit</mat-icon></button>
+                                    <button mat-icon-button matTooltip="Delete Repository" color="warn"><mat-icon>delete</mat-icon></button>
+                                </span>&nbsp;
+
                             </div>
 
                             <ng-template #other_content><span style="color:red">You must log in to create a repository!</span></ng-template>
@@ -50,11 +58,11 @@
 
     <br />
 
-    <div style="padding-top:30px">
+    <div *ngIf="repModel != null" style="padding-top:30px">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
-                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">Repository Files</th>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">{{repModel}} Files</th>
 
                 </tr>
             </thead>

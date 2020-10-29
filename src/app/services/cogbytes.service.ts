@@ -159,15 +159,24 @@ import { AuthenticationService } from './authentication.service';
         });
     }
 
-    //// Editing a publication 
-    //public EditPublication(publicationId: number, pubscreenObj: Pubscreen) {
+    //// Extracting List of repositories from database
+    public getRepositories(): any {
 
-    //    const body: string = JSON.stringify(pubscreenObj);
-    //    // Sends an authenticated request.
-    //    return this.http.post("/api/pubScreen/EditPublication?publicationId=" + publicationId, body, {
-    //        headers: this.authenticationService.getAuthorizationHeader()
-    //    });
-    //}
+        return this.http
+            .get("/api/cogbytes/GetRepositories", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    // Editing a publication 
+    public editRepository(repositoryID: number, repObj: Cogbytes) {
+
+        const body: string = JSON.stringify(repObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/cogbytes/EditRepository?repositoryID=" + repositoryID, body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
 
     //// Deleting a publication when Del button is clicked!
     //public deletePublicationById(id: any): any {

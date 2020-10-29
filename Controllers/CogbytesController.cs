@@ -98,15 +98,11 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.AddAuthors(author, userEmail));
         }
 
-
         //// Extracting Author list from Database (Cogbytes)
         [HttpGet("GetAuthor")]
         [AllowAnonymous]
         public IActionResult GetAuthor()
         {
-            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
-            //var b = a;
-
             return new JsonResult(_cogbytesService.GetAuthors());
         }
 
@@ -140,14 +136,24 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.AddRepository(repository, userEmail));
         }
 
-        //// Edit an existing publication
-        //[HttpPost("EditPublication")]
-        //public IActionResult EditPublication(int publicationId, [FromBody] PubScreen publication)
-        //{
-        //    var user = GetCurrentUser();
-        //    var userEmail = user.Result.UserName;
-        //    return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, userEmail));
-        //}
+        //// Extracting Repository list from Database (Cogbytes)
+        [HttpGet("GetRepositories")]
+        //[AllowAnonymous]
+        public IActionResult GetRepositories()
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_cogbytesService.GetRepositories(userEmail));
+        }
+
+        // Edit an existing publication
+        [HttpPost("EditRepository")]
+        public IActionResult EditRepository(int repositoryID, [FromBody] Cogbytes repository)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_cogbytesService.EditRepository(repositoryID, repository, userEmail));
+        }
 
         //// Deleting publication
         //[HttpDelete("DeletePublicationById")]
