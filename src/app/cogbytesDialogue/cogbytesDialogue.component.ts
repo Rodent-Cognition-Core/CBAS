@@ -391,10 +391,10 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.privacyStatus = this.privacyStatusModel == "1" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel.toDateString();
+        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
 
         let today = new Date();
-        this._cogbytes.dateRepositoryCreated = today.toDateString();
+        this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
@@ -408,8 +408,6 @@ export class CogbytesDialogueComponent implements OnInit {
                 alert("Repository was successfully added to the system!");
             }
         });
-
-        this.resetFormVals();
     }
 
 /* **********************************************************************

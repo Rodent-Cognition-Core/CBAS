@@ -278,70 +278,23 @@ namespace AngularSPAWebAPI.Services
 
             int RepositoryID = Int32.Parse(Dal.ExecScalarCog(sqlRepository).ToString());
 
-            //// Adding Author **********************************************************************************************************************
-            ////Adding to Publication_Author Table if Author ID is not null or empty (it happens when DOI or pubmedID is not available)
-            //if (publication.AuthourID != null && publication.AuthourID.Length != 0)
-            //{
-            //    string sqlAuthor = "";
-            //    for (int i = 0; i < publication.AuthourID.Length; i++)
-            //    {
-            //        sqlAuthor += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({publication.AuthourID[i]}, {PublicationID});";
-            //    }
-            //    if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor); };
+            // Adding Author **********************************************************************************************************************
 
-            //}
+            string sqlAuthor = "";
+            for (int i = 0; i < repository.AuthourID.Length; i++)
+            {
+                sqlAuthor += $@"Insert into RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {RepositoryID});";
+            }
+            if (sqlAuthor != "") { Dal.ExecuteNonQueryCog(sqlAuthor); };
 
-            ////When pubmedID or DOI is avaialble, add Authors to Publication_Author Table and also to "Author" table if the author in publication.Author does not already exist in Author table in DB
-            //if (publication.Author != null && publication.Author.Count() != 0)
+            // Adding PI
 
-            //{
-            //    // Get list of all autohrs from DB in the following format "firstname-lastname"
-            //    List<string> allAuthorList = new List<string>();
-            //    using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
-            //    {
-            //        foreach (DataRow dr in dt.Rows)
-            //        {
-            //            allAuthorList.Add((Convert.ToString(dr["FirstName"].ToString())).ToLower() + '-' + (Convert.ToString(dr["LastName"].ToString()).ToLower()));
-
-            //        }
-            //    }
-
-            //    // loop through  publication.Author if author does not exist in allAuthorList then add it to DB
-            //    string sqlAuthor = "";
-            //    for (int i = 0; i < publication.Author.Count(); i++)
-            //    {
-
-            //        if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
-            //        {
-            //            sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
-            //                                                                                          '{publication.Author[i].LastName}',
-            //                                                                                          '{publication.Author[i].Affiliation}');";
-            //        }
-
-            //    }
-
-            //    if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor).ToString(); };
-
-            //    //Add all authors to publication-author table in DB
-            //    List<string> AuthorList = publication.AuthorString.Split(',').ToList();
-            //    int? authorID = 0;
-            //    string sqlauthor2 = "";
-            //    string sqlauthor3 = "";
-            //    int j = 1;
-            //    foreach (string author in AuthorList)
-            //    {
-            //        sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
-            //        authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
-
-            //        sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
-            //        Dal.ExecuteNonQueryPub(sqlauthor3).ToString();
-            //        j++;
-            //    }
-
-
-
-            //} // End of if statement when DOI OR Pubmed is available
-
+            string sqlPI = "";
+            for (int i = 0; i < repository.PIID.Length; i++)
+            {
+                sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
+            }
+            if (sqlPI != "") { Dal.ExecuteNonQueryCog(sqlPI); };
 
             ////Adding to Publication_PaperType Table**********************************************************************************************
 
