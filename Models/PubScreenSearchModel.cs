@@ -14,6 +14,7 @@ namespace AngularSPAWebAPI.Models
         public string Author { get; set; }
         public string PaperType { get; set; }
         public string Task { get; set; }
+        public string SubTask { get; set; }
         public string Species { get; set; }
         public string Sex { get; set; }
         public string Strain { get; set; }

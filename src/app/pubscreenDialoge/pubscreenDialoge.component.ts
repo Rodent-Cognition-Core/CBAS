@@ -48,6 +48,7 @@ export class PubscreenDialogeComponent implements OnInit {
     authorMultiSelect: any;
     doiKeyModel: any;
     PubMedKeyModel: any;
+    subTaskModel: any;
     authorModel2: any;
     //paperTypeModel2: any;
     referenceModel: any;
@@ -86,6 +87,8 @@ export class PubscreenDialogeComponent implements OnInit {
     searchResultList: any;
     yearList: any;
     paperInfoFromDoiList: any;
+    subTaskList: any;
+    taskSubTaskList: any;
     paperInfo: any;
     
 
@@ -120,7 +123,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
-        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task"); this.processList(this.taskList, "Other", "task");  });
+        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task");  });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; this.processList(this.specieList, "Other", "species"); });
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
         this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; this.processList(this.strainList, "Other", "strain"); });
@@ -144,7 +147,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
             this.pubScreenService.getPaperInfo(this.publicationId).subscribe(data => {
                 this.paperInfo = data;
-
+                console.log(this.paperInfo)
                 this.doiModel = this.paperInfo.doi;
                 this.keywordsModel = this.paperInfo.keywords;
                 this.titleModel = this.paperInfo.title;
@@ -156,7 +159,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.cellTypeModel = this.paperInfo.cellTypeID;
                 this.diseaseModel = this.paperInfo.diseaseID;
                 this.methodModel = this.paperInfo.methodID;
-                this.paperTypeModel = this.paperInfo.paperType;
+                this.paperTypeModel = this.paperInfo.paperTypeID;
                 this.regionModel = this.paperInfo.regionID;
                 this.sexModel = this.paperInfo.sexID;
                 this.specieModel = this.paperInfo.specieID;
@@ -168,6 +171,12 @@ export class PubscreenDialogeComponent implements OnInit {
                 });
 
                 this.cognitiveTaskModel = this.paperInfo.taskID;
+
+                this.pubScreenService.getTaskSubTask().subscribe(dataSubTask => {
+                    this.selectedTaskChange(this.cognitiveTaskModel)
+                    this.subTaskModel = this.paperInfo.subTaskID;
+                });
+
                 this.neurotransmitterModel = this.paperInfo.transmitterID;
 
                 this.sourceOptionModel = 3;
@@ -184,11 +193,6 @@ export class PubscreenDialogeComponent implements OnInit {
         }
 
     }
-
-    //ngAfterViewInit() {
-    //    console.log("ngAfterViewInit");
-    //}
-
 
     // Function Definition to open a dialog for adding new cognitive task to the system
     openDialogAuthor(): void {
@@ -261,6 +265,23 @@ export class PubscreenDialogeComponent implements OnInit {
         );
     }
 
+    // function definition to get list of all tasks and subtasks
+    selectedTaskChange(SelectedTask) {
+
+        this.pubScreenService.getTaskSubTask().subscribe(data => {
+            this.taskSubTaskList = data;
+            
+            var filtered = this.taskSubTaskList.filter(function (item) {
+                return SelectedTask.indexOf(item.taskID) !== -1;
+            });
+
+            //console.log(filtered);
+            this.subTaskList = JSON.parse(JSON.stringify(filtered));
+        });
+
+
+    }
+
 
     selectedRegionChange(SelectedRegion) {
 
@@ -294,6 +315,7 @@ export class PubscreenDialogeComponent implements OnInit {
     sourceOption = new FormControl('', [Validators.required]);
     bioAddingOption = new FormControl('', [Validators.required]);
     doiKeyBio = new FormControl('', [Validators.required]);
+    subTask = new FormControl('', [Validators.required]);
 
     // Handling Error for the required fields
     getErrorMessageAuthor() {
@@ -327,6 +349,10 @@ export class PubscreenDialogeComponent implements OnInit {
 
     getErrorMessageTask() {
         return this.cognitiveTask.hasError('required') ? 'You must enter a value' : '';
+    }
+
+    getErrorMessageSubTask() {
+        return this.subTask.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessagePaperOption() {
@@ -398,7 +424,8 @@ export class PubscreenDialogeComponent implements OnInit {
             
             ((this.titleModel === null || this.titleModel === "") && this.title.hasError('required')) ||
             ((this.doiModel === null || this.doiModel === "") && this.doi.hasError('required'))||
-            ((this.cognitiveTaskModel === null || this.cognitiveTaskModel.length === 0) && this.cognitiveTask.hasError('required'))||
+            ((this.cognitiveTaskModel === null || this.cognitiveTaskModel.length === 0) && this.cognitiveTask.hasError('required')) ||
+            ((this.subTaskModel === null || this.subTaskModel.length === 0) && this.subTask.hasError('required')) ||
             ((this.yearModel === null || this.yearModel === "") && this.year.hasError('required')) ||
             ((this.sourceOptionModel === null || this.sourceOptionModel === "") && this.sourceOption.hasError('required')) ||
             (this.paperType.hasError('required'))
@@ -456,10 +483,9 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                //this.paperTypeModel = data.result.paperType;
+                
 
             }
 
@@ -487,10 +513,9 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+               
             }
 
         });
@@ -516,10 +541,9 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = data.result.year;
                 this.keywordsModel = data.result.keywords;
                 this.doiModel = data.result.doi;
-                //this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+                
 
             }
 
@@ -549,13 +573,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
         }
 
-        //if (this.paperTypeModel !== null) {
-        //    this._pubscreen.paperType = this.paperTypeModel;
-        //}
-        //else {
-        //    this._pubscreen.paperType = this.paperTypeModel2;
-        //}
-
+      
         if (this.referenceModel !== null) {
             this._pubscreen.reference = this.referenceModel;
         }
@@ -565,8 +583,9 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.keywords = this.keywordsModel;
         this._pubscreen.doi = this.doiModel;
         this._pubscreen.year = this.yearModel;
-        this._pubscreen.paperType = this.paperTypeModel;
+        this._pubscreen.paperTypeID = this.paperTypeModel;
         this._pubscreen.taskID = this.cognitiveTaskModel;
+        this._pubscreen.subTaskID = this.subTaskModel;
         this._pubscreen.specieID = this.specieModel;
         this._pubscreen.sexID = this.sexModel;
         this._pubscreen.strainID = this.strainModel;
@@ -642,6 +661,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.authorModel = [];
         this.paperTypeModel = '';
         this.cognitiveTaskModel = [];
+        this.subTaskModel = [];
         this.specieModel = [];
         this.sexModel = [];
         this.strainModel = [];

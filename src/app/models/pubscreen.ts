@@ -11,10 +11,11 @@ export class Pubscreen {
     public yearID: Array<string>;
     public authourID: Array<number>;
     public authorString: string;
-    public paperTypeID: Array<number>;
     public paperTypeIdSearch: Array<number>;
+    public paperTypeID: number;
     public paperType: string;
     public taskID: Array<number>;
+    public subTaskID: Array<number>;
     public specieID: Array<number>;
     public sexID: Array<number>;
     public strainID: Array<number>;

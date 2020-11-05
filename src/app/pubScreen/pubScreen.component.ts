@@ -48,6 +48,7 @@ export class PubScreenComponent implements OnInit {
     yearFromSearchModel: any;
     yearToSearchModel: any;
     authorMultiSelect: any;
+    subTaskModel: any;
 
     panelOpenState = false;
 
@@ -68,6 +69,8 @@ export class PubScreenComponent implements OnInit {
     authorList2: any;
     searchResultList: any;
     yearList: any;
+    subTaskList: any;
+    taskSubTaskList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
 
@@ -172,6 +175,23 @@ export class PubScreenComponent implements OnInit {
         );
     }
 
+    selectedTaskChange(SelectedTask) {
+
+        this.pubScreenService.getTaskSubTask().subscribe(data => {
+            this.taskSubTaskList = data;
+            //console.log(this.SubtaskList);
+            var filtered = this.taskSubTaskList.filter(function (item) {
+                return SelectedTask.indexOf(item.taskID) !== -1;
+            });
+
+            //console.log(filtered);
+            this.subTaskList = JSON.parse(JSON.stringify(filtered));
+        });
+
+
+    }
+
+
     selectedRegionChange(SelectedRegion) {
 
         this.pubScreenService.getRegionSubRegion().subscribe(data => {
@@ -265,6 +285,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
         this._pubSCreenSearch.yearTo = this.yearToSearchModel;
+        this._pubSCreenSearch.subTaskID = this.subTaskModel;
 
         console.log(this._pubSCreenSearch);
 

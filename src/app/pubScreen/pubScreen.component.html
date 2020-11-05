@@ -67,13 +67,7 @@
 
                             </mat-form-field>
 
-                            <!--Paper Abstract-->
-                            <!--<mat-form-field style="width:30%; padding-left:35px">
-
-        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
-
-        </textarea>
-    </mat-form-field>-->
+                           
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -125,11 +119,21 @@
                             <!--Adding Key Features ********************************************-->
                             <label style="color:#566573">Key Features:</label><br />
 
-                            <!--Cognitive Task-->
-                            <mat-form-field style="width:15%; ">
-                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" required multiple>
+                            <!--Cognitive Task or Task Category-->
+                            <mat-form-field style="width:15%;">
+                                <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)"  required multiple>
                                     <mat-option *ngFor="let task of taskList" [value]="task.id">
                                         <span matTooltip="{{task.task}}">{{task.task}}</span>
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--Cognitive Task or subtasks-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" required multiple>
+                                    <mat-option *ngFor="let subtask of subTaskList" [value]="subtask.id">
+                                        <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -163,20 +167,21 @@
                                     </mat-option>
                                 </mat-select>
 
-                            </mat-form-field>
+                            </mat-form-field><br/>
 
                             <!--DiseaseModel-->
-                            <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-form-field style="width:15%;">
                                 <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
                                     <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                         {{disease.diseaseModel}}
                                     </mat-option>
                                 </mat-select>
 
-                            </mat-form-field> <br />
+                            </mat-form-field>
 
                             <!--BrainRegion-->
-                            <mat-form-field style="width:15%;">
+                            <mat-form-field style="width:15%; padding-left:30px">
+
                                 <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
                                     <mat-option *ngFor="let region of regionList" [value]="region.id">
                                         {{region.brainRegion}}
@@ -213,11 +218,11 @@
                                     </mat-option>
                                 </mat-select>
 
-                            </mat-form-field>
+                            </mat-form-field><br />
 
 
                             <!--NeuroTransmitter Systems-->
-                            <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-form-field style="width:15%;">
                                 <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                                     <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
                                         {{neuro.neuroTransmitter}}
@@ -269,7 +274,8 @@
 
                         <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
 
-                        <label>Task(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task Category:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subTask =="") ?  "N/A" : (_pubSCreenSearch.subTaskID==Null || _pubSCreenSearch.subTaskID.lenght == 0 || _pubSCreenSearch.subTaskID == "") ? row.subTask  : "<b>" + row.subTask + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Specie(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Sex:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 

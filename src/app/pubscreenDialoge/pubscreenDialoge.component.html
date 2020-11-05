@@ -158,45 +158,40 @@
 
                     <!--Paper Type-->
                     <mat-form-field style="width:30%; padding-left:30px">
-                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel">
-                            <mat-option *ngFor="let type of paperTypeList" [value]="type.paperType">
+                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel" required>
+                            <mat-option *ngFor="let type of paperTypeList" [value]="type.id">
                                 {{type.paperType}}
                             </mat-option>
                         </mat-select>
 
-                        <!--<mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>-->
+                        <mat-error *ngIf="paperType.invalid">{{getErrorMessagePaperType()}}</mat-error>
                     </mat-form-field>
-
-                    <!--Paper Type 2
-                    <mat-form-field style="width:30%; padding-left:35px" *ngIf="sourceOptionModel!='3' && !isEditMode">
-
-                        <input matInput placeholder="Paper's Type" [(ngModel)]="paperTypeModel2">
-
-                    </mat-form-field>-->
 
                     <br /><br />
 
-                    <!--Adding Key Features ********************************************-->
+                    <!--Adding Key Features *********************************************************-->
                     <label style="color:#566573">Key Features:</label><br />
 
-                    <!--Cognitive Task--------------------------------->
-                    <mat-form-field style="width:15%; ">
-                        <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
+                    <!--Cognitive Task or Task Category--------------------------------->
+                    <mat-form-field style="width:15%;">
+                        <mat-select placeholder="Select Task Category" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" required multiple>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 {{task.task}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
                     </mat-form-field>
-                    <span *ngIf="cognitiveTaskModel.includes(26)">
-                        &nbsp;&nbsp;
-                        <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Task" [(ngModel)]="taskOtherModel" required>
+                    <!--Cognitive Task or subtasks-------------------------------------->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" [formControl]="subTask" required multiple>
+                            <mat-option *ngFor="let subtask of subTaskList" [value]="subtask.id">
+                                <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageSubTask()}}</mat-error>
+                    </mat-form-field>
 
-                        </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one task, separate them by semicolon ( ; )"></fa>
-                    </span>
 
                     <!--Species---------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
@@ -234,7 +229,7 @@
                     <!--Strain----------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-                            
+
                             <mat-option *ngFor="let strain of strainList" [value]="strain.id">
                                 {{strain.strain}}
                             </mat-option>
@@ -250,17 +245,17 @@
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
-                    </span>
+                    </span><br />
 
                     <!--DiseaseModel----------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
+                    <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
                             <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                 {{disease.diseaseModel}}
                             </mat-option>
                         </mat-select>
 
-                    </mat-form-field> <br />
+                    </mat-form-field>
 
                     <span *ngIf="diseaseModel.includes(14)">
                         &nbsp;&nbsp;
@@ -273,7 +268,7 @@
                     </span>
 
                     <!--BrainRegion----------------------------------->
-                    <mat-form-field style="width:15%;">
+                    <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
                             <mat-option *ngFor="let region of regionList" [value]="region.id">
                                 {{region.brainRegion}}
@@ -330,11 +325,11 @@
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one method, separate them by semicolon ( ; )"></fa>
-                    </span>
+                    </span><br />
 
 
                     <!--NeuroTransmitter Systems------------------------>
-                    <mat-form-field style="width:15%; padding-left:30px">
+                    <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                             <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
                                 {{neuro.neuroTransmitter}}
