@@ -188,6 +188,25 @@ import { AuthenticationService } from './authentication.service';
             headers: this.authenticationService.getAuthorizationHeader()
         });
     }
+
+    //// Extracting List of repositories from database
+    public getUploads(repID: number): any {
+
+        return this.http
+            .get("/api/cogbytes/GetUploads?repID=" + repID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    // Editing an upload 
+    public editUpload(uploadID: number, uploadObj: CogbytesUpload) {
+
+        const body: string = JSON.stringify(uploadObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/cogbytes/EditUpload?uploadID=" + uploadID, body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
     //// Deleting a publication when Del button is clicked!
     //public deletePublicationById(id: any): any {
 

@@ -370,7 +370,7 @@ namespace AngularSPAWebAPI.Services
                 sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {repositoryID});";
             }
 
-            Dal.ExecuteNonQueryCog(sqlPI);
+            if (sqlPI != "") Dal.ExecuteNonQueryCog(sqlPI);
 
             return true;
 
@@ -398,28 +398,186 @@ namespace AngularSPAWebAPI.Services
 
             int UploadID = Int32.Parse(Dal.ExecScalarCog(sqlUpload).ToString());
 
-            // Adding Author **********************************************************************************************************************
+            // Adding Tasks and other Features **********************************************************************************************************************
 
-            //string sqlAuthor = "";
-            //for (int i = 0; i < repository.AuthourID.Length; i++)
-            //{
-            //    sqlAuthor += $@"Insert into RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {RepositoryID});";
-            //}
-            //if (sqlAuthor != "") { Dal.ExecuteNonQueryCog(sqlAuthor); };
+            string sqlCmd = "";
+            for (int i = 0; i < upload.TaskID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
 
-            //// Adding PI
+            sqlCmd = "";
+            for (int i = 0; i < upload.SpecieID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
 
-            //string sqlPI = "";
-            //for (int i = 0; i < repository.PIID.Length; i++)
-            //{
-            //    sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
-            //}
-            //if (sqlPI != "") { Dal.ExecuteNonQueryCog(sqlPI); };
+            sqlCmd = "";
+            for (int i = 0; i < upload.SexID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < upload.StrainID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < upload.GenoID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < upload.AgeID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {UploadID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+
 
             return UploadID;
 
         }
 
+        //// Function Definition to extract a repositories' uploads 
+        public List<CogbytesUpload> GetUploads(int repID)
+        {
+            List<CogbytesUpload> Uploadlist = new List<CogbytesUpload>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Upload Where RepID='{repID}' Order By DateUpload"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int uploadID = Int32.Parse(dr["UploadID"].ToString());
+                    int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
+                    Uploadlist.Add(new CogbytesUpload
+                    {
+                        ID = uploadID,
+                        RepID = repID,
+                        FileTypeID = fileTypeID,
+                        Name = Convert.ToString(dr["Name"].ToString()),
+                        DateUpload = Convert.ToString(dr["DateUpload"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        IsIntervention = Boolean.Parse(dr["IsIntervention"].ToString()),
+                        InterventionDescription = Convert.ToString(dr["InterventionDescription"].ToString()),
+                        ImageIds = Convert.ToString(dr["ImageIds"].ToString()),
+                        ImageDescription = Convert.ToString(dr["ImageDescription"].ToString()),
+                        Housing = Convert.ToString(dr["Housing"].ToString()),
+                        LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
+                        TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
+                        TaskID = FillCogbytesItemArray($"Select TaskID From DatasetTask Where UploadID={uploadID}", "TaskID"),
+                        SpecieID = FillCogbytesItemArray($"Select SpeciesID From DatasetSpecies Where UploadID={uploadID}", "SpeciesID"),
+                        SexID = FillCogbytesItemArray($"Select SexID From DatasetSex Where UploadID={uploadID}", "SexID"),
+                        StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
+                        GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
+                        AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID")
+
+                    });
+                }
+            }
+
+            return Uploadlist;
+        }
+
+        // Function Definition to edit a respository in database Cogbytes
+        public bool EditUpload(int uploadID, CogbytesUpload upload)
+        {
+
+            string sqlUpload = $@"Update Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes, IsIntervention = @isIntervention, InterventionDescription=@interventionDescription,
+                                                                    ImageIds = @imageIds, ImageDescription=@imageDescription, Housing=@housing, LightCycle = @lightCycle, TaskBattery=@taskBattery
+                                                                where UploadID = {uploadID}";
+
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@name", HelperService.NullToString(HelperService.EscapeSql(upload.Name)).Trim()));
+            parameters.Add(new SqlParameter("@description", HelperService.NullToString(HelperService.EscapeSql(upload.Description)).Trim()));
+            parameters.Add(new SqlParameter("@additionalNotes", HelperService.NullToString(HelperService.EscapeSql(upload.AdditionalNotes)).Trim()));
+            parameters.Add(new SqlParameter("@isIntervention", HelperService.NullToString(upload.IsIntervention).Trim()));
+            parameters.Add(new SqlParameter("@interventionDescription", HelperService.NullToString(HelperService.EscapeSql(upload.InterventionDescription)).Trim()));
+            parameters.Add(new SqlParameter("@imageIds", HelperService.NullToString(HelperService.EscapeSql(upload.ImageIds)).Trim()));
+            parameters.Add(new SqlParameter("@imageDescription", HelperService.NullToString(HelperService.EscapeSql(upload.ImageDescription)).Trim()));
+            parameters.Add(new SqlParameter("@housing", HelperService.NullToString(HelperService.EscapeSql(upload.Housing)).Trim()));
+            parameters.Add(new SqlParameter("@lightCycle", HelperService.NullToString(HelperService.EscapeSql(upload.LightCycle)).Trim()));
+            parameters.Add(new SqlParameter("@taskBattery", HelperService.NullToString(HelperService.EscapeSql(upload.TaskBattery)).Trim()));
+
+            Int32.Parse(Dal.ExecuteNonQueryCog(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
+
+            string sqlCmd = "";
+            string sqlDelete = $"DELETE From DatasetTask where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.TaskID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {uploadID});";
+            }
+
+            Dal.ExecuteNonQueryCog(sqlCmd);
+
+            sqlCmd = "";
+            sqlDelete = $"DELETE From DatasetSpecies where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.SpecieID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {uploadID});";
+            }
+
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+
+            sqlCmd = "";
+            sqlDelete = $"DELETE From DatasetSex where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.SexID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetSpecies (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
+            }
+
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+
+            sqlCmd = "";
+            sqlDelete = $"DELETE From DatasetStrain where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.StrainID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {uploadID});";
+            }
+
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+
+            sqlCmd = "";
+            sqlDelete = $"DELETE From DatasetGeno where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.GenoID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {uploadID});";
+            }
+
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+
+            sqlCmd = "";
+            sqlDelete = $"DELETE From DatasetAge where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            for (int i = 0; i < upload.AgeID.Length; i++)
+            {
+                sqlCmd += $@"Insert into DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {uploadID});";
+            }
+
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+
+            return true;
+
+        }
         ////*******************************************************************************************************************************************************************
 
         //// Edit publication

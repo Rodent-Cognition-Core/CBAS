@@ -163,6 +163,21 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.AddUpload(upload));
         }
 
+        //// Extracting Upload list from Database (Cogbytes)
+        [HttpGet("GetUploads")]
+        //[AllowAnonymous]
+        public IActionResult GetUploads(int repID)
+        {
+            return new JsonResult(_cogbytesService.GetUploads(repID));
+        }
+
+        // Edit an existing publication
+        [HttpPost("EditUpload")]
+        public IActionResult EditUpload(int uploadID, [FromBody] CogbytesUpload upload)
+        {
+            return new JsonResult(_cogbytesService.EditUpload(uploadID, upload));
+        }
+
         //// Deleting publication
         //[HttpDelete("DeletePublicationById")]
         //public IActionResult DeletePublicationById(int pubId)

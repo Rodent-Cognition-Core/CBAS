@@ -36,6 +36,7 @@ export class CogbytesComponent implements OnInit {
 
     // Definiing List Variables
     repList: any;
+    uploadList: any;
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -85,6 +86,12 @@ export class CogbytesComponent implements OnInit {
     GetRepositories() {
         this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
         return this.repList;
+    }
+
+    GetUploads() {
+        let repID = this.getRepID();
+        this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
+        return this.uploadList;
     }
 
     //// Opening Dialog for adding a new repository.

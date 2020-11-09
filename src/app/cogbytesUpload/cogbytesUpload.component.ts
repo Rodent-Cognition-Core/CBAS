@@ -26,6 +26,8 @@ import { OAuthService } from 'angular-oauth2-oidc';
 export class CogbytesUploadComponent implements OnInit {
 
     @Input() repID: number;
+    @Input() isEditMode: boolean;
+    @Input() uploadObj: any;
 
     readonly DATASET = 1;
 
@@ -104,6 +106,7 @@ export class CogbytesUploadComponent implements OnInit {
         
     
     ngOnInit() {
+
         this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
         this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
         this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
@@ -111,6 +114,29 @@ export class CogbytesUploadComponent implements OnInit {
         this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
         this.cogbytesService.getGenos().subscribe(data => { this.genosList = data; });
         this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+
+        if (this.isEditMode) {
+
+            this.isUploadAdded = true;
+
+            this.nameModel = this.uploadObj.name;
+            this.fileTypeModel = this.uploadObj.fileTypeID;
+            this.descriptionModel = this.uploadObj.description;
+            this.additionalNotesModel = this.uploadObj.additionalNotes;
+            this.cognitiveTaskModel = this.uploadObj.taskID;
+            this.speciesModel = this.uploadObj.specieID;
+            this.sexModel = this.uploadObj.sexID;
+            this.strainModel = this.uploadObj.strainID;
+            this.genotypeModel = this.uploadObj.genoID;
+            this.ageModel = this.uploadObj.ageID;
+            this.housingModel = this.uploadObj.housing;
+            this.lightModel = this.uploadObj.lightCycle;
+            this.interventionModel = this.uploadObj.isIntervention;
+            this.intDesModel = this.uploadObj.interventionDescription;
+            this.imgDesModel = this.uploadObj.imageDescription;
+            this.taskBatteryModel = this.uploadObj.taskBattery;
+        }
+
     }
 
     name = new FormControl('', [Validators.required]);
@@ -157,7 +183,7 @@ export class CogbytesUploadComponent implements OnInit {
             }
         }
 
-        if (this.isUploadAdded) return true;
+        if (this.isUploadAdded && !this.isEditMode) return true;
 
         return false;
     }
@@ -209,15 +235,49 @@ export class CogbytesUploadComponent implements OnInit {
         this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
 
             if (data === null) {
-                alert("Failed to add upload to Cogbytes");
+                alert("Failed to add upload features to Cogbytes");
             }
             else {
-                alert("Upload was successfully added to the system!");
+                alert("Upload features were successfully added to the system! Please upload your files via the dropzone.");
                 this.isUploadAdded = true;
             }
         })
     }
 
+    EditUpload() {
+
+        this._cogbytesUpload.repId = this.repID;
+        this._cogbytesUpload.fileTypeId = this.fileTypeModel;
+        this._cogbytesUpload.name = this.nameModel;
+        let today = new Date();
+        this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
+        this._cogbytesUpload.description = this.descriptionModel;
+        this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
+        this._cogbytesUpload.isIntervention = this.interventionModel == "true" ? true : false;
+        this._cogbytesUpload.interventionDescription = this.intDesModel;
+        // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
+        this._cogbytesUpload.imageDescription = this.imgDesModel;
+        this._cogbytesUpload.housing = this.housingModel;
+        this._cogbytesUpload.lightCycle = this.lightModel;
+        this._cogbytesUpload.taskBattery = this.taskBatteryModel;
+
+        this._cogbytesUpload.taskID = this.cognitiveTaskModel;
+        this._cogbytesUpload.specieID = this.speciesModel;
+        this._cogbytesUpload.sexID = this.sexModel;
+        this._cogbytesUpload.strainID = this.strainModel;
+        this._cogbytesUpload.genoID = this.genotypeModel;
+        this._cogbytesUpload.ageID = this.ageModel;
+
+        this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
+
+            if (data === null) {
+                alert("Failed to edit features to Cogbytes");
+            }
+            else {
+                alert("Features were successfully edited to the system!");
+            }
+        })
+    }
     public resetDropzoneUploads() {
 
         if (this.type === 'directive') {

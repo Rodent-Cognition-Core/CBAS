@@ -31,7 +31,7 @@
 
                                 <!--Repository List-->
                                 <mat-form-field style="width: 35%; padding-left:0px">
-                                    <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()">
+                                    <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()" (selectionChange)="GetUploads()">
                                         <mat-option>-</mat-option>
                                         <mat-option *ngFor="let rep of repList" [value]="rep.title">
                                             {{rep.title}}
@@ -80,9 +80,25 @@
 
                             </mat-expansion-panel-header>
 
-                            <app-cogbytesUpload [repID] = "getRepID()"></app-cogbytesUpload>
+                            <app-cogbytesUpload [repID]="getRepID()" [isEditMode]="false"></app-cogbytesUpload>
 
                         </mat-expansion-panel>
+
+                        <br />
+
+                        <mat-accordion>
+                            <mat-expansion-panel *ngFor="let upload of uploadList">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{upload.name}}
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <app-cogbytesUpload [repID]="getRepID()" [isEditMode]="true" [uploadObj]="upload"></app-cogbytesUpload>
+
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
                     </td>
                 </tr>
             </tbody>
