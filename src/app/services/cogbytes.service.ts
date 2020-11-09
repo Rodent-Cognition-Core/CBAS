@@ -178,6 +178,16 @@ import { AuthenticationService } from './authentication.service';
         });
     }
 
+    // Adding a new publication to System
+    public addUpload(repObj: CogbytesUpload): any {
+
+
+        const body: string = JSON.stringify(repObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/cogbytes/AddUpload", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
     //// Deleting a publication when Del button is clicked!
     //public deletePublicationById(id: any): any {
 

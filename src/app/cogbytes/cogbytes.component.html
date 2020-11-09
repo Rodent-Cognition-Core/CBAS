@@ -72,7 +72,7 @@
                         <mat-expansion-panel class="mat-elevation-z0" (opened)="panelOpenState = true" (closed)="panelOpenState = false" hideToggle> 
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    Upload file:
+                                    New upload:
                                 </mat-panel-title>
                                 <mat-panel-description>
                                     <mat-icon *ngIf="!panelOpenState">add</mat-icon>
@@ -80,7 +80,7 @@
 
                             </mat-expansion-panel-header>
 
-                            <app-cogbytesUpload></app-cogbytesUpload>
+                            <app-cogbytesUpload [repID] = "getRepID()"></app-cogbytesUpload>
 
                         </mat-expansion-panel>
                     </td>

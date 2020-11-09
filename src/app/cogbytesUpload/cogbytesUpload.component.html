@@ -1,9 +1,9 @@
-<div>
+<!--<div>
     <button mat-raised-button>Upload File</button>
     <button mat-raised-button color="warn" style="float:right">Delete file</button>
 </div>
 
-<br />
+<br />-->
 
 <div>
     <mat-accordion multi>
@@ -16,18 +16,17 @@
             </mat-expansion-panel-header>
 
             <!--File Name-->
-                        <!--<mat-form-field style="width: 30%">
+            <!--<mat-form-field style="width: 30%">
                 <input matInput placeholder="Name" [formControl]="name" [(ngModel)]="nameModel" required>
                 <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
             </mat-form-field>-->
-                        <!--Date-->
-                        <!--<mat-form-field style="width: 30%; padding-left:25px">
+            <!--Date-->
+            <!--<mat-form-field style="width: 30%; padding-left:25px">
                 <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
             </mat-form-field>-->
-
             <!--File Type-->
             <mat-form-field style="width: 30%; padding-left:0px">
                 <mat-select matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" required>
@@ -39,7 +38,15 @@
 
             </mat-form-field>
 
+            <!--Name-->
+            <!--Paper Title-->
+            <mat-form-field style="width: 60%; padding-left: 25px">
 
+                <textarea matInput placeholder="Upload Name" [formControl]="name" [(ngModel)]="nameModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+                            <!--<textarea matInput placeholder="Title" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>-->
+                </textarea>
+                <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
+            </mat-form-field>
             <br />
 
             <!--Description-->
@@ -61,7 +68,7 @@
 
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="fileTypeModel===1">
+        <mat-expansion-panel *ngIf="fileTypeModel===DATASET" [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Key Features:
@@ -123,13 +130,13 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Housing Info" [(ngModel)]="housingModel" multiple>
-                </mat-select>
+                <textarea matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
+                          matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Light Cycle" [(ngModel)]="lightModel" multiple>
-                </mat-select>
+                <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
+                          matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
             <br />
 
@@ -138,18 +145,18 @@
             <span style="font-size:small">-  Please indicate if the experiment has intervention?</span>
             <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
                 <!--<mat-radio-group required>-->
-                <mat-radio-button value="0">No</mat-radio-button>
-                <mat-radio-button value="1">Yes</mat-radio-button>
+                <mat-radio-button value="false">No</mat-radio-button>
+                <mat-radio-button value="true">Yes</mat-radio-button>
                 <mat-error *ngIf="intervention.invalid">{{getErrorMessageIntervention()}}</mat-error>
             </mat-radio-group>
 
             <br />
             <br />
 
-            <mat-form-field class="full-width" *ngIf="interventionModel=='1'">
+            <mat-form-field class="full-width" *ngIf="interventionModel=='true'">
                 <!--<mat-form-field class="full-width">-->
                 <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
-                            matAutosizeMaxRows="5"></textarea>
+                          matAutosizeMaxRows="5"></textarea>
                 <!--<textarea matInput placeholder="Intervention Description" matTextareaAutosize matAutosizeMinRows="2"
                 matAutosizeMaxRows="5"></textarea>-->
                 <!--<mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>-->
@@ -164,9 +171,10 @@
                 <mat-form-field class="full-width">
                     <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
                     <mat-select placeholder="Select the images">
+                        ma
                         <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
-                <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
-            </mat-option>-->
+                            <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
+                        </mat-option>-->
                     </mat-select>
                     <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
                 </mat-form-field>
@@ -179,10 +187,10 @@
                 <mat-form-field class="full-width">
 
                     <!--<textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
-            [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
-            matAutosizeMaxRows="5">-->
+                    [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
+                    matAutosizeMaxRows="5">-->
                     <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
-                                matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                              matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
            
                     </textarea>
                     <!--<mat-error *ngIf="imageDescription.invalid">{{getErrorMessageImageDescription()}}</mat-error>-->
@@ -194,7 +202,7 @@
                 <mat-form-field class="full-width">
 
                     <textarea matInput placeholder="Task Battery" [(ngModel)]="taskBatteryModel"
-                                matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                              matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
            
                     </textarea>
                 </mat-form-field>
@@ -204,6 +212,11 @@
         </mat-expansion-panel>
 
     </mat-accordion>
+    <!---->"
+    <div>
+        <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddUpload()">Save Features</button>
+        <dropzone [disabled] = "!isUploadAdded" [message]="'Click or drag your files here to upload'"></dropzone>
+    </div>
 </div>
 
 

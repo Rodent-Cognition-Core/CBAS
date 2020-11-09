@@ -128,6 +128,10 @@ export class CogbytesComponent implements OnInit {
 
     }
 
+    getRepID() : number {
+        return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)].id;
+    }
+
     //// Edit publication
     //openDialogEditPublication(Publication): void {
     //    let dialogref = this.dialog.open(CogbytesDialogueComponent, {

@@ -258,8 +258,8 @@ namespace AngularSPAWebAPI.Services
         //    Dal.ExecuteNonQueryPub(sql);
         //}
 
-        ////************************************************************************************Adding Publication*************************************************************************************
-        // Function Definition to add a new publication to database Pubscreen
+        ////************************************************************************************Adding Repository*************************************************************************************
+        // Function Definition to add a new repository to database Cogbytes
         public int? AddRepository(Cogbytes repository, string Username)
         {
 
@@ -269,9 +269,9 @@ namespace AngularSPAWebAPI.Services
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.DOI)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Keywords)).Trim())}',
                                      '{repository.PrivacyStatus}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Description)))}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.AdditionalNotes)))}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Link)))}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Description)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.AdditionalNotes)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Link)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(Username)))}',
                                      '{repository.DateRepositoryCreated}'
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
@@ -329,7 +329,7 @@ namespace AngularSPAWebAPI.Services
             return RepList;
         }
 
-        // Function Definition to add a new publication to database Pubscreen
+        // Function Definition to edit a respository in database Cogbytes
         public bool EditRepository(int repositoryID, Cogbytes repository, string Username)
         {
 
@@ -375,6 +375,51 @@ namespace AngularSPAWebAPI.Services
             return true;
 
         }
+
+        // Function Definition to add a new repository to database Cogbytes
+        public int? AddUpload(CogbytesUpload upload)
+        {
+
+            string sqlUpload = $@"Insert into Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery) Values
+                                    ('{upload.RepID}',
+                                     '{upload.FileTypeID}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.Name)).Trim())}',
+                                     '{upload.DateUpload}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.Description)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.AdditionalNotes)).Trim())}',
+                                     '{upload.IsIntervention}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.InterventionDescription)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.ImageIds)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.ImageDescription)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.Housing)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.LightCycle)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.TaskBattery)).Trim())}'
+                                      ); SELECT @@IDENTITY AS 'Identity'; ";
+
+            int UploadID = Int32.Parse(Dal.ExecScalarCog(sqlUpload).ToString());
+
+            // Adding Author **********************************************************************************************************************
+
+            //string sqlAuthor = "";
+            //for (int i = 0; i < repository.AuthourID.Length; i++)
+            //{
+            //    sqlAuthor += $@"Insert into RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {RepositoryID});";
+            //}
+            //if (sqlAuthor != "") { Dal.ExecuteNonQueryCog(sqlAuthor); };
+
+            //// Adding PI
+
+            //string sqlPI = "";
+            //for (int i = 0; i < repository.PIID.Length; i++)
+            //{
+            //    sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
+            //}
+            //if (sqlPI != "") { Dal.ExecuteNonQueryCog(sqlPI); };
+
+            return UploadID;
+
+        }
+
         ////*******************************************************************************************************************************************************************
 
         //// Edit publication
