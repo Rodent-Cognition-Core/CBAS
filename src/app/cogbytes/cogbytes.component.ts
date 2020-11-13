@@ -33,7 +33,6 @@ export class CogbytesComponent implements OnInit {
 
     public repModel: any;
 
-
     // Definiing List Variables
     repList: any;
     uploadList: any;
@@ -93,6 +92,16 @@ export class CogbytesComponent implements OnInit {
         this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
         return this.uploadList;
     }
+
+    ClosePanel() {
+        this.panelOpenState = false;
+    }
+
+    NewUpload() {
+        this.GetUploads();
+        this.ClosePanel();
+    }
+
 
     //// Opening Dialog for adding a new repository.
     openDialogAddRepository(): void {

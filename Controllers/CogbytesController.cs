@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 
 namespace AngularSPAWebAPI.Controllers
 {
@@ -176,6 +177,21 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult EditUpload(int uploadID, [FromBody] CogbytesUpload upload)
         {
             return new JsonResult(_cogbytesService.EditUpload(uploadID, upload));
+        }
+
+        // The main Upload function for uploading multiple files
+        [EnableCors("CorsPolicy")]
+        [HttpPost("AddFiles")]
+        [RequestSizeLimit(900_000_000)]
+        public async Task<IActionResult> AddFiles()
+        {
+            var files = HttpContext.Request.Form.Files;
+            int uploadID = Int16.Parse(HttpContext.Request.Form["uploadID"][0]);
+
+            bool result = await _cogbytesService.AddFiles(files, uploadID);
+            // add a function to send an email to inform admin that new data added to the server
+
+            return new JsonResult(result);   
         }
 
         //// Deleting publication

@@ -35,13 +35,13 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
             provide: DROPZONE_CONFIG,
             useValue: {
                 // Change this to your upload POST address:
-                url: 'http://localhost:5000/api/upload/UploadFiles',
+                url: 'http://localhost:5000/api/cogbytes/AddFiles',
                 // maxFilesize: 50,
-                acceptedFiles: '.*',
+                //acceptedFiles: '.*',
                 // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
                 parallelUploads: 10000,
                 uploadMultiple: true,
-                autoProcessQueue: false
+                autoProcessQueue: true
             }
         },
     ],

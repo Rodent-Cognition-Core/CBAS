@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, NgModule, Input } from '@angular/core';
+import { Component, OnInit, Inject, NgModule, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component'
@@ -29,9 +29,13 @@ export class CogbytesUploadComponent implements OnInit {
     @Input() isEditMode: boolean;
     @Input() uploadObj: any;
 
+    @Output() filesUploaded: EventEmitter<any> = new EventEmitter();
+    @Output() repChange: EventEmitter<any> = new EventEmitter();
+
     readonly DATASET = 1;
 
     isUploadAdded = false;
+    uploadID: number;
 
     //public parentRef: CogbytesDialogueComponent;
 
@@ -95,7 +99,7 @@ export class CogbytesUploadComponent implements OnInit {
     constructor(
         private oAuthService: OAuthService,
         //public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
-        //private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: Ng4LoadingSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -119,6 +123,7 @@ export class CogbytesUploadComponent implements OnInit {
 
             this.isUploadAdded = true;
 
+            this.uploadID = this.uploadObj.id;
             this.nameModel = this.uploadObj.name;
             this.fileTypeModel = this.uploadObj.fileTypeID;
             this.descriptionModel = this.uploadObj.description;
@@ -138,6 +143,18 @@ export class CogbytesUploadComponent implements OnInit {
         }
 
     }
+
+    ngOnChanges(changes: SimpleChanges) {
+        for (const propName in changes) {
+            if (changes.hasOwnProperty(propName)) {
+                if (propName === 'repID') {
+                    this.resetFormVals();
+                    this.repChange.emit(null);
+                }
+            }
+        }
+    }
+
 
     name = new FormControl('', [Validators.required]);
     //date = new FormControl('', [Validators.required]);
@@ -240,6 +257,7 @@ export class CogbytesUploadComponent implements OnInit {
             else {
                 alert("Upload features were successfully added to the system! Please upload your files via the dropzone.");
                 this.isUploadAdded = true;
+                this.uploadID = data;
             }
         })
     }
@@ -290,10 +308,67 @@ export class CogbytesUploadComponent implements OnInit {
 
     public onUploadError(args: any) {
 
-        this.uploadErrorServer = "Error in upload, please contact administrator at MouseBytes@uwo.ca";
-
+        if (!this.isUploadAdded) {
+            this.uploadErrorServer = 'Error: upload zone disabled until required features are selected and saved.'
+        }
+        else {
+            this.uploadErrorServer = "Error in upload, please contact administrator at MouseBytes@uwo.ca";
+        }
+        
         this.resetDropzoneUploads();
         console.log('onUploadError:', args);
+    }
+
+    onSending(data): void {
+
+        this.proceedUpload = true;
+        this.spinnerService.show();
+
+        const formData = data[2];
+        formData.append('uploadID', this.uploadID);
+        
+
+    }
+
+    public onUploadSuccess(args: any) {
+
+        this.resetDropzoneUploads();
+
+        alert('Files were successfully uploaded to the database!');
+
+        this.proceedUpload = false;
+
+
+    }
+
+    onAddedFile(data): void {
+
+        //this.componentRef.directiveRef.dropzone().processQueue();
+
+        //this.uploadConfirmShowed = false;
+        //this.dialogRefDelFile = null;
+    }
+
+    onQueueComplete(args: any): void {
+
+        if (this.uploadErrorServer != "") {
+            alert(this.uploadErrorServer);
+
+            this.uploadErrorFileType = ""; // when server error happens error file type shouldn't be shown
+
+        }
+
+        setTimeout(() => {
+            this.spinnerService.hide();
+        }, 500);
+
+        this.uploadErrorServer = "";
+
+        if (this.isUploadAdded && !this.isEditMode) {
+            this.resetFormVals();
+            this.filesUploaded.emit(null);
+        }
+
     }
 
     //remove() {

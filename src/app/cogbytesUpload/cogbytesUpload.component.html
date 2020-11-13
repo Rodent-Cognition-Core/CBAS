@@ -212,11 +212,18 @@
         </mat-expansion-panel>
 
     </mat-accordion>
-    <!---->
+
+    <br />
+
     <div>
-        <button *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddUpload()">Save Features</button>
-        <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="EditUpload()">Save Changes</button>
-        <dropzone [disabled]="!isUploadAdded" [message]="'Click or drag your files here to upload'"></dropzone>
+        <button *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width"
+                [disabled]="setDisabledVal()" (click)="AddUpload()">Save Features</button>
+        <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
+                [disabled]="setDisabledVal()" (click)="EditUpload()">Save Changes</button>
+        <dropzone [config]="config" [disabled]="!isUploadAdded" [message]="'Click or drag your files here to upload'"
+                  class="dropzone-container" (sending)="onSending($event)" (error)="onUploadError($event)"
+                  (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)" (successMultiple)="onUploadSuccess($event)"
+                  ></dropzone>
     </div>
 </div>
 

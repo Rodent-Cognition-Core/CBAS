@@ -17,6 +17,7 @@ using System.Text;
 using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
+using Microsoft.AspNetCore.Http;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -518,7 +519,7 @@ namespace AngularSPAWebAPI.Services
                 sqlCmd += $@"Insert into DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {uploadID});";
             }
 
-            Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
 
             sqlCmd = "";
             sqlDelete = $"DELETE From DatasetSpecies where UploadID = {uploadID}";
@@ -579,232 +580,72 @@ namespace AngularSPAWebAPI.Services
 
         }
         ////*******************************************************************************************************************************************************************
+        public async Task<bool> AddFiles(IFormFileCollection files, int uploadID)
+        {
+            List<FileUploadResult> uploadResult = new List<FileUploadResult>();
 
-        //// Edit publication
-        //public bool EditPublication(int publicationId, PubScreen publication, string Username)
-        //{
+            foreach (IFormFile file in files)
+            {
 
+                string tempFileName = Guid.NewGuid().ToString() + "-" + file.FileName;
 
-        //    string sqlPublication = $@"Update Publication set Title = @title, Abstract = @abstract, Keywords = @keywords,
-        //                                                       DOI = @doi, Year = @year where id = {publicationId}";
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "TempUpload");
 
-        //    var parameters = new List<SqlParameter>();
-        //    parameters.Add(new SqlParameter("@title", HelperService.NullToString(HelperService.EscapeSql(publication.Title)).Trim()));
-        //    parameters.Add(new SqlParameter("@abstract", HelperService.NullToString(HelperService.EscapeSql(publication.Abstract)).Trim()));
-        //    parameters.Add(new SqlParameter("@keywords", HelperService.NullToString(HelperService.EscapeSql(publication.Keywords)).Trim()));
-        //    parameters.Add(new SqlParameter("@doi", HelperService.NullToString(HelperService.EscapeSql(publication.DOI)).Trim()));
-        //    parameters.Add(new SqlParameter("@year", HelperService.NullToString(HelperService.EscapeSql(publication.Year)).Trim()));
+                if (file.Length > 0)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(uploads, tempFileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
 
-        //    Int32.Parse(Dal.ExecuteNonQueryPub(CommandType.Text, sqlPublication, parameters.ToArray()).ToString());
+                    DateTime? DateUpload1 = DateTime.UtcNow;
 
-        //    string sqlDelete = "";
+                    string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "COGBYTES_FILES", uploadID.ToString());
 
-        //    // Editing Author **********************************************************************************************************************
-        //    // Edit Publication_Author Table 
-        //    if (publication.AuthourID != null && publication.AuthourID.Length != 0)
-        //    {
-        //        string sqlAuthor = "";
+                    FileUploadResult fur = new FileUploadResult
+                    {
+                        UploadID = uploadID,
+                        UserFileName = file.FileName,
+                        SysFileName = tempFileName,
+                        DateFileCreated = DateTime.UtcNow,
+                        DateUpload = DateUpload1,
+                        FileSize = HelperService.ConvertToNullableInt(file.Length.ToString()),
+                        PermanentFilePath = pathString,
+                    };
 
-        //        sqlDelete = $"DELETE From Publication_Author where PublicationID = {publicationId}";
-        //        Dal.ExecuteNonQueryPub(sqlDelete);
+                    //Inserting to Upload Table in DB
 
-        //        for (int i = 0; i < publication.AuthourID.Length; i++)
-        //        {
-        //            sqlAuthor += $@"Insert into Publication_Author (AuthorID, PublicationID) Values ({publication.AuthourID[i]}, {publicationId});";
-        //        }
+                    // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
+                    int fileID = InsertFile(fur);
 
-        //        if (sqlAuthor != "") { Dal.ExecuteNonQueryPub(sqlAuthor); };
+                    // Copy the file to permanent path: COGBYTES_FILES/uploadID
 
-        //    }
+                    System.IO.Directory.CreateDirectory(pathString);
+                    if (file.Length > 0)
+                    {
+                        using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream1);
+                        }
+                    }
 
-        //    //Edit Publication_PaperType Table**********************************************************************************************
+                }
+            }
 
-        //    // When DOI or Pubmedkey is not available
-        //    var paperTypeId = 0;
-        //    if (!string.IsNullOrEmpty(publication.PaperType))
-        //    {
-        //        var sql = $"select id from PaperType where ltrim(rtrim(papertype)) = '{HelperService.NullToString(HelperService.EscapeSql(publication.PaperType)).Trim()}'";
-        //        var retPaperType = Dal.ExecScalarPub(sql);
-        //        if (retPaperType != null)
-        //        {
-        //            paperTypeId = Int32.Parse(Dal.ExecScalarPub(sql).ToString());
+            return true;
 
-        //        }
-        //    }
+        }
 
-        //    if (paperTypeId != 0)
-        //    {
-        //        sqlDelete = $"DELETE From Publication_PaperType where PublicationID = {publicationId}";
-        //        Dal.ExecuteNonQueryPub(sqlDelete);
+        // Function to Insert File in Database
+        public int InsertFile(FileUploadResult upload)
+        {
+            string sql = $"Insert into UploadFile " +
+              $"(UploadID, UserFileName, SystemFileName, DateFileCreated, DateUploaded, FileSize, PermanentFilePath ) Values " +
+              $"({upload.UploadID}, '{upload.UserFileName}', '{upload.SysFileName}', '{upload.DateFileCreated}', " +
+              $"'{upload.DateUpload}', '{upload.FileSize}', '{upload.PermanentFilePath}'); SELECT @@IDENTITY AS 'Identity';";
 
-        //        string sqlPaperType = "";
-        //        sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({paperTypeId}, {publicationId});";
-        //        Dal.ExecuteNonQueryPub(sqlPaperType);
-        //    }
-
-        //    //Editing to Publication_Task
-        //    if (publication.TaskID != null && publication.TaskID.Length != 0)
-        //    {
-        //        sqlDelete = $"DELETE From Publication_Task where PublicationID = {publicationId}";
-        //        Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //        string sqlTask = "";
-        //        for (int i = 0; i < publication.TaskID.Length; i++)
-        //        {
-        //            sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
-
-        //    }
-
-        //    //Editing to Publication_Specie
-        //    sqlDelete = $"DELETE From Publication_Specie where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.SpecieID != null && publication.SpecieID.Length != 0)
-        //    {
-        //        string sqlSpecie = "";
-        //        for (int i = 0; i < publication.SpecieID.Length; i++)
-        //        {
-        //            sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
-        //    }
-
-        //    //Editing to Publication_Sex
-        //    sqlDelete = $"DELETE From Publication_Sex where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.sexID != null && publication.sexID.Length != 0)
-        //    {
-        //        string sqlSex = "";
-        //        for (int i = 0; i < publication.sexID.Length; i++)
-        //        {
-        //            sqlSex += $@"Insert into Publication_Sex (sexID, PublicationID) Values ({publication.sexID[i]}, {publicationId});";
-
-
-        //        }
-        //        if (sqlSex != "") { Dal.ExecuteNonQueryPub(sqlSex); };
-
-        //    }
-
-        //    //Editing to Publication_Strain
-        //    sqlDelete = $"DELETE From Publication_Strain where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.StrainID != null && publication.StrainID.Length != 0)
-        //    {
-        //        string sqlStrain = "";
-        //        for (int i = 0; i < publication.StrainID.Length; i++)
-        //        {
-        //            sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
-
-        //    }
-
-        //    //Editing to Publication_Disease
-        //    sqlDelete = $"DELETE From Publication_Disease where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.DiseaseID != null && publication.DiseaseID.Length != 0)
-        //    {
-        //        string sqlDiease = "";
-        //        for (int i = 0; i < publication.DiseaseID.Length; i++)
-        //        {
-        //            sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
-
-        //    }
-
-        //    //Editing to Publication_Region
-        //    sqlDelete = $"DELETE From Publication_Region where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.RegionID != null && publication.RegionID.Length != 0)
-        //    {
-        //        string sqlRegion = "";
-        //        for (int i = 0; i < publication.RegionID.Length; i++)
-        //        {
-        //            sqlRegion += $@"Insert into Publication_Region (RegionID, PublicationID) Values ({publication.RegionID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlRegion != "") { Dal.ExecuteNonQueryPub(sqlRegion); };
-
-        //    }
-
-        //    //Editing to Publication_SubRegion
-        //    sqlDelete = $"DELETE From Publication_SubRegion where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.SubRegionID != null && publication.SubRegionID.Length != 0)
-        //    {
-        //        string sqlSubRegion = "";
-        //        for (int i = 0; i < publication.SubRegionID.Length; i++)
-        //        {
-        //            sqlSubRegion += $@"Insert into Publication_SubRegion (SubRegionID, PublicationID) Values ({publication.SubRegionID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlSubRegion != "") { Dal.ExecuteNonQueryPub(sqlSubRegion); };
-
-        //    }
-
-        //    //Editing to Publication_CellType
-        //    sqlDelete = $"DELETE From Publication_CellType where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.CellTypeID != null && publication.CellTypeID.Length != 0)
-        //    {
-        //        string sqlCelltype = "";
-        //        for (int i = 0; i < publication.CellTypeID.Length; i++)
-        //        {
-        //            sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
-
-        //    }
-
-        //    //Editing to Publication_Method
-        //    sqlDelete = $"DELETE From Publication_Method where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.MethodID != null && publication.MethodID.Length != 0)
-        //    {
-        //        string sqlMethod = "";
-        //        for (int i = 0; i < publication.MethodID.Length; i++)
-        //        {
-        //            sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
-
-        //    }
-
-        //    //Editing to Publication_NeuroTransmitter
-        //    sqlDelete = $"DELETE From Publication_NeuroTransmitter where PublicationID = {publicationId}";
-        //    Dal.ExecuteNonQueryPub(sqlDelete);
-
-        //    if (publication.TransmitterID != null && publication.TransmitterID.Length != 0)
-        //    {
-        //        string sqlTransmitter = "";
-        //        for (int i = 0; i < publication.TransmitterID.Length; i++)
-        //        {
-        //            sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {publicationId});";
-
-        //        }
-        //        if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
-
-        //    }
-
-        //    return true;
-
-        //}
+            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+        }
 
         //// Function definition to search publications in database
         //public List<PubScreenSearch> SearchPublications(PubScreen pubScreen)
