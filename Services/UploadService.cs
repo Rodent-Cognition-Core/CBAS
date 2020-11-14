@@ -323,6 +323,7 @@ namespace AngularSPAWebAPI.Services
                 IsIdentifierPassed = bool.Parse(dr["IsIdentifierPassed"].ToString()),
                 PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
                 SessionName = Convert.ToString(dr["SessionName"]),
+                TaskID = Int32.Parse(dr["TaskID"].ToString()),
             };
         }
 
@@ -459,9 +460,9 @@ namespace AngularSPAWebAPI.Services
             List<int?> lstMistake = new List<int?>();
             List<int?> lstcCorrectRejection = new List<int?>();
 
-            List<float> lstCorrectLatency = new List<float>();
-            List<float> lstRewatdLatency = new List<float>();
-            List<float> lstIncorLatency = new List<float>();
+            List<float?> lstCorrectLatency = new List<float?>();
+            List<float?> lstRewatdLatency = new List<float?>();
+            List<float?> lstIncorLatency = new List<float?>();
             Dictionary<string, float?> cptDictDistractorFeatures = new Dictionary<string, float?>();  // for sessionIDUpload==42 (cpt distractor)
 
             foreach (var val in value)
@@ -1057,7 +1058,7 @@ namespace AngularSPAWebAPI.Services
 
         // **********************Function definition to extract cpt features with different stimulation duration and stage 3 & 4
         private Dictionary<string, float?> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
-                       List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency, int uploadsessionID)
+                       List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency, int uploadsessionID)
         {
 
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
@@ -1140,8 +1141,8 @@ namespace AngularSPAWebAPI.Services
                         DataRow newRow = dt_latency.NewRow();
                         newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                         newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                        newRow["CorrectLatency"] = lstCorrectLatency[cnt];
-                        newRow["RewardLatency"] = lstRewatdLatency[cnt];
+                        newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                        newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];  
 
                         dt_latency.Rows.Add(newRow);
                         cnt = cnt + 1;
@@ -1162,7 +1163,7 @@ namespace AngularSPAWebAPI.Services
                         cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
                         cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                     }
-                    
+
                 }
 
                 //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1183,7 +1184,7 @@ namespace AngularSPAWebAPI.Services
                             DataRow newRow = dt_incorrect_latency.NewRow();
                             newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                             newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                            newRow["IncorrectLatency"] = lstIncorLatency[cnt2];
+                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2]; 
 
                             dt_incorrect_latency.Rows.Add(newRow);
                             cnt2 = cnt2 + 1;
@@ -1201,10 +1202,11 @@ namespace AngularSPAWebAPI.Services
 
                             cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
                         }
-                        else {
+                        else
+                        {
                             // TODO: what needs to be done here?
                         }
-                        
+
 
                     }
                 }
@@ -1275,7 +1277,7 @@ namespace AngularSPAWebAPI.Services
                         cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
                         cptFeatureDict.Add(titleResponseBias, (float?)responseBias);
                     }
-                   
+
 
                 }
             }
@@ -1286,7 +1288,7 @@ namespace AngularSPAWebAPI.Services
 
         // Function definition to extract calculated metrics for cpt task when the contrast level is different
         private Dictionary<string, float?> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
-                        List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+                        List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency)
         {
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
@@ -1312,8 +1314,8 @@ namespace AngularSPAWebAPI.Services
                     DataRow newRow = dt_latency.NewRow();
                     newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                     newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                    newRow["CorrectLatency"] = lstCorrectLatency[cnt];
-                    newRow["RewardLatency"] = lstRewatdLatency[cnt];
+                    newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                    newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
 
                     dt_latency.Rows.Add(newRow);
                     cnt = cnt + 1;
@@ -1351,7 +1353,7 @@ namespace AngularSPAWebAPI.Services
                     cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
                     cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                 }
-                
+
             }
 
             //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1370,7 +1372,7 @@ namespace AngularSPAWebAPI.Services
                     DataRow newRow = dt_incorrect_latency.NewRow();
                     newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                     newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                    newRow["IncorrectLatency"] = lstCorrectLatency[cnt2];
+                    newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
 
                     dt_incorrect_latency.Rows.Add(newRow);
                     cnt2 = cnt2 + 1;
@@ -1405,7 +1407,7 @@ namespace AngularSPAWebAPI.Services
 
                     cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
                 }
-                
+
 
             }
 
@@ -1481,7 +1483,7 @@ namespace AngularSPAWebAPI.Services
 
                 }
 
-                
+
 
             }
 
