@@ -207,6 +207,14 @@ import { AuthenticationService } from './authentication.service';
             headers: this.authenticationService.getAuthorizationHeader()
         });
     }
+
+
+    downloadFile(path): Observable<Blob> {
+
+        return this.http.get("/api/cogbytes/downloadFile?path=" + path,
+            { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
+
+    };
     //// Deleting a publication when Del button is clicked!
     //public deletePublicationById(id: any): any {
 

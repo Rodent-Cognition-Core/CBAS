@@ -66,6 +66,8 @@ export class CogbytesUploadComponent implements OnInit {
     public genosList: any;
     public ageList: any;
 
+    public uploadFileList: any;
+
     _cogbytesUpload = new CogbytesUpload();
 
     // DropZone
@@ -140,6 +142,8 @@ export class CogbytesUploadComponent implements OnInit {
             this.intDesModel = this.uploadObj.interventionDescription;
             this.imgDesModel = this.uploadObj.imageDescription;
             this.taskBatteryModel = this.uploadObj.taskBattery;
+
+            this.uploadFileList = this.uploadObj.uploadFileList;
         }
 
     }
@@ -366,11 +370,44 @@ export class CogbytesUploadComponent implements OnInit {
 
         if (this.isUploadAdded && !this.isEditMode) {
             this.resetFormVals();
-            this.filesUploaded.emit(null);
         }
 
+        this.filesUploaded.emit(null);
     }
 
+
+    DownloadFile(file: any): void {
+
+        let path = file.permanentFilePath + '\\' + file.sysFileName;
+        this.cogbytesService.downloadFile(path)
+            .subscribe(result => {
+
+                // console.log('downloadresult', result);
+                //let url = window.URL.createObjectURL(result);
+                //window.open(url);
+
+                var fileData = new Blob([result]);
+                var csvURL = null;
+                if (navigator.msSaveBlob) {
+                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                } else {
+                    csvURL = window.URL.createObjectURL(fileData);
+                }
+                var tempLink = document.createElement('a');
+                tempLink.href = csvURL;
+                tempLink.setAttribute('download', file.userFileName);
+                document.body.appendChild(tempLink);
+                tempLink.click();
+
+            },
+                error => {
+                    if (error.error instanceof Error) {
+                        console.log('An error occurred:', error.error.message);
+                    } else {
+                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    }
+                });
+    }
     //remove() {
     //    this.parentRef.removeUploadComponent(this.uploadKey);
     //}

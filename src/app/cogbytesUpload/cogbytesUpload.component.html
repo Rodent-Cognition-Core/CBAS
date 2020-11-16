@@ -220,10 +220,44 @@
                 [disabled]="setDisabledVal()" (click)="AddUpload()">Save Features</button>
         <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
                 [disabled]="setDisabledVal()" (click)="EditUpload()">Save Changes</button>
+        <br />
         <dropzone [config]="config" [disabled]="!isUploadAdded" [message]="'Click or drag your files here to upload'"
                   class="dropzone-container" (sending)="onSending($event)" (error)="onUploadError($event)"
                   (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)" (successMultiple)="onUploadSuccess($event)"
                   ></dropzone>
+    </div>
+
+    <br />
+
+    <div *ngIf="isEditMode">
+
+        <table class="docs-markdown-table">
+
+            <thead>
+                <tr><th colspan="6" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{uploadObj.name}}</th></tr>
+                <tr style=" text-align: center; color:#566573;">
+                    <td class="docs-markdown-td">File Name</td>
+                    <td class="docs-markdown-td">Upload Date</td>
+                    <td class="docs-markdown-td">Download</td>
+                    <td class="docs-markdown-td-wide-errorMessage">Delete</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let file of uploadFileList">
+                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
+                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                        <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                    </td>
+                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                        <button mat-icon-button matTooltip="Delete File"><mat-icon>delete</mat-icon></button>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
     </div>
 </div>
 

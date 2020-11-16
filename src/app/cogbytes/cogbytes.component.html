@@ -95,7 +95,7 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
 
-                                <app-cogbytesUpload [repID]="getRepID()" [isEditMode]="true" [uploadObj]="upload"></app-cogbytesUpload>
+                                <app-cogbytesUpload [repID]="getRepID()" [isEditMode]="true" [uploadObj]="upload" (filesUploaded)="GetUploads($event)"></app-cogbytesUpload>
 
                             </mat-expansion-panel>
                         </mat-accordion>

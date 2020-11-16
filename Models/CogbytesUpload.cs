@@ -24,5 +24,6 @@ namespace AngularSPAWebAPI.Models
         public int?[] StrainID { get; set; }
         public int?[] GenoID { get; set; }
         public int?[] AgeID { get; set; }
+        public System.Collections.Generic.List<FileUploadResult> UploadFileList { get; set; }
     }
 }

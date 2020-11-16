@@ -458,6 +458,25 @@ namespace AngularSPAWebAPI.Services
                 {
                     int uploadID = Int32.Parse(dr["UploadID"].ToString());
                     int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
+
+                    List<FileUploadResult> FileList = new List<FileUploadResult>();
+
+                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+                    {
+                        foreach (DataRow fr in ft.Rows)
+                        {
+                            FileList.Add(new FileUploadResult
+                            {
+                                UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
+                                SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
+                                DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
+                                DateFileCreated = DateTime.Parse(fr["DateFileCreated"].ToString()),
+                                FileSize = Int32.Parse(fr["FileSize"].ToString()),
+                                PermanentFilePath = Convert.ToString(fr["PermanentFilePath"].ToString()),
+                            });
+                        }
+                    }
+
                     Uploadlist.Add(new CogbytesUpload
                     {
                         ID = uploadID,
@@ -479,8 +498,8 @@ namespace AngularSPAWebAPI.Services
                         SexID = FillCogbytesItemArray($"Select SexID From DatasetSex Where UploadID={uploadID}", "SexID"),
                         StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
                         GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
-                        AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID")
-
+                        AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID"),
+                        UploadFileList = FileList
                     });
                 }
             }
