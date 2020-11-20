@@ -1,10 +1,3 @@
-<!--<div>
-    <button mat-raised-button>Upload File</button>
-    <button mat-raised-button color="warn" style="float:right">Delete file</button>
-</div>
-
-<br />-->
-
 <div>
     <mat-accordion multi>
 
@@ -217,14 +210,17 @@
 
     <div>
         <button *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width"
-                [disabled]="setDisabledVal()" (click)="AddUpload()">Save Features</button>
+                [disabled]="setDisabledVal()" (click)="AddUpload()">
+            Save Features
+        </button>
         <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
-                [disabled]="setDisabledVal()" (click)="EditUpload()">Save Changes</button>
+                [disabled]="setDisabledVal()" (click)="EditUpload()">
+            Save Changes
+        </button>
         <br />
         <dropzone [config]="config" [disabled]="!isUploadAdded" [message]="'Click or drag your files here to upload'"
                   class="dropzone-container" (sending)="onSending($event)" (error)="onUploadError($event)"
-                  (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)" (successMultiple)="onUploadSuccess($event)"
-                  ></dropzone>
+                  (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)" (successMultiple)="onUploadSuccess($event)"></dropzone>
     </div>
 
     <br />
@@ -251,7 +247,7 @@
                         <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
                     </td>
                     <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                        <button mat-icon-button matTooltip="Delete File"><mat-icon>delete</mat-icon></button>
+                        <button mat-icon-button matTooltip="Delete File" (click)="deleteFile(file)"><mat-icon>delete</mat-icon></button>
                     </td>
                 </tr>
             </tbody>
@@ -259,6 +255,16 @@
         </table>
 
     </div>
+
+    <br />
+
+    <div *ngIf="isEditMode">
+        <!--<button mat-raised-button>Upload File</button>-->
+        <button mat-raised-button color="warn" class="full-width" (click)="DeleteUpload()">Delete Upload</button>
+    </div>
+
+    <br />
+
 </div>
 
 

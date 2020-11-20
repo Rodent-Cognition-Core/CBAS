@@ -227,6 +227,8 @@ export class CogbytesUploadComponent implements OnInit {
         this.imgDesModel = '';
         this.taskBatteryModel = '';
         this.interventionModel = null;
+
+        if (!this.isEditMode) this.isUploadAdded = false;
     }
 
     AddUpload() {
@@ -407,6 +409,59 @@ export class CogbytesUploadComponent implements OnInit {
                         console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
                     }
                 });
+    }
+
+    // Delete File 
+    deleteFile(file) {
+        this.openConfirmationDialogDelFile(file);
+    }
+
+    // Delete File Dialog
+    openConfirmationDialogDelFile(file) {
+        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete this file?"
+
+        this.dialogRefDelFile.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+                let path = file.permanentFilePath + '\\' + file.sysFileName;
+                this.cogbytesService.deleteFile(file.expID, path).map(res => {
+
+                }).subscribe();
+                this.spinnerService.hide();
+                this.filesUploaded.emit(null);
+            }
+            this.dialogRefDelFile = null;
+        });
+    }
+
+    DeleteUpload() {
+        this.openConfirmationDialogDelUpload();
+    }
+
+    // Delete Upload Dialog
+    openConfirmationDialogDelUpload() {
+        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete all of the above features and files?"
+
+        this.dialogRefDelFile.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+
+                this.cogbytesService.deleteUpload(this.uploadID).map(res => {
+
+                }).subscribe();
+                setTimeout(() => {
+                    this.spinnerService.hide();
+                }, 500);
+                this.filesUploaded.emit(null);
+            }
+            this.dialogRefDelFile = null;
+        });
     }
     //remove() {
     //    this.parentRef.removeUploadComponent(this.uploadKey);

@@ -215,17 +215,33 @@ import { AuthenticationService } from './authentication.service';
             { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
 
     };
-    //// Deleting a publication when Del button is clicked!
-    //public deletePublicationById(id: any): any {
 
-    //    return this.http
-    //        .delete("/api/pubScreen/DeletePublicationById?pubId=" + id, {
-    //            headers: this.authenticationService.getAuthorizationHeader()
-    //        });
+    // Deleting a file
+    public deleteFile(id: any, path: any): any {
 
-    //}
+        return this.http
+            .delete("/api/cogbytes/DeleteFile?fileId=" + id + "&path=" + path, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
 
+    // Deleting an upload
+    public deleteUpload(id: any): any {
 
+        return this.http
+            .delete("/api/cogbytes/DeleteUpload?uploadId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    // Deleting a repository
+    public deleteRepository(id: any): any {
+
+        return this.http
+            .delete("/api/cogbytes/DeleteRepository?repID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
     //// Searching publication based on search criteria
     //public searchPublication(searchPubscreenObj: Pubscreen) {
 

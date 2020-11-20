@@ -140,8 +140,24 @@ export class CogbytesComponent implements OnInit {
         });
     }
 
-    remove() {
+    // Delete File Dialog
+    deleteRepository(file) {
+        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete this repository and all associated uploads and files?"
 
+        this.dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+                this.cogbytesService.deleteRepository(this.getRepID()).map(res => {
+
+                }).subscribe();
+                this.spinnerService.hide();
+                this.repModel = null;
+            }
+            this.dialogRef = null;
+        });
     }
 
     getRepID() : number {

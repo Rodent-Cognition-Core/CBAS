@@ -233,14 +233,36 @@ namespace AngularSPAWebAPI.Controllers
                 {".bak", "application/bak"}
             };
         }
-        //// Deleting publication
-        //[HttpDelete("DeletePublicationById")]
-        //public IActionResult DeletePublicationById(int pubId)
-        //{
-        //    _pubScreenService.DeletePublicationById(pubId);
-        //    return new JsonResult("Done!");
-        //}
 
+        // Deleting file
+        [HttpDelete("DeleteFile")]
+        public IActionResult DeleteFile(int fileID, string path)
+        {
+            System.IO.File.Delete(path);
+            _cogbytesService.DeleteFile(fileID);
+            return new JsonResult("Done!");
+        }
+
+        // Deleting upload
+        [HttpDelete("DeleteUpload")]
+        public IActionResult DeleteUpload(int uploadID)
+        {
+            string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "COGBYTES_FILES", uploadID.ToString());
+            if (System.IO.Directory.Exists(pathString))
+            {
+                System.IO.Directory.Delete(pathString, true);
+            }
+            _cogbytesService.DeleteUpload(uploadID);
+            return new JsonResult("Done!");
+        }
+
+        // Deleting repository
+        [HttpDelete("DeleteRepository")]
+        public IActionResult DeleteRepository(int repID)
+        {
+            _cogbytesService.DeleteRepository(repID);
+            return new JsonResult("Done!");
+        }
 
         //// searching Publications based on search criteria
         //[HttpPost("SearchPublication")]

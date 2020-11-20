@@ -467,6 +467,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             FileList.Add(new FileUploadResult
                             {
+                                ExpID = Int32.Parse(fr["ID"].ToString()), // Hijaking ExpID for the primary key
                                 UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
                                 SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
                                 DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
@@ -666,421 +667,63 @@ namespace AngularSPAWebAPI.Services
             return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
         }
 
-        //// Function definition to search publications in database
-        //public List<PubScreenSearch> SearchPublications(PubScreen pubScreen)
-        //{
-        //    List<PubScreenSearch> lstPubScreen = new List<PubScreenSearch>();
-
-        //    string sql = "Select * From SearchPub Where ";
-
-        //    // Title
-        //    if (!string.IsNullOrEmpty(pubScreen.Title))
-        //    {
-        //        sql += $@"SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.Title)).Trim()}%' AND ";
-        //    }
-
-        //    //Keywords
-        //    if (!string.IsNullOrEmpty(pubScreen.Keywords))
-        //    {
-        //        sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
-        //    }
-
-        //    // DOI
-        //    if (!string.IsNullOrEmpty(pubScreen.DOI))
-        //    {
-        //        sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
-        //    }
-
-
-
-        //    // search query for Author
-        //    if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
-        //    {
-        //        if (pubScreen.AuthourID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.AuthourID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-
-        //    }
-
-        //    // search query for Year
-        //    if (pubScreen.YearFrom != null && pubScreen.YearTo!=null)
-        //    {
-        //        sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
-        //    }
-
-        //    if (pubScreen.YearFrom != null && pubScreen.YearTo == null)
-        //    {
-        //        sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
-        //    }
-
-        //    if(pubScreen.YearTo != null && pubScreen.YearFrom == null)
-        //    {
-        //        sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
-        //    }
-
-        //    // search query for PaperType
-        //    if (pubScreen.PaperTypeID != null)
-        //    {
-        //        sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
-        //    }
-
-        //    // search query for Task
-        //    if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
-        //    {
-
-        //        if (pubScreen.TaskID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.TaskID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-
-        //    }
-
-        //    // search query for Species
-        //    if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
-        //    {
-        //        if (pubScreen.SpecieID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}) +  '%' AND ";
-
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.SpecieID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for Sex
-        //    if (pubScreen.sexID != null && pubScreen.sexID.Length != 0)
-        //    {
-        //        if (pubScreen.sexID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.sexID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for Strain
-        //    if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
-        //    {
-        //        if (pubScreen.StrainID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.StrainID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for Disease
-        //    if (pubScreen.DiseaseID != null && pubScreen.DiseaseID.Length != 0)
-        //    {
-        //        if (pubScreen.DiseaseID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}) +  '%' AND ";
-
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' OR ";
-
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for BrainRegion
-        //    if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
-        //    {
-        //        if (pubScreen.RegionID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}) +  '%' AND ";
-
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.RegionID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for SubRegion
-        //    if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
-        //    {
-        //        if (pubScreen.SubRegionID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-
-        //    }
-
-        //    // search query for CellType
-        //    if (pubScreen.CellTypeID != null && pubScreen.CellTypeID.Length != 0)
-        //    {
-        //        if (pubScreen.CellTypeID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}) +  '%' AND ";
-
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-
-        //    // search query for Method
-        //    if (pubScreen.MethodID != null && pubScreen.MethodID.Length != 0)
-        //    {
-        //        if (pubScreen.MethodID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}) +  '%' AND ";
-        //        }
-
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.MethodID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-        //    }
-        //    // search query for Neuro Transmitter
-        //    if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
-        //    {
-        //        if (pubScreen.TransmitterID.Length == 1)
-        //        {
-        //            sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}) +  '%' AND ";
-        //        }
-        //        else
-        //        {
-        //            sql += "(";
-        //            for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
-        //            {
-        //                sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' OR ";
-        //            }
-        //            sql = sql.Substring(0, sql.Length - 3);
-        //            sql += ") AND ";
-        //        }
-
-        //    }
-
-        //    sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
-        //    string sqlMB = "";
-        //    List<Experiment> lstExperiment = new List<Experiment>();
-        //    using (DataTable dt = Dal.GetDataTablePub(sql))
-        //    {
-
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-        //                       Inner join Task on Task.ID = Experiment.TaskID
-        //                       Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-
-        //            // empty lstExperiment list
-        //            lstExperiment.Clear();
-        //            using (DataTable dtExp = Dal.GetDataTable(sqlMB))
-        //            {
-        //                foreach (DataRow drExp in dtExp.Rows)
-        //                {
-
-        //                    lstExperiment.Add(new Experiment
-        //                    {
-        //                        ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-        //                        ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-        //                        StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-        //                        TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-        //                        DOI = Convert.ToString(drExp["DOI"].ToString()),
-        //                        Status = Convert.ToBoolean(drExp["Status"]),
-        //                        TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
-
-        //                    });
-        //                }
-
-        //            }
-
-        //            lstPubScreen.Add(new PubScreenSearch
-        //            {
-        //                ID = Int32.Parse(dr["ID"].ToString()),
-        //                Title = Convert.ToString(dr["Title"].ToString()),
-        //                Keywords = Convert.ToString(dr["Keywords"].ToString()),
-        //                DOI = Convert.ToString(dr["DOI"].ToString()),
-        //                Year = Convert.ToString(dr["Year"].ToString()),
-        //                Author = Convert.ToString(dr["Author"].ToString()),
-        //                PaperType = Convert.ToString(dr["PaperType"].ToString()),
-        //                Task = Convert.ToString(dr["Task"].ToString()),
-        //                Species = Convert.ToString(dr["Species"].ToString()),
-        //                Sex = Convert.ToString(dr["Sex"].ToString()),
-        //                Strain = Convert.ToString(dr["Strain"].ToString()),
-        //                DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-        //                BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-        //                SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
-        //                CellType = Convert.ToString(dr["CellType"].ToString()),
-        //                Method = Convert.ToString(dr["Method"].ToString()),
-        //                NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-        //                Reference = Convert.ToString(dr["Reference"].ToString()),
-        //                Experiment = new List<Experiment>(lstExperiment),
-
-
-        //            });
-        //            //lstExperiment.Clear();
-        //        }
-
-        //    }
-
-        //    // search MouseBytes database to see if the dataset exists********************************************
-
-
-        //    return lstPubScreen;
-
-
-        //}
-
-        //// Function definition to get all year's values in database
-        //public List<PubScreenSearch> GetAllYears()
-        //{
-        //    List<PubScreenSearch> YearList = new List<PubScreenSearch>();
-        //    using (DataTable dt = Dal.GetDataTablePub($@"Select distinct Year from Publication"))
-        //    {
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            YearList.Add(new PubScreenSearch
-        //            {
-
-        //                Year = Convert.ToString(dr["Year"].ToString()),
-        //            });
-
-        //        }
-        //    }
-
-        //    return YearList;
-        //}
-
-        //public PubScreen GetPaperInfoByID(int id)
-        //{
-        //    var pubScreen = new PubScreen();
-
-        //    string sql = $"Select AuthorID From Publication_Author Where PublicationID ={id}";
-        //    pubScreen.AuthourID = FillPubScreenItemArray(sql, "AuthorID");
-
-        //    sql = $"Select CelltypeID From Publication_CellType Where PublicationID ={id}";
-        //    pubScreen.CellTypeID = FillPubScreenItemArray(sql, "CelltypeID");
-
-        //    sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
-        //    pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
-
-        //    sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
-        //    pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
-
-        //    sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
-        //    pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
-
-        //    sql = $"Select RegionID From Publication_Region Where PublicationID ={id}";
-        //    pubScreen.RegionID = FillPubScreenItemArray(sql, "RegionID");
-
-        //    sql = $"Select SexID From Publication_Sex Where PublicationID ={id}";
-        //    pubScreen.sexID = FillPubScreenItemArray(sql, "SexID");
-
-        //    sql = $"Select SpecieID From Publication_Specie Where PublicationID ={id}";
-        //    pubScreen.SpecieID = FillPubScreenItemArray(sql, "SpecieID");
-
-        //    sql = $"Select StrainID From Publication_Strain Where PublicationID ={id}";
-        //    pubScreen.StrainID = FillPubScreenItemArray(sql, "StrainID");
-
-        //    sql = $"Select SubRegionID From Publication_SubRegion Where PublicationID ={id}";
-        //    pubScreen.SubRegionID = FillPubScreenItemArray(sql, "SubRegionID");
-
-        //    sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
-        //    pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
-
-        //    //sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-        //    sql = $"Select top 1 pt.PaperType From Publication_PaperType ppt inner join PaperType pt on ppt.PaperTypeID = pt.ID where ppt.PublicationID = {id}";
-        //    var paperTypeVal = Dal.ExecScalarPub(sql);
-        //    pubScreen.PaperType = paperTypeVal == null ? "" : paperTypeVal.ToString();
-
-        //    sql = $"Select * From Publication Where ID ={id}";
-        //    using (DataTable dt = Dal.GetDataTablePub(sql))
-        //    {
-        //        pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
-        //        pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
-        //        pubScreen.Title = dt.Rows[0]["Title"].ToString();
-        //        pubScreen.Abstract = dt.Rows[0]["Abstract"].ToString();
-        //        pubScreen.Year = dt.Rows[0]["Year"].ToString();
-        //        pubScreen.Reference = dt.Rows[0]["Reference"].ToString();
-        //        pubScreen.Source = dt.Rows[0]["Source"].ToString();
-        //    }
-
-        //    return pubScreen;
-        //}
+        public void DeleteFile(int fileID)
+        {
+            string sql = $@"Delete from UploadFile where ID = {fileID}";
+            Dal.ExecuteNonQueryCog(sql);
+        }
+
+        public void DeleteUpload(int uploadID)
+        {
+            string sqlDelete = $"DELETE From DatasetTask where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From DatasetSpecies where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From DatasetSex where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From DatasetStrain where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From DatasetGeno where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From DatasetAge where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From UploadFile where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+
+            sqlDelete = $"DELETE From Upload where UploadID = {uploadID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+        }
+
+        public void DeleteRepository(int repID)
+        {
+            using (DataTable dt = Dal.GetDataTableCog($@"Select UploadID From Upload Where RepID = {repID}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int uploadID = Int32.Parse(dr["UploadID"].ToString());
+                    string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "COGBYTES_FILES", uploadID.ToString());
+                    if (System.IO.Directory.Exists(pathString))
+                    {
+                        System.IO.Directory.Delete(pathString, true);
+                    }
+                    DeleteUpload(uploadID);
+                }
+            }
+
+            string sqlDelete = $"DELETE From RepAuthor where RepID = {repID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From RepPI where RepID = {repID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From UserRepository where RepID = {repID}";
+            Dal.ExecuteNonQueryCog(sqlDelete);
+        }
+ 
 
         private int?[] FillCogbytesItemArray(string sql, string fieldName)
         {
