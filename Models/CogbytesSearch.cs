@@ -4,7 +4,7 @@ namespace AngularSPAWebAPI.Models
 {
     public class CogbytesSearch
     {
-        public string Title { get; set; }
+        public int?[] RepID { get; set; }
         public string Keywords { get; set; }
         public string DOI { get; set; }
         public int?[] AuthorID { get; set; }

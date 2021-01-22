@@ -49,11 +49,13 @@
                         <label style="color:#566573">Repository Information:</label><br />
 
                         <!--Paper Title-->
-                        <mat-form-field style="width:30%">
-
-                            <textarea matInput placeholder="Repository Title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
-    
-                                    </textarea>
+                        <!--Repository List-->
+                        <mat-form-field style="width: 35%; padding-left:0px">
+                            <mat-select matInput placeholder="Repository List" [(ngModel)]="titleModel" multiple>
+                                <mat-option *ngFor="let rep of repList" [value]="rep.id">
+                                    {{rep.title}}
+                                </mat-option>
+                            </mat-select>
 
                         </mat-form-field>
 
@@ -118,7 +120,7 @@
 
                         <!--Cognitive Task-->
                         <mat-form-field style="width:15%; ">
-                            <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" required multiple>
+                            <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" multiple>
                                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                                     <span matTooltip="{{task.task}}">{{task.task}}</span>
                                 </mat-option>

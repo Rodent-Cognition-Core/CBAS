@@ -1,6 +1,6 @@
 export class CogbytesSearch {
 
-    public title: string;
+    public repID: Array<number>;
     public keywords: string;
     public doi: string;
     public authourID: Array<number>;

@@ -49,7 +49,9 @@ export class CogbytesSearchComponent implements OnInit {
 
     panelOpenState = false;
 
-    // Definiing List Variables 
+    // Definiing List Variables
+    repList: any;
+
     paperTypeList: any;
     taskList: any;
     specieList: any;
@@ -89,6 +91,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     ngOnInit() {
 
+        this.GetRepositories();
         this.GetAuthorList();
         this.GetPIList();
         this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
@@ -186,6 +189,16 @@ export class CogbytesSearchComponent implements OnInit {
 
     setDisabledValSearch() {
 
+        if
+        (
+            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == null
+            && this.doiModel == null && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
+            && this.strainModel == null && this.genoModel == null && this.ageModel == null
+        )
+        {
+            return true;
+        }
+
         return false;
 
     }
@@ -204,12 +217,18 @@ export class CogbytesSearchComponent implements OnInit {
         return 'Year To should be greater than Year From'
     }
 
+
+    GetRepositories() {
+        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+        return this.repList;
+    }
+
     // Function definition for searching publications based on search criteria
     search() {
 
         this._cogbytesSearch.authourID = this.authorModel;
         this._cogbytesSearch.piID = this.piModel;
-        this._cogbytesSearch.title = this.titleModel;
+        this._cogbytesSearch.repID = this.titleModel;
         this._cogbytesSearch.keywords = this.keywordsModel;
         this._cogbytesSearch.doi = this.doiModel;
         //this._pubSCreenSearch.year = this.yearModel;

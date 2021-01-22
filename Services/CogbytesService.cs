@@ -754,9 +754,24 @@ namespace AngularSPAWebAPI.Services
                 "From SearchCog Where ";
 
             // Title
-            if (!string.IsNullOrEmpty(cogbytesSearch.Title))
+            if (cogbytesSearch.RepID != null && cogbytesSearch.RepID.Length != 0)
             {
-                sql += $@"Title like '%{(HelperService.EscapeSql(cogbytesSearch.Title)).Trim()}%' AND ";
+
+                //if (pubScreen.TaskID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.RepID.Length; i++)
+                {
+                    sql += $@"RepID = {cogbytesSearch.RepID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+
             }
 
             //Keywords
@@ -936,6 +951,12 @@ namespace AngularSPAWebAPI.Services
             else if (cogbytesSearch.Intervention == "No")
             {
                 sql += $@"IsIntervention = 0 AND ";
+            }
+
+            // if no search entries, do not execute query and return empty list
+            if (sql.Substring(sql.Length - 4) != "AND ")
+            {
+                return Uploadlist;
             }
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
