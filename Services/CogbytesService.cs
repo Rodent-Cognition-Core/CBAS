@@ -743,6 +743,268 @@ namespace AngularSPAWebAPI.Services
             return retVal;
         }
 
+
+        // Function definition to search repositories in database
+        public List<CogbytesUpload> SearchRepositories(CogbytesSearch cogbytesSearch)
+        {
+            List<CogbytesUpload> Uploadlist = new List<CogbytesUpload>();
+
+            string sql = "Select UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
+                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID " +
+                "From SearchCog Where ";
+
+            // Title
+            if (!string.IsNullOrEmpty(cogbytesSearch.Title))
+            {
+                sql += $@"Title like '%{(HelperService.EscapeSql(cogbytesSearch.Title)).Trim()}%' AND ";
+            }
+
+            //Keywords
+            if (!string.IsNullOrEmpty(cogbytesSearch.Keywords))
+            {
+                sql += $@"Keywords like '%{HelperService.EscapeSql(cogbytesSearch.Keywords)}%' AND ";
+            }
+
+            // DOI
+            if (!string.IsNullOrEmpty(cogbytesSearch.DOI))
+            {
+                sql += $@"DOI = '{HelperService.EscapeSql(cogbytesSearch.DOI)}' AND ";
+            }
+
+
+
+            // search query for Author
+            if (cogbytesSearch.AuthorID != null && cogbytesSearch.AuthorID.Length != 0)
+            {
+                //if (cogbytesSearch.AuthorID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.AuthorID.Length; i++)
+                {
+                    sql += $@"AuthorID = {cogbytesSearch.AuthorID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+
+            }
+
+            // search query for Year
+            if (cogbytesSearch.YearFrom != null && cogbytesSearch.YearTo != null)
+            {
+                sql += $@"(Date >= '{cogbytesSearch.YearFrom}-01-01' AND Date <= '{cogbytesSearch.YearTo}-12-31') AND ";
+            }
+
+            else if (cogbytesSearch.YearFrom != null && cogbytesSearch.YearTo == null)
+            {
+                sql += $@"(Date >= '{cogbytesSearch.YearFrom}-01-01') AND ";
+            }
+
+            else if (cogbytesSearch.YearTo != null && cogbytesSearch.YearFrom == null)
+            {
+                sql += $@"(Date <= '{cogbytesSearch.YearTo}-12-31') AND ";
+            }
+
+            // search query for Task
+            if (cogbytesSearch.TaskID != null && cogbytesSearch.TaskID.Length != 0)
+            {
+
+                //if (pubScreen.TaskID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.TaskID.Length; i++)
+                {
+                    sql += $@"TaskID = {cogbytesSearch.TaskID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+
+            }
+
+            // search query for Species
+            if (cogbytesSearch.SpecieID != null && cogbytesSearch.SpecieID.Length != 0)
+            {
+                //if (cogbytesSearch.SpecieID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}) +  '%' AND ";
+
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.SpecieID.Length; i++)
+                {
+                    sql += $@"SpeciesID = {cogbytesSearch.SpecieID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+            }
+
+            // search query for Sex
+            if (cogbytesSearch.SexID != null && cogbytesSearch.SexID.Length != 0)
+            {
+                //if (pubScreen.sexID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.SexID.Length; i++)
+                {
+                    sql += $@"SexID = {cogbytesSearch.SexID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+            }
+
+            // search query for Strain
+            if (cogbytesSearch.StrainID != null && cogbytesSearch.StrainID.Length != 0)
+            {
+                //if (cogbytesSearch.StrainID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.StrainID.Length; i++)
+                {
+                    sql += $@"StrainID = {cogbytesSearch.StrainID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+            }
+
+            // search query for Geno
+            if (cogbytesSearch.GenoID != null && cogbytesSearch.GenoID.Length != 0)
+            {
+                //if (cogbytesSearch.StrainID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.GenoID.Length; i++)
+                {
+                    sql += $@"GenoID = {cogbytesSearch.GenoID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+            }
+
+            // search query for Age
+            if (cogbytesSearch.AgeID != null && cogbytesSearch.AgeID.Length != 0)
+            {
+                //if (cogbytesSearch.StrainID.Length == 1)
+                //{
+                //    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
+                //}
+                //else
+                //{
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.AgeID.Length; i++)
+                {
+                    sql += $@"AgeID = {cogbytesSearch.AgeID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+            }
+
+            // filter for intervention
+
+            if (cogbytesSearch.Intervention == "Only")
+            {
+                sql += $@"IsIntervention = 1 AND ";
+            }
+
+            else if (cogbytesSearch.Intervention == "No")
+            {
+                sql += $@"IsIntervention = 0 AND ";
+            }
+
+            sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
+            sql += "GROUP BY UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
+                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID";
+            string sqlMB = "";
+
+            using (DataTable dt = Dal.GetDataTableCog(sql))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int uploadID = Int32.Parse(dr["UploadID"].ToString());
+                    int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
+
+                    List<FileUploadResult> FileList = new List<FileUploadResult>();
+
+                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+                    {
+                        foreach (DataRow fr in ft.Rows)
+                        {
+                            FileList.Add(new FileUploadResult
+                            {
+                                ExpID = Int32.Parse(fr["ID"].ToString()), // Hijaking ExpID for the primary key
+                                UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
+                                SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
+                                DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
+                                DateFileCreated = DateTime.Parse(fr["DateFileCreated"].ToString()),
+                                FileSize = Int32.Parse(fr["FileSize"].ToString()),
+                                PermanentFilePath = Convert.ToString(fr["PermanentFilePath"].ToString()),
+                            });
+                        }
+                    }
+
+                    Uploadlist.Add(new CogbytesUpload
+                    {
+                        ID = uploadID,
+                        RepID = Int32.Parse(dr["RepID"].ToString()),
+                        FileTypeID = fileTypeID,
+                        Name = Convert.ToString(dr["Name"].ToString()),
+                        DateUpload = Convert.ToString(dr["DateUpload"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        IsIntervention = Boolean.Parse(dr["IsIntervention"].ToString()),
+                        InterventionDescription = Convert.ToString(dr["InterventionDescription"].ToString()),
+                        ImageIds = Convert.ToString(dr["ImageIds"].ToString()),
+                        ImageDescription = Convert.ToString(dr["ImageDescription"].ToString()),
+                        Housing = Convert.ToString(dr["Housing"].ToString()),
+                        LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
+                        TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
+                        TaskID = FillCogbytesItemArray($"Select TaskID From DatasetTask Where UploadID={uploadID}", "TaskID"),
+                        SpecieID = FillCogbytesItemArray($"Select SpeciesID From DatasetSpecies Where UploadID={uploadID}", "SpeciesID"),
+                        SexID = FillCogbytesItemArray($"Select SexID From DatasetSex Where UploadID={uploadID}", "SexID"),
+                        StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
+                        GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
+                        AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID"),
+                        UploadFileList = FileList
+                    });
+                }
+
+            }
+
+            // search MouseBytes database to see if the dataset exists********************************************
+
+
+            return Uploadlist;
+
+
+        }
+
         //public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication,
         //                        string tblPublicationField, int PublicationID, string Username)
         //{

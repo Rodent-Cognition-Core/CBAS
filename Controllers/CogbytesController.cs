@@ -264,13 +264,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult("Done!");
         }
 
-        //// searching Publications based on search criteria
-        //[HttpPost("SearchPublication")]
-        //[AllowAnonymous]
-        //public IActionResult SearchPublication([FromBody] PubScreen publication)
-        //{
-        //    return new JsonResult(_pubScreenService.SearchPublications(publication));
-        //}
+        // searching repositories based on search criteria
+        [HttpPost("SearchRepositories")]
+        [AllowAnonymous]
+        public IActionResult SearchRepositories([FromBody] CogbytesSearch cogSearch)
+        {
+            return new JsonResult(_cogbytesService.SearchRepositories(cogSearch));
+        }
 
         //// Getting list of all years from Database
         //[HttpGet("GetAllYear")]
