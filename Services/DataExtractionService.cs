@@ -1431,6 +1431,7 @@ namespace AngularSPAWebAPI.Services
                 case 70:
                 case 76:
                 case 82:
+                case 89:
                     {
                         str = "(SessionName='Habituation_1')";
                         break;
@@ -1446,6 +1447,7 @@ namespace AngularSPAWebAPI.Services
                 case 71:
                 case 77:
                 case 83:
+                case 90:
                     {
                         str = "(SessionName='Habituation_2')";
                         break;
@@ -1584,6 +1586,11 @@ namespace AngularSPAWebAPI.Services
                 case 88:
                     {
                         str = "( (Analysis_Name like '%VMCL Analysis%') OR (SessionName = 'VMCL Train') OR (SessionName ='VMCL Test') )";
+                        break;
+                    }
+                case 91:
+                    {
+                        str = "( (Analysis_Name like '%Autoshaping Analysis%') OR (SessionName = 'Autoshape_Acquisition') OR (SessionName = 'Autoshape_Reversal') )";
                         break;
                     }
                     

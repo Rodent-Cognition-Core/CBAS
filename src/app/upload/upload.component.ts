@@ -151,9 +151,15 @@ export class UploadComponent implements OnInit {
                 break;
 
             }
+            case 13: { // Autoshaping
+
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                break;
+
+            } 
 
             default: {
-                //statements; 
+                //statements; {}
                 break;
             }
         } 
