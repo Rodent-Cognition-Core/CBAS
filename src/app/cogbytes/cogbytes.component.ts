@@ -11,7 +11,6 @@ import { PagerService } from '../services/pager.service';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { IdentityService } from '../services/identity.service';
-//import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { CogbytesUpload } from '../models/cogbytesUpload'

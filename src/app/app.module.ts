@@ -35,6 +35,7 @@ import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.c
 import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
 import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
 import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
+import { CogbytesSearchComponent } from './cogbytesSearch/cogbytesSearch.component'
 
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
@@ -180,6 +181,7 @@ const ROUTES: Routes = [
         CogbytesUploadComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
+        CogbytesSearchComponent,
     ],
     bootstrap: [AppComponent]
 })

@@ -6,6 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { Cogbytes } from '../models/cogbytes';
 import { CogbytesUpload } from '../models/cogbytesUpload'
+import { CogbytesSearch } from '../models/cogbytesSearch'
 
 
 import { AuthenticationService } from './authentication.service';
@@ -242,17 +243,17 @@ import { AuthenticationService } from './authentication.service';
                 headers: this.authenticationService.getAuthorizationHeader()
             });
     }
-    //// Searching publication based on search criteria
-    //public searchPublication(searchPubscreenObj: Pubscreen) {
 
-    //    const body: string = JSON.stringify(searchPubscreenObj);
+    public searchRepositories(searchCogbytesObj: CogbytesSearch) {
 
-    //    return this.http
-    //        .post("/api/pubScreen/SearchPublication", body, {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
+        const body: string = JSON.stringify(searchCogbytesObj);
 
-    //}
+        return this.http
+            .post("/api/cogbytes/SearchRepositories", body, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
 
     //// Get list of all years in database
     //public getAllYears(): any {
