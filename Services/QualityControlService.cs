@@ -152,8 +152,14 @@ namespace AngularSPAWebAPI.Services
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
                     break;
+                case "Autoshaping":
+                    if (!Analysis_Name.Trim().ToLower().Contains("autoshap"))
+                    {
+                        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
+                    }
+                    break;
 
-                                       
+
             }
 
             // If Xml File does have Age then this age value should be checked with the age of Subexperiment for matching purpose
@@ -597,6 +603,30 @@ namespace AngularSPAWebAPI.Services
 
                         }
                             break;
+
+                    case "Autoshaping":
+                        if (Analysis_Name.Trim().ToLower().Contains("autoshap"))
+                        {
+                            if (!(SessionName.Trim().ToLower().Contains("autoshape_acquisition") || SessionName.Trim().ToLower().Contains("autoshape_reversal")))
+                            {
+                                ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
+                            }
+
+                            // End_Summary_Trials_Completed does not exist in Autoshape anaylysis file, so we skip this rule now
+                            //(bool flag, string ErrMsg) info = Check_PD(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_Trials_Completed);
+
+                            //if (info.flag)
+                            //{ }
+
+                            //else
+                            //{
+                            //    // type a message 
+                            //    ErrorMessage1 += info.ErrMsg;
+                            //}
+
+
+                        }
+                        break;
 
                 }  // end of switch-case for TaskName
             } // End of else
