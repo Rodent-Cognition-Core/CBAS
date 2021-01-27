@@ -14,7 +14,7 @@ import { ViewChild } from '@angular/core'
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
-    } from 'ngx-dropzone-wrapper';
+} from 'ngx-dropzone-wrapper';
 import { SubExperiment } from '../models/subexperiment';
 import { Services } from '@angular/core/src/view';
 
@@ -22,7 +22,7 @@ import { Services } from '@angular/core/src/view';
     selector: 'app-upload',
     templateUrl: './upload.component.html',
     styleUrls: ['./upload.component.scss'],
-    
+
 })
 export class UploadComponent implements OnInit {
 
@@ -43,7 +43,7 @@ export class UploadComponent implements OnInit {
 
     uploadErrorServer: string = "";
     uploadErrorFileType: string = "";
-       
+
     uploadConfirmShowed: boolean = false;
 
     // DropZone
@@ -52,7 +52,7 @@ export class UploadComponent implements OnInit {
 
     //fileToUpload: File = null;
     public type: string = 'component';
-    proceedUpload: boolean = true; 
+    proceedUpload: boolean = true;
     //public disabled: boolean = false;
 
     dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
@@ -74,15 +74,15 @@ export class UploadComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: Ng4LoadingSpinnerService,
         private uploadService: UploadService,
-       
-        ) {
-                
+
+    ) {
+
     }
-    
+
     ngOnInit() {
 
         this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; console.log(this.SessionList); });
-        
+
     }
 
     SelectedExpChanged(experiment) {
@@ -96,7 +96,7 @@ export class UploadComponent implements OnInit {
         this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; console.log(this.SessionList); });
         this.subExpID = null;
         this.sessionNameVal = null;
-                
+
     }
 
     SelectedSubExpChanged(subExperiment) {
@@ -117,7 +117,7 @@ export class UploadComponent implements OnInit {
                 this.SessionList = this.SessionList.filter((x => x.taskID === 1 || x.taskID === 2));
                 console.log(this.SessionList);
                 break;
-                
+
             }
             case 3: { // PD
                 this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 3);
@@ -132,7 +132,7 @@ export class UploadComponent implements OnInit {
                 break;
             }
             case 9: { //PR
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 9) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect' );
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 9) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
@@ -142,12 +142,18 @@ export class UploadComponent implements OnInit {
 
             }
             case 11: { //CPT
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect' );
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
             case 12: { //VMCL
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 12) );
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 12));
+                break;
+
+            }
+            case 13: { // Autoshaping
+
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
@@ -156,10 +162,10 @@ export class UploadComponent implements OnInit {
                 //statements; 
                 break;
             }
-        } 
+        }
 
-        
-    }  
+
+    }
     // *********************DropZone functions******************************
 
     onAddedFile(data): void {
@@ -176,8 +182,8 @@ export class UploadComponent implements OnInit {
 
             // Based on Subexp features, generate the confirmation message
             if (this.isIntervention && this.isDrug) {
-                
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName  + "</b>?";
+
+                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName + "</b>?";
             }
 
             if (this.isIntervention && !this.isDrug) {
@@ -188,7 +194,7 @@ export class UploadComponent implements OnInit {
                 this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b>?";
             }
 
-            
+
 
             this.dialogRefDelFile.afterClosed().subscribe(result => {
                 if (result) {
@@ -263,12 +269,12 @@ export class UploadComponent implements OnInit {
     }
 
     public onUploadSuccess(args: any) {
-    
+
         this.resetDropzoneUploads();
 
         if (this.proceedUpload == true) {
 
-            
+
             let dialogref = this.dialog.open(UploadResultDialogComponent, {
                 height: '900px',
                 width: '850px',
@@ -290,10 +296,10 @@ export class UploadComponent implements OnInit {
         this.proceedUpload = true;
         this.spinnerService.show();
 
-       
+
         var obj = this.SessionList.filter(x => x.sessionName === this.sessionNameVal);
         var sessionID = obj[0].id
-       
+
 
         const formData = data[2];
         formData.append('expId', this.experimentID);

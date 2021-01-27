@@ -277,6 +277,11 @@ export class DataExtractionComponent implements OnInit {
                         break;
 
                     }
+                case 91:
+                    { // Autoshaping 
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 13));
+                        break;
+                    }
 
                 default:
                     {
