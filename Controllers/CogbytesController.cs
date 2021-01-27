@@ -272,6 +272,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.SearchRepositories(cogSearch));
         }
 
+        //// Extracting Repository list from Database (Cogbytes)
+        [HttpGet("GetAllRepositories")]
+        [AllowAnonymous]
+        public IActionResult GetAllRepositories()
+        {
+            return new JsonResult(_cogbytesService.GetAllRepositories());
+        }
+
         //// Getting list of all years from Database
         //[HttpGet("GetAllYear")]
         //[AllowAnonymous]

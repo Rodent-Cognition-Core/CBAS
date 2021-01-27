@@ -72,6 +72,8 @@ export class CogbytesSearchComponent implements OnInit {
     isUser: boolean;
 
     _cogbytesSearch = new CogbytesSearch;
+    isSearch: boolean;
+    filteredSearchList: any;
 
     //yearFrom = new FormControl('', []);
     yearTo = new FormControl('', []);
@@ -106,6 +108,8 @@ export class CogbytesSearchComponent implements OnInit {
         this.yearList = this.GetYear(1970).sort().reverse();
 
         this.interventionModel = "All";
+
+        this.isSearch = false;
 
     }
 
@@ -219,14 +223,14 @@ export class CogbytesSearchComponent implements OnInit {
 
 
     GetRepositories() {
-        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; });
         return this.repList;
     }
 
     // Function definition for searching publications based on search criteria
     search() {
 
-        this._cogbytesSearch.authourID = this.authorModel;
+        this._cogbytesSearch.authorID = this.authorModel;
         this._cogbytesSearch.piID = this.piModel;
         this._cogbytesSearch.repID = this.titleModel;
         this._cogbytesSearch.keywords = this.keywordsModel;
@@ -251,10 +255,34 @@ export class CogbytesSearchComponent implements OnInit {
 
             this.searchResultList = data;
             console.log(this.searchResultList);
+            this.isSearch = true;
         });
-
     }
 
+    // Function to filter search list based on repository
+    getFilteredSearchList(repID: number) {
+        return this.searchResultList.filter(x => x.repID == repID);
+    }
+
+    // Function for getting string of repository authors
+    getRepAuthorString(rep: any) {
+        let authorString: string = "";
+        for (let id of rep.authourID) {
+            let firstName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].firstName;
+            let lastName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].lastName;
+            authorString += firstName + "-" + lastName + ", ";
+        }
+        return authorString.slice(0, -2);
+    }
+
+    // Function for getting string of repository PIs
+    getRepPIString(rep: any) {
+        let PIString: string = "";
+        for (let id of rep.piid) {
+            PIString += this.piList[this.piList.map(function (x) { return x.id }).indexOf(id)].piFullName + ", ";
+        }
+        return PIString.slice(0, -2);
+    }
 }
 
 

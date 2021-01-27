@@ -723,7 +723,7 @@ namespace AngularSPAWebAPI.Services
             sqlDelete = $"DELETE From UserRepository where RepID = {repID}";
             Dal.ExecuteNonQueryCog(sqlDelete);
         }
- 
+
 
         private int?[] FillCogbytesItemArray(string sql, string fieldName)
         {
@@ -961,7 +961,8 @@ namespace AngularSPAWebAPI.Services
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
             sql += "GROUP BY UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
-                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID";
+                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID " +
+                "ORDER BY RepID";
             string sqlMB = "";
 
             using (DataTable dt = Dal.GetDataTableCog(sql))
@@ -1026,6 +1027,35 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        //// Function Definition to extract all repositories 
+        public List<Cogbytes> GetAllRepositories()
+        {
+            List<Cogbytes> RepList = new List<Cogbytes>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int repID = Int32.Parse(dr["RepID"].ToString());
+                    RepList.Add(new Cogbytes
+                    {
+                        ID = repID,
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        Date = Convert.ToString(dr["Date"].ToString()),
+                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        Link = Convert.ToString(dr["Link"].ToString()),
+                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID")
+                    });
+                }
+            }
+
+            return RepList;
+        }
+
         //public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication,
         //                        string tblPublicationField, int PublicationID, string Username)
         //{
@@ -1054,4 +1084,5 @@ namespace AngularSPAWebAPI.Services
 
 
     }
+
 }

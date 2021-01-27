@@ -255,6 +255,15 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    //// Extracting List of repositories from database
+    public getAllRepositories(): any {
+
+        return this.http
+            .get("/api/cogbytes/GetAllRepositories", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
     //// Get list of all years in database
     //public getAllYears(): any {
 
