@@ -138,7 +138,7 @@ export class CogbytesUploadComponent implements OnInit {
             this.ageModel = this.uploadObj.ageID;
             this.housingModel = this.uploadObj.housing;
             this.lightModel = this.uploadObj.lightCycle;
-            this.interventionModel = this.uploadObj.isIntervention;
+            this.interventionModel = this.uploadObj.isIntervention ? "true" : "false";
             this.intDesModel = this.uploadObj.interventionDescription;
             this.imgDesModel = this.uploadObj.imageDescription;
             this.taskBatteryModel = this.uploadObj.taskBattery;

@@ -115,8 +115,8 @@ export class CogbytesComponent implements OnInit {
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
-            //this.DialogResult = result;
-            //this.GetAuthorList();
+             this.repModel = null;
+           
         });
     }
 
@@ -133,9 +133,7 @@ export class CogbytesComponent implements OnInit {
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
-            this.repModel = null;
-            //this.DialogResult = result;
-            //this.GetAuthorList();
+            
         });
     }
 
@@ -163,20 +161,6 @@ export class CogbytesComponent implements OnInit {
         return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)].id;
     }
 
-    //// Edit publication
-    //openDialogEditPublication(Publication): void {
-    //    let dialogref = this.dialog.open(CogbytesDialogueComponent, {
-    //        height: '850px',
-    //        width: '1200px',
-    //        data: { publicationObj: Publication }
-
-    //    });
-
-    //    dialogref.afterClosed().subscribe(result => {
-    //        console.log('the dialog was closed');
-    //        this.search();
-    //    });
-    //}
   
 
 }

@@ -73,11 +73,10 @@
                                              (opened)="panelOpenState=true" (closed)="panelOpenState=false" hideToggle>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    New upload:
-                                </mat-panel-title>
-                                <mat-panel-description>
+                                    New upload: &nbsp;&nbsp;
                                     <mat-icon *ngIf="!panelOpenState">add</mat-icon>
-                                </mat-panel-description>
+                                </mat-panel-title>
+                                
 
                             </mat-expansion-panel-header>
 
@@ -90,7 +89,7 @@
                         <mat-accordion>
                             <mat-expansion-panel *ngFor="let upload of uploadList">
                                 <mat-expansion-panel-header>
-                                    <mat-panel-title>
+                                    <mat-panel-title style="font-weight:bold; color:#918796;">
                                         {{upload.name}}
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>

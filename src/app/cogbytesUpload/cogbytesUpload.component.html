@@ -8,18 +8,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <!--File Name-->
-            <!--<mat-form-field style="width: 30%">
-                <input matInput placeholder="Name" [formControl]="name" [(ngModel)]="nameModel" required>
-                <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
-            </mat-form-field>-->
-            <!--Date-->
-            <!--<mat-form-field style="width: 30%; padding-left:25px">
-                <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
-            </mat-form-field>-->
+
             <!--File Type-->
             <mat-form-field style="width: 30%; padding-left:0px">
                 <mat-select matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" [disabled]="isEditMode" required>
@@ -150,9 +139,6 @@
                 <!--<mat-form-field class="full-width">-->
                 <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>
-                <!--<textarea matInput placeholder="Intervention Description" matTextareaAutosize matAutosizeMinRows="2"
-                matAutosizeMaxRows="5"></textarea>-->
-                <!--<mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>-->
             </mat-form-field>
 
             <br />
@@ -174,19 +160,15 @@
 
             </div>
 
-            <!--providing description if for example more than 2 iamges selected for PD and more than 3 iamges selected for PAL-->
-            <!--<div [hidden]="!((taskID==3 && selectedImageResult!=2) || (taskID==4 && selectedImageResult != 3) || (taskID==11 && selectedImageResult > 6) || (taskID==12 && selectedImageResult > 4))">-->
+            
             <div>
                 <mat-form-field class="full-width">
 
-                    <!--<textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
-                    [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
-                    matAutosizeMaxRows="5">-->
                     <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
                               matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
            
                     </textarea>
-                    <!--<mat-error *ngIf="imageDescription.invalid">{{getErrorMessageImageDescription()}}</mat-error>-->
+                    
                 </mat-form-field>
 
             </div>
