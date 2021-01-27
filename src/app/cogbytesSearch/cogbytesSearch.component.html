@@ -1,4 +1,3 @@
-
 <div style="padding-top:30px">
     <table class="docs-markdown-table">
         <thead>
@@ -195,6 +194,36 @@
 <!--<div>{{isAdmin}}</div>-->
 <!--Adding table to show result of search-->
 <br /><br />
+
+<div *ngIf="isSearch">
+    <table class="docs-markdown-table">
+        <thead>
+            <tr>
+                <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">Search Results</th>
+            </tr>
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+            <ng-container *ngFor="let rep of repList">
+                <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="getFilteredSearchList(rep.id).length > 0">
+                    <td>
+                        <label style="color:#8D8E90"><b>Repository Information:</b></label><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span><br /><br />
+                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span><br /><br />
+                        <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(rep)}}</span><br /><br />
+                        <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( rep.doi =="") ?  "N/A" : rep.doi}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Date:</label> &nbsp; <span style="color:#909497;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
+                        <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
+                        <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
+
 <!--<div *ngIf="searchResultList?.length > 0">-->
     <!--<app-shared-experiment></app-shared-experiment>-->
     <!--<table class="docs-markdown-table">

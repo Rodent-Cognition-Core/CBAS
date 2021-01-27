@@ -3,7 +3,7 @@ export class CogbytesSearch {
     public repID: Array<number>;
     public keywords: string;
     public doi: string;
-    public authourID: Array<number>;
+    public authorID: Array<number>;
     public piID: Array<number>;
 
     public taskID: Array<number>;
