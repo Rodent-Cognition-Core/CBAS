@@ -47,6 +47,9 @@ namespace AngularSPAWebAPI.Services
                         await file.CopyToAsync(fileStream);
                     }
 
+                    // Determining if multiple sessions for an animal in a single day are allowed
+                    bool MultipleSessions = GetMultipleSessions(expID);
+
                     // Extracting SubExpName , Age for the selected Subexperiment
                     string SubExpNameAge1 = GetSubExpNameAge(subExpId);
                     // Extracting Age of Animal for the selected Subexperiemnt
@@ -56,7 +59,7 @@ namespace AngularSPAWebAPI.Services
                     bool IsUploaded1 = false;
 
                     (bool QC_IsQcPassed, bool QC_IsIdentifierPassed, string QC_FileUniqueID, string QC_ErrorMessage, string QC_WarningMessage, bool InsertToTblUpload, int SysAnimalID, int QC_UploadID, string QC_AnimalID) info =
-                        _qualityControlService.QualityControl(TaskName, tempFileName, uploads, ExpName, expID, subExpId, AnimalAge, SessionName);
+                        _qualityControlService.QualityControl(TaskName, tempFileName, uploads, ExpName, expID, subExpId, AnimalAge, SessionName, MultipleSessions);
 
                     if (info.QC_IsQcPassed == true && info.QC_IsIdentifierPassed == true && info.InsertToTblUpload == true)
                     {
@@ -110,6 +113,13 @@ namespace AngularSPAWebAPI.Services
                             // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
                             uploadID = InsertUpload(fur);
 
+                        }
+
+                        // If there is a duplicate, but multiple sessions for an animal in a day are allowed
+                        else if (MultipleSessions)
+                        {
+                            uploadID = InsertUpload(fur);
+                            UpdateDuplicateSessions(info.QC_FileUniqueID);
                         }
 
                         else
@@ -174,6 +184,12 @@ namespace AngularSPAWebAPI.Services
             return Dal.ExecScalar(sql).ToString();
         }
 
+        // function to determine if multiple sessions of an animal in a single day are allowed
+        public bool GetMultipleSessions(int ExpID)
+        {
+            string sql = "Select MultipleSessions From Experiment where Experiment.ExpID =" + ExpID;
+            return Convert.ToBoolean(Dal.ExecScalar(sql).ToString());
+        }
 
         // Function to Insert To Upload Table in Database
         public int InsertUpload(FileUploadResult upload)
@@ -202,6 +218,14 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sql);
         }
 
+        // Function to flag duplicate fileUniqueIDs in the Upload Table
+        public void UpdateDuplicateSessions(string FileUniqueID)
+        {
+            string sql = $"UPDATE Upload " +
+                $"SET IsDuplicateSession = 1 WHERE FileUniqueID = '{FileUniqueID}'";
+
+            Dal.ExecuteNonQuery(sql);
+        }
 
         public bool SetUploadAsResolved(int uploadID, string userId)
         {
@@ -974,7 +998,7 @@ namespace AngularSPAWebAPI.Services
 
             List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, Upload.IsUploaded
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, Upload.IsUploaded, Upload.IsDuplicateSession
                                                        From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
                                                        WHERE Upload.SubExpID = {subExpId} Order By DateUpload;"))
 
@@ -993,7 +1017,7 @@ namespace AngularSPAWebAPI.Services
                         WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
                         IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
                         SessionName = Convert.ToString(dr["SessionName"].ToString()),
-
+                        IsDuplicateSession = bool.Parse(dr["IsDuplicateSession"].ToString()),
                     });
                 }
 

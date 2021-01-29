@@ -19,7 +19,7 @@ namespace AngularSPAWebAPI.Services
         // This service checks the file against the quality control rules (Pre-processing)
         // First thing to check is to make sure each file is uploaded to the right Experiment considering the TaskName of the Experiment
         public (bool IsQcPassed, bool IsIdentifierPassed, string FileUniqueID, string ErrorMessage, string WarningMessage, bool InsertToTblUpload, int SysAnimalID, int UploadId, string AnimalID)
-            QualityControl(string TaskName, string FileName, string Filepath, string ExpName, int expID, int subExpID, string AnimalAge, string SessionName)
+            QualityControl(string TaskName, string FileName, string Filepath, string ExpName, int expID, int subExpID, string AnimalAge, string SessionName, bool MultipleSessions)
         {
 
             //variable initialization
@@ -191,7 +191,7 @@ namespace AngularSPAWebAPI.Services
             if (string.IsNullOrEmpty(ErrorMessage1))
             {
 
-                if (duplicateFileUniqueID != null)
+                if (duplicateFileUniqueID != null && !MultipleSessions)
                 {
                     if (duplicateFileUniqueID.IsQcPassed == true)
                     {

@@ -19,13 +19,14 @@
     <table class="docs-markdown-table">
         <thead>
 
-            <tr><th colspan="8" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{selectedSubExperiment.subExpName}}, {{selectedSubExperiment.ageInMonth}}</th></tr>
+            <tr><th colspan="9" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{selectedSubExperiment.subExpName}}, {{selectedSubExperiment.ageInMonth}}</th></tr>
             <tr style=" text-align: center; color:#566573;">
                 <td class="docs-markdown-td">File Name</td>
                 <td class="docs-markdown-td">Session/Schedule Name</td>
                 <td class="docs-markdown-td">Upload Date</td>
                 <td class="docs-markdown-td">Animal ID</td>
                 <td class="docs-markdown-td">Status</td>
+                <td class="docs-markdown-td">Same-Day Session?</td>
                 <td class="docs-markdown-td">Download File</td>
                 <td class="docs-markdown-td">Delete File</td>
 
@@ -49,6 +50,13 @@
 
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isUploaded==false">
                     <mat-icon color="warn">clear</mat-icon>
+                </td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==true">
+                    <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
+                </td>
+
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
                 </td>
 
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>

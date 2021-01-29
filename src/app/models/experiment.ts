@@ -22,4 +22,6 @@ export class Experiment {
     public SpeciesID: number;
     public species: string;
 
+    public multipleSessions: boolean;
+
 }
