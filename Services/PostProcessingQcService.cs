@@ -97,6 +97,11 @@ namespace AngularSPAWebAPI.Services
                     error = ScheduleCount_VMCL(subExp.SubExpID);
                     break;
 
+                case 13:
+                    // post Processing QC for Autoshape Task
+                    error = ScheduleCount_Autoshaoe(subExp.SubExpID);
+                    break;
+
 
             }
             // Post Processing QC for 5 choice experiment
@@ -282,7 +287,16 @@ namespace AngularSPAWebAPI.Services
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'VMCL Train'", "<b>VMCL Train</b>", 5, "<", "at least");
             return error1;
         }
-        
+
+        // Function Definition: Post Processing QC for Autoshape experiment
+        public string ScheduleCount_Autoshape(int expID)
+        {
+            string error1 = "";
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Autoshape_Acquisition'", "<b>Autoshape Acquisition</b>", 5, "<", "at least");
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Autoshape_Reversal'", "<b>Autoshape Reversal</b>", 5, "<", "at least");
+            return error1;
+        }
+
 
         public string GetScheduleCount_Error(int expID, string sessionNameFilter, string SessionName, int minCount, string operand, string str)
         {

@@ -168,7 +168,7 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        
+
         // Function Defintion: To get List of features for SessionInfo (on hold)
         public List<SessionInfo> GetSessionInfoDatabyExpID(int ExpId)
         {
@@ -240,7 +240,7 @@ namespace AngularSPAWebAPI.Services
             List<string> markerInfoFeatureslst = new List<string>();
 
             string str = GetQuery_markerInfoList(subTaskId);
-            if(!string.IsNullOrEmpty(str))
+            if (!string.IsNullOrEmpty(str))
             {
                 string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
                 string sql = $@"Select DISTINCT(FeatureName) From rbt_cached
@@ -259,7 +259,7 @@ namespace AngularSPAWebAPI.Services
                     }
                 }
             }
-            
+
             return markerInfoFeatureslst;
         }
 
@@ -327,7 +327,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Geno> animalGenotypelst = new List<Geno>();
             string GenoIDcsv = String.Join(",", GenoID.Select(x => x.ToString()).ToArray());
-             if(!String.IsNullOrEmpty(GenoIDcsv))
+            if (!String.IsNullOrEmpty(GenoIDcsv))
             {
                 string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description From Genotype
                             
@@ -352,7 +352,7 @@ namespace AngularSPAWebAPI.Services
 
                 }
             }
-    
+
             return animalGenotypelst;
         }
 
@@ -557,11 +557,11 @@ namespace AngularSPAWebAPI.Services
                 //dtFinalResult.Columns["SessionID"].SetOrdinal(8);
                 dtFinalResult.Columns["Image"].SetOrdinal(10);
                 dtFinalResult.Columns["Image_Description"].SetOrdinal(11);
-                
+
 
                 if (data_extraction.SubTaskID == 21 || data_extraction.SubTaskID == 22 || data_extraction.SubTaskID == 23 || data_extraction.SubTaskID == 24)
                 {
-                     dtFinalResult.Columns["Stimulus_Duration"].ColumnName = "Stimulus_Duration";
+                    dtFinalResult.Columns["Stimulus_Duration"].ColumnName = "Stimulus_Duration";
                 }
 
                 //DataColumnCollection columns = dtFinalResult.Columns;
@@ -1004,7 +1004,7 @@ namespace AngularSPAWebAPI.Services
             {
                 //SessionNamesCsv = String.Join(",", data_extraction.SessionName.Select(x => x.ToString()).ToArray());
                 SessionNamesCsv = String.Join(",", data_extraction.SessionName.Select(x => "'" + x.ToString() + "' ").ToArray());
-                
+
             }
 
             if (data_extraction.SubExpID != null && data_extraction.SubExpID.Length != 0)
@@ -1091,13 +1091,13 @@ namespace AngularSPAWebAPI.Services
             string StimulusDurationCondition2 = "";
 
             string str = ""; // GetQuery_markerInfoList(subTaskId);
-            
+
             //  Check to see Animal Info and PiSite info is Null or Not for including them to subQuery1
             if (animalAgeCsv != "")
             {
                 AgeCondition = $"and Age.ID in ({animalAgeCsv}) ";
             }
-           
+
             if (animalSexCsv != "")
             {
                 SexCondition = $"and Animal.Sex in ({animalSexCsv}) ";
@@ -1138,10 +1138,10 @@ namespace AngularSPAWebAPI.Services
             }
 
             // Including Stimulus duration in Data extraction Query if 5-chice testing sessions/subtasks are selected
-            if(subTaskId==21 || subTaskId == 22 || subTaskId == 23 || subTaskId == 27)
+            if (subTaskId == 21 || subTaskId == 22 || subTaskId == 23 || subTaskId == 27)
             {
                 StimulusDurationCondition1 = ", Stimulus_Duration ";
-                
+
                 //StimulusDurationCondition2 = "and stimulus_Duration is not null ";
 
             }
@@ -1153,7 +1153,7 @@ namespace AngularSPAWebAPI.Services
             //    ImageDescription = ", ss.ImageDescription";
             //}
 
-           
+
             // Creating subQuery 1 from 
 
             string subQuery1 = $@"Select Animal.UserAnimalID as AnimalID, Age.AgeInMonth as Age, Animal.Sex as Sex, Genotype.Genotype,
@@ -1430,6 +1430,7 @@ namespace AngularSPAWebAPI.Services
                 case 70:
                 case 76:
                 case 82:
+                case 89:
                     {
                         str = "(SessionName='Habituation_1')";
                         break;
@@ -1445,6 +1446,7 @@ namespace AngularSPAWebAPI.Services
                 case 71:
                 case 77:
                 case 83:
+                case 90:
                     {
                         str = "(SessionName='Habituation_2')";
                         break;
@@ -1505,7 +1507,7 @@ namespace AngularSPAWebAPI.Services
                 case 22:
                 case 23:
                 case 27:
-                
+
                     {
                         str = @"((SessionName = 'Probe') or (SessionName = 'Training') or (SessionName = 'Re_Baseline') or (SessionName = 'Intra_Probe'))";
                         break;
@@ -1585,7 +1587,12 @@ namespace AngularSPAWebAPI.Services
                         str = "( (Analysis_Name like '%VMCL Analysis%') OR (SessionName = 'VMCL Train') OR (SessionName ='VMCL Test') )";
                         break;
                     }
-                    
+                case 91:
+                    {
+                        str = "( (Analysis_Name like '%Autoshaping Analysis%') OR (SessionName = 'Autoshape_Acquisition') OR (SessionName = 'Autoshape_Reversal') )";
+                        break;
+                    }
+
             }
 
             return str;
