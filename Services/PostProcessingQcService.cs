@@ -99,7 +99,7 @@ namespace AngularSPAWebAPI.Services
 
                 case 13:
                     // post Processing QC for Autoshape Task
-                    error = ScheduleCount_Autoshaoe(subExp.SubExpID);
+                    error = ScheduleCount_Autoshape(subExp.SubExpID);
                     break;
 
 
