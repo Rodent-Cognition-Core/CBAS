@@ -61,7 +61,7 @@ namespace AngularSPAWebAPI.Services
                         SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
                         Species = Convert.ToString(dr["Species"].ToString()),
                         TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
-                        MultipleSessions = Convert.ToBoolean(dr["MultipleSessions"]),
+                        MultipleSessions = Convert.ToBoolean(string.IsNullOrEmpty(dr["MultipleSessions"].ToString()) ? 0 : 1),
                     });
                 }
 
@@ -148,7 +148,7 @@ namespace AngularSPAWebAPI.Services
             string sql = $@"UPDATE Experiment " +
                  $"SET PUSID = {experiment.PUSID}, ExpName = '{HelperService.EscapeSql(experiment.ExpName)}', StartExpDate = '{experiment.StartExpDate}'," +
                  $"EndExpDate = '{experiment.EndExpDate}', SpeciesID = {experiment.SpeciesID}, TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
-                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.Status ? 1 : 0)} " +
+                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.Status ? 1 : 0)}, MultipleSessions = {(experiment.MultipleSessions ? 1 : 0)} " +
                  $" WHERE ExpID = {experiment.ExpID}  AND UserID = '{userID}';";
 
             if (experiment.Status)

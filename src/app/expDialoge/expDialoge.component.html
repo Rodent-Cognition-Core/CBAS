@@ -97,7 +97,7 @@
         <mat-radio-group [formControl]="isMultipleSessions" [(ngModel)]="isMultipleSessionsModel" required>
             <mat-radio-button value="0">No</mat-radio-button>
             <mat-radio-button value="1">Yes</mat-radio-button>
-            <mat-error *ngIf="isMultipleSessions.invalid">{{getErrorMessageStatus()}}</mat-error>
+            <mat-error *ngIf="isMultipleSessions.invalid">{{getErrorMessageMultipleSessions()}}</mat-error>
         </mat-radio-group>
 
         <!--<br />
