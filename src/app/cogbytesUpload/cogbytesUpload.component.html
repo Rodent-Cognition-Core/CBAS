@@ -133,7 +133,6 @@
             </mat-radio-group>
 
             <br />
-            <br />
 
             <mat-form-field class="full-width" *ngIf="interventionModel=='true'">
                 <!--<mat-form-field class="full-width">-->
@@ -142,21 +141,20 @@
             </mat-form-field>
 
             <br />
-            <br />
 
             <!--Image Drop-down list if the selected task is PAL or PD-->
             <!--<div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">-->
-            <div>
-                <mat-form-field class="full-width">
+            <!--<div>
+                <mat-form-field class="full-width">-->
                     <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
-                    <mat-select placeholder="Select the images">
-                        ma
+                    <!--<mat-select placeholder="Select the images">
+                        ma-->
                         <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
                             <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
                         </mat-option>-->
-                    </mat-select>
+                    <!--</mat-select>-->
                     <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
-                </mat-form-field>
+                <!--</mat-form-field>
 
             </div>
 
@@ -171,7 +169,7 @@
                     
                 </mat-form-field>
 
-            </div>
+            </div>-->
 
             <div>
                 <mat-form-field class="full-width">

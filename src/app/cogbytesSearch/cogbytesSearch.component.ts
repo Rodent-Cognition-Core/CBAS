@@ -25,7 +25,7 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 })
 export class CogbytesSearchComponent implements OnInit {
 
-
+    readonly DATASET = 1;
 
     authorModel: any;
     piModel: any;
@@ -58,7 +58,8 @@ export class CogbytesSearchComponent implements OnInit {
     sexList: any;
     strainList: any;
     genoList: any;
-    ageList: any
+    ageList: any;
+    fileTypeList: any;
 
     authorList: any;
     authorList2: any;
@@ -80,6 +81,10 @@ export class CogbytesSearchComponent implements OnInit {
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    public piMultiFilterCtrl: FormControl = new FormControl();
+    public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    piMultiSelect: any;
+
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -96,6 +101,7 @@ export class CogbytesSearchComponent implements OnInit {
         this.GetRepositories();
         this.GetAuthorList();
         this.GetPIList();
+        this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
         this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
         this.cogbytesService.getSpecies().subscribe(data => { this.specieList = data; });
         this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
@@ -156,17 +162,39 @@ export class CogbytesSearchComponent implements OnInit {
             this.piList = data;
 
             // load the initial expList
-            //this.filteredPIList.next(this.piList.slice());
+            this.filteredPIList.next(this.piList.slice());
 
-            //this.piMultiFilterCtrl.valueChanges
-            //    .pipe(takeUntil(this._onDestroy))
-            //    .subscribe(() => {
-            //        this.filterPI();
-            //    });
+            this.piMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterPI();
+                });
 
         });
 
         return this.piList;
+    }
+
+    //// handling multi filtered PI list
+    private filterPI() {
+        if (!this.piList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchPI = this.piMultiFilterCtrl.value;
+
+        if (!searchPI) {
+            this.filteredPIList.next(this.piList.slice());
+            return;
+        } else {
+            searchPI = searchPI.toLowerCase();
+        }
+
+        // filter the PI
+        this.filteredPIList.next(
+            this.piList.filter(x => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+        );
     }
 
     // handling multi filtered Author list
@@ -282,6 +310,98 @@ export class CogbytesSearchComponent implements OnInit {
             PIString += this.piList[this.piList.map(function (x) { return x.id }).indexOf(id)].piFullName + ", ";
         }
         return PIString.slice(0, -2);
+    }
+
+    getFileType(upload: any) {
+        let fileType: string = this.fileTypeList[this.fileTypeList.map(function (x) { return x.id }).indexOf(upload.fileTypeID)].fileType;
+        return fileType;
+    }
+
+    // Function for getting string of upload tasks
+    getUploadTaskString(upload: any) {
+        let taskString: string = "";
+        for (let id of upload.taskID) {
+            taskString += this.taskList[this.taskList.map(function (x) { return x.id }).indexOf(id)].task + ", ";
+        }
+        return taskString.slice(0, -2);
+    }
+
+    // Function for getting string of upload species
+    getUploadSpeciesString(upload: any) {
+        let speciesString: string = "";
+        for (let id of upload.specieID) {
+            speciesString += this.specieList[this.specieList.map(function (x) { return x.id }).indexOf(id)].species + ", ";
+        }
+        return speciesString.slice(0, -2);
+    }
+
+    // Function for getting string of upload sexes
+    getUploadSexString(upload: any) {
+        let sexString: string = "";
+        for (let id of upload.sexID) {
+            sexString += this.sexList[this.sexList.map(function (x) { return x.id }).indexOf(id)].sex + ", ";
+        }
+        return sexString.slice(0, -2);
+    }
+
+    // Function for getting string of upload strains
+    getUploadStrainString(upload: any) {
+        let strainString: string = "";
+        for (let id of upload.strainID) {
+            strainString += this.strainList[this.strainList.map(function (x) { return x.id }).indexOf(id)].strain + ", ";
+        }
+        return strainString.slice(0, -2);
+    }
+
+    // Function for getting string of upload genotypes
+    getUploadGenoString(upload: any) {
+        let genoString: string = "";
+        for (let id of upload.genoID) {
+            genoString += this.genoList[this.genoList.map(function (x) { return x.id }).indexOf(id)].genotype + ", ";
+        }
+        return genoString.slice(0, -2);
+    }
+
+    // Function for getting string of upload ages
+    getUploadAgeString(upload: any) {
+        let ageString: string = "";
+        for (let id of upload.ageID) {
+            ageString += this.ageList[this.ageList.map(function (x) { return x.id }).indexOf(id)].ageInMonth + ", ";
+        }
+        return ageString.slice(0, -2);
+    }
+
+    DownloadFile(file: any): void {
+
+        let path = file.permanentFilePath + '\\' + file.sysFileName;
+        this.cogbytesService.downloadFile(path)
+            .subscribe(result => {
+
+                // console.log('downloadresult', result);
+                //let url = window.URL.createObjectURL(result);
+                //window.open(url);
+
+                var fileData = new Blob([result]);
+                var csvURL = null;
+                if (navigator.msSaveBlob) {
+                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                } else {
+                    csvURL = window.URL.createObjectURL(fileData);
+                }
+                var tempLink = document.createElement('a');
+                tempLink.href = csvURL;
+                tempLink.setAttribute('download', file.userFileName);
+                document.body.appendChild(tempLink);
+                tempLink.click();
+
+            },
+                error => {
+                    if (error.error instanceof Error) {
+                        console.log('An error occurred:', error.error.message);
+                    } else {
+                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    }
+                });
     }
 }
 

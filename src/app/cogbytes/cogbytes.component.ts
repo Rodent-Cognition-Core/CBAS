@@ -27,6 +27,7 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 export class CogbytesComponent implements OnInit {
 
+    readonly DATASET = 1;
     public uploadKey: number;
     panelOpenState: boolean;
 
@@ -35,6 +36,8 @@ export class CogbytesComponent implements OnInit {
     // Definiing List Variables
     repList: any;
     uploadList: any;
+    authorList: any;
+    piList: any;
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -68,6 +71,8 @@ export class CogbytesComponent implements OnInit {
         if (this.isAdmin || this.isUser) {
 
             this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+            this.GetAuthorList();
+            this.GetPIList();
         }
     }
 
@@ -147,7 +152,7 @@ export class CogbytesComponent implements OnInit {
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.cogbytesService.deleteRepository(this.getRepID()).map(res => {
+                this.cogbytesService.deleteRepository(this.getRep().id).map(res => {
 
                 }).subscribe();
                 this.spinnerService.hide();
@@ -161,7 +166,50 @@ export class CogbytesComponent implements OnInit {
         return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)].id;
     }
 
-  
+
+    GetAuthorList() {
+
+
+        this.cogbytesService.getAuthor().subscribe(data => {
+            this.authorList = data;
+        });
+
+        return this.authorList;
+    }
+
+
+    GetPIList() {
+
+        this.cogbytesService.getPI().subscribe(data => {
+            this.piList = data;
+        });
+
+        return this.piList;
+    }
+
+    // Function for getting string of repository authors
+    getRepAuthorString(rep: any) {
+        let authorString: string = "";
+        for (let id of rep.authourID) {
+            let firstName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].firstName;
+            let lastName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].lastName;
+            authorString += firstName + "-" + lastName + ", ";
+        }
+        return authorString.slice(0, -2);
+    }
+
+    // Function for getting string of repository PIs
+    getRepPIString(rep: any) {
+        let PIString: string = "";
+        for (let id of rep.piid) {
+            PIString += this.piList[this.piList.map(function (x) { return x.id }).indexOf(id)].piFullName + ", ";
+        }
+        return PIString.slice(0, -2);
+    }
+
+    getRep(): any {
+        return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)];
+    }
 
 }
 

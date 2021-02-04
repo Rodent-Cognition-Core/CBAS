@@ -37,6 +37,7 @@ const routes: Routes = [
     { path: 'pubScreen', loadChildren: './pubScreen/pubScreen.module#PubScreenModule' },
     { path: 'pubScreen-search', loadChildren: './pubScreen-search/pubScreen-search.module#PubScreenSearchModule' },
     { path: 'cogbytes', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
+    { path: 'cogbytes-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
 
 ];
 

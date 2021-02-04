@@ -8,7 +8,14 @@
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
             <li><a style="text-decoration: underline;" routerLink="/home">Home</a></li>
             <li><a routerLink="/mb-dashboard">Dashboard</a></li>
-            <li><a routerLink="/cogbytes">Cogbytes</a></li>
+            <li>
+                <br />
+                <b>Cogbytes</b>
+                <ul>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/cogbytes">Your Repositories</a></li>
+                    <li><a style="color: #354248;" href="/cogbytes-search">Search Repositories</a></li>
+                </ul>
+            </li>
             <li>
                 <br />
                 <b>TUTORIALS</b>
@@ -33,8 +40,6 @@
 
                 </ul>
             </li>
-
-            <br />
 
             <!--<li>
         <b>DATA INTEGRATION</b>
@@ -123,7 +128,13 @@
                             <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
-                            <li class="liright"><a routerLink="/cogbytes">Cogbytes</a></li>
+                            <li class="liright">
+                                COGBYTES
+                                <ul>
+                                    <li *ngIf="isAdmin || isUser"><a href="/cogbytes">Your Repositories</a></li>
+                                    <li><a routerLink="/cogbytes-search">Search Repositories</a></li>
+                                </ul>
+                            </li>
                             <li class="liright">
                                 TUTORIALS
                                 <ul>
@@ -184,7 +195,13 @@
                             <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
-                            <li class="liright"><a routerLink="/cogbytes">Cogbytes</a></li>
+                            <li class="liright">
+                                COGBYTES
+                                <ul>
+                                    <li *ngIf="isAdmin || isUser"><a href="/cogbytes">Your Repositories</a></li>
+                                    <li><a routerLink="/cogbytes-search">Search Repositories</a></li>
+                                </ul>
+                            </li>
 
                             <li class="liright">
                                 TUTORIALS

@@ -29,18 +29,31 @@
                         </mat-form-field>&nbsp;
 
 
+                        <!--PI-->
                         <mat-form-field style="padding-left: 25px">
                             <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>
 
-                                <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>-->
-                                <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
+                                <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
 
-                                <mat-option *ngFor="let pi of piList" [value]="pi.id">
+                                <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
                                     {{pi.piFullName}}
                                 </mat-option>
 
                             </mat-select>
                         </mat-form-field>&nbsp;
+
+                        <!--<mat-form-field style="padding-left: 25px">
+                            <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>-->
+
+                                <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>-->
+                                <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
+
+                                <!--<mat-option *ngFor="let pi of piList" [value]="pi.id">
+                                    {{pi.piFullName}}
+                                </mat-option>
+
+                            </mat-select>
+                        </mat-form-field>&nbsp;-->
 
                         <br /><br />
 
@@ -207,7 +220,7 @@
             <ng-container *ngFor="let rep of repList">
                 <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="getFilteredSearchList(rep.id).length > 0">
                     <td>
-                        <label style="color:#8D8E90"><b>Repository Information:</b></label><br /><br />
+                        <label><b>Repository Information:</b></label><br /><br />
                         <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span><br /><br />
                         <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span><br /><br />
                         <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(rep)}}</span><br /><br />
@@ -217,6 +230,68 @@
                         <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
                         <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                         <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+
+                        <label><b>Uploads:</b></label><br /><br />
+
+                        <div>
+                            <mat-accordion multi>
+                                <mat-expansion-panel *ngFor="let upload of getFilteredSearchList(rep.id)">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title style="font-weight:bold; color:#918796;">
+                                            {{upload.name}}
+                                        </mat-panel-title>
+                                        <mat-panel-description class="right-aligned">
+                                            {{getFileType(upload)}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <label>Date added:</label> &nbsp; <span style="color:#909497;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
+                                    <label>Description:</label> &nbsp; <span style="color:#909497;">{{( upload.description ==="") ?  "N/A" : upload.description}}</span><br /><br />
+                                    <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( upload.additionalNotes ==="") ?  "N/A" : upload.additionalNotes}}</span><br /><br />
+
+                                    <div *ngIf="upload.fileTypeID === DATASET">
+                                        <label style="font-weight:bold;">Key Features:</label><br /><br />
+                                        <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{getUploadTaskString(upload)}}</span><br />
+                                        <label>Species:</label> &nbsp; <span style="color:#909497;">{{getUploadSpeciesString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Sex:</label> &nbsp; <span style="color:#909497;">{{getUploadSexString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Strains:</label> &nbsp; <span style="color:#909497;">{{getUploadStrainString(upload)}}</span><br />
+                                        <label>Genotypes:</label> &nbsp; <span style="color:#909497;">{{getUploadGenoString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Age (in months):</label> &nbsp; <span style="color:#909497;">{{getUploadAgeString(upload)}}</span><br />
+                                        <label>Intervention?</label> &nbsp; <span style="color:#909497;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
+                                        <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#909497;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
+                                        <label>Housing:</label> &nbsp; <span style="color:#909497;">{{upload.housing}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Light Cycle:</label> &nbsp; <span style="color:#909497;">{{upload.lightCycle}}</span><br />
+                                        <label>Task Battery:</label> &nbsp; <span style="color:#909497;">{{upload.taskBattery}}</span><br />
+                                    </div>
+
+                                    <br />
+
+                                    <table class="docs-markdown-table">
+
+                                        <thead>
+                                            <tr><th colspan="5" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{upload.name}}</th></tr>
+                                            <tr style=" text-align: center; color:#566573;">
+                                                <td class="docs-markdown-td">File Name</td>
+                                                <td class="docs-markdown-td">Upload Date</td>
+                                                <td class="docs-markdown-td">Download</td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let file of upload.uploadFileList">
+                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
+                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                                                    <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
                     </td>
                 </tr>
             </ng-container>

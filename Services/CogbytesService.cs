@@ -558,7 +558,7 @@ namespace AngularSPAWebAPI.Services
 
             for (int i = 0; i < upload.SexID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetSpecies (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
             }
 
             if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
@@ -980,7 +980,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             FileList.Add(new FileUploadResult
                             {
-                                ExpID = Int32.Parse(fr["ID"].ToString()), // Hijaking ExpID for the primary key
+                                ExpID = Int32.Parse(fr["ID"].ToString()), // Hijacking ExpID for the primary key
                                 UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
                                 SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
                                 DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
@@ -1031,7 +1031,7 @@ namespace AngularSPAWebAPI.Services
         public List<Cogbytes> GetAllRepositories()
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
