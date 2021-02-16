@@ -61,7 +61,7 @@ namespace AngularSPAWebAPI.Services
                         SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
                         Species = Convert.ToString(dr["Species"].ToString()),
                         TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
-                        MultipleSessions = Convert.ToBoolean(string.IsNullOrEmpty(dr["MultipleSessions"].ToString()) ? 0 : 1),
+                        MultipleSessions = Convert.ToBoolean(dr["MultipleSessions"].ToString()),
                     });
                 }
 

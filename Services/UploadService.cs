@@ -1017,7 +1017,7 @@ namespace AngularSPAWebAPI.Services
                         WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
                         IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
                         SessionName = Convert.ToString(dr["SessionName"].ToString()),
-                        IsDuplicateSession = Convert.ToBoolean(string.IsNullOrEmpty(dr["IsDuplicateSession"].ToString()) ? 0 : 1),
+                        IsDuplicateSession = Convert.ToBoolean(dr["IsDuplicateSession"].ToString()),
                     });
                 }
 
