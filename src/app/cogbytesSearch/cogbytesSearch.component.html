@@ -221,8 +221,8 @@
                 <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="getFilteredSearchList(rep.id).length > 0">
                     <td>
                         <label><b>Repository Information:</b></label><br /><br />
-                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span><br /><br />
-                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span>&nbsp; &nbsp; &nbsp;
                         <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(rep)}}</span><br /><br />
                         <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
                         <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( rep.doi =="") ?  "N/A" : rep.doi}}</span>&nbsp; &nbsp; &nbsp;
@@ -230,6 +230,7 @@
                         <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
                         <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                         <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+                        <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
 
                         <label><b>Uploads:</b></label><br /><br />
 
@@ -265,28 +266,32 @@
 
                                     <br />
 
-                                    <table class="docs-markdown-table">
+                                    <div *ngIf="!rep.privacyStatus" style="color:red">Authors have chosen to make files private.</div>
 
-                                        <thead>
-                                            <tr><th colspan="5" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{upload.name}}</th></tr>
-                                            <tr style=" text-align: center; color:#566573;">
-                                                <td class="docs-markdown-td">File Name</td>
-                                                <td class="docs-markdown-td">Upload Date</td>
-                                                <td class="docs-markdown-td">Download</td>
-                                            </tr>
-                                        </thead>
+                                    <div *ngIf="rep.privacyStatus">
+                                        <table class="docs-markdown-table">
 
-                                        <tbody>
-                                            <tr *ngFor="let file of upload.uploadFileList">
-                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
-                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
-                                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                                                    <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
+                                            <thead>
+                                                <tr><th colspan="5" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{upload.name}}</th></tr>
+                                                <tr style=" text-align: center; color:#566573;">
+                                                    <td class="docs-markdown-td">File Name</td>
+                                                    <td class="docs-markdown-td">Upload Date</td>
+                                                    <td class="docs-markdown-td">Download</td>
+                                                </tr>
+                                            </thead>
 
-                                    </table>
+                                            <tbody>
+                                                <tr *ngFor="let file of upload.uploadFileList">
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                                                        <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
 
                                 </mat-expansion-panel>
                             </mat-accordion>

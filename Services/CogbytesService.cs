@@ -1031,7 +1031,8 @@ namespace AngularSPAWebAPI.Services
         public List<Cogbytes> GetAllRepositories()
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+            //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
