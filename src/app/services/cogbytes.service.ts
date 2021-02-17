@@ -190,6 +190,15 @@ import { AuthenticationService } from './authentication.service';
         });
     }
 
+    //// Extracting List of upload files from database
+    public getUploadFiles(uploadID: number): any {
+
+        return this.http
+            .get("/api/cogbytes/GetUploadFiles?uploadID=" + uploadID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     //// Extracting List of repositories from database
     public getUploads(repID: number): any {
 

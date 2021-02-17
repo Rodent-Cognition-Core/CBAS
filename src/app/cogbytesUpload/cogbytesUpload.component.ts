@@ -144,6 +144,7 @@ export class CogbytesUploadComponent implements OnInit {
             this.taskBatteryModel = this.uploadObj.taskBattery;
 
             this.uploadFileList = this.uploadObj.uploadFileList;
+            // this.UpdateFileList();
         }
 
     }
@@ -372,9 +373,13 @@ export class CogbytesUploadComponent implements OnInit {
 
         if (this.isUploadAdded && !this.isEditMode) {
             this.resetFormVals();
+            this.filesUploaded.emit(null);
         }
 
-        this.filesUploaded.emit(null);
+        else {
+            this.UpdateFileList();
+        }
+        //this.filesUploaded.emit(null);
     }
 
 
@@ -426,15 +431,27 @@ export class CogbytesUploadComponent implements OnInit {
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
+                setTimeout(() => {
+                    this.spinnerService.hide();
+                }, 500);
+
                 let path = file.permanentFilePath + '\\' + file.sysFileName;
                 this.cogbytesService.deleteFile(file.expID, path).map(res => {
 
-                }).subscribe();
-                this.spinnerService.hide();
-                this.filesUploaded.emit(null);
+                }).subscribe(
+                    response => { this.UpdateFileList(); });
+
+                //this.spinnerService.hide();
+                //this.filesUploaded.emit(null);
+
+                //this.UpdateFileList();
             }
             this.dialogRefDelFile = null;
         });
+    }
+
+    UpdateFileList() {
+        this.cogbytesService.getUploadFiles(this.uploadID).subscribe(data => { this.uploadFileList = data });
     }
 
     DeleteUpload() {

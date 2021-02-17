@@ -165,6 +165,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.AddUpload(upload));
         }
 
+        //// Extracting Upload file list from Database (Cogbytes)
+        [HttpGet("GetUploadFiles")]
+        //[AllowAnonymous]
+        public IActionResult GetUploadFiles(int uploadID)
+        {
+            return new JsonResult(_cogbytesService.GetUploadFiles(uploadID));
+        }
+
         //// Extracting Upload list from Database (Cogbytes)
         [HttpGet("GetUploads")]
         //[AllowAnonymous]

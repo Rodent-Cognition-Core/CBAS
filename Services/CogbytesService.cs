@@ -448,6 +448,30 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<FileUploadResult> GetUploadFiles(int uploadID)
+        {
+            List<FileUploadResult> FileList = new List<FileUploadResult>();
+
+            using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+            {
+                foreach (DataRow fr in ft.Rows)
+                {
+                    FileList.Add(new FileUploadResult
+                    {
+                        ExpID = Int32.Parse(fr["ID"].ToString()), // Hijaking ExpID for the primary key
+                        UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
+                        SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
+                        DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
+                        DateFileCreated = DateTime.Parse(fr["DateFileCreated"].ToString()),
+                        FileSize = Int32.Parse(fr["FileSize"].ToString()),
+                        PermanentFilePath = Convert.ToString(fr["PermanentFilePath"].ToString()),
+                    });
+                }
+            }
+
+            return FileList;
+        }
+
         //// Function Definition to extract a repositories' uploads 
         public List<CogbytesUpload> GetUploads(int repID)
         {
