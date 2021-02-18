@@ -95,7 +95,7 @@ export class CogbytesComponent implements OnInit {
 
     GetUploads() {
         if (this.repModel != null) {
-            let repID = this.getRepID();
+            let repID = this.getRep().id;
             this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
         }
     }
