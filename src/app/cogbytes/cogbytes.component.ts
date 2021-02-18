@@ -87,14 +87,17 @@ export class CogbytesComponent implements OnInit {
     }
 
     GetRepositories() {
+        this.GetAuthorList();
+        this.GetPIList();
         this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
-        return this.repList;
+        //return this.repList;
     }
 
     GetUploads() {
-        let repID = this.getRepID();
-        this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
-        return this.uploadList;
+        if (this.repModel != null) {
+            let repID = this.getRepID();
+            this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
+        }
     }
 
     ClosePanel() {
@@ -120,7 +123,8 @@ export class CogbytesComponent implements OnInit {
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
-             this.repModel = null;
+            this.repModel = null;
+            this.GetRepositories();
            
         });
     }
@@ -138,7 +142,7 @@ export class CogbytesComponent implements OnInit {
 
         dialogref.afterClosed().subscribe(result => {
             console.log('the dialog was closed');
-            
+            this.GetRepositories();
         });
     }
 
