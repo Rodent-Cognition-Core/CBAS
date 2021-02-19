@@ -33,6 +33,7 @@ export class ExpDialogeComponent implements OnInit {
     selectPISvalue: any;
     speciesModel: any;
     taskBatteryModel: any;
+    isMultipleSessionsModel: string;
 
 
     taskList: any;
@@ -66,7 +67,7 @@ export class ExpDialogeComponent implements OnInit {
             this.selectPISvalue = this.data.experimentObj.pusid;
             this.DOIModel = this.data.experimentObj.doi;
             this.statusModel = this.data.experimentObj.status ? "1" : "0";
-
+            this.isMultipleSessionsModel = this.data.experimentObj.multipleSessions ? "1" : "0";
 
         }
     }
@@ -91,7 +92,7 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
         this._experiment.DOI = this.DOIModel;
         this._experiment.Status = this.statusModel == "1" ? true : false;
-
+        this._experiment.multipleSessions = this.isMultipleSessionsModel == "1" ? true : false;
 
         //console.log(this._experiment.ImageIds);
 
@@ -153,6 +154,7 @@ export class ExpDialogeComponent implements OnInit {
     status = new FormControl('', [Validators.required]);
     expDescription = new FormControl('', [Validators.required]);
     expBattery = new FormControl('', [Validators.required]);
+    isMultipleSessions = new FormControl('', [Validators.required]);
 
     getErrorMessage() {
 
@@ -218,6 +220,12 @@ export class ExpDialogeComponent implements OnInit {
 
     }
 
+    getErrorMessageMultipleSessions() {
+
+        return this.isMultipleSessions.hasError('required') ? 'You must enter a value' :
+            '';
+    }
+
 
     setDisabledVal() {
 
@@ -229,7 +237,8 @@ export class ExpDialogeComponent implements OnInit {
             this.status.hasError('required') ||
             this.expDescription.hasError('required') ||
             this.expBattery.hasError('required') ||
-            this.species.hasError('required')
+            this.species.hasError('required') ||
+            this.isMultipleSessions.hasError('required')
 
         ) {
 

@@ -96,7 +96,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             //articletype
-            string articleType = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("PublicationTypeList").Element("PublicationType").Value;
+            //string articleType = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("PublicationTypeList").Element("PublicationType").Value;
 
             //year
             if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate") != null)
@@ -138,7 +138,7 @@ namespace AngularSPAWebAPI.Services
 
             foreach (XmlNode xn in xnList)
             {
-                if(xn["ForeName"] !=null && xn["LastName"]!=null)
+                if (xn["ForeName"] != null && xn["LastName"] != null)
                 {
                     authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
 
@@ -161,11 +161,11 @@ namespace AngularSPAWebAPI.Services
 
             if (String.IsNullOrEmpty(doi))
             {
-                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") !=null)
+                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") != null)
                 {
                     doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
                 }
-                
+
             }
 
             string authorString = string.Join(", ", authorListString);
@@ -178,7 +178,7 @@ namespace AngularSPAWebAPI.Services
                 Keywords = keyWordString,
                 Year = articleYear,
                 AuthorString = authorString,
-                PaperType = articleType,
+                //PaperType = articleType,
                 Author = authorList,
                 Reference = articleName,
                 DOI = doi,
@@ -236,7 +236,7 @@ namespace AngularSPAWebAPI.Services
                 Abstract = jsonPubscreen.collection[0].@abstract,
                 Year = (jsonPubscreen.collection[jsonPubscreen.collection.Count() - 1].date).Split('-')[0],
                 AuthorString = authorString,
-                PaperType = jsonPubscreen.collection[0].@type,
+                //PaperType = jsonPubscreen.collection[0].@type,
                 Author = authorList,
                 Reference = "bioRxiv",
                 DOI = doi,
@@ -251,13 +251,14 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenPaperType> GetPaperTypes()
         {
             List<PubScreenPaperType> PaperTypeList = new List<PubScreenPaperType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select distinct(PaperType) From PaperType"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From PaperType"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     PaperTypeList.Add(new PubScreenPaperType
                     {
                         PaperType = Convert.ToString(dr["PaperType"].ToString()),
+                        ID = Int32.Parse(dr["ID"].ToString()),
 
                     });
                 }
@@ -279,6 +280,31 @@ namespace AngularSPAWebAPI.Services
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
                         Task = Convert.ToString(dr["Task"].ToString()),
+
+
+                    });
+                }
+            }
+
+            return TaskList;
+        }
+
+        // Function Definition to extract list of all Task & Sub-Tasks
+        public List<PubScreenTask> GetAllTasks()
+        {
+            List<PubScreenTask> TaskList = new List<PubScreenTask>();
+            using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask.ID, SubTask.TaskID, Task.Task, SubTask.SubTask 
+                                                             From SubTask
+                                                             Inner join Task on Task.ID = SubTask.TaskID"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    TaskList.Add(new PubScreenTask
+                    {
+                        ID = Int32.Parse(dr["ID"].ToString()),
+                        TaskID = Int32.Parse(dr["TaskID"].ToString()),
+                        Task = Convert.ToString(dr["Task"].ToString()),
+                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
 
 
                     });
@@ -527,6 +553,7 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication_Strain Where PublicationID = {pubId};
                              Delete From Publication_SubRegion Where PublicationID = {pubId};
                              Delete From Publication_Task Where PublicationID = {pubId};
+                             Delete From Publication_SubTask Where PublicationID = {pubId};
                              Delete From Publication Where id = { pubId};";
 
             Dal.ExecuteNonQueryPub(sql);
@@ -626,7 +653,7 @@ namespace AngularSPAWebAPI.Services
 
             //Adding to Publication_PaperType Table**********************************************************************************************
 
-            // When DOI or Pubmedkey is not available
+            
             if (publication.PaperTypeID != null)
             {
                 string sqlPaperType = "";
@@ -634,53 +661,34 @@ namespace AngularSPAWebAPI.Services
                 Dal.ExecuteNonQueryPub(sqlPaperType);
             }
 
-            // When DOI or Pubmedkey is available
-            if (publication.PaperType != null && publication.PaperType.Length != 0)
-            {
-                // check to see if papertype exist in DB, if so just insert it into Publication_PaperType; otherwise, insert it into both PrperType and Publication_PaperType tables in DB.
-
-                //Get list of all paperType form DB
-                List<string> allPTList = new List<string>();
-                using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType"))
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        allPTList.Add((Convert.ToString(dr["PaperType"].ToString())).ToLower());
-
-                    }
-                }
-
-                // if paper type is new and is not available in DB, insert it to DB
-                if (!allPTList.Contains(publication.PaperType))
-                {
-                    // Insert into paper type table in DB
-                    string sqlPT = $@"Insert into PaperType (PaperType) Values ('{publication.PaperType}');";
-                    if (sqlPT != "") { Dal.ExecuteNonQueryPub(sqlPT); };
-                }
-
-                // Get the ID of new or existing paperType
-                string sqlPT2 = $@"Select ID from PaperType Where PaperType = '{publication.PaperType}'";
-                int PaperTypeID = Int32.Parse(Dal.ExecScalarPub(sqlPT2).ToString());
-
-                //Insert paperTypeID itno Publication_PaperType tbl in DB
-                string sqlPT3 = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({PaperTypeID}, {PublicationID});";
-                Dal.ExecuteNonQueryPub(sqlPT3);
-
-            }
             //******************************Key Features**************
             //Adding to Publication_Task
-            //Handling othet for Task
-            ProcessOther(publication.TaskOther, "Task", "Task", "Publication_Task", "TaskID", PublicationID, Username);
-
             if (publication.TaskID != null && publication.TaskID.Length != 0)
             {
                 string sqlTask = "";
                 for (int i = 0; i < publication.TaskID.Length; i++)
                 {
+
                     sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {PublicationID});";
+
 
                 }
                 if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
+
+            }
+
+            //Adding to Publication_SubTask
+            if (publication.SubTaskID != null && publication.SubTaskID.Length != 0)
+            {
+                string sqlSubTask = "";
+                for (int i = 0; i < publication.SubTaskID.Length; i++)
+                {
+
+                    sqlSubTask += $@"Insert into Publication_SubTask (SubTaskID, PublicationID) Values ({publication.SubTaskID[i]}, {PublicationID});";
+
+
+                }
+                if (sqlSubTask != "") { Dal.ExecuteNonQueryPub(sqlSubTask); };
 
             }
 
@@ -693,7 +701,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlSpecie = "";
                 for (int i = 0; i < publication.SpecieID.Length; i++)
                 {
-                    sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
+                    if (publication.SpecieID[i] != 3)
+                    {
+                        sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
@@ -723,7 +734,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
+                    if (publication.StrainID[i] != 19)
+                    {
+                        sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
@@ -739,7 +753,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlDiease = "";
                 for (int i = 0; i < publication.DiseaseID.Length; i++)
                 {
-                    sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
+                    if (publication.DiseaseID[i] != 14)
+                    {
+                        sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
@@ -781,7 +798,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlCelltype = "";
                 for (int i = 0; i < publication.CellTypeID.Length; i++)
                 {
-                    sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
+                    if (publication.CellTypeID[i] != 4)
+                    {
+                        sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
@@ -797,7 +817,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlMethod = "";
                 for (int i = 0; i < publication.MethodID.Length; i++)
                 {
-                    sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
+                    if (publication.MethodID[i] != 23)
+                    {
+                        sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
@@ -813,7 +836,10 @@ namespace AngularSPAWebAPI.Services
                 string sqlTransmitter = "";
                 for (int i = 0; i < publication.TransmitterID.Length; i++)
                 {
-                    sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
+                    if (publication.TransmitterID[i] != 8)
+                    {
+                        sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {PublicationID});";
+                    }
 
                 }
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
@@ -865,25 +891,25 @@ namespace AngularSPAWebAPI.Services
             //Edit Publication_PaperType Table**********************************************************************************************
 
             // When DOI or Pubmedkey is not available
-            var paperTypeId = 0;
-            if (!string.IsNullOrEmpty(publication.PaperType))
-            {
-                var sql = $"select id from PaperType where ltrim(rtrim(papertype)) = '{HelperService.NullToString(HelperService.EscapeSql(publication.PaperType)).Trim()}'";
-                var retPaperType = Dal.ExecScalarPub(sql);
-                if (retPaperType != null)
-                {
-                    paperTypeId = Int32.Parse(Dal.ExecScalarPub(sql).ToString());
+            //var paperTypeId = 0;
+            //if (!string.IsNullOrEmpty(publication.PaperType))
+            //{
+            //    var sql = $"select id from PaperType where ltrim(rtrim(papertype)) = '{HelperService.NullToString(HelperService.EscapeSql(publication.PaperType)).Trim()}'";
+            //    var retPaperType = Dal.ExecScalarPub(sql);
+            //    if (retPaperType != null)
+            //    {
+            //        paperTypeId = Int32.Parse(Dal.ExecScalarPub(sql).ToString());
 
-                }
-            }
+            //    }
+            //}
 
-            if (paperTypeId != 0)
+            if (publication.PaperTypeID != null )
             {
                 sqlDelete = $"DELETE From Publication_PaperType where PublicationID = {publicationId}";
                 Dal.ExecuteNonQueryPub(sqlDelete);
 
                 string sqlPaperType = "";
-                sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({paperTypeId}, {publicationId});";
+                sqlPaperType = $@"Insert into Publication_PaperType (PaperTypeID, PublicationID) Values ({publication.PaperTypeID}, {publicationId});";
                 Dal.ExecuteNonQueryPub(sqlPaperType);
             }
 
@@ -896,10 +922,30 @@ namespace AngularSPAWebAPI.Services
                 string sqlTask = "";
                 for (int i = 0; i < publication.TaskID.Length; i++)
                 {
+
                     sqlTask += $@"Insert into Publication_Task (TaskID, PublicationID) Values ({publication.TaskID[i]}, {publicationId});";
+
 
                 }
                 if (sqlTask != "") { Dal.ExecuteNonQueryPub(sqlTask); };
+
+            }
+
+            //Editing to Publication_SubTask
+            if (publication.SubTaskID != null && publication.SubTaskID.Length != 0)
+            {
+                sqlDelete = $"DELETE From Publication_SubTask where PublicationID = {publicationId}";
+                Dal.ExecuteNonQueryPub(sqlDelete);
+
+                string sqlSubTask = "";
+                for (int i = 0; i < publication.SubTaskID.Length; i++)
+                {
+
+                    sqlSubTask += $@"Insert into Publication_SubTask (SubTaskID, PublicationID) Values ({publication.SubTaskID[i]}, {publicationId});";
+
+
+                }
+                if (sqlSubTask != "") { Dal.ExecuteNonQueryPub(sqlSubTask); };
 
             }
 
@@ -912,11 +958,17 @@ namespace AngularSPAWebAPI.Services
                 string sqlSpecie = "";
                 for (int i = 0; i < publication.SpecieID.Length; i++)
                 {
-                    sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {publicationId});";
+                    if (publication.SpecieID[i] != 3)
+                    {
+                        sqlSpecie += $@"Insert into Publication_Specie (SpecieID, PublicationID) Values ({publication.SpecieID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlSpecie != "") { Dal.ExecuteNonQueryPub(sqlSpecie); };
             }
+
+            // Handling Other for Species
+            ProcessOther(publication.SpecieOther, "Species", "Species", "Publication_Specie", "SpecieID", publicationId, Username);
 
             //Editing to Publication_Sex
             sqlDelete = $"DELETE From Publication_Sex where PublicationID = {publicationId}";
@@ -944,12 +996,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
+                    if (publication.StrainID[i] != 19)
+                    {
+                        sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlStrain != "") { Dal.ExecuteNonQueryPub(sqlStrain); };
 
             }
+
+            // Handking Other for Strain
+            ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", publicationId, Username);
 
             //Editing to Publication_Disease
             sqlDelete = $"DELETE From Publication_Disease where PublicationID = {publicationId}";
@@ -960,12 +1018,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlDiease = "";
                 for (int i = 0; i < publication.DiseaseID.Length; i++)
                 {
-                    sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {publicationId});";
+                    if (publication.DiseaseID[i] != 14)
+                    {
+                        sqlDiease += $@"Insert into Publication_Disease (DiseaseID, PublicationID) Values ({publication.DiseaseID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlDiease != "") { Dal.ExecuteNonQueryPub(sqlDiease); };
 
             }
+
+            // Handling Other for Disease
+            ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", publicationId, Username);
 
             //Editing to Publication_Region
             sqlDelete = $"DELETE From Publication_Region where PublicationID = {publicationId}";
@@ -1008,12 +1072,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlCelltype = "";
                 for (int i = 0; i < publication.CellTypeID.Length; i++)
                 {
-                    sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {publicationId});";
+                    if (publication.CellTypeID[i] != 4)
+                    {
+                        sqlCelltype += $@"Insert into Publication_CellType (CellTypeID, PublicationID) Values ({publication.CellTypeID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlCelltype != "") { Dal.ExecuteNonQueryPub(sqlCelltype); };
 
             }
+
+            //Handling Other for Cell Type
+            ProcessOther(publication.CelltypeOther, "CellType", "CellType", "Publication_CellType", "CelltypeID", publicationId, Username);
 
             //Editing to Publication_Method
             sqlDelete = $"DELETE From Publication_Method where PublicationID = {publicationId}";
@@ -1024,12 +1094,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlMethod = "";
                 for (int i = 0; i < publication.MethodID.Length; i++)
                 {
-                    sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {publicationId});";
+                    if (publication.MethodID[i] != 23)
+                    {
+                        sqlMethod += $@"Insert into Publication_Method (MethodID, PublicationID) Values ({publication.MethodID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlMethod != "") { Dal.ExecuteNonQueryPub(sqlMethod); };
 
             }
+
+            //Handling Other for method
+            ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", publicationId, Username);
 
             //Editing to Publication_NeuroTransmitter
             sqlDelete = $"DELETE From Publication_NeuroTransmitter where PublicationID = {publicationId}";
@@ -1040,12 +1116,18 @@ namespace AngularSPAWebAPI.Services
                 string sqlTransmitter = "";
                 for (int i = 0; i < publication.TransmitterID.Length; i++)
                 {
-                    sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {publicationId});";
+                    if (publication.TransmitterID[i] != 8)
+                    {
+                        sqlTransmitter += $@"Insert into Publication_NeuroTransmitter (TransmitterID, PublicationID) Values ({publication.TransmitterID[i]}, {publicationId});";
+                    }
 
                 }
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
 
             }
+
+            // Handling Other for NeuroTransmitter
+            ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", publicationId, Username);
 
             return true;
 
@@ -1099,7 +1181,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for Year
-            if (pubScreen.YearFrom != null && pubScreen.YearTo!=null)
+            if (pubScreen.YearFrom != null && pubScreen.YearTo != null)
             {
                 sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
             }
@@ -1109,7 +1191,7 @@ namespace AngularSPAWebAPI.Services
                 sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
             }
 
-            if(pubScreen.YearTo != null && pubScreen.YearFrom == null)
+            if (pubScreen.YearTo != null && pubScreen.YearFrom == null)
             {
                 sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
             }
@@ -1134,6 +1216,26 @@ namespace AngularSPAWebAPI.Services
                     for (int i = 0; i < pubScreen.TaskID.Length; i++)
                     {
                         sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
+            }
+
+            // search query for SubTask
+            if (pubScreen.SubTaskID != null && pubScreen.SubTaskID.Length != 0)
+            {
+                if (pubScreen.SubTaskID.Length == 1)
+                {
+                    sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
+                    {
+                        sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[i]}) +  '%' OR ";
                     }
                     sql = sql.Substring(0, sql.Length - 3);
                     sql += ") AND ";
@@ -1363,6 +1465,7 @@ namespace AngularSPAWebAPI.Services
                         Author = Convert.ToString(dr["Author"].ToString()),
                         PaperType = Convert.ToString(dr["PaperType"].ToString()),
                         Task = Convert.ToString(dr["Task"].ToString()),
+                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
                         Species = Convert.ToString(dr["Species"].ToString()),
                         Sex = Convert.ToString(dr["Sex"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
@@ -1447,10 +1550,25 @@ namespace AngularSPAWebAPI.Services
             sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
             pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
 
+            sql = $"Select SubTaskID From Publication_SubTask Where PublicationID ={id}";
+            pubScreen.SubTaskID = FillPubScreenItemArray(sql, "SubTaskID");
+
+            sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
+            object papertypeID = Dal.ExecScalarPub(sql);
+            if (papertypeID == null)
+            {
+                pubScreen.PaperTypeID = null;
+            }
+            else
+            {
+                pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
+            }
+            
+
             //sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-            sql = $"Select top 1 pt.PaperType From Publication_PaperType ppt inner join PaperType pt on ppt.PaperTypeID = pt.ID where ppt.PublicationID = {id}";
-            var paperTypeVal = Dal.ExecScalarPub(sql);
-            pubScreen.PaperType = paperTypeVal == null ? "" : paperTypeVal.ToString();
+            //sql = $"Select top 1 pt.PaperType From Publication_PaperType ppt inner join PaperType pt on ppt.PaperTypeID = pt.ID where ppt.PublicationID = {id}";
+            //var paperTypeVal = Dal.ExecScalarPub(sql);
+            //pubScreen.PaperType = paperTypeVal == null ? "" : paperTypeVal.ToString();
 
             sql = $"Select * From Publication Where ID ={id}";
             using (DataTable dt = Dal.GetDataTablePub(sql))

@@ -47,6 +47,9 @@ namespace AngularSPAWebAPI.Services
                         await file.CopyToAsync(fileStream);
                     }
 
+                    // Determining if multiple sessions for an animal in a single day are allowed
+                    bool MultipleSessions = GetMultipleSessions(expID);
+
                     // Extracting SubExpName , Age for the selected Subexperiment
                     string SubExpNameAge1 = GetSubExpNameAge(subExpId);
                     // Extracting Age of Animal for the selected Subexperiemnt
@@ -56,7 +59,7 @@ namespace AngularSPAWebAPI.Services
                     bool IsUploaded1 = false;
 
                     (bool QC_IsQcPassed, bool QC_IsIdentifierPassed, string QC_FileUniqueID, string QC_ErrorMessage, string QC_WarningMessage, bool InsertToTblUpload, int SysAnimalID, int QC_UploadID, string QC_AnimalID) info =
-                        _qualityControlService.QualityControl(TaskName, tempFileName, uploads, ExpName, expID, subExpId, AnimalAge, SessionName);
+                        _qualityControlService.QualityControl(TaskName, tempFileName, uploads, ExpName, expID, subExpId, AnimalAge, SessionName, MultipleSessions);
 
                     if (info.QC_IsQcPassed == true && info.QC_IsIdentifierPassed == true && info.InsertToTblUpload == true)
                     {
@@ -110,6 +113,13 @@ namespace AngularSPAWebAPI.Services
                             // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
                             uploadID = InsertUpload(fur);
 
+                        }
+
+                        // If there is a duplicate, but multiple sessions for an animal in a day are allowed
+                        else if (MultipleSessions)
+                        {
+                            uploadID = InsertUpload(fur);
+                            UpdateDuplicateSessions(info.QC_FileUniqueID);
                         }
 
                         else
@@ -174,6 +184,12 @@ namespace AngularSPAWebAPI.Services
             return Dal.ExecScalar(sql).ToString();
         }
 
+        // function to determine if multiple sessions of an animal in a single day are allowed
+        public bool GetMultipleSessions(int ExpID)
+        {
+            string sql = "Select MultipleSessions From Experiment where Experiment.ExpID =" + ExpID;
+            return Convert.ToBoolean(Dal.ExecScalar(sql).ToString());
+        }
 
         // Function to Insert To Upload Table in Database
         public int InsertUpload(FileUploadResult upload)
@@ -202,6 +218,14 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sql);
         }
 
+        // Function to flag duplicate fileUniqueIDs in the Upload Table
+        public void UpdateDuplicateSessions(string FileUniqueID)
+        {
+            string sql = $"UPDATE Upload " +
+                $"SET IsDuplicateSession = 1 WHERE FileUniqueID = '{FileUniqueID}'";
+
+            Dal.ExecuteNonQuery(sql);
+        }
 
         public bool SetUploadAsResolved(int uploadID, string userId)
         {
@@ -323,6 +347,7 @@ namespace AngularSPAWebAPI.Services
                 IsIdentifierPassed = bool.Parse(dr["IsIdentifierPassed"].ToString()),
                 PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
                 SessionName = Convert.ToString(dr["SessionName"]),
+                TaskID = Int32.Parse(dr["TaskID"].ToString()),
             };
         }
 
@@ -459,9 +484,9 @@ namespace AngularSPAWebAPI.Services
             List<int?> lstMistake = new List<int?>();
             List<int?> lstcCorrectRejection = new List<int?>();
 
-            List<float> lstCorrectLatency = new List<float>();
-            List<float> lstRewatdLatency = new List<float>();
-            List<float> lstIncorLatency = new List<float>();
+            List<float?> lstCorrectLatency = new List<float?>();
+            List<float?> lstRewatdLatency = new List<float?>();
+            List<float?> lstIncorLatency = new List<float?>();
             Dictionary<string, float?> cptDictDistractorFeatures = new Dictionary<string, float?>();  // for sessionIDUpload==42 (cpt distractor)
 
             foreach (var val in value)
@@ -973,7 +998,7 @@ namespace AngularSPAWebAPI.Services
 
             List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, Upload.IsUploaded
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, Upload.IsUploaded, Upload.IsDuplicateSession
                                                        From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
                                                        WHERE Upload.SubExpID = {subExpId} Order By DateUpload;"))
 
@@ -992,7 +1017,7 @@ namespace AngularSPAWebAPI.Services
                         WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
                         IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
                         SessionName = Convert.ToString(dr["SessionName"].ToString()),
-
+                        IsDuplicateSession = Convert.ToBoolean(dr["IsDuplicateSession"].ToString()),
                     });
                 }
 
@@ -1057,7 +1082,7 @@ namespace AngularSPAWebAPI.Services
 
         // **********************Function definition to extract cpt features with different stimulation duration and stage 3 & 4
         private Dictionary<string, float?> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
-                       List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency, int uploadsessionID)
+                       List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency, int uploadsessionID)
         {
 
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
@@ -1140,8 +1165,8 @@ namespace AngularSPAWebAPI.Services
                         DataRow newRow = dt_latency.NewRow();
                         newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                         newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                        newRow["CorrectLatency"] = lstCorrectLatency[cnt];
-                        newRow["RewardLatency"] = lstRewatdLatency[cnt];
+                        newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                        newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];  
 
                         dt_latency.Rows.Add(newRow);
                         cnt = cnt + 1;
@@ -1162,7 +1187,7 @@ namespace AngularSPAWebAPI.Services
                         cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
                         cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                     }
-                    
+
                 }
 
                 //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1183,7 +1208,7 @@ namespace AngularSPAWebAPI.Services
                             DataRow newRow = dt_incorrect_latency.NewRow();
                             newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                             newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                            newRow["IncorrectLatency"] = lstIncorLatency[cnt2];
+                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2]; 
 
                             dt_incorrect_latency.Rows.Add(newRow);
                             cnt2 = cnt2 + 1;
@@ -1201,10 +1226,11 @@ namespace AngularSPAWebAPI.Services
 
                             cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
                         }
-                        else {
+                        else
+                        {
                             // TODO: what needs to be done here?
                         }
-                        
+
 
                     }
                 }
@@ -1275,7 +1301,7 @@ namespace AngularSPAWebAPI.Services
                         cptFeatureDict.Add(titleDiscriminationSensitivity, discriminationSensitivity);
                         cptFeatureDict.Add(titleResponseBias, (float?)responseBias);
                     }
-                   
+
 
                 }
             }
@@ -1286,7 +1312,7 @@ namespace AngularSPAWebAPI.Services
 
         // Function definition to extract calculated metrics for cpt task when the contrast level is different
         private Dictionary<string, float?> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
-                        List<int?> lstcCorrectRejection, List<float> lstCorrectLatency, List<float> lstRewatdLatency, List<float> lstIncorLatency)
+                        List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency)
         {
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
@@ -1312,8 +1338,8 @@ namespace AngularSPAWebAPI.Services
                     DataRow newRow = dt_latency.NewRow();
                     newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                     newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                    newRow["CorrectLatency"] = lstCorrectLatency[cnt];
-                    newRow["RewardLatency"] = lstRewatdLatency[cnt];
+                    newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                    newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
 
                     dt_latency.Rows.Add(newRow);
                     cnt = cnt + 1;
@@ -1351,7 +1377,7 @@ namespace AngularSPAWebAPI.Services
                     cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
                     cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                 }
-                
+
             }
 
             //************** Create a new data table based on dt datatable where  mistake is greater than 0 for incorrect Touch latency
@@ -1370,7 +1396,7 @@ namespace AngularSPAWebAPI.Services
                     DataRow newRow = dt_incorrect_latency.NewRow();
                     newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                     newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                    newRow["IncorrectLatency"] = lstCorrectLatency[cnt2];
+                    newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
 
                     dt_incorrect_latency.Rows.Add(newRow);
                     cnt2 = cnt2 + 1;
@@ -1405,7 +1431,7 @@ namespace AngularSPAWebAPI.Services
 
                     cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
                 }
-                
+
 
             }
 
@@ -1481,7 +1507,7 @@ namespace AngularSPAWebAPI.Services
 
                 }
 
-                
+
 
             }
 

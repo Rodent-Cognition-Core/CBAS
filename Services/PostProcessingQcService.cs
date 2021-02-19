@@ -96,11 +96,11 @@ namespace AngularSPAWebAPI.Services
                     // post Processing QC for VMCL Task
                     error = ScheduleCount_VMCL(subExp.SubExpID);
                     break;
+
                 case 13:
-                    // post Processing QC for VMCL Task
+                    // post Processing QC for Autoshape Task
                     error = ScheduleCount_Autoshape(subExp.SubExpID);
                     break;
-
 
 
             }
@@ -288,7 +288,7 @@ namespace AngularSPAWebAPI.Services
             return error1;
         }
 
-        // Function Definition: Post Processing QC for Autoshaping experiment
+        // Function Definition: Post Processing QC for Autoshape experiment
         public string ScheduleCount_Autoshape(int expID)
         {
             string error1 = "";

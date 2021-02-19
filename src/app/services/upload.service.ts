@@ -25,13 +25,13 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public GetUploadResult(): any {
+    //public GetUploadResult(): any {
 
-        return this.http
-            .get("/api/upload/UploadFiles", {
-                headers: this.authenticationService.getAuthorizationHeader()
-            });
-    };
+    //    return this.http
+    //        .get("/api/upload/UploadFiles", {
+    //            headers: this.authenticationService.getAuthorizationHeader()
+    //        });
+    //};
 
 
 

@@ -61,8 +61,7 @@ namespace AngularSPAWebAPI.Services
                         SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
                         Species = Convert.ToString(dr["Species"].ToString()),
                         TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
-
-
+                        MultipleSessions = Convert.ToBoolean(dr["MultipleSessions"].ToString()),
                     });
                 }
 
@@ -126,10 +125,11 @@ namespace AngularSPAWebAPI.Services
         {
             
             string sql = $"insert into Experiment " +
-              $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status, TaskBattery) Values " +
+              $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status, TaskBattery, MultipleSessions) Values " +
               $"('{userID}', {experiment.PUSID}, '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
               $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
-              $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}' ); SELECT @@IDENTITY AS 'Identity';";
+              $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}', {(experiment.MultipleSessions ? 1 : 0)} );" +
+              $" SELECT @@IDENTITY AS 'Identity';";
 
             // Calling function to send an email to Admin that new Exp with public Status has been added to MouseBytes
 
@@ -148,7 +148,7 @@ namespace AngularSPAWebAPI.Services
             string sql = $@"UPDATE Experiment " +
                  $"SET PUSID = {experiment.PUSID}, ExpName = '{HelperService.EscapeSql(experiment.ExpName)}', StartExpDate = '{experiment.StartExpDate}'," +
                  $"EndExpDate = '{experiment.EndExpDate}', SpeciesID = {experiment.SpeciesID}, TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
-                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.Status ? 1 : 0)} " +
+                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.Status ? 1 : 0)}, MultipleSessions = {(experiment.MultipleSessions ? 1 : 0)} " +
                  $" WHERE ExpID = {experiment.ExpID}  AND UserID = '{userID}';";
 
             if (experiment.Status)

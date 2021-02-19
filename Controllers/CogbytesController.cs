@@ -230,15 +230,30 @@ namespace AngularSPAWebAPI.Controllers
                 {".txt", "text/plain"},
                 {".pdf", "application/pdf"},
                 {".doc", "application/vnd.ms-word"},
+                {".docm", "application/vnd.ms-word.document.macroEnabled.12"},
                 {".docx", "application/vnd.ms-word"},
                 {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.ms-excel"},
+                {".ppt", "application/vnd.ms-powerpoint"},
+                {".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12" },
+                {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
                 {".png", "image/png"},
                 {".jpg", "image/jpeg"},
                 {".jpeg", "image/jpeg"},
                 {".gif", "image/gif"},
                 {".csv", "text/csv"},
                 {".xml", "text/xml"} ,
-                {".bak", "application/bak"}
+                {".bak", "application/bak"},
+                {".c", "text/plain" },
+                {".zip", "application/x-zip-compressed" },
+                {".tex", "application/x-tex" },
+                {".tar", "application/x-tar" },
+                {".rar", "application/octet-stream" },
+                {".latex", "application/x-latex" },
+                {".cpp", "text/plain" },
+                {".r", "text/plain" },
+                {".py", "text/plain" },
+
             };
         }
 

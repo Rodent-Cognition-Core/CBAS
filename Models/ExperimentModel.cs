@@ -25,6 +25,7 @@ namespace AngularSPAWebAPI.Models
         public int SpeciesID { get; set; }
         public string Species { get; set; }
         //public bool IsPostProcessingPass { get; set; }
+        public bool MultipleSessions { get; set; }
         public System.Collections.Generic.List<SubExperiment> SubExpList {get; set; }
     }
 }

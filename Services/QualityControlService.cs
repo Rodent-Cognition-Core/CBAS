@@ -19,7 +19,7 @@ namespace AngularSPAWebAPI.Services
         // This service checks the file against the quality control rules (Pre-processing)
         // First thing to check is to make sure each file is uploaded to the right Experiment considering the TaskName of the Experiment
         public (bool IsQcPassed, bool IsIdentifierPassed, string FileUniqueID, string ErrorMessage, string WarningMessage, bool InsertToTblUpload, int SysAnimalID, int UploadId, string AnimalID)
-            QualityControl(string TaskName, string FileName, string Filepath, string ExpName, int expID, int subExpID, string AnimalAge, string SessionName)
+            QualityControl(string TaskName, string FileName, string Filepath, string ExpName, int expID, int subExpID, string AnimalAge, string SessionName, bool MultipleSessions)
         {
 
             //variable initialization
@@ -141,7 +141,7 @@ namespace AngularSPAWebAPI.Services
                     }
                     break;
                 case "Image Continuous Performance Task (iCPT)":
-                    if(!Analysis_Name.Trim().ToLower().Contains("icpt"))
+                    if (!Analysis_Name.Trim().ToLower().Contains("icpt"))
                     {
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
@@ -152,6 +152,7 @@ namespace AngularSPAWebAPI.Services
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
                     break;
+
                 case "Autoshaping":
                     if (!Analysis_Name.Trim().ToLower().Contains("autoshap"))
                     {
@@ -197,7 +198,7 @@ namespace AngularSPAWebAPI.Services
             if (string.IsNullOrEmpty(ErrorMessage1))
             {
 
-                if (duplicateFileUniqueID != null)
+                if (duplicateFileUniqueID != null && !MultipleSessions)
                 {
                     if (duplicateFileUniqueID.IsQcPassed == true)
                     {
@@ -292,7 +293,7 @@ namespace AngularSPAWebAPI.Services
                 }
 
                 (bool flag, string ErrMsg) info = Check_Initial_Touch(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_No_Images);
-                
+
                 if (info.flag)
                 { }
 
@@ -563,7 +564,7 @@ namespace AngularSPAWebAPI.Services
                             if (!(SessionName.Trim().ToLower().Contains("stage 1 - stimulus touch") || SessionName.Trim().ToLower().Contains("stage 2 - target stimulus touch") ||
                                   SessionName.Trim().ToLower().Contains("stage 3 - one target and one non-target") || SessionName.Trim().ToLower().Contains("stage 4 - one target and four non-targets") ||
                                   SessionName.Trim().ToLower().Contains("probe-1 variable stimulus duration") || SessionName.Trim().ToLower().Contains("probe-2 variable contrast levels") ||
-                                  SessionName.Trim().ToLower().Contains("probe-3 variable flanking distractor") ))
+                                  SessionName.Trim().ToLower().Contains("probe-3 variable flanking distractor")))
                             {
                                 ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                             }
@@ -578,9 +579,9 @@ namespace AngularSPAWebAPI.Services
                             //    // type a message 
                             //    ErrorMessage1 += info.ErrMsg;
                             //}
-                            
+
                         }
-                            break;
+                        break;
                     case "Visuomotor Conditional Learning (VMCL)":
                         if (Analysis_Name.Trim().ToLower().Contains("vmcl"))
                         {
@@ -602,7 +603,7 @@ namespace AngularSPAWebAPI.Services
 
 
                         }
-                            break;
+                        break;
 
                     case "Autoshaping":
                         if (Analysis_Name.Trim().ToLower().Contains("autoshap"))
@@ -1328,7 +1329,7 @@ namespace AngularSPAWebAPI.Services
 
 
                     return (flag: Flag, ErrMsg: ErrMsg1);
-                    
+
 
 
                 case "Basic PR (PR4)":
@@ -1405,7 +1406,7 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-                  
+
         } // end of PR function
 
         // Function definition for checking conditions of sessions belong to VMCL Task
@@ -1414,7 +1415,7 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 )
+            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0)
             {
                 Flag = true;
             }
@@ -1425,7 +1426,7 @@ namespace AngularSPAWebAPI.Services
                     ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                
+
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
             }

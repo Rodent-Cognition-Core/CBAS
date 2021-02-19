@@ -14,6 +14,7 @@ namespace AngularSPAWebAPI.Services
         private static string _cnnString_PubScreen = "Server=.;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
         private static string _cnnString_Cogbytes = "Server=.;Database=CogBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
 
+
         public Dal()
         {
         }

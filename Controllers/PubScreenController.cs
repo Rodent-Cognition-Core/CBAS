@@ -49,6 +49,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetTasks());
         }
 
+        // Extracting Regions & Sub-Regions list
+        [HttpGet("GetTaskSubTask")]
+        [AllowAnonymous]
+        public IActionResult GetTaskSubTask()
+        {
+            return new JsonResult(_pubScreenService.GetAllTasks());
+        }
+
         // Extracting species list
         [HttpGet("GetSpecie")]
         [AllowAnonymous]

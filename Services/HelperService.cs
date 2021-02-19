@@ -124,6 +124,7 @@ namespace CBAS.Helpers
                     lstGenoID.Add(9);
                     lstGenoID.Add(10);
                     lstGenoID.Add(12);
+                    lstGenoID.Add(35);
                     break;
                 case 10:
                     lstGenoID.Add(12);
@@ -197,6 +198,9 @@ namespace CBAS.Helpers
                 case 25:
                     lstGenoID.Add(31);
                     lstGenoID.Add(34);
+                    break;
+                case 26:
+                    lstGenoID.Add(35);
                     break;
 
 

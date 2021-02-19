@@ -39,6 +39,16 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    // Extracting Regions & Sub-regions List From DB
+    public getTaskSubTask(): any {
+
+        return this.http
+            .get("/api/pubScreen/GetTaskSubTask", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     // Extracting Species List From DB
     public getSpecie(): any {
 

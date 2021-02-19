@@ -17,6 +17,7 @@ namespace AngularSPAWebAPI.Models
         public int?[] PaperTypeIdSearch { get; set; }
         public string PaperType { get; set; }
         public int?[] TaskID { get; set; }
+        public int?[] SubTaskID { get; set; }
         public int?[] SpecieID { get; set; }
         public int?[] sexID { get; set; }
         public int?[] StrainID { get; set; }

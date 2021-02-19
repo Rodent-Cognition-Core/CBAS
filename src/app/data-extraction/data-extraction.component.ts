@@ -279,7 +279,7 @@ export class DataExtractionComponent implements OnInit {
                     }
                 case 91:
                     { // Autoshaping 
-                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 13) );
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 13));
                         break;
                     }
 
@@ -471,6 +471,7 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(9);
                 this.genoIDList.push(10);
                 this.genoIDList.push(12);
+                this.genoIDList.push(35);
 
             }
             if (selected_StrainVal.indexOf(10) > -1) {
@@ -559,6 +560,10 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(31);
                 this.genoIDList.push(34);
 
+            }
+
+            if (selected_StrainVal.indexOf(26) > -1) {
+                this.genoIDList.push(35);
             }
 
             //console.log(this.genoIDList);

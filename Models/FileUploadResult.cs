@@ -28,6 +28,7 @@ namespace AngularSPAWebAPI.Models
         public string PermanentFilePath { get; set; }
         public Animal AnimalObj { get; set; }
         public string SubExpNameAge { get; set; }
+        public bool IsDuplicateSession { get; set; }
 
     }
 }
