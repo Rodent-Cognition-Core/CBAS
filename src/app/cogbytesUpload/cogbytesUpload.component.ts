@@ -471,11 +471,12 @@ export class CogbytesUploadComponent implements OnInit {
 
                 this.cogbytesService.deleteUpload(this.uploadID).map(res => {
 
-                }).subscribe();
-                setTimeout(() => {
-                    this.spinnerService.hide();
-                }, 500);
-                this.filesUploaded.emit(null);
+                }).subscribe(result => {
+                    this.filesUploaded.emit(null);
+                    setTimeout(() => {
+                        this.spinnerService.hide();
+                    }, 500);
+                });
             }
             this.dialogRefDelFile = null;
         });
