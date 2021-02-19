@@ -1,0 +1,42 @@
+<div>
+    <h3 mat-dialog-title>Please fill the form to add a new author to the system:</h3>
+
+    <mat-dialog-content>
+        <br />
+
+        <!--<app-shared-experiment></app-shared-experiment>-->
+        <!--Author First Name-->
+        <mat-form-field class="full-width">
+
+
+            <input matInput placeholder="Author's First Name" [formControl]="authorName" [(ngModel)]="authorNameModel" required>
+            <mat-error *ngIf="authorName.invalid">{{getErrorMessageName()}}</mat-error>
+        </mat-form-field>
+
+        <!--Author Last Name-->
+        <mat-form-field class="full-width">
+            &nbsp;&nbsp;
+
+            <input matInput placeholder="Author's Last Name" [formControl]="authorLastName" [(ngModel)]="authorLastNameModel" required>
+            <mat-error *ngIf="authorName.invalid">{{getErrorMessageLastName()}}</mat-error>
+
+        </mat-form-field>
+
+        <!--Author Affiliation-->
+        <mat-form-field class="full-width">
+            &nbsp;&nbsp;
+            <input matInput placeholder="Author's Affiliation" [(ngModel)]="authorAffiliationModel">
+
+        </mat-form-field><br /><br />
+
+    </mat-dialog-content>
+
+    <br />
+    <br />
+
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+
+</div>

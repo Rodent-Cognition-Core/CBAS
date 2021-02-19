@@ -10,6 +10,14 @@
             <li><a routerLink="/mb-dashboard">Dashboard</a></li>
             <li>
                 <br />
+                <b>MOUSEBYTES LITE</b>
+                <ul>
+                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/cogbytes">Your Repositories</a></li>
+                    <li><a style="color: #354248;" href="/cogbytes-search">Search Repositories</a></li>
+                </ul>
+            </li>
+            <li>
+                <br />
                 <b>TUTORIALS</b>
                 <ul>
 
@@ -33,17 +41,15 @@
                 </ul>
             </li>
 
-            <br />
-
             <!--<li>
-                <b>DATA INTEGRATION</b>
-                <ul>
-                    <li *ngFor="let item of navItemsIntegration">
-                        <a [routerLink]="[item.route]">{{ item.name}}</a>
-                    </li>
-                </ul>
+        <b>DATA INTEGRATION</b>
+        <ul>
+            <li *ngFor="let item of navItemsIntegration">
+                <a [routerLink]="[item.route]">{{ item.name}}</a>
             </li>
-            <br />-->
+        </ul>
+    </li>
+    <br />-->
 
             <li><a routerLink="/pubScreen">PUBSCREEN</a></li>
             <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
@@ -123,6 +129,13 @@
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
                             <li class="liright">
+                                MOUSEBYTES LITE
+                                <ul>
+                                    <li *ngIf="isAdmin || isUser"><a href="/cogbytes">Your Repositories</a></li>
+                                    <li><a routerLink="/cogbytes-search">Search Repositories</a></li>
+                                </ul>
+                            </li>
+                            <li class="liright">
                                 TUTORIALS
                                 <ul>
                                     <li *ngFor="let navItem of navItemsTutorials">
@@ -182,6 +195,13 @@
                             <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
+                            <li class="liright">
+                                MOUSEBYTES LITE
+                                <ul>
+                                    <li *ngIf="isAdmin || isUser"><a href="/cogbytes">Your Repositories</a></li>
+                                    <li><a routerLink="/cogbytes-search">Search Repositories</a></li>
+                                </ul>
+                            </li>
 
                             <li class="liright">
                                 TUTORIALS

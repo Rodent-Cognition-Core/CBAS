@@ -1,0 +1,38 @@
+.content {
+    padding: 30px 30px;
+    //font-size: 32px;
+    //font-weight: bold;
+    color: #566573;
+    //margin: 50px
+}
+
+.account-card-container2 {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    //padding-left: 50px;
+    mat-card {
+        width: 1200px;
+        //height: 500px;
+    }
+}
+
+.mat-toolbar.mat-primary {
+    background-color: #795D9C;
+}
+
+.mat-raised-button.mat-accent {
+    background-color: #bab9b6;
+}
+
+td {
+    padding: 13px 16px;
+}
+
+label {
+    color: #566573;
+}
+
+mat-panel-description.right-aligned {
+    flex-grow: 0;
+}

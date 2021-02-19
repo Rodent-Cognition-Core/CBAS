@@ -31,6 +31,12 @@ import { ReqAgeDialogeComponent } from './reqAgeDialoge/reqAgeDialoge.component'
 import { ReqMouseLineDialogeComponent } from './reqMouseLineDialoge/reqMouseLineDialoge.component';
 import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
+import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
+import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
+import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
+import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
+import { CogbytesSearchComponent } from './cogbytesSearch/cogbytesSearch.component'
+
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
@@ -64,7 +70,6 @@ import { FormsComponent } from './forms/forms.component';
 import { TermsComponent } from './terms/terms.component';
 import { SearchExperimentComponent } from './search-experiment/search-experiment.component';
 import { PubScreenComponent } from './pubScreen/pubScreen.component';
-
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
@@ -129,8 +134,10 @@ const ROUTES: Routes = [
         GenericDialogComponent,
         SubExpDialogeComponent,
         NotificationDialogComponent,
-        
- 
+        CogbytesDialogueComponent,
+        CogbytesAuthorDialogueComponent,
+        CogbytesPIDialogeComponent,
+        //CogbytesUploadComponent,
        
 
     ],
@@ -170,6 +177,11 @@ const ROUTES: Routes = [
         TermsDialogeComponent,
         ReqMouseLineDialogeComponent,
         AuthorDialogeComponent,
+        CogbytesDialogueComponent,
+        CogbytesUploadComponent,
+        CogbytesAuthorDialogueComponent,
+        CogbytesPIDialogeComponent,
+        CogbytesSearchComponent,
     ],
     bootstrap: [AppComponent]
 })

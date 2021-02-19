@@ -1,0 +1,171 @@
+<div class="guideline" id="guideline">
+    <br />
+
+    <div class="account-card-container2">
+        <mat-card>
+            <mat-toolbar color=#d0d0d0>Adding Repository</mat-toolbar>
+
+            <mat-card-content>
+
+                <div>
+                    <br />
+                    <hr /><br />
+
+                    <mat-expansion-panel [expanded]="true">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Basic Information:
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <!--Adding Paper information ********************************************-->
+                        <!--<label style="color:#566573">Basic Information:</label><br /><br />-->
+                        <!--Repository Author-->
+                        <!--<div *ngIf="sourceOptionModel=='3' || isEditMode">-->
+                        <div>
+
+                            <!--Author-->
+                            <mat-form-field style="width: 40%">
+                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" [(ngModel)]="authorModel" (openedChange)="GetAuthorList()" required multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                        {{author.firstName}}-{{author.lastName}}
+                                    </mat-option>
+
+                                </mat-select>
+                                <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
+                            </mat-form-field>&nbsp;
+
+                            <button mat-icon-button matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
+
+                            <!--PI-->
+                            <!--PI-->
+                            <mat-form-field style="width: 40%">
+                                <mat-select [formControl]="pi" placeholder="Select PI(s)" [(ngModel)]="piModel" (openedChange)="GetPIList()" required multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
+                                        {{pi.piFullName}}
+                                    </mat-option>
+
+                                </mat-select>
+                                <mat-error *ngIf="pi.invalid">{{getErrorMessagePi()}}</mat-error>
+                            </mat-form-field>&nbsp;
+
+                            <button mat-icon-button matTooltip="Add new PI" (click)="openDialogPI()"><mat-icon>add</mat-icon></button>
+
+                            <br /><br />
+                        </div>
+
+                        <!--Paper Title-->
+                        <mat-form-field style="width: 60%">
+
+                            <textarea matInput placeholder="Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+                            </textarea>
+                            <mat-error *ngIf="title.invalid">{{getErrorMessageTitle()}}</mat-error>
+
+                        </mat-form-field>
+
+
+                        <!--Repository Date-->
+                        <mat-form-field style="width:30%; padding-left: 25px">
+
+                            <!--<input matInput placeholder="Date" required>-->
+                            <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
+
+                        </mat-form-field>
+
+                        <br />
+
+                        <!--Paper Keywords-->
+                        <mat-form-field style="width:65%; padding-left: 0px">
+
+                            <textarea matInput placeholder="Keywords" [(ngModel)]="keywordsModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+    
+                            </textarea>
+
+                        </mat-form-field>
+
+                        <!--Paper DOI-->
+                        <mat-form-field style="width:30%; padding-left:25px">
+
+                            <input matInput placeholder="DOI" [(ngModel)]="doiModel">
+
+                        </mat-form-field> <br />
+
+                        <!--Description-->
+                        <mat-form-field style="width:47%">
+
+                            <textarea matInput placeholder="Description" [(ngModel)]="descriptionModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+                            </textarea>
+                        </mat-form-field>
+
+                        <!--Additional Notes-->
+                        <mat-form-field style="width:47%; padding-left:25px">
+
+                            <textarea matInput placeholder="Additional Notes" [(ngModel)]="additionalNotesModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+    
+                            </textarea>
+                        </mat-form-field>
+
+                        <br />
+
+                        <!--URL Link-->
+                        <mat-form-field style="width:60%">
+
+                            <textarea matInput placeholder="URL Link (if multiple, please seperate by semicolon)" [(ngModel)]="linkModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                            </textarea>
+                        </mat-form-field>
+
+                        <br /><br />
+
+                        <!--Privacy Status-->
+                        <span>Privacy Status: </span>
+                        <mat-radio-group [formControl]="privacyStatus" [(ngModel)]="privacyStatusModel" required>
+                            <mat-radio-button value="false">Private</mat-radio-button>
+                            <mat-radio-button value="true">Public</mat-radio-button>
+                            <mat-error *ngIf="privacyStatus.invalid">{{getErrorMessagePrivacyStatus()}}</mat-error>
+                        </mat-radio-group>
+
+                        <br /><br />
+
+                    </mat-expansion-panel>  <br />
+
+
+
+                </div>
+                <br />
+
+                <div *ngIf="!isEditMode; else changeButtons">
+                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddRepository()">Save Repository</button>
+                </div>
+
+                <ng-template #changeButtons>
+                    <div>
+                        <button mat-raised-button [disabled]="setDisabledVal()" (click)="EditRepository()">Save Changes</button>
+                        <button mat-raised-button style="float:right" color="accent" [disabled]="setDisabledVal()" (click)="thisDialogRef.close()">Cancel</button>
+                    </div>
+                </ng-template>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+    <!--***********************************************************************************************************
+    ***************************************************************************************************************-->
+
+
+
+    <br />
+    <br />
+    <br />
+
+</div>
