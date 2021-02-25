@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace AngularSPAWebAPI.Controllers
 {
@@ -222,6 +224,12 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult GetPaparInfoByID(int ID)
         {
             return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
+        }
+
+        [HttpGet("GetPubmedQueue")]
+        public IActionResult GetPubmedQueue()
+        {
+            return new JsonResult(_pubScreenService.GetPubmedQueue());
         }
 
     }

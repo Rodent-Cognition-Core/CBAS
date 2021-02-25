@@ -178,7 +178,7 @@ namespace AngularSPAWebAPI
                  "/mb-dashboard",
                  "/pubScreen",
                  "/pubScreen-search",
-
+                 "/pubScreen-queue",
             };
 
             app.Use(async (context, next) =>

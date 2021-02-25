@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.IO;
@@ -67,10 +68,35 @@ namespace AngularSPAWebAPI.Services
             HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
+            var incomingXml = new XElement("newXML");
+            string responseString = "";
 
-            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            XElement incomingXml = XElement.Parse(responseString);
+            // Pubmed API is rate-limited. If the rate limit is exceeded, the response string from the HTTP Post will indicate that.
+            // When that is the case, we wait 0.3s and attempt again, until we obtain our desired result or another error occurs
+            bool isSuccess = false;
+            while (!isSuccess)
+            {
+                try
+                {
+                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByPubMedKey!");
+                        throw;
+                    } 
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
+            }
 
             string articleAbstract = "";
             string articleYear = "";
@@ -1629,6 +1655,87 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        //public async Task<List<PubmedPaper>> GetPubmedQueue()
+        //{
+        //    List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+        //    List<Task> pubTasks = new List<Task>();
 
+        //    //using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 And PubmedID = 33595957 Order By QueueDate, PubDate"))
+        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+        //    {
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            var task = GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())).ContinueWith(pubmedPaper =>
+        //            {
+        //                PubScreen paper = new PubScreen();
+        //                if (pubmedPaper.Exception != null)
+        //                {
+        //                    paper = null;
+        //                }
+        //                else
+        //                {
+        //                    paper = pubmedPaper.Result;
+        //                }
+        //                PubmedQueue.Add(new PubmedPaper
+        //                {
+        //                    Paper = paper,
+        //                    PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+        //                    PubDate = Convert.ToString(dr["PubDate"].ToString()),
+        //                    QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+        //                    DOI = Convert.ToString(dr["DOI"].ToString()),
+        //                });
+        //            });
+        //            pubTasks.Add(task);
+        //        }
+        //    }
+        //    await Task.WhenAll(pubTasks);
+        //    return PubmedQueue;
+        //}
+
+        public async Task<List<PubmedPaper>> GetPubmedQueue()
+        {
+            List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    PubmedQueue.Add(new PubmedPaper
+                    {
+                        Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+                        PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+                        PubDate = Convert.ToString(dr["PubDate"].ToString()),
+                        QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                    });
+                }
+            }
+
+            return PubmedQueue;
+        }
+
+
+        //    public List<PubmedPaper> GetPubmedQueue()
+        //    {
+        //        List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+
+        //        using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+        //        {
+        //            foreach (DataRow dr in dt.Rows)
+        //            {
+        //                PubmedQueue.Add(new PubmedPaper
+        //                {
+        //                    // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+        //                    //Paper = new PubScreen() { Title = "Testing..." },
+        //                    PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+        //                    PubDate = Convert.ToString(dr["PubDate"].ToString()),
+        //                    QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+        //                    DOI = Convert.ToString(dr["DOI"].ToString()),
+        //                }); ;
+        //            }
+        //        }
+
+        //        return PubmedQueue;
+        //    }
     }
 }

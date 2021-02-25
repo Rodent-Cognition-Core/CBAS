@@ -254,11 +254,13 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-
-
-
-
-
+    // Get papers in the pubmed queue
+    public getPubmedQueue(): any {
+        return this.http
+            .get("/api/pubScreen/GetPubmedQueue", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
 }
 
 
