@@ -8,7 +8,7 @@
 
     <div class="content">
         <p style="padding-left:50px">
-            All papers here were recently added from Pubmed search, to be accepted or rejected into PubScreen. (Due to Pubmed API rate limits, please allow for some time for the queue to load).
+            All papers here were recently added from Pubmed search, to be accepted or rejected into PubScreen.
         </p>
 
     </div>
@@ -39,14 +39,14 @@
                     <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
                     <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>
                 </td>
-                <td>
+                <td style='text-align:center;'>
                     <label>{{row.queueDate.substring(0,10)}}</label>
                 </td>
-                <td>
-                    <button mat-raised-button>Accept</button>
+                <td style='text-align:center;'>
+                    <button mat-raised-button (click)="acceptPub(row.pubmedID)">Accept</button>
                 </td>
-                <td>
-                    <button mat-raised-button>Reject</button>
+                <td style='text-align:center;'>
+                    <button mat-raised-button (click)="rejectPub(row.pubmedID)">Reject</button>
                 </td>
             </tr>
         </tbody>

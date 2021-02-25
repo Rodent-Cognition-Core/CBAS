@@ -58,39 +58,67 @@ export class PubScreenQueueComponent implements OnInit {
     }
 
  
-    // Deleting publication
-    delPub(pubRow) {
-        this.openConfirmationDialog(pubRow.id);
+    acceptPub(pubmedID) {
+        this.openAcceptDialog(pubmedID);
     }
 
-    // Deleting Experiment
-    openConfirmationDialog(pubID) {
+    rejectPub(pubmedID) {
+        this.openRejectDialog(pubmedID);
+    }
+
+    openAcceptDialog(pubmedID) {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete?"
-
+        this.dialogRef.componentInstance.confirmMessage = "Are you sure you wish to accept the paper into Pubscreen?"
 
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
-                console.log(pubID);
+                console.log(pubmedID);
 
-                this.pubScreenService.deletePublicationById(pubID).map(res => {
-
-
-                    this.spinnerService.hide();
-
-
-                    location.reload()
-
-                }).subscribe();
+                this.pubScreenService.addQueuePaper(pubmedID).subscribe(data => {
+                    alert('Publication successfully added to Pubscreen!')
+                    this.pubScreenService.getPubmedQueue().subscribe(
+                        data => {
+                            this.pubmedQueue = data;
+                            console.log(this.pubmedQueue);
+                            this.spinnerService.hide();
+                        }
+                    );
+                });
             }
             this.dialogRef = null;
         });
     }
 
+    openRejectDialog(pubmedID) {
+        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.dialogRef.componentInstance.confirmMessage = "Are you sure you wish to reject the paper from Pubscreen?"
+
+        this.dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+
+                console.log(pubmedID);
+
+                this.pubScreenService.rejectQueuePaper(pubmedID).subscribe(result => {
+                    alert('Publication rejected!')
+                    this.pubScreenService.getPubmedQueue().subscribe(
+                        data => {
+                            this.pubmedQueue = data;
+                            console.log(this.pubmedQueue);
+                            this.spinnerService.hide();
+                        }
+                    );
+                });
+            }
+            this.dialogRef = null;
+        });
+    }
 
 
 
