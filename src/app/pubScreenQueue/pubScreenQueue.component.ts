@@ -44,36 +44,10 @@ export class PubScreenQueueComponent implements OnInit {
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
 
-        //this.pubScreenService.getPaparInfoFromDOI("10.1038/s41398-020-01162-0").subscribe(data => {
-        //    console.log(data);
-        //});
-        //this.pubScreenService.getPaparInfoFromDOI("10.1186/s13041-020-00716-z").subscribe(data => {
-        //    console.log(data);
-        ////});
-        //this.pubScreenService.getPaparInfoFromDOI("10.1038/s41598-021-80960-y").subscribe(data => {
-        //    console.log(data);
-        //});
-        //this.pubScreenService.getPaparInfoFromDOI("10.1097/FBP.0000000000000626").subscribe(data => {
-        //    console.log(data);
-        //});
-
-        //this.pubScreenService.getPubmedQueue().subscribe(
-        //    data => {
-        //        this.pubmedQueue = data;
-        //        console.log(this.pubmedQueue);
-        //        this.pubmedQueue.forEach((pubmedItem) => {
-        //            this.pubScreenService.getPaparInfoFromPubmedKey(pubmedItem.pubmedID).subscribe(data => {
-        //                pubmedItem.paper = data;
-        //            });
-        //        })
-        //        console.log(this.pubmedQueue);
-        //    },
-        //);
         this.pubScreenService.getPubmedQueue().subscribe(
             data => {
-                this.pubmedQueue = data.result;
+                this.pubmedQueue = data;
                 console.log(this.pubmedQueue);
-                console.log(this.pubmedQueue.length);
             }
         );
     }

@@ -1692,7 +1692,30 @@ namespace AngularSPAWebAPI.Services
         //    return PubmedQueue;
         //}
 
-        public async Task<List<PubmedPaper>> GetPubmedQueue()
+        //public async Task<List<PubmedPaper>> GetPubmedQueue()
+        //{
+        //    List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+
+        //    using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+        //    {
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            PubmedQueue.Add(new PubmedPaper
+        //            {
+        //                Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+        //                PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+        //                PubDate = Convert.ToString(dr["PubDate"].ToString()),
+        //                QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+        //                DOI = Convert.ToString(dr["DOI"].ToString()),
+        //            });
+        //        }
+        //    }
+
+        //    return PubmedQueue;
+        //}
+
+
+        public List<PubmedPaper> GetPubmedQueue()
         {
             List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
 
@@ -1702,7 +1725,8 @@ namespace AngularSPAWebAPI.Services
                 {
                     PubmedQueue.Add(new PubmedPaper
                     {
-                        Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+                        // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+                        Title = Convert.ToString(dr["Title"].ToString()),
                         PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
                         PubDate = Convert.ToString(dr["PubDate"].ToString()),
                         QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
@@ -1713,29 +1737,5 @@ namespace AngularSPAWebAPI.Services
 
             return PubmedQueue;
         }
-
-
-        //    public List<PubmedPaper> GetPubmedQueue()
-        //    {
-        //        List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
-
-        //        using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
-        //        {
-        //            foreach (DataRow dr in dt.Rows)
-        //            {
-        //                PubmedQueue.Add(new PubmedPaper
-        //                {
-        //                    // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
-        //                    //Paper = new PubScreen() { Title = "Testing..." },
-        //                    PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
-        //                    PubDate = Convert.ToString(dr["PubDate"].ToString()),
-        //                    QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
-        //                    DOI = Convert.ToString(dr["DOI"].ToString()),
-        //                }); ;
-        //            }
-        //        }
-
-        //        return PubmedQueue;
-        //    }
     }
 }

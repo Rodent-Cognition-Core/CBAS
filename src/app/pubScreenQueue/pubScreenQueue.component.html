@@ -36,7 +36,7 @@
             </tr>
             <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of pubmedQueue">
                 <td>
-                    <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.paper.title ==="") ?  "N/A" : row.paper.title}}</span><br /><br />
+                    <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
                     <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>
                 </td>
                 <td>
