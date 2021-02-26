@@ -180,17 +180,31 @@ namespace AngularSPAWebAPI.Services
 
             //doi
             string doi = "";
-            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID") != null)
+            try
             {
-                doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID").Value;
+                if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").Any())
+                {
+                    doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").FirstOrDefault().Value;
+                }
+            }
+            catch(ArgumentNullException)
+            {
+
             }
 
-            if (String.IsNullOrEmpty(doi))
+            try
             {
-                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") != null)
+                if (String.IsNullOrEmpty(doi))
                 {
-                    doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
+                    if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").Any())
+                    {
+                        doi = incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").FirstOrDefault().Value;
+                    }
+
                 }
+            }
+            catch(ArgumentNullException)
+            {
 
             }
 
