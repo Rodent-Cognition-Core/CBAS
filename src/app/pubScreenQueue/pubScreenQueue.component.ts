@@ -58,15 +58,15 @@ export class PubScreenQueueComponent implements OnInit {
     }
 
  
-    acceptPub(pubmedID) {
-        this.openAcceptDialog(pubmedID);
+    acceptPub(row) {
+        this.openAcceptDialog(row.pubmedID, row.doi);
     }
 
-    rejectPub(pubmedID) {
-        this.openRejectDialog(pubmedID);
+    rejectPub(row) {
+        this.openRejectDialog(row.pubmedID);
     }
 
-    openAcceptDialog(pubmedID) {
+    openAcceptDialog(pubmedID, doi) {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -78,7 +78,7 @@ export class PubScreenQueueComponent implements OnInit {
 
                 console.log(pubmedID);
 
-                this.pubScreenService.addQueuePaper(pubmedID).subscribe(data => {
+                this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe(data => {
                     alert('Publication successfully added to Pubscreen!')
                     this.pubScreenService.getPubmedQueue().subscribe(
                         data => {

@@ -43,10 +43,10 @@
                     <label>{{row.queueDate.substring(0,10)}}</label>
                 </td>
                 <td style='text-align:center;'>
-                    <button mat-raised-button (click)="acceptPub(row.pubmedID)">Accept</button>
+                    <button mat-raised-button (click)="acceptPub(row)">Accept</button>
                 </td>
                 <td style='text-align:center;'>
-                    <button mat-raised-button (click)="rejectPub(row.pubmedID)">Reject</button>
+                    <button mat-raised-button (click)="rejectPub(row)">Reject</button>
                 </td>
             </tr>
         </tbody>

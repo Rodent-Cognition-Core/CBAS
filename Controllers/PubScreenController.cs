@@ -233,11 +233,11 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
-        public IActionResult AddQueuePaper(int pubmedID)
+        public IActionResult AddQueuePaper(int pubmedID, string doi)
         {
             var user = GetCurrentUser();
             var userEmail = user.Result.UserName;
-            return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, userEmail));
+            return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
         }
 
         [HttpDelete("RejectQueuePaper")]

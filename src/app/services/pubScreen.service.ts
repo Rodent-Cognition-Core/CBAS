@@ -263,10 +263,10 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Adding a new paper from queue to system
-    public addQueuePaper(pubmedID: number) {
+    public addQueuePaper(pubmedID: number, doi: string) {
 
         // Sends an authenticated request.
-        return this.http.get("/api/pubScreen/AddQueuePaper?pubmedID=" + pubmedID, {
+        return this.http.get("/api/pubScreen/AddQueuePaper?pubmedID=" + pubmedID + "&doi=" + doi, {
             headers: this.authenticationService.getAuthorizationHeader()
         });
     }
