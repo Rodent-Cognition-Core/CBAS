@@ -254,11 +254,32 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Get papers in the pubmed queue
+    public getPubmedQueue(): any {
+        return this.http
+            .get("/api/pubScreen/GetPubmedQueue", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
 
+    // Adding a new paper from queue to system
+    public addQueuePaper(pubmedID: number, doi: string) {
 
+        // Sends an authenticated request.
+        return this.http.get("/api/pubScreen/AddQueuePaper?pubmedID=" + pubmedID + "&doi=" + doi, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
 
+    // Reject paper from pubscreen and remove from queue
+    public rejectQueuePaper(pubmedID: number): any {
 
+        return this.http
+            .delete("/api/pubScreen/RejectQueuePaper?pubmedID=" + pubmedID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
 
+    }
 }
 
 

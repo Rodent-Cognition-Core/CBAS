@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.IO;
@@ -67,10 +68,35 @@ namespace AngularSPAWebAPI.Services
             HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
+            var incomingXml = new XElement("newXML");
+            string responseString = "";
 
-            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            XElement incomingXml = XElement.Parse(responseString);
+            // Pubmed API is rate-limited. If the rate limit is exceeded, the response string from the HTTP Post will indicate that.
+            // When that is the case, we wait 0.3s and attempt again, until we obtain our desired result or another error occurs
+            bool isSuccess = false;
+            while (!isSuccess)
+            {
+                try
+                {
+                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByPubMedKey!");
+                        throw;
+                    } 
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
+            }
 
             string articleAbstract = "";
             string articleYear = "";
@@ -154,17 +180,31 @@ namespace AngularSPAWebAPI.Services
 
             //doi
             string doi = "";
-            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID") != null)
+            try
             {
-                doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID").Value;
+                if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").Any())
+                {
+                    doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").FirstOrDefault().Value;
+                }
+            }
+            catch(ArgumentNullException)
+            {
+
             }
 
-            if (String.IsNullOrEmpty(doi))
+            try
             {
-                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") != null)
+                if (String.IsNullOrEmpty(doi))
                 {
-                    doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
+                    if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").Any())
+                    {
+                        doi = incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").FirstOrDefault().Value;
+                    }
+
                 }
+            }
+            catch(ArgumentNullException)
+            {
 
             }
 
@@ -1629,6 +1669,44 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public List<PubmedPaper> GetPubmedQueue()
+        {
+            List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
 
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    PubmedQueue.Add(new PubmedPaper
+                    {
+                        // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+                        PubDate = Convert.ToString(dr["PubDate"].ToString()),
+                        QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                    });
+                }
+            }
+
+            return PubmedQueue;
+        }
+
+        public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
+        {
+            PubScreen paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+            paper.DOI = doi;
+            int? PubID = AddPublications(paper, userName);
+
+            ProcessQueuePaper(pubmedID);
+
+            return PubID;
+        }
+
+        public void ProcessQueuePaper(int pubmedID)
+        {
+            Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+        }
     }
+
 }

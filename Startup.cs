@@ -180,6 +180,7 @@ namespace AngularSPAWebAPI
                  "/pubScreen-search",
                  "/cogbytes",
                  "/cogbytes-search",
+                 "/pubScreen-queue",
             };
 
             app.Use(async (context, next) =>

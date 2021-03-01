@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace AngularSPAWebAPI.Controllers
 {
@@ -224,5 +226,25 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
         }
 
+        [HttpGet("GetPubmedQueue")]
+        public IActionResult GetPubmedQueue()
+        {
+            return new JsonResult(_pubScreenService.GetPubmedQueue());
+        }
+
+        [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
+        public IActionResult AddQueuePaper(int pubmedID, string doi)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
+        }
+
+        [HttpDelete("RejectQueuePaper")]
+        public IActionResult RejectQueuePaper(int pubmedID)
+        {
+            _pubScreenService.ProcessQueuePaper(pubmedID);
+            return new JsonResult("Done!");
+        }
     }
 }
