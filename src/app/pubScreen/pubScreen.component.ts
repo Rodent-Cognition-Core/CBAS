@@ -25,7 +25,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 })
 export class PubScreenComponent implements OnInit {
 
-
+    pubCount: number;
+    featureCount: number;
 
     authorModel: any;
     titleModel: any;
@@ -97,6 +98,12 @@ export class PubScreenComponent implements OnInit {
 
     ngOnInit() {
 
+        this.pubScreenService.getPubCount().subscribe(data => {
+            this.pubCount = data.item1;
+            this.featureCount = data.item2;
+            console.log(this.pubCount);
+            console.log(this.featureCount);
+        });
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });

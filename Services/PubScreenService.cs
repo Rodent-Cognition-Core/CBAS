@@ -18,6 +18,7 @@ using System.Text;
 using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
+using System.Reflection;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -895,6 +896,35 @@ namespace AngularSPAWebAPI.Services
         public bool EditPublication(int publicationId, PubScreen publication, string Username)
         {
 
+            // Get original paper information
+            var origPub = new PubScreenSearch();
+
+            using (DataTable dt = Dal.GetDataTablePub($"Select * From SearchPub Where ID = {publicationId}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    origPub.ID = Int32.Parse(dr["ID"].ToString());
+                    origPub.Title = Convert.ToString(dr["Title"].ToString());
+                    origPub.Abstract = Convert.ToString(dr["Abstract"].ToString());
+                    origPub.Keywords = Convert.ToString(dr["Keywords"].ToString());
+                    origPub.DOI = Convert.ToString(dr["DOI"].ToString());
+                    origPub.Year = Convert.ToString(dr["Year"].ToString());
+                    origPub.Author = Convert.ToString(dr["Author"].ToString());
+                    origPub.PaperType = Convert.ToString(dr["PaperType"].ToString());
+                    origPub.Task = Convert.ToString(dr["Task"].ToString());
+                    origPub.SubTask = Convert.ToString(dr["SubTask"].ToString());
+                    origPub.Species = Convert.ToString(dr["Species"].ToString());
+                    origPub.Sex = Convert.ToString(dr["Sex"].ToString());
+                    origPub.Strain = Convert.ToString(dr["Strain"].ToString());
+                    origPub.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    origPub.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
+                    origPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
+                    origPub.CellType = Convert.ToString(dr["CellType"].ToString());
+                    origPub.Method = Convert.ToString(dr["Method"].ToString());
+                    origPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
+                    origPub.Reference = Convert.ToString(dr["Reference"].ToString());
+                }
+            };
 
             string sqlPublication = $@"Update Publication set Title = @title, Abstract = @abstract, Keywords = @keywords,
                                                                DOI = @doi, Year = @year where id = {publicationId}";
@@ -1169,8 +1199,67 @@ namespace AngularSPAWebAPI.Services
             // Handling Other for NeuroTransmitter
             ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", publicationId, Username);
 
-            return true;
+            // Get new paper information
 
+            // Get updated paper information
+            var newPub = new PubScreenSearch();
+
+            using (DataTable dt = Dal.GetDataTablePub($"Select * From SearchPub Where ID = {publicationId}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    newPub.ID = Int32.Parse(dr["ID"].ToString());
+                    newPub.Title = Convert.ToString(dr["Title"].ToString());
+                    newPub.Abstract = Convert.ToString(dr["Abstract"].ToString());
+                    newPub.Keywords = Convert.ToString(dr["Keywords"].ToString());
+                    newPub.DOI = Convert.ToString(dr["DOI"].ToString());
+                    newPub.Year = Convert.ToString(dr["Year"].ToString());
+                    newPub.Author = Convert.ToString(dr["Author"].ToString());
+                    newPub.PaperType = Convert.ToString(dr["PaperType"].ToString());
+                    newPub.Task = Convert.ToString(dr["Task"].ToString());
+                    newPub.SubTask = Convert.ToString(dr["SubTask"].ToString());
+                    newPub.Species = Convert.ToString(dr["Species"].ToString());
+                    newPub.Sex = Convert.ToString(dr["Sex"].ToString());
+                    newPub.Strain = Convert.ToString(dr["Strain"].ToString());
+                    newPub.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    newPub.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
+                    newPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
+                    newPub.CellType = Convert.ToString(dr["CellType"].ToString());
+                    newPub.Method = Convert.ToString(dr["Method"].ToString());
+                    newPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
+                    newPub.Reference = Convert.ToString(dr["Reference"].ToString());
+                }
+            };
+
+            // Log changes made
+            string changeLog = "";
+            PropertyInfo[] pubProperties = typeof(PubScreenSearch).GetProperties();
+            foreach (PropertyInfo pubProperty in pubProperties)
+            {
+                if (!Object.Equals(pubProperty.GetValue(origPub), pubProperty.GetValue(newPub)))
+                {
+                    changeLog += $"{pubProperty.Name} changed.\n" +
+                        $"Original: {pubProperty.GetValue(origPub)}\n" +
+                        $"Edited: {pubProperty.GetValue(newPub)}\n\n";
+                }
+            }
+
+            // Log edit to database
+            if (!String.IsNullOrEmpty(changeLog))
+            {
+                DateTime today = DateTime.Today;
+                Dal.ExecuteNonQueryPub($"Insert Into EditLog (PubID, Username, EditDate, ChangeLog) Values " +
+                    $"({publicationId}, '{Username}', '{today.ToString().Split('T')[0]}', '{changeLog.Replace("'", "''")}')");
+
+                // Send email detailing paper edits
+                string emailMsg = $"Pubscreen paper '{newPub.Title}' (ID {newPub.ID}), was edited by {Username}.\n\n" +
+                    $"The following changes were made:\n\n{changeLog}";
+                HelperService.SendEmail("", "ejiang6@uwo.ca", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
+            }
+
+
+
+            return true;
         }
 
         // Function definition to search publications in database
@@ -1706,6 +1795,13 @@ namespace AngularSPAWebAPI.Services
         public void ProcessQueuePaper(int pubmedID)
         {
             Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+        }
+
+        public (int, int) GetPubCount()
+        {
+            int pubCount = (int)Dal.ExecScalarPub("Select Count(ID) From SearchPub");
+            int featureCount = (int)Dal.ExecScalarPub("Select Count(Task) From SearchPub");
+            return (pubCount, featureCount);
         }
     }
 
