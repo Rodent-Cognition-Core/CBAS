@@ -246,5 +246,20 @@ namespace AngularSPAWebAPI.Controllers
             _pubScreenService.ProcessQueuePaper(pubmedID);
             return new JsonResult("Done!");
         }
+
+        [HttpGet("GetPubCount")]
+        [AllowAnonymous]
+        public IActionResult GetPubCount()
+        {
+            return new JsonResult(_pubScreenService.GetPubCount());
+        }
+
+        [HttpGet("AddCSVPapers")]
+        public IActionResult AddCSVPapers()
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.AddCSVPapers(userEmail));
+        }
     }
 }

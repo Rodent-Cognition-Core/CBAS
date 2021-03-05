@@ -280,6 +280,21 @@ import { AuthenticationService } from './authentication.service';
             });
 
     }
+
+    // Get count of number of papers in Pubscreen and number of papers with key features added
+    public getPubCount(): any {
+        return this.http
+            .get("/api/pubScreen/GetPubCount", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            }); 
+    }
+
+    public addCSVPapers(): any {
+        return this.http
+            .get("/api/pubScreen/AddCSVPapers", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            })
+    }
 }
 
 

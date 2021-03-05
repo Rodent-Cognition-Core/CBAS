@@ -120,7 +120,9 @@ export class PubScreenQueueComponent implements OnInit {
         });
     }
 
-
+    addCSVPapers() {
+        this.pubScreenService.addCSVPapers().subscribe();
+    }
 
 }
 
