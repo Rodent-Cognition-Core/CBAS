@@ -288,6 +288,13 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             }); 
     }
+
+    public addCSVPapers(): any {
+        return this.http
+            .get("/api/pubScreen/AddCSVPapers", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            })
+    }
 }
 
 

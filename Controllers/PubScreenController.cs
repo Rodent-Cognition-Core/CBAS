@@ -254,5 +254,12 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetPubCount());
         }
 
+        [HttpGet("AddCSVPapers")]
+        public IActionResult AddCSVPapers()
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            return new JsonResult(_pubScreenService.AddCSVPapers(userEmail));
+        }
     }
 }

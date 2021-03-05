@@ -40,17 +40,43 @@ namespace AngularSPAWebAPI.Services
 
             StringContent content = new System.Net.Http.StringContent(String.Empty);
 
-            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
-                (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
+            string responseString = "";
+            var incomingXml = new XElement("newXML");
+            bool isSuccess = false;
+            while (!isSuccess)
             {
-                return null;
+                try
+                {
+                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
+                        (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
+                    {
+                        return null;
+                    }
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByDoi!");
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
             }
 
-            XElement incomingXml = XElement.Parse(responseString);
-            string pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
+            string pubMedKey = null;
+            if (incomingXml.Element("IdList").Element("Id") != null)
+            {
+                pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
+            }
 
             //If pubmedkey is available, Send it to another function to get Paper's info
             if (!string.IsNullOrEmpty(pubMedKey))
@@ -130,7 +156,7 @@ namespace AngularSPAWebAPI.Services
             {
                 articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate").Element("Year").Value;
             }
-            else if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate") != null)
+            else if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate").Element("Year") != null)
             {
                 articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate").Element("Year").Value;
 
@@ -167,12 +193,12 @@ namespace AngularSPAWebAPI.Services
             {
                 if (xn["ForeName"] != null && xn["LastName"] != null)
                 {
-                    authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
+                    authorListString.Add(xn["ForeName"].InnerText.Trim() + "-" + xn["LastName"].InnerText.Trim());
 
                     authorList.Add(new PubScreenAuthor
                     {
-                        FirstName = xn["ForeName"].InnerText,
-                        LastName = xn["LastName"].InnerText,
+                        FirstName = xn["ForeName"].InnerText.Trim(),
+                        LastName = xn["LastName"].InnerText.Trim(),
                         Affiliation = xn["AffiliationInfo"] == null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
 
                     });
@@ -258,12 +284,12 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
             foreach (var name in authorTempList)
             {
-                authorListString.Add(name.Split(',')[1] + '-' + name.Split(',')[0]);
+                authorListString.Add(name.Split(',')[1].Trim() + '-' + name.Split(',')[0].Trim());
 
                 authorList.Add(new PubScreenAuthor
                 {
-                    FirstName = name.Split(',')[1],
-                    LastName = name.Split(',')[0],
+                    FirstName = name.Split(',')[1].Trim(),
+                    LastName = name.Split(',')[0].Trim(),
 
                 });
 
@@ -662,9 +688,9 @@ namespace AngularSPAWebAPI.Services
 
                     if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
                     {
-                        sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
-                                                                                                      '{publication.Author[i].LastName}',
-                                                                                                      '{publication.Author[i].Affiliation}');";
+                        sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{HelperService.EscapeSql(publication.Author[i].FirstName.Trim())}',
+                                                                                                      '{HelperService.EscapeSql(publication.Author[i].LastName.Trim())}',
+                                                                                                      '{HelperService.EscapeSql(HelperService.NullToString(publication.Author[i].Affiliation).Trim())}');";
                     }
 
                 }
@@ -679,7 +705,7 @@ namespace AngularSPAWebAPI.Services
                 int j = 1;
                 foreach (string author in AuthorList)
                 {
-                    sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
+                    sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{HelperService.EscapeSql(author).Trim()}';";
                     authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
 
                     sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
@@ -1245,7 +1271,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             // Log edit to database
-            if (!String.IsNullOrEmpty(changeLog))
+            if (!string.IsNullOrEmpty(changeLog))
             {
                 DateTime today = DateTime.Today;
                 Dal.ExecuteNonQueryPub($"Insert Into EditLog (PubID, Username, EditDate, ChangeLog) Values " +
@@ -1802,6 +1828,88 @@ namespace AngularSPAWebAPI.Services
             int pubCount = (int)Dal.ExecScalarPub("Select Count(ID) From SearchPub");
             int featureCount = (int)Dal.ExecScalarPub("Select Count(Task) From SearchPub");
             return (pubCount, featureCount);
+        }
+
+        public async Task<List<string>> AddCSVPapers(string userName)
+        {
+            List<string> doiList = new List<string>();
+            var reader = new StreamReader("TSPapers.csv");
+
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                Console.WriteLine(line);
+                var values = line.Split(',');
+
+                string doi = values[0].Trim().TrimEnd('.').Split(' ')[0].TrimEnd('.');
+                string pubmedID = values[1].Trim();
+
+                int? ID = null;
+                // Check for duplication based on the DOI
+
+                if (!string.IsNullOrEmpty(doi))
+                {
+                    string sqlDOI = $@"Select ID From Publication Where DOI = '{doi}'";
+                    ID = (int?)Dal.ExecScalarPub(sqlDOI);
+                }
+                
+                if (ID == null)
+                {
+                    int result;
+                    bool pubmedSuccess = false;
+                    var paper = new PubScreen();
+
+                    if (Int32.TryParse(pubmedID, out result))
+                    {
+                        try
+                        {
+                            paper = await GetPaperInfoByPubMedKey(pubmedID);
+                            pubmedSuccess = true;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+
+                    if (!pubmedSuccess)
+                    {
+                        if (!string.IsNullOrEmpty(doi))
+                        {
+                            // Attempt to get read paper based on DOI and Pubmed
+                            paper = await GetPaperInfoByDoi(doi);
+                            if (paper == null)
+                            {
+                                // Attempt to read paper based on bioRxiv
+                                paper = await GetPaperInfoByDOIBIO(doi);
+
+                                if (paper == null)
+                                {
+                                    // If all else fails, just add DOI to database
+                                    paper = new PubScreen{DOI = doi,};
+                                }
+                            }
+                        }
+                        else
+                        {
+                            paper = null;
+                        }
+                    }
+
+                    if (paper != null)
+                    {
+                        if (paper.DOI == "")
+                        {
+                            paper.DOI = doi;
+                        }
+                        AddPublications(paper, userName);
+                        doiList.Add(doi);
+                    }
+                }
+
+            }
+
+            return doiList;
         }
     }
 
