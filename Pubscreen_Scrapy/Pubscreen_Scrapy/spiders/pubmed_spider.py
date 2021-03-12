@@ -104,7 +104,7 @@ class PubmedSpider(Spider):
             sender_email = "mousebyt@uwo.ca"
             with smtplib.SMTP("smtp.office365.com", port) as server:
                 server.starttls(context=context)
-                server.login(sender_email, "Br41nsCANRCC!")
+                server.login(sender_email, "")
 
                 # If there was an error, send email to Eric
                 if self.is_error:
