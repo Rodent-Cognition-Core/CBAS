@@ -555,6 +555,8 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding a new publication to DB by cliking on Submit button
     AddEditPublication() {
 
+        this.spinnerService.show();
+
         if (!this.yearModel.match(/^(19|20)\d{2}$/)) {
             alert('year is not valid!');
             return;
@@ -631,6 +633,11 @@ export class PubscreenDialogeComponent implements OnInit {
                 } else {
                     alert("Error in editing publication! Please try again, if this happens again contact admin.")
                 }
+
+                setTimeout(() => {
+                    this.spinnerService.hide();
+
+                }, 500);
  
             });
 
@@ -645,8 +652,15 @@ export class PubscreenDialogeComponent implements OnInit {
                 }
                 this.resetFormVals();
 
+                setTimeout(() => {
+                    this.spinnerService.hide();
+
+                }, 500);
+
             });
         }
+
+        //this.spinnerService.hide();
 
     }
 
