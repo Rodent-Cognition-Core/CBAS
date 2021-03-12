@@ -60,47 +60,7 @@ export class DataLinkComponent implements OnInit {
             this.colNames = [];
 
 
-            //var subTaskWithStimulation = [3, 8, 9, 10, 21, 22, 23, 24, 25, 26, 27];
-
-            //if (subTaskWithStimulation.indexOf(data.subTaskID) > 0) {
-
-            //    console.log(this.result);
-
-            //    this.result = this.result.map(function (a) {
-            //        var test_str = a.Schedule_Name;
-            //        var start_pos = test_str.indexOf('_') + 1;
-            //        var end_pos = test_str.indexOf('_', start_pos);
-            //        var text_to_get = '';
-            //        if (end_pos > start_pos) {
-            //            text_to_get = test_str.substring(start_pos, end_pos);
-
-            //            if (text_to_get.toLowerCase().indexOf('ms') > 0) {
-            //                text_to_get = text_to_get.toLowerCase().replace('ms', '');
-            //            } else if (text_to_get.toLowerCase().indexOf('s') > 0) {
-
-            //                text_to_get = text_to_get.replace(',', '.');
-            //                if (text_to_get.indexOf('0') == 0) { // replace 04s with 0.4s
-            //                    text_to_get = ['0.', text_to_get.slice(1)].join('');
-            //                }
-
-            //                text_to_get = (parseFloat(text_to_get.toLowerCase().replace('s', '')) * 1000).toString();
-
-            //            } else {
-            //                text_to_get = '';
-            //            }
-            //        }
-
-            //        delete a.Schedule_Name;
-            //        a.Schedule_Name = test_str;
-
-            //        a.Stimulation_Duration_ms = text_to_get;
-
-            //        return a;
-            //    });
-
-            //    //console.log(this.result);
-            //}
-
+            
             this.setPage(1);
             //this.colNames = [];
 

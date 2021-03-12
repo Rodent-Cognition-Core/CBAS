@@ -1911,7 +1911,7 @@ namespace AngularSPAWebAPI.Services
         {
             PubScreenSearch pubScreenPublication = new PubScreenSearch();
 
-            string sql = $"Select * From SearchPub Where paperGuid = '{paperLinkGuid}'";
+            string sql = $"Select * From SearchPub Where PaperLinkGuid = '{paperLinkGuid}'";
 
             using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
             {

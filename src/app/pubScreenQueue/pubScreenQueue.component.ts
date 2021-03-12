@@ -138,7 +138,7 @@ export class PubScreenQueueComponent implements OnInit {
 
             this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreenEdit?paperlinkguid=" + guid;
+            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
 
 
 

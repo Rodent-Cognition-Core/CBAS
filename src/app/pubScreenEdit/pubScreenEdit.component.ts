@@ -24,6 +24,7 @@ export class PubScreenEditComponent implements OnInit {
    
     paperLinkGuid: string;
     isAdmin: boolean;
+    isLoaded: boolean;
 
 
     _pubSCreenSearch = new Pubscreen();
@@ -39,6 +40,8 @@ export class PubScreenEditComponent implements OnInit {
         private route: ActivatedRoute,
         private spinnerService: Ng4LoadingSpinnerService,
         public dialogAuthor: MatDialog) {
+
+        this.isLoaded = false;
 
         this.route.queryParams.subscribe(params => {
             this.paperLinkGuid = params['paperlinkguid'];
@@ -59,8 +62,15 @@ export class PubScreenEditComponent implements OnInit {
         this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe(data => {
 
             this.paperInfo = data;
+            console.log(this.paperInfo)
+
+            this.isLoaded = true;
+
+
 
         });
+
+        this.spinnerService.hide();
 
     }
 

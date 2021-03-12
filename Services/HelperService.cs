@@ -69,7 +69,7 @@ namespace CBAS.Helpers
 
                 SmtpServer.Port = 587;
 
-                SmtpServer.Credentials = new System.Net.NetworkCredential("mousebyt@uwo.ca", "");
+                SmtpServer.Credentials = new System.Net.NetworkCredential("mousebyt@uwo.ca", "Br41nsCANRCC!");
 
                 SmtpServer.EnableSsl = true;
 

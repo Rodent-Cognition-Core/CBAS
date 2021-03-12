@@ -13,7 +13,7 @@
 
     <!--Edititng key features by Corresponding Author-->
     <br /><br />
-    <div>
+    <div *ngIf="isLoaded">
         <!--<app-shared-experiment></app-shared-experiment>-->
         <table class="docs-markdown-table">
             <thead>
@@ -30,7 +30,7 @@
                         <div style="clear:both"></div>
                         <br /><br />
 
-                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.title ==="") ?  "N/A" : paperInfo.title}}</span><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( paperInfo?.title ==="") ?  "N/A" : paperInfo?.title}}</span><br /><br />
                         <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.author =="") ?  "N/A" : paperInfo.author}}</span><br /><br />
                         <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( paperInfo.keywords =="") ?  "N/A" : paperInfo.keywords}}</span> &nbsp; &nbsp; &nbsp;
                         <!--<label>DOI:</label>&nbsp; <span style="color:#909497;">{{( paperInfo.doi =="") ?  "N/A" : paperInfo.doi}}</span>&nbsp; &nbsp; &nbsp;-->
