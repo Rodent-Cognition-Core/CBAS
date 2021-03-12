@@ -181,6 +181,7 @@ namespace AngularSPAWebAPI
                  "/cogbytes",
                  "/cogbytes-search",
                  "/pubScreen-queue",
+                 "/pubScreen-edit",
             };
 
             app.Use(async (context, next) =>

@@ -16,6 +16,7 @@ import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 
 
 @Component({
@@ -26,9 +27,13 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 export class PubScreenQueueComponent implements OnInit {
 
     pubmedQueue: any;
+    linkModel: any;
 
     isAdmin: boolean;
     isUser: boolean;
+
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
+    showGeneratedLink: any;
 
     dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
     private _onDestroy = new Subject<void>();
@@ -37,7 +42,7 @@ export class PubScreenQueueComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,) { }
+        private spinnerService: Ng4LoadingSpinnerService, ) { }
 
     ngOnInit() {
 
@@ -57,7 +62,7 @@ export class PubScreenQueueComponent implements OnInit {
         this._onDestroy.complete();
     }
 
- 
+
     acceptPub(row) {
         this.openAcceptDialog(row.pubmedID, row.doi);
     }
@@ -122,6 +127,27 @@ export class PubScreenQueueComponent implements OnInit {
 
     addCSVPapers() {
         this.pubScreenService.addCSVPapers().subscribe();
+    }
+
+    getLink(doi) {
+
+        this.pubScreenService.getGuidByDoi(doi).subscribe(data => {
+
+            this.showGeneratedLink = true;
+            var guid = data.paperLinkGuid;
+
+            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            });
+            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreenEdit?paperlinkguid=" + guid;
+
+
+
+            //} else {
+            //    console.log('Not Done!');
+
+            //}
+        });
+
     }
 
 }

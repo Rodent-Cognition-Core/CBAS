@@ -286,7 +286,7 @@ import { AuthenticationService } from './authentication.service';
         return this.http
             .get("/api/pubScreen/GetPubCount", {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
-            }); 
+            });
     }
 
     public addCSVPapers(): any {
@@ -294,6 +294,22 @@ import { AuthenticationService } from './authentication.service';
             .get("/api/pubScreen/AddCSVPapers", {
                 headers: this.authenticationService.getAuthorizationHeader()
             })
+    }
+
+    getDataByLinkGuid(paperLinkGuid: any): any {
+        return this.http
+            .get("/api/pubScreen/GetDataByLinkGuid?paperLinkGuid=" + paperLinkGuid, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
+    getGuidByDoi(doi: any): any {
+        return this.http
+            .get("/api/pubScreen/GetGuidByDoi?doi=" + doi, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
     }
 }
 

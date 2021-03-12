@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 
+
+
 namespace AngularSPAWebAPI.Controllers
 {
     /// <summary>
@@ -178,7 +180,7 @@ namespace AngularSPAWebAPI.Controllers
             _pubScreenService.DeletePublicationById(pubId);
             return new JsonResult("Done!");
         }
-        
+
 
         // searching Publications based on search criteria
         [HttpPost("SearchPublication")]
@@ -201,7 +203,7 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetPaperInfoByDOI(string DOI)
         {
-             return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
+            return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
         }
 
         // Getting some paper information based on pubMed key 
@@ -261,5 +263,24 @@ namespace AngularSPAWebAPI.Controllers
             var userEmail = user.Result.UserName;
             return new JsonResult(_pubScreenService.AddCSVPapers(userEmail));
         }
+
+        [AllowAnonymous]
+        [HttpGet("GetDataByLinkGuid")]
+        public IActionResult GetDataByLinkGuid(Guid paperLinkGuid)
+        {
+            // extract data from database to show in the client
+            return new JsonResult(_pubScreenService.GetDataFromPubScreenByLinkGuid(paperLinkGuid));
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetGuidByDoi")]
+        public IActionResult GetGuidByDoi(string doi)
+        {
+            // extract data from database to show in the client
+            return new JsonResult(_pubScreenService.GetGuidByDoi(doi));
+
+        }
+
     }
 }
