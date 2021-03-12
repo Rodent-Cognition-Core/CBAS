@@ -1280,7 +1280,7 @@ namespace AngularSPAWebAPI.Services
                 // Send email detailing paper edits
                 string emailMsg = $"Pubscreen paper '{newPub.Title}' (ID {newPub.ID}), was edited by {Username}.\n\n" +
                     $"The following changes were made:\n\n{changeLog}";
-                HelperService.SendEmail("", "ejiang6@uwo.ca", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
+                HelperService.SendEmail("", "", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
             }
 
 

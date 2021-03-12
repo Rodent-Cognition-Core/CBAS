@@ -58,7 +58,7 @@ namespace CBAS.Helpers
 
                 if(toEmailAddress == "")
                 {
-                    toEmailAddress = "smemarko@uwo.ca";
+                    toEmailAddress = "mousebytes@uwo.ca";
                 }
                 
                 mail.From = new MailAddress(fromEmailAddress);
