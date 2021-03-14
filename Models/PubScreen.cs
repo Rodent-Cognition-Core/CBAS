@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace AngularSPAWebAPI.Models
 {
     public class PubScreen
     {
         public int? ID { get; set; }
+
+        public Guid PaperLinkGuid { get; set; }
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string Keywords { get; set; }
@@ -31,7 +34,7 @@ namespace AngularSPAWebAPI.Models
         public string Source { get; set; }
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
-        public string TaskOther {get; set;}
+        public string TaskOther { get; set; }
         public string SpecieOther { get; set; }
         public string StrainOther { get; set; }
         public string DiseaseOther { get; set; }

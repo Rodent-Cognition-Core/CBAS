@@ -1,0 +1,76 @@
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>PUBSCREEN QUEUE</h1></div>
+
+<div *ngIf="!isAdmin">
+    <p style="padding-left:50px"><span style="color:red">Access denied to non-admin accounts (if you are an admin, please log in).</span></p>
+</div>
+
+<div *ngIf="isAdmin">
+
+    <div class="content">
+        <p style="padding-left:50px">
+            All papers here were recently added from Pubmed search, to be accepted or rejected into PubScreen.
+            <br /><br />
+            <button mat-raised-button (click)="addCSVPapers()">Add CSVPapers</button>
+        </p>
+
+    </div>
+
+    <div class="content">
+        <p style="padding-left:50px">
+            Please enter paper DOI and hit the button to get its link: <br /><br />
+            <mat-form-field style="width:30%">
+                <input matInput placeholder="Enter Paper DOI" [(ngModel)]="linkModel" required>
+
+            </mat-form-field> &nbsp; &nbsp;
+            <button mat-raised-button (click)="getLink(linkModel)">Get Link</button>
+        </p>
+
+    </div>
+
+    <br />
+
+    <table class="docs-markdown-table">
+        <thead>
+            <tr>
+                <th colspan="4" class="docs-markdown-th" style="background-color:#bab9b6">List of Papers in Queue</th>
+
+            </tr>
+
+            <tr style=" text-align: center; color:#566573;">
+                <td class="docs-markdown-td">Paper Info</td>
+                <td class="docs-markdown-td">Date Added to Queue</td>
+                <td class="docs-markdown-td">Accept</td>
+                <td class="docs-markdown-td">Reject</td>
+            </tr>
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+            <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="pubmedQueue?.length == 0">
+                <td colspan="4"><i>Queue empty - all papers have been processed!</i></td>
+            </tr>
+            <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of pubmedQueue">
+                <td>
+                    <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
+                    <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>
+                </td>
+                <td style='text-align:center;'>
+                    <label>{{row.queueDate.substring(0,10)}}</label>
+                </td>
+                <td style='text-align:center;'>
+                    <button mat-raised-button (click)="acceptPub(row)">Accept</button>
+                </td>
+                <td style='text-align:center;'>
+                    <button mat-raised-button (click)="rejectPub(row)">Reject</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+    <br />
+    <br />
+    <br />
+
+</div>

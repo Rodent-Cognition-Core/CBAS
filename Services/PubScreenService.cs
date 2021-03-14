@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.IO;
@@ -17,6 +18,7 @@ using System.Text;
 using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
+using System.Reflection;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -38,17 +40,43 @@ namespace AngularSPAWebAPI.Services
 
             StringContent content = new System.Net.Http.StringContent(String.Empty);
 
-            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
-                (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
+            string responseString = "";
+            var incomingXml = new XElement("newXML");
+            bool isSuccess = false;
+            while (!isSuccess)
             {
-                return null;
+                try
+                {
+                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
+                        (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
+                    {
+                        return null;
+                    }
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByDoi!");
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
             }
 
-            XElement incomingXml = XElement.Parse(responseString);
-            string pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
+            string pubMedKey = null;
+            if (incomingXml.Element("IdList").Element("Id") != null)
+            {
+                pubMedKey = incomingXml.Element("IdList").Element("Id").Value;
+            }
 
             //If pubmedkey is available, Send it to another function to get Paper's info
             if (!string.IsNullOrEmpty(pubMedKey))
@@ -67,10 +95,35 @@ namespace AngularSPAWebAPI.Services
             HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
+            var incomingXml = new XElement("newXML");
+            string responseString = "";
 
-            var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            XElement incomingXml = XElement.Parse(responseString);
+            // Pubmed API is rate-limited. If the rate limit is exceeded, the response string from the HTTP Post will indicate that.
+            // When that is the case, we wait 0.3s and attempt again, until we obtain our desired result or another error occurs
+            bool isSuccess = false;
+            while (!isSuccess)
+            {
+                try
+                {
+                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByPubMedKey!");
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
+            }
 
             string articleAbstract = "";
             string articleYear = "";
@@ -103,7 +156,7 @@ namespace AngularSPAWebAPI.Services
             {
                 articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ArticleDate").Element("Year").Value;
             }
-            else if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate") != null)
+            else if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate").Element("Year") != null)
             {
                 articleYear = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("Journal").Element("JournalIssue").Element("PubDate").Element("Year").Value;
 
@@ -140,12 +193,12 @@ namespace AngularSPAWebAPI.Services
             {
                 if (xn["ForeName"] != null && xn["LastName"] != null)
                 {
-                    authorListString.Add(xn["ForeName"].InnerText + "-" + xn["LastName"].InnerText);
+                    authorListString.Add(xn["ForeName"].InnerText.Trim() + "-" + xn["LastName"].InnerText.Trim());
 
                     authorList.Add(new PubScreenAuthor
                     {
-                        FirstName = xn["ForeName"].InnerText,
-                        LastName = xn["LastName"].InnerText,
+                        FirstName = xn["ForeName"].InnerText.Trim(),
+                        LastName = xn["LastName"].InnerText.Trim(),
                         Affiliation = xn["AffiliationInfo"] == null ? "" : (xn["AffiliationInfo"].InnerText).Split(',')[0],
 
                     });
@@ -154,17 +207,31 @@ namespace AngularSPAWebAPI.Services
 
             //doi
             string doi = "";
-            if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID") != null)
+            try
             {
-                doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("ELocationID").Value;
+                if (incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").Any())
+                {
+                    doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").FirstOrDefault().Value;
+                }
+            }
+            catch (ArgumentNullException)
+            {
+
             }
 
-            if (String.IsNullOrEmpty(doi))
+            try
             {
-                if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList") != null)
+                if (String.IsNullOrEmpty(doi))
                 {
-                    doi = ((System.Xml.Linq.XElement)incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").LastNode).Value;
+                    if (incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").Any())
+                    {
+                        doi = incomingXml.Element("PubmedArticle").Element("PubmedData").Element("ArticleIdList").Elements("ArticleId").Where(id => id.Attribute("IdType").Value == "doi").FirstOrDefault().Value;
+                    }
+
                 }
+            }
+            catch (ArgumentNullException)
+            {
 
             }
 
@@ -217,12 +284,12 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
             foreach (var name in authorTempList)
             {
-                authorListString.Add(name.Split(',')[1] + '-' + name.Split(',')[0]);
+                authorListString.Add(name.Split(',')[1].Trim() + '-' + name.Split(',')[0].Trim());
 
                 authorList.Add(new PubScreenAuthor
                 {
-                    FirstName = name.Split(',')[1],
-                    LastName = name.Split(',')[0],
+                    FirstName = name.Split(',')[1].Trim(),
+                    LastName = name.Split(',')[0].Trim(),
 
                 });
 
@@ -559,7 +626,7 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQueryPub(sql);
         }
 
-        //************************************************************************************Adding Publication*************************************************************************************
+        //************************************************************************************Adding Publication*********************************
         // Function Definition to add a new publication to database Pubscreen
         public int? AddPublications(PubScreen publication, string Username)
         {
@@ -571,9 +638,9 @@ namespace AngularSPAWebAPI.Services
                 return null;
             }
 
-
-            string sqlPublication = $@"Insert into Publication (Title, Abstract, Keywords, DOI, Year, Reference, Username, Source) Values
-                                    ('{HelperService.EscapeSql((HelperService.NullToString(publication.Title)).Trim())}',
+            string sqlPublication = $@"Insert into Publication (PaperLinkGuid, Title, Abstract, Keywords, DOI, Year, Reference, Username, Source) Values
+                                    ('{Guid.NewGuid()}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(publication.Title)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(publication.Abstract)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(publication.Keywords)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(publication.DOI)).Trim())}',
@@ -621,9 +688,9 @@ namespace AngularSPAWebAPI.Services
 
                     if (!allAuthorList.Contains((publication.Author[i].FirstName).ToLower() + '-' + (publication.Author[i].LastName).ToLower()))
                     {
-                        sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{publication.Author[i].FirstName}',
-                                                                                                      '{publication.Author[i].LastName}',
-                                                                                                      '{publication.Author[i].Affiliation}');";
+                        sqlAuthor += $@"Insert into Author (FirstName, LastName, Affiliation) Values ('{HelperService.EscapeSql(publication.Author[i].FirstName.Trim())}',
+                                                                                                      '{HelperService.EscapeSql(publication.Author[i].LastName.Trim())}',
+                                                                                                      '{HelperService.EscapeSql(HelperService.NullToString(publication.Author[i].Affiliation).Trim())}');";
                     }
 
                 }
@@ -638,7 +705,7 @@ namespace AngularSPAWebAPI.Services
                 int j = 1;
                 foreach (string author in AuthorList)
                 {
-                    sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{author.Trim()}';";
+                    sqlauthor2 = $@"Select ID From Author Where CONCAT(LOWER(Author.FirstName), '-', LOWER(Author.LastName))= '{HelperService.EscapeSql(author).Trim()}';";
                     authorID = Int32.Parse((Dal.ExecScalarPub(sqlauthor2).ToString()));
 
                     sqlauthor3 = $@"Insert into Publication_Author (AuthorID, PublicationID, AuthorOrder) Values ({authorID}, {PublicationID}, {j});";
@@ -653,7 +720,7 @@ namespace AngularSPAWebAPI.Services
 
             //Adding to Publication_PaperType Table**********************************************************************************************
 
-            
+
             if (publication.PaperTypeID != null)
             {
                 string sqlPaperType = "";
@@ -855,6 +922,35 @@ namespace AngularSPAWebAPI.Services
         public bool EditPublication(int publicationId, PubScreen publication, string Username)
         {
 
+            // Get original paper information
+            var origPub = new PubScreenSearch();
+
+            using (DataTable dt = Dal.GetDataTablePub($"Select * From SearchPub Where ID = {publicationId}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    origPub.ID = Int32.Parse(dr["ID"].ToString());
+                    origPub.Title = Convert.ToString(dr["Title"].ToString());
+                    origPub.Abstract = Convert.ToString(dr["Abstract"].ToString());
+                    origPub.Keywords = Convert.ToString(dr["Keywords"].ToString());
+                    origPub.DOI = Convert.ToString(dr["DOI"].ToString());
+                    origPub.Year = Convert.ToString(dr["Year"].ToString());
+                    origPub.Author = Convert.ToString(dr["Author"].ToString());
+                    origPub.PaperType = Convert.ToString(dr["PaperType"].ToString());
+                    origPub.Task = Convert.ToString(dr["Task"].ToString());
+                    origPub.SubTask = Convert.ToString(dr["SubTask"].ToString());
+                    origPub.Species = Convert.ToString(dr["Species"].ToString());
+                    origPub.Sex = Convert.ToString(dr["Sex"].ToString());
+                    origPub.Strain = Convert.ToString(dr["Strain"].ToString());
+                    origPub.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    origPub.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
+                    origPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
+                    origPub.CellType = Convert.ToString(dr["CellType"].ToString());
+                    origPub.Method = Convert.ToString(dr["Method"].ToString());
+                    origPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
+                    origPub.Reference = Convert.ToString(dr["Reference"].ToString());
+                }
+            };
 
             string sqlPublication = $@"Update Publication set Title = @title, Abstract = @abstract, Keywords = @keywords,
                                                                DOI = @doi, Year = @year where id = {publicationId}";
@@ -903,7 +999,7 @@ namespace AngularSPAWebAPI.Services
             //    }
             //}
 
-            if (publication.PaperTypeID != null )
+            if (publication.PaperTypeID != null)
             {
                 sqlDelete = $"DELETE From Publication_PaperType where PublicationID = {publicationId}";
                 Dal.ExecuteNonQueryPub(sqlDelete);
@@ -1129,8 +1225,67 @@ namespace AngularSPAWebAPI.Services
             // Handling Other for NeuroTransmitter
             ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", publicationId, Username);
 
-            return true;
+            // Get new paper information
 
+            // Get updated paper information
+            var newPub = new PubScreenSearch();
+
+            using (DataTable dt = Dal.GetDataTablePub($"Select * From SearchPub Where ID = {publicationId}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    newPub.ID = Int32.Parse(dr["ID"].ToString());
+                    newPub.Title = Convert.ToString(dr["Title"].ToString());
+                    newPub.Abstract = Convert.ToString(dr["Abstract"].ToString());
+                    newPub.Keywords = Convert.ToString(dr["Keywords"].ToString());
+                    newPub.DOI = Convert.ToString(dr["DOI"].ToString());
+                    newPub.Year = Convert.ToString(dr["Year"].ToString());
+                    newPub.Author = Convert.ToString(dr["Author"].ToString());
+                    newPub.PaperType = Convert.ToString(dr["PaperType"].ToString());
+                    newPub.Task = Convert.ToString(dr["Task"].ToString());
+                    newPub.SubTask = Convert.ToString(dr["SubTask"].ToString());
+                    newPub.Species = Convert.ToString(dr["Species"].ToString());
+                    newPub.Sex = Convert.ToString(dr["Sex"].ToString());
+                    newPub.Strain = Convert.ToString(dr["Strain"].ToString());
+                    newPub.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    newPub.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
+                    newPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
+                    newPub.CellType = Convert.ToString(dr["CellType"].ToString());
+                    newPub.Method = Convert.ToString(dr["Method"].ToString());
+                    newPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
+                    newPub.Reference = Convert.ToString(dr["Reference"].ToString());
+                }
+            };
+
+            // Log changes made
+            string changeLog = "";
+            PropertyInfo[] pubProperties = typeof(PubScreenSearch).GetProperties();
+            foreach (PropertyInfo pubProperty in pubProperties)
+            {
+                if (!Object.Equals(pubProperty.GetValue(origPub), pubProperty.GetValue(newPub)))
+                {
+                    changeLog += $"{pubProperty.Name} changed.\n" +
+                        $"Original: {pubProperty.GetValue(origPub)}\n" +
+                        $"Edited: {pubProperty.GetValue(newPub)}\n\n";
+                }
+            }
+
+            // Log edit to database
+            if (!string.IsNullOrEmpty(changeLog))
+            {
+                DateTime today = DateTime.Today;
+                Dal.ExecuteNonQueryPub($"Insert Into EditLog (PubID, Username, EditDate, ChangeLog) Values " +
+                    $"({publicationId}, '{Username}', '{today.ToString().Split('T')[0]}', '{changeLog.Replace("'", "''")}')");
+
+                // Send email detailing paper edits
+                string emailMsg = $"Pubscreen paper '{newPub.Title}' (ID {newPub.ID}), was edited by {Username}.\n\n" +
+                    $"The following changes were made:\n\n{changeLog}";
+                HelperService.SendEmail("", "", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
+            }
+
+
+
+            return true;
         }
 
         // Function definition to search publications in database
@@ -1563,12 +1718,6 @@ namespace AngularSPAWebAPI.Services
             {
                 pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
             }
-            
-
-            //sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-            //sql = $"Select top 1 pt.PaperType From Publication_PaperType ppt inner join PaperType pt on ppt.PaperTypeID = pt.ID where ppt.PublicationID = {id}";
-            //var paperTypeVal = Dal.ExecScalarPub(sql);
-            //pubScreen.PaperType = paperTypeVal == null ? "" : paperTypeVal.ToString();
 
             sql = $"Select * From Publication Where ID ={id}";
             using (DataTable dt = Dal.GetDataTablePub(sql))
@@ -1629,6 +1778,202 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public List<PubmedPaper> GetPubmedQueue()
+        {
+            List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
 
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    PubmedQueue.Add(new PubmedPaper
+                    {
+                        // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
+                        PubDate = Convert.ToString(dr["PubDate"].ToString()),
+                        QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                    });
+                }
+            }
+
+            return PubmedQueue;
+        }
+
+        public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
+        {
+            PubScreen paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+            paper.DOI = doi;
+            int? PubID = AddPublications(paper, userName);
+
+            ProcessQueuePaper(pubmedID);
+
+            return PubID;
+        }
+
+        public void ProcessQueuePaper(int pubmedID)
+        {
+            Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+        }
+
+        public (int, int) GetPubCount()
+        {
+            int pubCount = (int)Dal.ExecScalarPub("Select Count(ID) From SearchPub");
+            int featureCount = (int)Dal.ExecScalarPub("Select Count(Task) From SearchPub");
+            return (pubCount, featureCount);
+        }
+
+        public async Task<List<string>> AddCSVPapers(string userName)
+        {
+            List<string> doiList = new List<string>();
+            var reader = new StreamReader("TSPapers.csv");
+
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                Console.WriteLine(line);
+                var values = line.Split(',');
+
+                string doi = values[0].Trim().TrimEnd('.').Split(' ')[0].TrimEnd('.');
+                string pubmedID = values[1].Trim();
+
+                int? ID = null;
+                // Check for duplication based on the DOI
+
+                if (!string.IsNullOrEmpty(doi))
+                {
+                    string sqlDOI = $@"Select ID From Publication Where DOI = '{doi}'";
+                    ID = (int?)Dal.ExecScalarPub(sqlDOI);
+                }
+
+                if (ID == null)
+                {
+                    int result;
+                    bool pubmedSuccess = false;
+                    var paper = new PubScreen();
+
+                    if (Int32.TryParse(pubmedID, out result))
+                    {
+                        try
+                        {
+                            paper = await GetPaperInfoByPubMedKey(pubmedID);
+                            pubmedSuccess = true;
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+
+                    if (!pubmedSuccess)
+                    {
+                        if (!string.IsNullOrEmpty(doi))
+                        {
+                            // Attempt to get read paper based on DOI and Pubmed
+                            paper = await GetPaperInfoByDoi(doi);
+                            if (paper == null)
+                            {
+                                // Attempt to read paper based on bioRxiv
+                                paper = await GetPaperInfoByDOIBIO(doi);
+
+                                if (paper == null)
+                                {
+                                    // If all else fails, just add DOI to database
+                                    paper = new PubScreen { DOI = doi, };
+                                }
+                            }
+                        }
+                        else
+                        {
+                            paper = null;
+                        }
+                    }
+
+                    if (paper != null)
+                    {
+                        if (paper.DOI == "")
+                        {
+                            paper.DOI = doi;
+                        }
+                        AddPublications(paper, userName);
+                        doiList.Add(doi);
+                    }
+                }
+
+            }
+
+            return doiList;
+        }
+
+        // Function definition to get a publication from searchPub based Guid
+        public PubScreenSearch GetDataFromPubScreenByLinkGuid(Guid paperLinkGuid)
+        {
+            PubScreenSearch pubScreenPublication = new PubScreenSearch();
+
+            string sql = $"Select * From SearchPub Where PaperLinkGuid = '{paperLinkGuid}'";
+
+            using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
+            {
+                if (dr.Read())
+                {
+                    pubScreenPublication.DOI = Convert.ToString(dr["DOI"]);
+                    pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"]);
+                    pubScreenPublication.Title = Convert.ToString(dr["Title"]);
+                    pubScreenPublication.Abstract = Convert.ToString(dr["Abstract"]);
+                    pubScreenPublication.Year = Convert.ToString(dr["Year"]);
+                    pubScreenPublication.Reference = Convert.ToString(dr["Reference"]);
+
+                    pubScreenPublication.ID = Int32.Parse(dr["ID"].ToString());
+                    pubScreenPublication.Title = Convert.ToString(dr["Title"].ToString());
+                    pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"].ToString());
+                    pubScreenPublication.DOI = Convert.ToString(dr["DOI"].ToString());
+                    pubScreenPublication.Year = Convert.ToString(dr["Year"].ToString());
+                    pubScreenPublication.Author = Convert.ToString(dr["Author"].ToString());
+                    pubScreenPublication.PaperType = Convert.ToString(dr["PaperType"].ToString());
+                    pubScreenPublication.Task = Convert.ToString(dr["Task"].ToString());
+                    pubScreenPublication.SubTask = Convert.ToString(dr["SubTask"].ToString());
+                    pubScreenPublication.Species = Convert.ToString(dr["Species"].ToString());
+                    pubScreenPublication.Sex = Convert.ToString(dr["Sex"].ToString());
+                    pubScreenPublication.Strain = Convert.ToString(dr["Strain"].ToString());
+                    pubScreenPublication.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    pubScreenPublication.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
+                    pubScreenPublication.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
+                    pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
+                    pubScreenPublication.Method = Convert.ToString(dr["Method"].ToString());
+                    pubScreenPublication.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
+                    pubScreenPublication.Reference = Convert.ToString(dr["Reference"].ToString());
+
+
+                }
+
+            }
+
+            return pubScreenPublication;
+        }
+
+        public PubScreen GetGuidByDoi(string doi)
+        {
+            PubScreen pubScreenPublication = new PubScreen();
+            string sql = $"Select * From Publication Where DOI = '{doi}' ";
+            using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
+            {
+                if (dr.Read())
+                {
+                    pubScreenPublication.PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString());
+                    //pubScreenPublication.DOI = Convert.ToString(dr["DOI"]);
+                    //pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"]);
+                    //pubScreenPublication.Title = Convert.ToString(dr["Title"]);
+                    //pubScreenPublication.Abstract = Convert.ToString(dr["Abstract"]);
+                    //pubScreenPublication.Year = Convert.ToString(dr["Year"]);
+
+
+                }
+
+            }
+
+            return pubScreenPublication;
+        }
     }
+
 }

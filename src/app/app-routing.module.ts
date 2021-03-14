@@ -38,6 +38,8 @@ const routes: Routes = [
     { path: 'pubScreen-search', loadChildren: './pubScreen-search/pubScreen-search.module#PubScreenSearchModule' },
     { path: 'cogbytes', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
     { path: 'cogbytes-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
+    { path: 'pubScreen-queue', loadChildren: './pubScreenQueue/pubScreenQueue.module#PubScreenQueueModule' },
+    { path: 'pubScreen-edit', loadChildren: './pubScreenEdit/pubScreenEdit.module#PubScreenEditModule' },
 
 ];
 

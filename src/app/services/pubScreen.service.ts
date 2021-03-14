@@ -254,11 +254,63 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Get papers in the pubmed queue
+    public getPubmedQueue(): any {
+        return this.http
+            .get("/api/pubScreen/GetPubmedQueue", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
 
+    // Adding a new paper from queue to system
+    public addQueuePaper(pubmedID: number, doi: string) {
 
+        // Sends an authenticated request.
+        return this.http.get("/api/pubScreen/AddQueuePaper?pubmedID=" + pubmedID + "&doi=" + doi, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
 
+    // Reject paper from pubscreen and remove from queue
+    public rejectQueuePaper(pubmedID: number): any {
 
+        return this.http
+            .delete("/api/pubScreen/RejectQueuePaper?pubmedID=" + pubmedID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
 
+    }
+
+    // Get count of number of papers in Pubscreen and number of papers with key features added
+    public getPubCount(): any {
+        return this.http
+            .get("/api/pubScreen/GetPubCount", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
+    public addCSVPapers(): any {
+        return this.http
+            .get("/api/pubScreen/AddCSVPapers", {
+                headers: this.authenticationService.getAuthorizationHeader()
+            })
+    }
+
+    getDataByLinkGuid(paperLinkGuid: any): any {
+        return this.http
+            .get("/api/pubScreen/GetDataByLinkGuid?paperLinkGuid=" + paperLinkGuid, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
+    getGuidByDoi(doi: any): any {
+        return this.http
+            .get("/api/pubScreen/GetGuidByDoi?doi=" + doi, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
 }
 
 
