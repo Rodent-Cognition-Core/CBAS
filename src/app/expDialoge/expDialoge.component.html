@@ -100,6 +100,28 @@
             <mat-error *ngIf="isMultipleSessions.invalid">{{getErrorMessageMultipleSessions()}}</mat-error>
         </mat-radio-group>
 
+        <br /><br />
+
+        <label>Do you have a Mousebytes Lite repository associated with the experiment?</label><br />
+        <mat-radio-group [(ngModel)]="isRepoLink">
+            <mat-radio-button value='0'>No</mat-radio-button>
+            <mat-radio-button value='1'>Yes</mat-radio-button>
+        </mat-radio-group>
+
+        <div *ngIf="isRepoLink=='1'">
+            <br />
+            <label>Please select the associated repository.</label><br />
+            <!--Repository List-->
+            <mat-form-field style="width: 35%; padding-left:0px">
+                <mat-select matInput placeholder="Repository List" [formControl]="rep" [(ngModel)]="repModel">
+                    <mat-option *ngFor="let rep of repList" [value]="rep.repoLinkGuid">
+                        {{rep.title}}
+                    </mat-option>
+                </mat-select>
+                
+            <mat-error *ngIf="rep.invalid">{{getErrorMessageRep()}}</mat-error>
+            </mat-form-field>
+        </div>
         <!--<br />
     <span style="float:right;"><button mat-icon-button (click)="openDialog(null)"><mat-icon>add</mat-icon></button></span><span>Please add sub experiment based on animal age:</span>-->
         <!--Insert Table  to show details of sub-Experiment-->

@@ -46,7 +46,7 @@ export class CogbytesEditComponent implements OnInit {
         //this.isLoaded = false;
 
         this.route.queryParams.subscribe(params => {
-            this.repoLinkGuid = params['repolinkguid'];
+            this.repoLinkGuid = params['repolinkguid'].split(" ")[0];
 
             this.GetDataByLinkGuid(this.repoLinkGuid);
         });

@@ -65,6 +65,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     isEditMode: boolean;
     publicationId: number;
+    isPublicMode: boolean;
 
     //Models Variables for searching publication
     yearSearchModel: any
@@ -138,6 +139,14 @@ export class PubscreenDialogeComponent implements OnInit {
 
         console.log(this.data);
         // if it is an Edit model
+
+        if (this.data.isPublic != null) {
+            this.isPublicMode = true;
+        }
+        else {
+            this.isPublicMode = false;
+        }
+        console.log("isPublicMode: " + this.isPublicMode);
         if (this.data.publicationObj != null) {
 
             this.isEditMode = true;
@@ -625,21 +634,40 @@ export class PubscreenDialogeComponent implements OnInit {
         }
 
         if (this.isEditMode) {
-            this.pubScreenService.EditPublication(this.publicationId, this._pubscreen).subscribe(data => {
+            if (this.isPublicMode) {
+                this.pubScreenService.EditPublicationPublic(this.publicationId, this._pubscreen).subscribe(data => {
 
-                if (data === true) {
-                    alert("Publication was successfully edited!");
-                    this.thisDialogRef.close();
-                } else {
-                    alert("Error in editing publication! Please try again, if this happens again contact admin.")
-                }
+                    if (data === true) {
+                        alert("Publication was successfully edited!");
+                        this.thisDialogRef.close();
+                    } else {
+                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
+                    }
 
-                setTimeout(() => {
-                    this.spinnerService.hide();
+                    setTimeout(() => {
+                        this.spinnerService.hide();
 
-                }, 500);
- 
-            });
+                    }, 500);
+
+                });
+            }
+            else {
+                this.pubScreenService.EditPublication(this.publicationId, this._pubscreen).subscribe(data => {
+
+                    if (data === true) {
+                        alert("Publication was successfully edited!");
+                        this.thisDialogRef.close();
+                    } else {
+                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
+                    }
+
+                    setTimeout(() => {
+                        this.spinnerService.hide();
+
+                    }, 500);
+
+                });
+            }
 
         } else {
             this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {

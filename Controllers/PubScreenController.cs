@@ -173,6 +173,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, userEmail));
         }
 
+        // Edit an existing publication
+        [HttpPost("EditPublicationPublic")]
+        [AllowAnonymous]
+        public IActionResult EditPublicationPublic(int publicationId, [FromBody] PubScreen publication)
+        {
+            return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, "Public"));
+        }
+
         // Deleting publication
         [HttpDelete("DeletePublicationById")]
         public IActionResult DeletePublicationById(int pubId)
@@ -223,6 +231,7 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("GetPaparInfoByID")]
+        [AllowAnonymous]
         public IActionResult GetPaparInfoByID(int ID)
         {
             return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));

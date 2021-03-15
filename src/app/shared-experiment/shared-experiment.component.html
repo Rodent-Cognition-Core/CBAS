@@ -59,6 +59,9 @@
                     <label>PI and Institution:</label>&nbsp;&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).piSiteName}}</span><br /><br />
                     <label>DOI:</label>&nbsp;&nbsp; <a href="{{'http://www.doi.org/' + getSelectedExp(selectedExpValue).doi}}" target="_blank" style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).doi}}</a><br /><br />
                     <label>Multiple sessions for an animal within a single day?:</label> &nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).multipleSessions == true ? 'Yes' : 'No'}}</span> <br /><br />
+                    <div *ngIf="selectedExpValue!=null&&getSelectedExp(selectedExpValue).repoGuid!=''">
+                        <label>Associated Mousebytes Lite Repository:</label>&nbsp;&nbsp; <a href="{{'http://localhost:4200/cogbytes-edit?repolinkguid=' + getSelectedExp(selectedExpValue).repoGuid}}" target="_blank" style="color:#909497;">{{getRepTitle(getSelectedExp(selectedExpValue).repoGuid)}}</a><br /><br />
+                    </div>
                 </div>
 
             </td>

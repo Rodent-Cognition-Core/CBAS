@@ -23,5 +23,6 @@ export class Experiment {
     public species: string;
 
     public multipleSessions: boolean;
+    public repoGuid: string;
 
 }

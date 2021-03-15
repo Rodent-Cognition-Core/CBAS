@@ -44,7 +44,7 @@ export class PubScreenEditComponent implements OnInit {
         this.isLoaded = false;
 
         this.route.queryParams.subscribe(params => {
-            this.paperLinkGuid = params['paperlinkguid'];
+            this.paperLinkGuid = params['paperlinkguid'].split(" ")[0];
 
             this.GetDataByLinkGuid(this.paperLinkGuid);
         });
@@ -79,7 +79,7 @@ export class PubScreenEditComponent implements OnInit {
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '850px',
             width: '1200px',
-            data: { publicationObj: Publication }
+            data: { publicationObj: Publication, isPublic: Boolean }
 
         });
 
