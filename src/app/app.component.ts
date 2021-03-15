@@ -156,7 +156,8 @@ export class AppComponent implements OnInit {
             routerUrl.toUpperCase() === '/search-experiment'.toUpperCase() ||
             routerUrl.toUpperCase() === '/pubScreen'.toUpperCase() ||
             routerUrl.toUpperCase() === '/pubScreen-queue'.toUpperCase() ||
-            routerUrl.toUpperCase() === '/pubScreen-edit'.toUpperCase()
+            routerUrl.toUpperCase() === '/pubScreen-edit'.toUpperCase() ||
+            routerUrl.toUpperCase() === '/cogbytes-edit'.toUpperCase()
         ) {
             this.showFooter = true;
         } else {

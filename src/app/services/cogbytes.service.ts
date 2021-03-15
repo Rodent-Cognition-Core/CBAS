@@ -273,50 +273,23 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    //// Get list of all years in database
-    //public getAllYears(): any {
-
-    //    return this.http
-    //        .get("/api/pubScreen/GetAllYear", {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-
-    //}
-
-    //// Get some paper info based on Doi from pubMed
-    //public getPaparInfoFromDOI(doi: any): any {
-    //    return this.http
-    //        .get("/api/pubScreen/GetPaperInfoByDOI?DOI=" + doi, {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-    //}
-
-    //// Get some paper info based on PubmedKey
-    //public getPaparInfoFromPubmedKey(pubKey: any): any {
-    //    return this.http
-    //        .get("/api/pubScreen/GetPaperInfoByPubKey?PubKey=" + pubKey, {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-    //}
-
-    //// Get some paper info based on Doi from Biorxiv
-    //public getPaparInfoFromDOIBio(doi: any): any {
-    //    return this.http
-    //        .get("/api/pubScreen/GetPaparInfoFromDOIBio?DOI=" + doi, {
-    //            headers: new HttpHeaders().set('Content-Type', 'application/json')
-    //        });
-    //}
+    // Function definition to get the repo based on its Guid
+    getDataByLinkGuid(repoLinkGuid: any): any {
+        return this.http
+            .get("/api/Cogbytes/GetDataByLinkGuid?repoLinkGuid=" + repoLinkGuid, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
 
 
-    //// Get some paper info based on Doi from Biorxiv
-    //public getPaperInfo(id: any): any {
-    //    return this.http
-    //        .get("/api/pubScreen/GetPaparInfoByID?ID=" + id, {
-    //            headers: this.authenticationService.getAuthorizationHeader()
-    //        });
-    //}
+    public getGuidByRepID(repID: number): any {
 
-
+        return this.http
+            .get("/api/cogbytes/GetGuidByRepID?repID=" + repID, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
 
 
 

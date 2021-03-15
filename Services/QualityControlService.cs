@@ -701,7 +701,15 @@ namespace AngularSPAWebAPI.Services
         {
 
             string output = "";
-            string xpath = "/LiEvent/" + Tag1 + "/" + Tag2 + "[Name='" + TagName + "']/" + TagValue;
+            //string xpath = "/LiEvent/" + Tag1 + "/" + Tag2 + "[Name='" + TagName + "']/" + TagValue;
+            //string xpath = "/LiEvent/" + Tag1 + "/" + Tag2 + "[Name=translate('" + TagName.ToLower() + "', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')]/" + TagValue;
+
+
+            string xpath = "/LiEvent/" + Tag1 + "/" + Tag2 + "[translate(Name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='" + TagName.ToLower() + "']/" + TagValue;
+
+            //*[translate(local-name(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='name']
+            //string xpath = "/LiEvent/" + Tag1 + "/" + Tag2 + "*[translate(Name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='" + TagName.ToLower() + "']/" + TagValue;
+
 
             var value = xdoc1.XPathSelectElement(xpath);
             if (value != null)

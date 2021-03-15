@@ -238,34 +238,16 @@ namespace AngularSPAWebAPI.Services
 
             return PIList;
         }
-        //// Delete publication
-        //public void DeletePublicationById(int pubId)
-        //{
-        //    string sql = $@" 
-        //                     Delete From Publication_Author Where PublicationID = {pubId};
-        //                     Delete From Publication_CellType Where PublicationID = {pubId};
-        //                     Delete From Publication_Disease Where PublicationID = {pubId};
-        //                     Delete From Publication_Method Where PublicationID = {pubId};
-        //                     Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
-        //                     Delete From Publication_PaperType Where PublicationID = {pubId};
-        //                     Delete From Publication_Region Where PublicationID = {pubId};
-        //                     Delete From Publication_Sex Where PublicationID = {pubId};
-        //                     Delete From Publication_Specie Where PublicationID = {pubId};
-        //                     Delete From Publication_Strain Where PublicationID = {pubId};
-        //                     Delete From Publication_SubRegion Where PublicationID = {pubId};
-        //                     Delete From Publication_Task Where PublicationID = {pubId};
-        //                     Delete From Publication Where id = { pubId};";
-
-        //    Dal.ExecuteNonQueryPub(sql);
-        //}
+       
 
         ////************************************************************************************Adding Repository*************************************************************************************
         // Function Definition to add a new repository to database Cogbytes
         public int? AddRepository(Cogbytes repository, string Username)
         {
 
-            string sqlRepository = $@"Insert into UserRepository (Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
-                                    ('{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
+            string sqlRepository = $@"Insert into UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
+                                    ('{Guid.NewGuid()}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
                                      '{repository.Date}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.DOI)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Keywords)).Trim())}',
@@ -1081,31 +1063,128 @@ namespace AngularSPAWebAPI.Services
             return RepList;
         }
 
-        //public void ProcessOther(string inputOther, string tableOther, string fieldOther, string tblPublication,
-        //                        string tblPublicationField, int PublicationID, string Username)
-        //{
-        //    if (!String.IsNullOrEmpty(inputOther))
-        //    {
-        //        List<string> ItemList = inputOther.Split(';').Select(p => p.Trim()).ToList();
-        //        foreach (string item in ItemList)
-        //        {
-        //            string sqlOther = $@"Select ID From {tableOther} Where ltrim(rtrim({fieldOther})) = '{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}';";
-        //            var IDOther = Dal.ExecScalarPub(sqlOther);
+        public List<CogbytesSearch2> GetRepoFromCogbytesByLinkGuid(Guid repoLinkGuid)
+        {
+            List<CogbytesSearch2> RepList = new List<CogbytesSearch2>();
+            List<Experiment> lstExperiment = new List<Experiment>();
+            //List<FileUploadResult> FileList = new List<FileUploadResult>();
+            string sqlMB = "";
 
-        //            if (IDOther == null)
-        //            {
-        //                string sqlOther2 = $@"Insert Into {tableOther} ({fieldOther}, Username) Values
-        //                                    ('{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}', '{Username}'); SELECT @@IDENTITY AS 'Identity';";
-        //                int IDOther2 = Int32.Parse((Dal.ExecScalarPub(sqlOther2).ToString()));
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From searchCog2 Where RepoLinkGuid = '{repoLinkGuid}'"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int repID = Int32.Parse(dr["RepID"].ToString());
+                    int UploadID = Int32.Parse(dr["UploadID"].ToString());
 
-        //                string sqlOther3 = $@"Insert into {tblPublication} ({tblPublicationField}, PublicationID) Values ({IDOther2}, {PublicationID}); ";
-        //                Dal.ExecuteNonQueryPub(sqlOther3);
-        //            }
+                    // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
+                    List<FileUploadResult> FileList = new List<FileUploadResult>();
+                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID={UploadID} Order By DateUploaded"))
+                    {
+                        foreach (DataRow fr in ft.Rows)
+                        {
+                            FileList.Add(new FileUploadResult
+                            {
+                                UploadID = UploadID,
+                                ExpID = Int32.Parse(fr["ID"].ToString()), // Hijacking ExpID for the primary key
+                                UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
+                                SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
+                                DateUpload = DateTime.Parse(fr["DateUploaded"].ToString()),
+                                DateFileCreated = DateTime.Parse(fr["DateFileCreated"].ToString()),
+                                FileSize = Int32.Parse(fr["FileSize"].ToString()),
+                                PermanentFilePath = Convert.ToString(fr["PermanentFilePath"].ToString()),
+                            });
+                        }
+                    }
 
-        //        }
+                    //sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                    //           Inner join Task on Task.ID = Experiment.TaskID
+                    //           Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
 
-        //    }
-        //}
+                    // empty lstExperiment list
+                    //lstExperiment.Clear();
+                    //using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    //{
+                    //    foreach (DataRow drExp in dtExp.Rows)
+                    //    {
+
+                    //        lstExperiment.Add(new Experiment
+                    //        {
+                    //            ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                    //            ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                    //            StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                    //            TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                    //            DOI = Convert.ToString(drExp["DOI"].ToString()),
+                    //            Status = Convert.ToBoolean(drExp["Status"]),
+                    //            TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                    //        });
+                    //    }
+
+                    //}
+
+                    RepList.Add(new CogbytesSearch2
+                    {
+                        RepoID = repID,
+                        RepoLinkGuid = repoLinkGuid,
+                        UploadID = UploadID,
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        Date = Convert.ToString(dr["Date"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        Link = Convert.ToString(dr["Link"].ToString()),
+                        Username = Convert.ToString(dr["Username"].ToString()),
+                        DateRepositoryCreated = Convert.ToString(dr["DateRepositoryCreated"].ToString()),
+                        Author = Convert.ToString(dr["Author"].ToString()),
+                        PI = Convert.ToString(dr["PI"].ToString()),
+                        UploadName = Convert.ToString(dr["UploadName"].ToString()),
+                        DateUpload = Convert.ToString(dr["DateUpload"].ToString()),
+                        UploadDescription = Convert.ToString(dr["UploadDescription"].ToString()),
+                        UploadAdditionalNotes = Convert.ToString(dr["UploadAdditionalNotes"].ToString()),
+                        IsIntervention = Boolean.Parse(dr["IsIntervention"].ToString()),
+                        InterventionDescription = Convert.ToString(dr["InterventionDescription"].ToString()),
+                        Housing = Convert.ToString(dr["Housing"].ToString()),
+                        LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
+                        TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
+                        FileType = Convert.ToString(dr["FileType"].ToString()),
+                        Task = Convert.ToString(dr["Task"].ToString()),
+                        Species = Convert.ToString(dr["Species"].ToString()),
+                        Sex = Convert.ToString(dr["Sex"].ToString()),
+                        Strain = Convert.ToString(dr["Strain"].ToString()),
+                        GenoType = Convert.ToString(dr["GenoType"].ToString()),
+                        Age = Convert.ToString(dr["Age"].ToString()),
+                        UploadFileList = FileList,
+                        //Experiment = lstExperiment,
+
+                    });;
+                    
+                }
+            }
+       
+            return RepList;
+                        
+        }
+
+
+        public Cogbytes GetGuidByRepID(int repID)
+        {
+            Cogbytes cogbytesRepo = new Cogbytes();
+            string sql = $"Select * From UserRepository Where RepID = {repID} ";
+            using (IDataReader dr = Dal.GetReaderCog(CommandType.Text, sql, null))
+            {
+                if (dr.Read())
+                {
+                    cogbytesRepo.RepoLinkGuid = Guid.Parse(dr["RepoLinkGuid"].ToString());
+
+                }
+
+            }
+
+            return cogbytesRepo;
+        }
 
 
     }

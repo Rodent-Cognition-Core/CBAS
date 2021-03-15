@@ -1,0 +1,119 @@
+<<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>MOUSEBYTES LITE</h1></div>
+
+
+<div class="content">
+    <p style="padding-left:50px; line-height: 1.8;">
+        In MouseBytes Lite, users can create repositories and upload Touchscreen-based datasets and the corresponding analysis files to each repository.
+        MouseBytes Lite focuses on archived and old datasets and analysis files or if it is not possible to deposit your behavioral data in our main
+        database (MouseBytes). It is recommended to upload your data files in MouseBytes.
+
+    </p>
+
+</div>
+
+
+<br />
+<br />
+<div >
+    <table class="docs-markdown-table">
+        <thead>
+            <tr>
+                <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">Repository Information</th>
+            </tr>
+        </thead>
+
+        <tbody class="docs-markdown-tbody">
+            <ng-container>
+                <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="repoList?.length > 0">
+                    <td>
+                        <label><b>Repository Information:</b></label><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( repObj?.title ==="") ?  "N/A" : repObj.title}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( repObj.author ==="") ?  "N/A" : repObj.author}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>PIs:</label> &nbsp; <span style="color:#909497;">{{( repObj.pi ==="") ?  "N/A" : repObj.pi}}</span><br /><br />
+
+                        <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( repObj.keywords =="") ?  "N/A" : repObj.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( repObj.doi =="") ?  "N/A" : repObj.doi}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Date:</label> &nbsp; <span style="color:#909497;">{{( repObj.date.slice(0, -12) =="") ?  "N/A" : repObj.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Link:</label> &nbsp; <span style="color:#909497;">{{( repObj.link ==="") ?  "N/A" : repObj.link}}</span><br /><br />
+                        <label>Description:</label> &nbsp; <span style="color:#909497;">{{( repObj.description ==="") ?  "N/A" : repObj.description}}</span><br /><br />
+                        <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( repObj.additionalNotes ==="") ?  "N/A" : repObj.additionalNotes}}</span><br /><br />
+                        <label>Status:</label> &nbsp; <span style="color:#909497;">{{repObj.privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
+
+                        <label><b>Uploads:</b></label><br /><br />
+
+                        <div>
+                            <mat-accordion multi>
+                                <mat-expansion-panel *ngFor="let upload of repoList">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title style="font-weight:bold; color:#918796;">
+                                            {{upload.uploadName}} ({{( upload.fileType ==="") ?  "N/A" : upload.fileType}})
+                                        </mat-panel-title>
+                                        <!--<mat-panel-description class="right-aligned">
+                                            {{( upload.fileType ==="") ?  "N/A" : upload.fileType}}
+                                        </mat-panel-description>-->
+                                    </mat-expansion-panel-header>
+                                    <label>Date added:</label> &nbsp; <span style="color:#909497;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
+                                    <label>Description:</label> &nbsp; <span style="color:#909497;">{{( upload.uploadDescription ==="") ?  "N/A" : upload.uploadDescription}}</span><br /><br />
+                                    <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( upload.uploadAdditionalNotes ==="") ?  "N/A" : upload.uploadAdditionalNotes}}</span><br /><br />
+
+                                    <div *ngIf="upload.fileType === 'Dataset'">
+                                        <label style="font-weight:bold;">Key Features:</label><br /><br />
+                                        <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{( upload.task ==="") ?  "N/A" : upload.task}}</span><br />
+                                        <label>Species:</label> &nbsp; <span style="color:#909497;">{{( upload.species ==="") ?  "N/A" : upload.species}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Sex:</label> &nbsp; <span style="color:#909497;">{{( upload.sex ==="") ?  "N/A" : upload.sex}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Strains:</label> &nbsp; <span style="color:#909497;">{{( upload.strain ==="") ?  "N/A" : upload.strain}}</span><br />
+                                        <label>Genotypes:</label> &nbsp; <span style="color:#909497;">{{( upload.genoType ==="") ?  "N/A" : upload.genoType}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Age (in months):</label> &nbsp; <span style="color:#909497;">{{( upload.age ==="") ?  "N/A" : upload.age}}</span><br />
+                                        <label>Intervention?</label> &nbsp; <span style="color:#909497;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
+                                        <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#909497;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
+                                        <label>Housing:</label> &nbsp; <span style="color:#909497;">{{( upload.housing ==="") ?  "N/A" : upload.housing}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Light Cycle:</label> &nbsp; <span style="color:#909497;">{{( upload.lightCycle ==="") ?  "N/A" : upload.lightCycle}}</span><br />
+                                        <label>Task Battery:</label> &nbsp; <span style="color:#909497;">{{( upload.taskBattery ==="") ?  "N/A" : upload.taskBattery}}</span><br />
+                                    </div>
+
+                                    <br />
+
+                                    <!--<div *ngIf="!rep.privacyStatus" style="color:red">Authors have chosen to make files private.</div>-->
+
+                                    <div>
+                                        <table class="docs-markdown-table">
+
+                                            <thead>
+                                                <tr><th colspan="5" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{upload.uploadName}}</th></tr>
+                                                <tr style=" text-align: center; color:#566573;">
+                                                    <td class="docs-markdown-td">File Name</td>
+                                                    <td class="docs-markdown-td">Upload Date</td>
+                                                    <td class="docs-markdown-td">Download</td>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr *ngFor="let file of upload.uploadFileList">
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                                                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                                                        <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
+
+<br />
+<br />
+<br />
+
+
+
