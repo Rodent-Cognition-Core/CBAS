@@ -214,8 +214,7 @@
         </table>
     </div>
 
-    <!--<div>{{isAdmin}}</div>-->
-    <!--Adding table to show result of search-->
+    
     <br /><br />
 
     <div *ngIf="isSearch">
@@ -314,69 +313,3 @@
         </table>
     </div>
 
-    <!--<div *ngIf="searchResultList?.length > 0">-->
-    <!--<app-shared-experiment></app-shared-experiment>-->
-    <!--<table class="docs-markdown-table">
-        <thead>
-            <tr>
-                <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications</th>
-
-            </tr>
-        </thead>
-        <tbody class="docs-markdown-tbody">
-            <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of searchResultList">
-                <td>
-                    <label style="color:#8D8E90"><b>Paper Information:</b></label>
-                    <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                    <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
-                    <div style="clear:both"></div>
-                    <br /><br />
-
-                    <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
-                    <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
-                    <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( row.keywords =="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;-->
-    <!--<label>DOI:</label>&nbsp; <span style="color:#909497;">{{( row.doi =="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;-->
-    <!--<label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( row.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                        <label>Year:</label> &nbsp; <span style="color:#909497;">{{( row.year =="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>Paper Type:</label> &nbsp; <span style="color:#909497;">{{( row.paperType =="") ?  "N/A" : row.paperType}}</span><br /><br />
-
-                        <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
-
-                        <label>Task(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Specie(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sex:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-
-                        <label>Strain(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Disease Model(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> <br /><br />
-
-                        <label>Brain Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-brain Region(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-
-                        <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
-
-                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    <span style="color: #A569BD;">MouseBytes datasets associate to this publicaton:</span>
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
-                            <table>
-                                <tr *ngFor="let exp of row.experiment">
-                                    <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
-                                    <td>Taske Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
-                                    <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
-                                </tr>
-                            </table>
-
-                        </mat-expansion-panel>
-                        <br />
-
-
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>-->

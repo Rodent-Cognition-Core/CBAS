@@ -1923,12 +1923,7 @@ namespace AngularSPAWebAPI.Services
                     pubScreenPublication.Abstract = Convert.ToString(dr["Abstract"]);
                     pubScreenPublication.Year = Convert.ToString(dr["Year"]);
                     pubScreenPublication.Reference = Convert.ToString(dr["Reference"]);
-
                     pubScreenPublication.ID = Int32.Parse(dr["ID"].ToString());
-                    pubScreenPublication.Title = Convert.ToString(dr["Title"].ToString());
-                    pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"].ToString());
-                    pubScreenPublication.DOI = Convert.ToString(dr["DOI"].ToString());
-                    pubScreenPublication.Year = Convert.ToString(dr["Year"].ToString());
                     pubScreenPublication.Author = Convert.ToString(dr["Author"].ToString());
                     pubScreenPublication.PaperType = Convert.ToString(dr["PaperType"].ToString());
                     pubScreenPublication.Task = Convert.ToString(dr["Task"].ToString());
@@ -1942,7 +1937,7 @@ namespace AngularSPAWebAPI.Services
                     pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
                     pubScreenPublication.Method = Convert.ToString(dr["Method"].ToString());
                     pubScreenPublication.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
-                    pubScreenPublication.Reference = Convert.ToString(dr["Reference"].ToString());
+                    
 
 
                 }
@@ -1961,12 +1956,6 @@ namespace AngularSPAWebAPI.Services
                 if (dr.Read())
                 {
                     pubScreenPublication.PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString());
-                    //pubScreenPublication.DOI = Convert.ToString(dr["DOI"]);
-                    //pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"]);
-                    //pubScreenPublication.Title = Convert.ToString(dr["Title"]);
-                    //pubScreenPublication.Abstract = Convert.ToString(dr["Abstract"]);
-                    //pubScreenPublication.Year = Convert.ToString(dr["Year"]);
-
 
                 }
 

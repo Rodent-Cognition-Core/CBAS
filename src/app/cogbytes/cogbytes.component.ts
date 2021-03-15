@@ -16,6 +16,7 @@ import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 
 
 @Component({
@@ -30,7 +31,8 @@ export class CogbytesComponent implements OnInit {
     readonly DATASET = 1;
     public uploadKey: number;
     panelOpenState: boolean;
-
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
+    showGeneratedLink: boolean;
     public repModel: any;
 
     // Definiing List Variables
@@ -135,7 +137,7 @@ export class CogbytesComponent implements OnInit {
             height: '850px',
             width: '1200px',
             data: {
-                repObj: this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)],
+                repObj: this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)],
             }
 
         });
@@ -167,7 +169,7 @@ export class CogbytesComponent implements OnInit {
     }
 
     getRepID() : number {
-        return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)].id;
+        return this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)].id;
     }
 
 
@@ -212,7 +214,23 @@ export class CogbytesComponent implements OnInit {
     }
 
     getRep(): any {
-        return this.repList[this.repList.map(function (x) { return x.title }).indexOf(this.repModel)];
+        return this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)];
+    }
+
+    // Get Guid by RepoID
+    getLink(repID) {
+
+        this.cogbytesService.getGuidByRepID(repID).subscribe(data => {
+
+            this.showGeneratedLink = true;
+            var guid = data.repoLinkGuid;
+
+            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            });
+            this.dialogRefLink.componentInstance.message = "http://localhost:4200/cogbytes-edit?repolinkguid=" + guid;
+
+        });
+
     }
 
 }

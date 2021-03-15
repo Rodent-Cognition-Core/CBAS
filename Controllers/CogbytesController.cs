@@ -303,43 +303,27 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.GetAllRepositories());
         }
 
-        //// Getting list of all years from Database
-        //[HttpGet("GetAllYear")]
-        //[AllowAnonymous]
-        //public IActionResult GetAllYear()
-        //{
-        //    return new JsonResult(_pubScreenService.GetAllYears());
-        //}
+        // Function Definition to get a repo based on its Guid
+        [AllowAnonymous]
+        [HttpGet("GetDataByLinkGuid")]
+        public IActionResult GetDataByLinkGuid(Guid repoLinkGuid)
+        {
+            // extract data from database to show in the client
+            return new JsonResult(_cogbytesService.GetRepoFromCogbytesByLinkGuid(repoLinkGuid));
 
-        //// Getting some paper information based on Doi from pubMed
-        //[HttpGet("GetPaperInfoByDOI")]
-        //[AllowAnonymous]
-        //public IActionResult GetPaperInfoByDOI(string DOI)
-        //{
-        //     return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
-        //}
+        }
 
-        //// Getting some paper information based on pubMed key 
-        //[HttpGet("GetPaperInfoByPubKey")]
-        //[AllowAnonymous]
-        //public IActionResult GetPaperInfoByPubKey(string PubKey)
-        //{
-        //    return new JsonResult(_pubScreenService.GetPaperInfoByPubMedKey(PubKey));
-        //}
+        // Function Definition to get repo's Guid based on Repo ID
+        [AllowAnonymous]
+        [HttpGet("GetGuidByRepID")]
+        public IActionResult GetGuidByRepID(int repID)
+        {
+            // extract data from database to show in the client
+            return new JsonResult(_cogbytesService.GetGuidByRepID(repID));
 
-        //// Getting some paper information based on Doi from BioRxiv
-        //[HttpGet("GetPaparInfoFromDOIBio")]
-        //[AllowAnonymous]
-        //public IActionResult GetPaparInfoFromDOIBio(string DOI)
-        //{
-        //    return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
-        //}
+        }
 
-        //[HttpGet("GetPaparInfoByID")]
-        //public IActionResult GetPaparInfoByID(int ID)
-        //{
-        //    return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
-        //}
+
 
     }
 }

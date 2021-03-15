@@ -6,7 +6,7 @@
             In MouseBytes Lite, users can create repositories and upload Touchscreen-based datasets and the corresponding analysis files to each repository.
             MouseBytes Lite focuses on archived and old datasets and analysis files or if it is not possible to deposit your behavioral data in our main
             database (MouseBytes). It is recommended to upload your data files in MouseBytes.
-           
+
         </p>
 
     </div>
@@ -35,7 +35,7 @@
                                 <mat-form-field style="padding-left:0px">
                                     <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()" (selectionChange)="GetUploads()">
                                         <mat-option [value]="null">-</mat-option>
-                                        <mat-option *ngFor="let rep of repList" [value]="rep.title">
+                                        <mat-option *ngFor="let rep of repList" [value]="rep.id">
                                             {{rep.title}}
                                         </mat-option>
                                     </mat-select>
@@ -82,12 +82,17 @@
     </div>
 
     <br />
+    <br />
+
+    <span style="padding-left:5%;"><button mat-raised-button color="primary" *ngIf="repModel!=null" (click)="getLink(repModel)">Generate Unique Link for your Repository</button></span>
+
+    <br />
 
     <div *ngIf="repModel != null" style="padding-top:30px">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
-                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">{{repModel}} Files</th>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">{{getRep().title}} Files</th>
 
                 </tr>
             </thead>
@@ -101,7 +106,7 @@
                                     New upload: &nbsp;&nbsp;
                                     <mat-icon *ngIf="!panelOpenState">add</mat-icon>
                                 </mat-panel-title>
-                                
+
 
                             </mat-expansion-panel-header>
 
@@ -134,8 +139,6 @@
     <!--<div>
         <app-cogbytesSearch></app-cogbytesSearch>
     </div>-->
-    
-
     <!--<div>
         <mat-expansion-panel style="width:90%; margin-left: 85px">
             <mat-expansion-panel-header>
