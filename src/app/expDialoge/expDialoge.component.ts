@@ -166,7 +166,6 @@ export class ExpDialogeComponent implements OnInit {
     expDescription = new FormControl('', [Validators.required]);
     expBattery = new FormControl('', [Validators.required]);
     isMultipleSessions = new FormControl('', [Validators.required]);
-    rep = new FormControl('', [Validators.required]);
 
     getErrorMessage() {
 
@@ -235,11 +234,6 @@ export class ExpDialogeComponent implements OnInit {
     getErrorMessageMultipleSessions() {
 
         return this.isMultipleSessions.hasError('required') ? 'You must enter a value' :
-            '';
-    }
-
-    getErrorMessageRep() {
-        return this.rep.hasError('required') ? 'You must select a repository' :
             '';
     }
 
