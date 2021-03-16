@@ -12,12 +12,13 @@ import { GenericDialogComponent } from '../generic-dialog/generic-dialog.compone
 import { MatSnackBar } from '@angular/material';
 import * as _ from 'underscore';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { CogbytesService } from '../services/cogbytes.service'
 
 @Component({
     selector: 'app-shared-experiment',
     templateUrl: './shared-experiment.component.html',
     styleUrls: ['./shared-experiment.component.scss'],
-    providers: [UploadService, ExperimentService, SubExpDialogeService, PostProcessingQcService]
+    providers: [UploadService, ExperimentService, SubExpDialogeService, PostProcessingQcService, CogbytesService]
 })
 export class SharedExperimentComponent implements OnInit {
 
@@ -42,12 +43,14 @@ export class SharedExperimentComponent implements OnInit {
     selectedImageResult: any;
     Math: any;
     imageDescriptionNotNullVal: boolean = false;
+    repList: any;
     
 
     constructor(
         private uploadService: UploadService,
         private experimentService: ExperimentService,
         private postProcessingQcService: PostProcessingQcService,
+        private cogbytesService: CogbytesService,
         public dialog: MatDialog,
         private location: Location,
         private snackBar: MatSnackBar,
@@ -179,6 +182,7 @@ export class SharedExperimentComponent implements OnInit {
     ngOnInit() {
         //this.imageDescriptionNotNull = false;
         this.GetExpSelect();
+        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(this.repList); });
 
         if (this.hideSubExperiment == null) {
             this.hideSubExperiment = false;
@@ -283,6 +287,11 @@ export class SharedExperimentComponent implements OnInit {
 
     }
 
-
+    getRepTitle(repGuid) {
+        if (repGuid == "") {
+            return "N/A";
+        }
+        return this.repList[this.repList.map(function (x) { return x.repoLinkGuid }).indexOf(repGuid)].title;
+    }
 }
 

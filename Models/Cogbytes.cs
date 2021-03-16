@@ -19,5 +19,6 @@ namespace AngularSPAWebAPI.Models
         public string Description { get; set; }
         public string AdditionalNotes { get; set; }
         public string DateRepositoryCreated { get; set; }
+        public System.Collections.Generic.List<Experiment> Experiment { get; set; }
     }
 }

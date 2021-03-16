@@ -10,6 +10,7 @@ import { PISiteService } from '../services/piSite.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
+import { CogbytesService } from '../services/cogbytes.service'
 
 
 @Component({
@@ -17,7 +18,7 @@ import { SharedModule } from '../shared/shared.module';
     selector: 'app-expDialoge',
     templateUrl: './ExpDialoge.component.html',
     styleUrls: ['./ExpDialoge.component.scss'],
-    providers: [TaskAnalysisService, ExpDialogeService, PISiteService]
+    providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
 
 })
 export class ExpDialogeComponent implements OnInit {
@@ -34,11 +35,13 @@ export class ExpDialogeComponent implements OnInit {
     speciesModel: any;
     taskBatteryModel: any;
     isMultipleSessionsModel: string;
-
+    isRepoLink: any;
+    repModel: any;
 
     taskList: any;
     piSiteList: any;
     speciesList: any;
+    repList: any;
 
 
     private _experiment = new Experiment();
@@ -46,13 +49,15 @@ export class ExpDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, ) { }
+        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, private cogbytesService: CogbytesService) { }
 
     ngOnInit() {
         this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; console.log(this.taskList); });
         this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
         this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
+        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(this.repList); });
 
+        this.isRepoLink = '0';
 
         //console.log(this.data.experimentObj);
         // if it is an Edit model
@@ -68,7 +73,10 @@ export class ExpDialogeComponent implements OnInit {
             this.DOIModel = this.data.experimentObj.doi;
             this.statusModel = this.data.experimentObj.status ? "1" : "0";
             this.isMultipleSessionsModel = this.data.experimentObj.multipleSessions ? "1" : "0";
-
+            if (this.data.experimentObj.repoGuid != "") {
+                this.isRepoLink = '1';
+                this.repModel = this.data.experimentObj.repoGuid;
+            }
         }
     }
 
@@ -93,6 +101,9 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.DOI = this.DOIModel;
         this._experiment.Status = this.statusModel == "1" ? true : false;
         this._experiment.multipleSessions = this.isMultipleSessionsModel == "1" ? true : false;
+        if (this.isRepoLink == '1') {
+            this._experiment.repoGuid = this.repModel;
+        }
 
         //console.log(this._experiment.ImageIds);
 
@@ -239,7 +250,6 @@ export class ExpDialogeComponent implements OnInit {
             this.expBattery.hasError('required') ||
             this.species.hasError('required') ||
             this.isMultipleSessions.hasError('required')
-
         ) {
 
             return true;

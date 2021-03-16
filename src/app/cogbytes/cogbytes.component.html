@@ -5,8 +5,11 @@
         <p style="padding-left:50px; line-height: 1.8;">
             In MouseBytes Lite, users can create repositories and upload Touchscreen-based datasets and the corresponding analysis files to each repository.
             MouseBytes Lite focuses on archived and old datasets and analysis files or if it is not possible to deposit your behavioral data in our main
-            database (MouseBytes). It is recommended to upload your data files in MouseBytes.
+            database (MouseBytes). It is recommended to upload your data files in MouseBytes. <br /><br />
 
+            The following file types are supported: csv, xls/xlsx, ppt/pptm/pptx, doc/docm/docx, pdf, txt, xml, jpg/jpeg, png, bak, c, cpp, r, py, zip, tar, rar.
+            If your file type is not listed, please compress your file(s) in a zip, tar, or rar format before uploading.  If there is an important file type
+            missing from the list, please contact the administrator.
         </p>
 
     </div>
@@ -55,7 +58,7 @@
                         <div *ngIf="repModel != null">
                             <div style="float:left; padding-top:10px;">
                                 <label style="color:#566573;">
-                                    {{repModel}} Information
+                                    {{getRep().title}} Information
                                 </label>
                             </div>
                             <span style="float:right; padding-left: 20px;">
@@ -73,6 +76,23 @@
                             <label>Status:</label> &nbsp; <span style="color:#909497;">{{getRep().privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#909497;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
+
+                            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="getRep().experiment.length>0">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <span style="color: #A569BD;">MouseBytes datasets associate to this repository:</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                                <table>
+                                    <tr *ngFor="let exp of getRep().experiment">
+                                        <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
+                                        <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
+                                        <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                    </tr>
+                                </table>
+
+                            </mat-expansion-panel>
 
                         </div>
                     </td>

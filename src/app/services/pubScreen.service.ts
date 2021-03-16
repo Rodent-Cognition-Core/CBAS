@@ -188,6 +188,16 @@ import { AuthenticationService } from './authentication.service';
         });
     }
 
+    // Editing a publication 
+    public EditPublicationPublic(publicationId: number, pubscreenObj: Pubscreen) {
+
+        const body: string = JSON.stringify(pubscreenObj);
+        // Sends an authenticated request.
+        return this.http.post("/api/pubScreen/EditPublicationPublic?publicationId=" + publicationId, body, {
+            headers: new HttpHeaders().set('Content-Type', 'application/json')
+        });
+    }
+
     // Deleting a publication when Del button is clicked!
     public deletePublicationById(id: any): any {
 
@@ -250,7 +260,7 @@ import { AuthenticationService } from './authentication.service';
     public getPaperInfo(id: any): any {
         return this.http
             .get("/api/pubScreen/GetPaparInfoByID?ID=" + id, {
-                headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
     }
 

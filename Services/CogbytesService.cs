@@ -304,7 +304,8 @@ namespace AngularSPAWebAPI.Services
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                         AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID")
+                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString()))
                     });
                 }
             }
@@ -1046,6 +1047,7 @@ namespace AngularSPAWebAPI.Services
                     RepList.Add(new Cogbytes
                     {
                         ID = repID,
+                        RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Date = Convert.ToString(dr["Date"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
@@ -1055,12 +1057,43 @@ namespace AngularSPAWebAPI.Services
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                         AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID")
+                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString()))
                     });
                 }
             }
 
             return RepList;
+        }
+
+        public List<Experiment> GetCogbytesExperimentList(Guid repoLinkGuid)
+        {
+
+            string sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                       Inner join Task on Task.ID = Experiment.TaskID
+                       Where RepoGuid = '{repoLinkGuid}'";
+
+            var lstExperiment = new List<Experiment>();
+            using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+            {
+                foreach (DataRow drExp in dtExp.Rows)
+                {
+
+                    lstExperiment.Add(new Experiment
+                    {
+                        ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                        ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                        StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                        TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                        DOI = Convert.ToString(drExp["DOI"].ToString()),
+                        Status = Convert.ToBoolean(drExp["Status"]),
+                        TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                    });
+                }
+
+            }
+            return lstExperiment;
         }
 
         public List<CogbytesSearch2> GetRepoFromCogbytesByLinkGuid(Guid repoLinkGuid)
@@ -1097,32 +1130,6 @@ namespace AngularSPAWebAPI.Services
                         }
                     }
 
-                    //sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                    //           Inner join Task on Task.ID = Experiment.TaskID
-                    //           Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-
-                    // empty lstExperiment list
-                    //lstExperiment.Clear();
-                    //using (DataTable dtExp = Dal.GetDataTable(sqlMB))
-                    //{
-                    //    foreach (DataRow drExp in dtExp.Rows)
-                    //    {
-
-                    //        lstExperiment.Add(new Experiment
-                    //        {
-                    //            ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                    //            ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                    //            StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                    //            TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                    //            DOI = Convert.ToString(drExp["DOI"].ToString()),
-                    //            Status = Convert.ToBoolean(drExp["Status"]),
-                    //            TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
-
-                    //        });
-                    //    }
-
-                    //}
-
                     RepList.Add(new CogbytesSearch2
                     {
                         RepoID = repID,
@@ -1157,9 +1164,9 @@ namespace AngularSPAWebAPI.Services
                         GenoType = Convert.ToString(dr["GenoType"].ToString()),
                         Age = Convert.ToString(dr["Age"].ToString()),
                         UploadFileList = FileList,
-                        //Experiment = lstExperiment,
+                        Experiment = GetCogbytesExperimentList(repoLinkGuid)
 
-                    });;
+                    });
                     
                 }
             }

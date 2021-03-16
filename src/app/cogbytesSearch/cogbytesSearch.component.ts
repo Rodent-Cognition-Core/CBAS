@@ -251,7 +251,7 @@ export class CogbytesSearchComponent implements OnInit {
 
 
     GetRepositories() {
-        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; });
+        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(data); });
         return this.repList;
     }
 

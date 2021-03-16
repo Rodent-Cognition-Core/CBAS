@@ -305,6 +305,23 @@
                                     </mat-expansion-panel>
                                 </mat-accordion>
                             </div>
+                            <br /><br />
+                            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="rep.experiment.length>0">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <span style="color: #A569BD;">MouseBytes datasets associate to this repository:</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                                <table>
+                                    <tr *ngFor="let exp of rep.experiment">
+                                        <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
+                                        <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
+                                        <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                    </tr>
+                                </table>
+
+                            </mat-expansion-panel>
 
                         </td>
                     </tr>
