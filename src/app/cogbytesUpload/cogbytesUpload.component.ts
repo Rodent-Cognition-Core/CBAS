@@ -32,7 +32,7 @@ export class CogbytesUploadComponent implements OnInit {
     @Output() filesUploaded: EventEmitter<any> = new EventEmitter();
     @Output() repChange: EventEmitter<any> = new EventEmitter();
 
-    readonly DATASET = 1;
+    readonly DATASET = [1, 2, 3, 4, 5];
 
     isUploadAdded = false;
     uploadID: number;
