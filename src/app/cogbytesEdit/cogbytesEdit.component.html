@@ -1,12 +1,9 @@
-<<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>MOUSEBYTES LITE</h1></div>
+<<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>COMPLEMENTARY DATA REPOSITORIES</h1></div>
 
 
 <div class="content">
     <p style="padding-left:50px; line-height: 1.8;">
-        In MouseBytes Lite, users can create repositories and upload Touchscreen-based datasets and the corresponding analysis files to each repository.
-        MouseBytes Lite focuses on archived and old datasets and analysis files or if it is not possible to deposit your behavioral data in our main
-        database (MouseBytes). It is recommended to upload your data files in MouseBytes.
-
+        In this section, users can create repositories and upload datasets from different modalities (e.g. Fiber Photometry, MRI Imaging, Optogenetics, Miniscope, etc.)
     </p>
 
 </div>
@@ -56,7 +53,7 @@
                                     <label>Description:</label> &nbsp; <span style="color:#909497;">{{( upload.uploadDescription ==="") ?  "N/A" : upload.uploadDescription}}</span><br /><br />
                                     <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( upload.uploadAdditionalNotes ==="") ?  "N/A" : upload.uploadAdditionalNotes}}</span><br /><br />
 
-                                    <div *ngIf="upload.fileType === 'Dataset'">
+                                    <div *ngIf="upload.fileType != 'Software'">
                                         <label style="font-weight:bold;">Key Features:</label><br /><br />
                                         <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{( upload.task ==="") ?  "N/A" : upload.task}}</span><br />
                                         <label>Species:</label> &nbsp; <span style="color:#909497;">{{( upload.species ==="") ?  "N/A" : upload.species}}</span> &nbsp; &nbsp; &nbsp;

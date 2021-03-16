@@ -1,10 +1,9 @@
-<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>MOUSEBYTES LITE</h1></div>
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>SEARCH COMPLEMENTARY DATA</h1></div>
 
 <div>
     <div class="content">
         <p style="padding-left:50px; line-height: 1.8;">
-            Users can search and extract datasets based on different search criteria. MouseBytes Lite focuses on archived and old datasets and analysis files or
-            if it is not possible to deposit the behavioral data in our main database (MouseBytes).
+            Users can search and extract complementary datasets based on different search criteria.
             
         </p>
 
@@ -258,7 +257,7 @@
                                         <label>Description:</label> &nbsp; <span style="color:#909497;">{{( upload.description ==="") ?  "N/A" : upload.description}}</span><br /><br />
                                         <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( upload.additionalNotes ==="") ?  "N/A" : upload.additionalNotes}}</span><br /><br />
 
-                                        <div *ngIf="upload.fileTypeID === DATASET">
+                                        <div *ngIf="upload.fileTypeID<=5">
                                             <label style="font-weight:bold;">Key Features:</label><br /><br />
                                             <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{getUploadTaskString(upload)}}</span><br />
                                             <label>Species:</label> &nbsp; <span style="color:#909497;">{{getUploadSpeciesString(upload)}}</span> &nbsp; &nbsp; &nbsp;

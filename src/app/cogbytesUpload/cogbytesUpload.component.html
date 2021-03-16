@@ -50,7 +50,7 @@
 
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="fileTypeModel===DATASET" [expanded]="true">
+        <mat-expansion-panel *ngIf="fileTypeModel>=1&&fileTypeModel<=5" [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Key Features:
