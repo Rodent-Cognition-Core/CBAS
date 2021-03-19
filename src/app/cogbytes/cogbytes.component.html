@@ -3,7 +3,10 @@
 <div>
     <div class="content">
         <p style="padding-left:50px; line-height: 1.8;">
-            In this section, users can create repositories and upload datasets from different modalities (e.g. Fiber Photometry, MRI Imaging, Optogenetics, Miniscope, etc.) <br /><br />
+            Touchscreen datasets can be coupled with different neuro-technologies such as fiber photometry, miniscopes, optogenetics, MRI, PET, and OMICs analysis to evaluate the brain basis of behaviour.
+            In this new feature of MouseBytes, users can upload processed datasets, scripts and codes related to these and other technologies and link them to cognitive data in MouseBytes and raw data in
+            other repositories using Digital Object Identifier (DOI).
+            <br /><br />
             The following file types are supported: csv, xls/xlsx, ppt/pptm/pptx, doc/docm/docx, pdf, txt, xml, jpg/jpeg, png, bak, c, cpp, r, py, zip, tar, rar. If your file type is not listed, please compress your file(s) in a zip, tar, or rar format before uploading. If there is an important file type missing from the list, please contact the administrator.
 
 
@@ -64,20 +67,21 @@
                             </span>
                             <div style="clear:both"></div>
                             <hr /><br />
-                            <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
+                            <label>Authors:</label> <span style="color:#909497;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
                             <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(getRep())}}</span><br /><br />
                             <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( getRep().keywords =="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( getRep().doi =="") ?  "N/A" : getRep().doi}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( getRep().doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
                             <label>Date:</label> &nbsp; <span style="color:#909497;">{{( getRep().date.slice(0, -12) =="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Link:</label> &nbsp; <span style="color:#909497;">{{( getRep().link ==="") ?  "N/A" : getRep().link}}</span>&nbsp; &nbsp; &nbsp;
                             <label>Status:</label> &nbsp; <span style="color:#909497;">{{getRep().privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#909497;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
-                            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="getRep().experiment.length>0">
+                            <mat-expansion-panel *ngIf="getRep().experiment.length>0">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <span style="color: #A569BD;">MouseBytes datasets associate to this repository:</span>
+                                        <span style="color: #A569BD;">MouseBytes datasets associated to this repository:</span>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
@@ -87,6 +91,20 @@
                                         <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
                                         <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
                                     </tr>
+                                </table>
+
+                            </mat-expansion-panel>
+                            <mat-expansion-panel *ngIf="getRep().paper != null">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <table>
+                                        <tr><td><span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + getRep().paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
+                                        <tr><td>Title:&nbsp; <span style="color:#909497;">{{getRep().paper.title}}</span></td></tr>
+                                        <tr><td>Author(s): &nbsp; <span style="color:#909497;">{{getRep().paper.author}}</span></td></tr>
+                                        <tr><td>Year:&nbsp; <span style="color:#909497;">{{getRep().paper.year}}</span></td></tr>
                                 </table>
 
                             </mat-expansion-panel>
@@ -101,9 +119,9 @@
     <br />
     <br />
 
-    <span style="padding-left:5%;"><button mat-raised-button color="primary" *ngIf="repModel!=null" (click)="getLink(repModel)">Generate Unique Link for your Repository</button></span>
+    <!--<span style="padding-left:5%;"><button mat-raised-button color="primary" *ngIf="repModel!=null" (click)="getLink(repModel)">Generate Unique Link for your Repository</button></span>
 
-    <br />
+    <br />-->
 
     <div *ngIf="repModel != null" style="padding-top:30px">
         <table class="docs-markdown-table">

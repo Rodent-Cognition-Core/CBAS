@@ -17,4 +17,6 @@ export class CogbytesSearch {
     public yearTo: number;
 
     public intervention: string;
+
+    public fileTypeID: Array<number>;
 }

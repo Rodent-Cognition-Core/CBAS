@@ -70,11 +70,17 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" multiple>
+                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjectsModel=null" multiple>
                     <mat-option *ngFor="let species of speciesList" [value]="species.id">
                         {{species.species}}
                     </mat-option>
                 </mat-select>
+            </mat-form-field>
+
+            <!--Number of Subjects-->
+            <mat-form-field *ngIf="speciesModel!=null&&speciesModel.length>0" style="width:10%; padding-left:30px">
+                <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects" [(ngModel)]="numSubjectsModel">
+                <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
@@ -145,31 +151,31 @@
             <!--Image Drop-down list if the selected task is PAL or PD-->
             <!--<div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">-->
             <!--<div>
-                <mat-form-field class="full-width">-->
-                    <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
-                    <!--<mat-select placeholder="Select the images">
-                        ma-->
-                        <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
-                            <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
-                        </mat-option>-->
-                    <!--</mat-select>-->
-                    <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
-                <!--</mat-form-field>
+        <mat-form-field class="full-width">-->
+            <!--<mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>-->
+            <!--<mat-select placeholder="Select the images">
+        ma-->
+            <!--<mat-option *ngFor="let image of imageList" [value]="image.id">
+        <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
+    </mat-option>-->
+            <!--</mat-select>-->
+            <!--<mat-error *ngIf="imageInfo.invalid">{{getErrorMessageImage()}}</mat-error>-->
+            <!--</mat-form-field>
 
-            </div>
+    </div>
 
-            
-            <div>
-                <mat-form-field class="full-width">
 
-                    <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
-                              matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
-           
-                    </textarea>
-                    
-                </mat-form-field>
+    <div>
+        <mat-form-field class="full-width">
 
-            </div>-->
+            <textarea matInput placeholder="Please explain why more than the required number of images selected for the task" [(ngModel)]="imgDesModel"
+                      matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+
+            </textarea>
+
+        </mat-form-field>
+
+    </div>-->
 
             <div>
                 <mat-form-field class="full-width">

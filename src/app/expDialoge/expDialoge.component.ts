@@ -11,6 +11,9 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
 import { CogbytesService } from '../services/cogbytes.service'
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject } from 'rxjs/Subject';
+import { take, takeUntil } from 'rxjs/operators';
 
 
 @Component({
@@ -43,6 +46,12 @@ export class ExpDialogeComponent implements OnInit {
     speciesList: any;
     repList: any;
 
+    public repMultiFilterCtrl: FormControl = new FormControl();
+    public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    repMultiSelect: any;
+
+    /** Subject that emits when the component has been destroyed. */
+    private _onDestroy = new Subject<void>();
 
     private _experiment = new Experiment();
 
@@ -55,7 +64,7 @@ export class ExpDialogeComponent implements OnInit {
         this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; console.log(this.taskList); });
         this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
         this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
-        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(this.repList); });
+        this.GetRepList();
 
         this.isRepoLink = '0';
 
@@ -78,6 +87,47 @@ export class ExpDialogeComponent implements OnInit {
                 this.repModel = this.data.experimentObj.repoGuid;
             }
         }
+    }
+
+    GetRepList() {
+
+        this.cogbytesService.getAllRepositories().subscribe(data => {
+            this.repList = data;
+
+            // load the initial expList
+            this.filteredRepList.next(this.repList.slice());
+
+            this.repMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterRep();
+                });
+
+        });
+
+        return this.repList;
+    }
+
+    // handling multi filtered Rep list
+    private filterRep() {
+        if (!this.repList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchRep = this.repMultiFilterCtrl.value;
+
+        if (!searchRep) {
+            this.filteredRepList.next(this.repList.slice());
+            return;
+        } else {
+            searchRep = searchRep.toLowerCase();
+        }
+
+        // filter the rep
+        this.filteredRepList.next(
+            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
+        );
     }
 
     onCloseCancel(): void {

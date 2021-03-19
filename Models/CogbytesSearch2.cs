@@ -37,8 +37,9 @@ namespace AngularSPAWebAPI.Models
         public string Strain { get; set; }
         public string GenoType { get; set; }
         public string Age { get; set; }
-
+        public int? NumSubjects { get; set; }
         public System.Collections.Generic.List<Experiment> Experiment { get; set; }
+        public PubScreenSearch Paper { get; set; }
 
         public System.Collections.Generic.List<FileUploadResult> UploadFileList { get; set; }
 

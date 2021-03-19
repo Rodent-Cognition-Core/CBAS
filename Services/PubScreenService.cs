@@ -1577,8 +1577,11 @@ namespace AngularSPAWebAPI.Services
             }
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
+
             string sqlMB = "";
+            string sqlCog = "";
             List<Experiment> lstExperiment = new List<Experiment>();
+            List<Cogbytes> lstRepo = new List<Cogbytes>();
             using (DataTable dt = Dal.GetDataTablePub(sql))
             {
 
@@ -1610,9 +1613,37 @@ namespace AngularSPAWebAPI.Services
 
                     }
 
+                    sqlCog = $"Select * From UserRepository Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
+                    lstRepo.Clear();
+                    using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
+                    {
+                        foreach (DataRow drCog in dtCog.Rows)
+                        {
+                            var cogbytesService = new CogbytesService();
+                            int repID = Int32.Parse(drCog["RepID"].ToString());
+                            lstRepo.Add(new Cogbytes
+                            {
+                                ID = repID,
+                                RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                                Title = Convert.ToString(drCog["Title"].ToString()),
+                                Date = Convert.ToString(drCog["Date"].ToString()),
+                                Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                                DOI = Convert.ToString(drCog["DOI"].ToString()),
+                                Link = Convert.ToString(drCog["Link"].ToString()),
+                                PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                                Description = Convert.ToString(drCog["Description"].ToString()),
+                                AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                                AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                                PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                            });
+                        }
+
+                    }
+
                     lstPubScreen.Add(new PubScreenSearch
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
+                        PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
                         DOI = Convert.ToString(dr["DOI"].ToString()),
@@ -1632,7 +1663,7 @@ namespace AngularSPAWebAPI.Services
                         NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
                         Reference = Convert.ToString(dr["Reference"].ToString()),
                         Experiment = new List<Experiment>(lstExperiment),
-
+                        Repo = new List<Cogbytes>(lstRepo)
 
                     });
                     //lstExperiment.Clear();
@@ -1722,6 +1753,7 @@ namespace AngularSPAWebAPI.Services
             sql = $"Select * From Publication Where ID ={id}";
             using (DataTable dt = Dal.GetDataTablePub(sql))
             {
+                pubScreen.PaperLinkGuid = Guid.Parse(dt.Rows[0]["PaperLinkGuid"].ToString());
                 pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
                 pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
                 pubScreen.Title = dt.Rows[0]["Title"].ToString();
@@ -1915,8 +1947,65 @@ namespace AngularSPAWebAPI.Services
 
             using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
             {
+                string sqlMB = "";
+                string sqlCog = "";
+                List<Experiment> lstExperiment = new List<Experiment>();
+                List<Cogbytes> lstRepo = new List<Cogbytes>();
+
                 if (dr.Read())
                 {
+                    sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                               Inner join Task on Task.ID = Experiment.TaskID
+                               Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
+
+                    // empty lstExperiment list
+                    lstExperiment.Clear();
+                    using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    {
+                        foreach (DataRow drExp in dtExp.Rows)
+                        {
+
+                            lstExperiment.Add(new Experiment
+                            {
+                                ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                                ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                                StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                                TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                                DOI = Convert.ToString(drExp["DOI"].ToString()),
+                                Status = Convert.ToBoolean(drExp["Status"]),
+                                TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                            });
+                        }
+
+                    }
+
+                    sqlCog = $"Select * From UserRepository Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
+                    lstRepo.Clear();
+                    using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
+                    {
+                        foreach (DataRow drCog in dtCog.Rows)
+                        {
+                            var cogbytesService = new CogbytesService();
+                            int repID = Int32.Parse(drCog["RepID"].ToString());
+                            lstRepo.Add(new Cogbytes
+                            {
+                                ID = repID,
+                                RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                                Title = Convert.ToString(drCog["Title"].ToString()),
+                                Date = Convert.ToString(drCog["Date"].ToString()),
+                                Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                                DOI = Convert.ToString(drCog["DOI"].ToString()),
+                                Link = Convert.ToString(drCog["Link"].ToString()),
+                                PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                                Description = Convert.ToString(drCog["Description"].ToString()),
+                                AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                                AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                                PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                            });
+                        }
+
+                    }
                     pubScreenPublication.DOI = Convert.ToString(dr["DOI"]);
                     pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"]);
                     pubScreenPublication.Title = Convert.ToString(dr["Title"]);
@@ -1937,8 +2026,8 @@ namespace AngularSPAWebAPI.Services
                     pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
                     pubScreenPublication.Method = Convert.ToString(dr["Method"].ToString());
                     pubScreenPublication.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
-                    
-
+                    pubScreenPublication.Experiment = new List<Experiment>(lstExperiment);
+                    pubScreenPublication.Repo = new List<Cogbytes>(lstRepo);
 
                 }
 

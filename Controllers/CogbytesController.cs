@@ -195,7 +195,22 @@ namespace AngularSPAWebAPI.Controllers
         public async Task<IActionResult> AddFiles()
         {
             var files = HttpContext.Request.Form.Files;
+            var types = GetMimeTypes();
+
             int uploadID = Int16.Parse(HttpContext.Request.Form["uploadID"][0]);
+
+            foreach (var file in files)
+            {
+                var fileType = Path.GetExtension(file.FileName);
+                try
+                {
+                    var typeCheck = types[fileType];
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw;
+                }
+            }
 
             bool result = await _cogbytesService.AddFiles(files, uploadID);
             // add a function to send an email to inform admin that new data added to the server
@@ -253,7 +268,11 @@ namespace AngularSPAWebAPI.Controllers
                 {".cpp", "text/plain" },
                 {".r", "text/plain" },
                 {".py", "text/plain" },
-
+                {".avi", "video/x-msvideo"},
+                {".mp3", "audio/mpeg"},
+                {".mp4", "video/mp4"},
+                {".mp4v", "video/mp4"},
+                {".h5", "application/x-hdf5"},
             };
         }
 
