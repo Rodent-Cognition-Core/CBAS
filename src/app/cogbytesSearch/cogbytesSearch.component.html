@@ -54,15 +54,15 @@
                             </mat-form-field>&nbsp;
 
                             <!--<mat-form-field style="padding-left: 25px">
-                                <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>-->
+    <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>-->
                             <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>-->
                             <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
                             <!--<mat-option *ngFor="let pi of piList" [value]="pi.id">
-                                        {{pi.piFullName}}
-                                    </mat-option>
+                {{pi.piFullName}}
+            </mat-option>
 
-                                </mat-select>
-                            </mat-form-field>&nbsp;-->
+        </mat-select>
+    </mat-form-field>&nbsp;-->
 
                             <br /><br />
 
@@ -73,20 +73,21 @@
                             <!--Repository List-->
                             <mat-form-field style="width: 35%; padding-left:0px">
                                 <mat-select matInput placeholder="Repository List" [(ngModel)]="titleModel" multiple>
-                                    <mat-option *ngFor="let rep of repList" [value]="rep.id">
+                                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.id">
                                         {{rep.title}}
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                             <!--Paper Abstract-->
                             <!--<mat-form-field style="width:30%; padding-left:35px">
 
-                                <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
 
-                                </textarea>
-                            </mat-form-field>-->
+        </textarea>
+    </mat-form-field>-->
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -113,19 +114,33 @@
 
                             <br />
 
-                            <!--Paper Keywords-->
+                            <!--Keywords-->
                             <mat-form-field style="width:30%;">
 
                                 <input matInput placeholder="Keywords" [(ngModel)]="keywordsModel">
 
                             </mat-form-field>
 
-                            <!--Paper DOI-->
+                            <!--DOI-->
                             <mat-form-field style="width:30%; padding-left:35px">
 
                                 <input matInput placeholder="DOI" [(ngModel)]="doiModel">
 
-                            </mat-form-field><br /><br />
+                            </mat-form-field>
+
+                            <br />
+
+                            <!--File Type-->
+                            <mat-form-field style="width: 45%; padding-left:0px">
+                                <mat-select matInput placeholder="File Type" [(ngModel)]="fileTypeModel" multiple>
+                                    <mat-option *ngFor="let type of fileTypeList" [value]="type.id">
+                                        {{type.fileType}}
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <br /><br />
 
                             <label>Intervention:</label><br />
                             <mat-radio-group aria-label="Intervention Datasets" [(ngModel)]="interventionModel">
@@ -137,7 +152,7 @@
                             <br /><br />
 
                             <!--Adding Key Features ********************************************-->
-                            <label style="color:#566573">Key Features:</label><br />
+                            <label style="color:#566573">Key Features (Datasets only):</label><br />
 
                             <!--Cognitive Task-->
                             <mat-form-field style="width:15%; ">
@@ -233,12 +248,14 @@
                             <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span>&nbsp; &nbsp; &nbsp;
                             <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(rep)}}</span><br /><br />
                             <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#909497;">{{( rep.doi =="") ?  "N/A" : rep.doi}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
                             <label>Date:</label> &nbsp; <span style="color:#909497;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
-                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
+                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
+                            <br /><br />
 
                             <label><b>Uploads:</b></label><br /><br />
 
@@ -261,6 +278,7 @@
                                             <label style="font-weight:bold;">Key Features:</label><br /><br />
                                             <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{getUploadTaskString(upload)}}</span><br />
                                             <label>Species:</label> &nbsp; <span style="color:#909497;">{{getUploadSpeciesString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Number of Subjects:</label> &nbsp; <span style="color:#909497;">{{upload.numSubjects}}</span> &nbsp; &nbsp; &nbsp;
                                             <label>Sex:</label> &nbsp; <span style="color:#909497;">{{getUploadSexString(upload)}}</span> &nbsp; &nbsp; &nbsp;
                                             <label>Strains:</label> &nbsp; <span style="color:#909497;">{{getUploadStrainString(upload)}}</span><br />
                                             <label>Genotypes:</label> &nbsp; <span style="color:#909497;">{{getUploadGenoString(upload)}}</span> &nbsp; &nbsp; &nbsp;
@@ -318,6 +336,20 @@
                                         <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
                                         <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
                                     </tr>
+                                </table>
+
+                            </mat-expansion-panel>
+                            <mat-expansion-panel *ngIf="rep.paper != null">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <table>
+                                    <tr><td><span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + rep.paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
+                                    <tr><td>Title:&nbsp; <span style="color:#909497;">{{rep.paper.title}}</span></td></tr>
+                                    <tr><td>Author(s): &nbsp; <span style="color:#909497;">{{rep.paper.author}}</span></td></tr>
+                                    <tr><td>Year:&nbsp; <span style="color:#909497;">{{rep.paper.year}}</span></td></tr>
                                 </table>
 
                             </mat-expansion-panel>

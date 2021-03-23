@@ -47,6 +47,8 @@ export class CogbytesSearchComponent implements OnInit {
     yearToSearchModel: any;
     authorMultiSelect: any;
 
+    fileTypeModel: any;
+
     panelOpenState = false;
 
     // Definiing List Variables
@@ -79,11 +81,14 @@ export class CogbytesSearchComponent implements OnInit {
     //yearFrom = new FormControl('', []);
     yearTo = new FormControl('', []);
 
+    public repMultiFilterCtrl: FormControl = new FormControl();
+    public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1)
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public piMultiFilterCtrl: FormControl = new FormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     piMultiSelect: any;
+    repMultiSelect: any;
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -132,6 +137,47 @@ export class CogbytesSearchComponent implements OnInit {
             years.push(startYear++);
         }
         return years;
+    }
+
+    GetRepositories() {
+
+        this.cogbytesService.getAllRepositories().subscribe(data => {
+            this.repList = data;
+
+            // load the initial expList
+            this.filteredRepList.next(this.repList.slice());
+
+            this.repMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterRep();
+                });
+
+        });
+
+        return this.repList;
+    }
+
+    // handling multi filtered Rep list
+    private filterRep() {
+        if (!this.repList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchRep = this.repMultiFilterCtrl.value;
+
+        if (!searchRep) {
+            this.filteredRepList.next(this.repList.slice());
+            return;
+        } else {
+            searchRep = searchRep.toLowerCase();
+        }
+
+        // filter the rep
+        this.filteredRepList.next(
+            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
+        );
     }
 
 
@@ -250,10 +296,10 @@ export class CogbytesSearchComponent implements OnInit {
     }
 
 
-    GetRepositories() {
-        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(data); });
-        return this.repList;
-    }
+    //GetRepositories() {
+    //    this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(data); });
+    //    return this.repList;
+    //}
 
     // Function definition for searching publications based on search criteria
     search() {
@@ -276,6 +322,8 @@ export class CogbytesSearchComponent implements OnInit {
         this._cogbytesSearch.yearTo = this.yearToSearchModel;
 
         this._cogbytesSearch.intervention = this.interventionModel;
+
+        this._cogbytesSearch.fileTypeID = this.fileTypeModel;
 
         //console.log(this._cogbytesSearch);
 
@@ -402,6 +450,10 @@ export class CogbytesSearchComponent implements OnInit {
                         console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
                     }
                 });
+    }
+
+    getLinkURL(rep) {
+        return "http://localhost:4200/cogbytes-edit?repolinkguid=" + rep.repoLinkGuid;
     }
 }
 

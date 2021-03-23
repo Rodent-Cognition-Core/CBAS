@@ -296,7 +296,7 @@
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
-                                    <span style="color: #A569BD;">MouseBytes datasets associate to this publicaton:</span>
+                                    <span style="color: #A569BD;">MouseBytes datasets associated to this publicaton:</span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
@@ -308,6 +308,22 @@
                                 </tr>
                             </table>
 
+                        </mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="row.repo.length>0">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <span style="color: #A569BD;">Complementary datasets associated to this publicaton:</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <table>
+                                <tr *ngFor="let rep of row.repo">
+                                    <td>Repository Name:&nbsp; <span style="color:#909497;">{{rep.title}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#909497;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
+                                    <td *ngIf="rep.privacyStatus">
+                                        <span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/cogbytes-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
+                                    </td>
+                                </tr>
+                            </table>
                         </mat-expansion-panel>
                         <br />
 

@@ -21,5 +21,6 @@ namespace AngularSPAWebAPI.Models
         public int? YearTo { get; set; }
         public string Intervention { get; set; }
 
+        public int?[] FileTypeID { get; set; }
     }
 }

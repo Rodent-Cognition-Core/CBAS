@@ -111,10 +111,13 @@
         <div *ngIf="isRepoLink=='1'">
             <br />
             <label>Please select the associated repository.</label><br />
+
             <!--Repository List-->
-            <mat-form-field style="width: 35%; padding-left:0px">
+            <mat-form-field class="full-width">
                 <mat-select matInput placeholder="Repository List" [(ngModel)]="repModel">
-                    <mat-option *ngFor="let rep of repList" [value]="rep.repoLinkGuid">
+                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+
+                    <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.repoLinkGuid">
                         {{rep.title}}
                     </mat-option>
                 </mat-select>

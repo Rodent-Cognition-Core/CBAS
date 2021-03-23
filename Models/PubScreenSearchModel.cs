@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace AngularSPAWebAPI.Models
 {
@@ -6,6 +7,7 @@ namespace AngularSPAWebAPI.Models
     {
 
         public int ID { get; set; }
+        public Guid PaperLinkGuid { get; set; }
         public string Title { get; set; }
         public string Abstract { get; set; }
         public string Keywords { get; set; }
@@ -27,6 +29,7 @@ namespace AngularSPAWebAPI.Models
         public string Reference { get; set; }
 
         public System.Collections.Generic.List<Experiment> Experiment { get; set; }
+        public System.Collections.Generic.List<Cogbytes> Repo { get; set; }
 
     }
 }

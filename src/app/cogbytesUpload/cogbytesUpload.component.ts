@@ -56,6 +56,7 @@ export class CogbytesUploadComponent implements OnInit {
     public intDesModel: any;
     public imgDesModel: any;
     public taskBatteryModel: any;
+    public numSubjectsModel: string;
 
     // Definiing List Variables 
     public fileTypeList: any;
@@ -142,7 +143,9 @@ export class CogbytesUploadComponent implements OnInit {
             this.intDesModel = this.uploadObj.interventionDescription;
             this.imgDesModel = this.uploadObj.imageDescription;
             this.taskBatteryModel = this.uploadObj.taskBattery;
-
+            if (this.uploadObj.numSubjects != null) {
+                this.numSubjectsModel = this.uploadObj.numSubjects.toString();
+            }
             this.uploadFileList = this.uploadObj.uploadFileList;
             // this.UpdateFileList();
         }
@@ -167,6 +170,7 @@ export class CogbytesUploadComponent implements OnInit {
     fileType = new FormControl('', [Validators.required]);
     cognitiveTask = new FormControl('', [Validators.required]);
     intervention = new FormControl('', [Validators.required]);
+    numSubjects = new FormControl('', [Validators.pattern('[0-9]*')]);
 
     getErrorMessageFileType() {
         return this.fileType.hasError('required') ? 'You must enter a value' : '';
@@ -181,6 +185,10 @@ export class CogbytesUploadComponent implements OnInit {
 
     getErrorMessageIntervention() {
         return this.intervention.hasError('required') ? 'You must enter a value!' : '';
+    }
+
+    getErrorMessageNumSubjects() {
+        return this.numSubjects.hasError('pattern') ? 'Please enter a numerical value!' : '';
     }
 
     //getErrorMessageName() {
@@ -199,8 +207,8 @@ export class CogbytesUploadComponent implements OnInit {
             return true;
         }
 
-        if (this.fileTypeModel === this.DATASET) {
-            if (this.cognitiveTask.hasError('required') || this.intervention.hasError('required')) {
+        if (this.fileTypeModel >= 1 && this.fileTypeModel <= 5) {
+            if (this.cognitiveTask.hasError('required') || this.intervention.hasError('required') || this.numSubjects.hasError('pattern')) {
                 return true;
             }
         }
@@ -256,6 +264,8 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+
         this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
 
             if (data === null) {
@@ -293,6 +303,8 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+
         this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
 
             if (data === null) {
@@ -319,7 +331,7 @@ export class CogbytesUploadComponent implements OnInit {
             this.uploadErrorServer = 'Error: upload zone disabled until required features are selected and saved.'
         }
         else {
-            this.uploadErrorServer = "Error in upload, please contact administrator at MouseBytes@uwo.ca";
+            this.uploadErrorServer = "Error in upload: please ensure all file types are supported.  If so, please contact administrator at MouseBytes@uwo.ca";
         }
         
         this.resetDropzoneUploads();

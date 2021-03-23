@@ -72,7 +72,7 @@ export class CogbytesComponent implements OnInit {
 
         if (this.isAdmin || this.isUser) {
 
-            this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+            this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; console.log(data)});
             this.GetAuthorList();
             this.GetPIList();
         }
@@ -231,6 +231,10 @@ export class CogbytesComponent implements OnInit {
 
         });
 
+    }
+
+    getLinkURL() {
+        return "http://localhost:4200/cogbytes-edit?repolinkguid=" + this.getRep().repoLinkGuid;
     }
 
 }

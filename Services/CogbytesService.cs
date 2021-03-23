@@ -292,20 +292,25 @@ namespace AngularSPAWebAPI.Services
                 foreach (DataRow dr in dt.Rows)
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
+
                     RepList.Add(new Cogbytes
                     {
                         ID = repID,
+                        RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Date = Convert.ToString(dr["Date"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        DOI = doi,
                         Link = Convert.ToString(dr["Link"].ToString()),
                         PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                         AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
                         PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString()))
+                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
+                        Paper = publication
                     });
                 }
             }
@@ -363,8 +368,17 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to add a new repository to database Cogbytes
         public int? AddUpload(CogbytesUpload upload)
         {
+            string sqlNumSubjects = "";
+            if (upload.NumSubjects == null)
+            {
+                sqlNumSubjects = "null";
+            }
+            else
+            {
+                sqlNumSubjects = upload.NumSubjects.ToString();
+            }
 
-            string sqlUpload = $@"Insert into Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery) Values
+            string sqlUpload = $@"Insert into Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects) Values
                                     ('{upload.RepID}',
                                      '{upload.FileTypeID}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.Name)).Trim())}',
@@ -377,7 +391,8 @@ namespace AngularSPAWebAPI.Services
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.ImageDescription)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.Housing)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.LightCycle)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.TaskBattery)).Trim())}'
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.TaskBattery)).Trim())}',
+                                     {sqlNumSubjects}
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
 
             int UploadID = Int32.Parse(Dal.ExecScalarCog(sqlUpload).ToString());
@@ -465,6 +480,13 @@ namespace AngularSPAWebAPI.Services
                 {
                     int uploadID = Int32.Parse(dr["UploadID"].ToString());
                     int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
+                    int? numSubjects = null;
+                    int num;
+                    if (Int32.TryParse(dr["NumSubjects"].ToString(), out num))
+                    {
+                        numSubjects = num;
+                    };
+                    
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
@@ -507,6 +529,7 @@ namespace AngularSPAWebAPI.Services
                         StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
                         GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
                         AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID"),
+                        NumSubjects = numSubjects,
                         UploadFileList = FileList
                     });
                 }
@@ -518,9 +541,18 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to edit a respository in database Cogbytes
         public bool EditUpload(int uploadID, CogbytesUpload upload)
         {
+            //string sqlNumSubjects = "";
+            //if (upload.NumSubjects == null)
+            //{
+            //    sqlNumSubjects = "null";
+            //}
+            //else
+            //{
+            //    sqlNumSubjects = upload.NumSubjects.ToString();
+            //}
 
             string sqlUpload = $@"Update Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes, IsIntervention = @isIntervention, InterventionDescription=@interventionDescription,
-                                                                    ImageIds = @imageIds, ImageDescription=@imageDescription, Housing=@housing, LightCycle = @lightCycle, TaskBattery=@taskBattery
+                                                                    ImageIds = @imageIds, ImageDescription=@imageDescription, Housing=@housing, LightCycle = @lightCycle, TaskBattery=@taskBattery, NumSubjects=@numSubjects
                                                                 where UploadID = {uploadID}";
 
             var parameters = new List<SqlParameter>();
@@ -534,6 +566,7 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@housing", HelperService.NullToString(HelperService.EscapeSql(upload.Housing)).Trim()));
             parameters.Add(new SqlParameter("@lightCycle", HelperService.NullToString(HelperService.EscapeSql(upload.LightCycle)).Trim()));
             parameters.Add(new SqlParameter("@taskBattery", HelperService.NullToString(HelperService.EscapeSql(upload.TaskBattery)).Trim()));
+            parameters.Add(new SqlParameter("@numSubjects", (object) upload.NumSubjects ?? DBNull.Value));
 
             Int32.Parse(Dal.ExecuteNonQueryCog(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
 
@@ -709,6 +742,10 @@ namespace AngularSPAWebAPI.Services
 
         public void DeleteRepository(int repID)
         {
+            // Delete RepGuidLink from Experiments linked to the repository
+            Cogbytes rep = GetGuidByRepID(repID);
+            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.RepoLinkGuid}'");
+
             using (DataTable dt = Dal.GetDataTableCog($@"Select UploadID From Upload Where RepID = {repID}"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -732,7 +769,7 @@ namespace AngularSPAWebAPI.Services
         }
 
 
-        private int?[] FillCogbytesItemArray(string sql, string fieldName)
+        public int?[] FillCogbytesItemArray(string sql, string fieldName)
         {
 
             var retVal = new int?[0];
@@ -757,7 +794,7 @@ namespace AngularSPAWebAPI.Services
             List<CogbytesUpload> Uploadlist = new List<CogbytesUpload>();
 
             string sql = "Select UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
-                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID " +
+                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects, RepID, FileTypeID " +
                 "From SearchCog Where ";
 
             // Title
@@ -829,6 +866,20 @@ namespace AngularSPAWebAPI.Services
             else if (cogbytesSearch.YearTo != null && cogbytesSearch.YearFrom == null)
             {
                 sql += $@"(Date <= '{cogbytesSearch.YearTo}-12-31') AND ";
+            }
+
+            // search query for File Type
+            if (cogbytesSearch.FileTypeID != null && cogbytesSearch.FileTypeID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.FileTypeID.Length; i++)
+                {
+                    sql += $@"FileTypeID = {cogbytesSearch.FileTypeID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+                //}
+
             }
 
             // search query for Task
@@ -968,7 +1019,7 @@ namespace AngularSPAWebAPI.Services
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
             sql += "GROUP BY UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
-                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, RepID, FileTypeID " +
+                "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects, RepID, FileTypeID " +
                 "ORDER BY RepID";
             string sqlMB = "";
 
@@ -978,6 +1029,12 @@ namespace AngularSPAWebAPI.Services
                 {
                     int uploadID = Int32.Parse(dr["UploadID"].ToString());
                     int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
+                    int? numSubjects = null;
+                    int num;
+                    if (Int32.TryParse(dr["NumSubjects"].ToString(), out num))
+                    {
+                        numSubjects = num;
+                    };
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
@@ -1020,6 +1077,7 @@ namespace AngularSPAWebAPI.Services
                         StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
                         GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
                         AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID"),
+                        NumSubjects = numSubjects,
                         UploadFileList = FileList
                     });
                 }
@@ -1044,6 +1102,8 @@ namespace AngularSPAWebAPI.Services
                 foreach (DataRow dr in dt.Rows)
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
                     RepList.Add(new Cogbytes
                     {
                         ID = repID,
@@ -1051,14 +1111,15 @@ namespace AngularSPAWebAPI.Services
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Date = Convert.ToString(dr["Date"].ToString()),
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        DOI = doi,
                         Link = Convert.ToString(dr["Link"].ToString()),
                         PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                         AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
                         PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString()))
+                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
+                        Paper = publication
                     });
                 }
             }
@@ -1096,6 +1157,23 @@ namespace AngularSPAWebAPI.Services
             return lstExperiment;
         }
 
+        public PubScreenSearch GetPubScreenPaper(string doi)
+        {
+            if (string.IsNullOrEmpty(doi))
+            {
+                return null;
+            }
+
+            var pubscreenService = new PubScreenService();
+            var pub = new PubScreen{ DOI = doi };
+            var result = pubscreenService.SearchPublications(pub);
+            if (result != null && result.Any())
+            {
+                return result[0];
+            }
+            return null;
+        }
+
         public List<CogbytesSearch2> GetRepoFromCogbytesByLinkGuid(Guid repoLinkGuid)
         {
             List<CogbytesSearch2> RepList = new List<CogbytesSearch2>();
@@ -1109,6 +1187,15 @@ namespace AngularSPAWebAPI.Services
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
                     int UploadID = Int32.Parse(dr["UploadID"].ToString());
+                    int? numSubjects = null;
+                    int num;
+                    if (Int32.TryParse(dr["NumSubjects"].ToString(), out num))
+                    {
+                        numSubjects = num;
+                    };
+
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
 
                     // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
@@ -1137,7 +1224,7 @@ namespace AngularSPAWebAPI.Services
                         UploadID = UploadID,
                         Title = Convert.ToString(dr["Title"].ToString()),
                         Date = Convert.ToString(dr["Date"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        DOI = doi,
                         Keywords = Convert.ToString(dr["Keywords"].ToString()),
                         PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
                         Description = Convert.ToString(dr["Description"].ToString()),
@@ -1164,8 +1251,9 @@ namespace AngularSPAWebAPI.Services
                         GenoType = Convert.ToString(dr["GenoType"].ToString()),
                         Age = Convert.ToString(dr["Age"].ToString()),
                         UploadFileList = FileList,
-                        Experiment = GetCogbytesExperimentList(repoLinkGuid)
-
+                        Experiment = GetCogbytesExperimentList(repoLinkGuid),
+                        NumSubjects = numSubjects,
+                        Paper = publication
                     });
                     
                 }
