@@ -1577,6 +1577,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
+            //sql += "ORDER BY Year DESC";
 
             string sqlMB = "";
             string sqlCog = "";

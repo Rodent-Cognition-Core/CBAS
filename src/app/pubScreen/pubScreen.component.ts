@@ -341,24 +341,11 @@ export class PubScreenComponent implements OnInit {
         });
     }
 
-    getLink(doi) {
-
-        this.pubScreenService.getGuidByDoi(doi).subscribe(data => {
-
-            this.showGeneratedLink = true;
-            var guid = data.paperLinkGuid;
+    getLink(guid) {
 
             this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
             this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
-
-
-
-            //} else {
-            //    console.log('Not Done!');
-
-            //}
-        });
 
     }
 
