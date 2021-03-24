@@ -566,6 +566,16 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(35);
             }
 
+            if (selected_StrainVal.indexOf(27) > -1) {
+                this.genoIDList.push(36);
+                this.genoIDList.push(37);
+            }
+
+            if (selected_StrainVal.indexOf(28) > -1) {
+                this.genoIDList.push(37);
+                
+            }
+
             //console.log(this.genoIDList);
             //selected_ExpVal
             this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe(data => {
