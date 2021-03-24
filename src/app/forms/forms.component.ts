@@ -6,6 +6,7 @@ import { ReqTaskDialogeComponent } from '../reqTaskDialoge/reqTaskDialoge.compon
 import { ReqPIDialogeComponent } from '../reqPIDialoge/reqPIDialoge.component';
 import { ReqAgeDialogeComponent } from '../reqAgeDialoge/reqAgeDialoge.component';
 import { ReqMouseLineDialogeComponent } from '../reqMouseLineDialoge/reqMouseLineDialoge.component';
+import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 
 @Component({
   selector: 'app-forms',
@@ -75,5 +76,16 @@ export class FormsComponent implements OnInit {
 
     }
 
+    //Function Definition to open a dialog for adding new mouse line to the system
+    openDialogGeneral(): void {
+
+        let dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
+            height: '600px',
+            width: '700px',
+            data: {}
+
+        });
+
+    }
 
 }

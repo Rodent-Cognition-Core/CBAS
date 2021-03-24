@@ -66,6 +66,17 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Adding new General Request
+    public addGeneral(request: Request): any {
+
+        const body: string = JSON.stringify(request);
+
+        return this.http
+            .post("/api/Request/AddGeneral", body, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+
+            });
+    }
    
     
 

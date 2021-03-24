@@ -29,6 +29,7 @@ import { ReqTaskDialogeComponent } from './reqTaskDialoge/reqTaskDialoge.compone
 import { ReqPIDialogeComponent } from './reqPIDialoge/reqPIDialoge.component';
 import { ReqAgeDialogeComponent } from './reqAgeDialoge/reqAgeDialoge.component';
 import { ReqMouseLineDialogeComponent } from './reqMouseLineDialoge/reqMouseLineDialoge.component';
+import { ReqGeneralDialogeComponent } from './reqGeneralDialoge/reqGeneralDialoge.component'
 import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
@@ -127,6 +128,7 @@ const ROUTES: Routes = [
         ReqPIDialogeComponent,
         ReqAgeDialogeComponent,
         ReqMouseLineDialogeComponent,
+        ReqGeneralDialogeComponent,
         TermsDialogeComponent,
         AuthorDialogeComponent,
         UploadResultDialogComponent,
@@ -174,6 +176,7 @@ const ROUTES: Routes = [
         ReqTaskDialogeComponent,
         ReqPIDialogeComponent,
         ReqAgeDialogeComponent,
+        ReqGeneralDialogeComponent,
         TermsDialogeComponent,
         ReqMouseLineDialogeComponent,
         AuthorDialogeComponent,

@@ -91,11 +91,17 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [AllowAnonymous]
+        [HttpPost("AddGeneral")]
 
+        public IActionResult AddGeneral([FromBody] Request request)
+        {
 
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a general request for MouseBytes: <br /><br /> {request.GeneralRequest.Replace("\n", "<br />")} <br /><br />Thanks <br /> MouseBytes";
+            HelperService.SendEmail("", "", "New Request for MouseBytes!", strBody);
 
+            return new JsonResult("Done!");
 
-
-
+        }
     }
 }

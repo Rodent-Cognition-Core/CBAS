@@ -14,5 +14,5 @@ export class Request {
     public geneticModification: string;
     public strainReference: string;
     public controlSuggestion: string;
-
+    public generalRequest: string;
 } 

@@ -16,6 +16,7 @@ import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 
 
 @Component({
@@ -89,6 +90,9 @@ export class PubScreenComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
+
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
+    showGeneratedLink: any;
 
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
@@ -337,6 +341,26 @@ export class PubScreenComponent implements OnInit {
         });
     }
 
+    getLink(doi) {
+
+        this.pubScreenService.getGuidByDoi(doi).subscribe(data => {
+
+            this.showGeneratedLink = true;
+            var guid = data.paperLinkGuid;
+
+            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            });
+            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
+
+
+
+            //} else {
+            //    console.log('Not Done!');
+
+            //}
+        });
+
+    }
 
 
 
