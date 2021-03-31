@@ -282,6 +282,13 @@ export class DataExtractionComponent implements OnInit {
                         this.subSessionList = this.subSessionList.filter(x => (x.taskID === 13));
                         break;
                     }
+                case 98:
+                case 99:
+                    {
+                        this.subSessionList = this.subSessionList.filter(x => (x.taskID === 14));
+                        break;
+                    }
+
 
                 default:
                     {
