@@ -43,7 +43,7 @@
                             <hr /><br />
 
                             <!--Searching Author information ********************************************-->
-                            <label style="color:#566573">Authour Information:</label><br />
+                            <label style="color:#566573">Author Information:</label><br />
 
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
@@ -250,6 +250,11 @@
     <!--<div>{{isAdmin}}</div>-->
     <!--Adding table to show result of search-->
     <br /><br />
+    <div *ngIf="searchResultList?.length == 0">
+        <table class="docs-markdown-table">
+            <tr><td style="text-align:center;"><span style="color:red; font-size:large">No results found for search criteria!</span></td></tr>
+        </table>
+    </div>
     <div *ngIf="searchResultList?.length > 0">
         <!--<app-shared-experiment></app-shared-experiment>-->
         <table class="docs-markdown-table">
