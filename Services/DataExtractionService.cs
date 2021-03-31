@@ -1431,6 +1431,8 @@ namespace AngularSPAWebAPI.Services
                 case 76:
                 case 82:
                 case 89:
+                case 92:
+
                     {
                         str = "(SessionName='Habituation_1')";
                         break;
@@ -1447,6 +1449,7 @@ namespace AngularSPAWebAPI.Services
                 case 77:
                 case 83:
                 case 90:
+                case 93:
                     {
                         str = "(SessionName='Habituation_2')";
                         break;
@@ -1460,6 +1463,7 @@ namespace AngularSPAWebAPI.Services
                 case 67:
                 case 72:
                 case 84:
+                case 95:
                     {
                         str = "(SessionName='Initial_Touch')";
                         break;
@@ -1473,6 +1477,7 @@ namespace AngularSPAWebAPI.Services
                 case 68:
                 case 73:
                 case 85:
+                case 96:
                     {
                         str = "(SessionName='Must_Touch')";
                         break;
@@ -1483,6 +1488,7 @@ namespace AngularSPAWebAPI.Services
                 case 54:
                 case 62:
                 case 86:
+                case 94:
                     {
                         str = "(SessionName='Must_Initiate')";
                         break;
@@ -1494,6 +1500,7 @@ namespace AngularSPAWebAPI.Services
                 case 56:
                 case 64:
                 case 87:
+                case 97:
                     {
                         str = "((SessionName='Punish_Incorrect') OR (SessionName='Punish Incorrect II'))";
                         break;
@@ -1590,6 +1597,16 @@ namespace AngularSPAWebAPI.Services
                 case 91:
                     {
                         str = "( (Analysis_Name like '%Autoshaping Analysis%') OR (SessionName = 'Autoshape_Acquisition') OR (SessionName = 'Autoshape_Reversal') )";
+                        break;
+                    }
+                case 98:
+                    {
+                        str = "(SessionName = 'Extinction_Training')";
+                        break;
+                    }
+                case 99:
+                    {
+                        str = "(SessionName = 'Extinction_Probe')";
                         break;
                     }
 

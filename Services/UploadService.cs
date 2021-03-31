@@ -1710,6 +1710,20 @@ namespace AngularSPAWebAPI.Services
                     lstFeatures.AddRange(input_VMCL);
                     break;
 
+                //**************Autoshaoe
+                case 48:
+                case 49:
+                    string[] input_autoshape = {"Trial Analysis - Reward Given - Condition", "Trial Analysis - Reward Collection Latency", "Trial Analysis - Tray Latency after CS+ removal",
+                    "Trial Analysis - Tray Latency after CS- removal", "Trial Analysis - CS+ Approach Latency", "Trial Analysis - CS- Approach Latency", "Trial Analysis - CS+ Touch Latency",
+                    "Trial Analysis - CS- Touch Latency", "End Summary - Condition", "End Summary - Trials completed", "End Summary - Touches to lit CS+", "End Summary - Touches to lit CS-",
+                    "End Summary - All CS+ touches", "End Summary - All CS- touches", "End Summary - CS + Beam Breaking", "End Summary - CS - Beam Breaking", "End Summary - CS + Image Presentation Beam Breaking",
+                    "End Summary - CS - Image Presentation Beam Breaking", "End Summary - Tray Beam Breaking", "End Summary - Tray CS + Beam Breaking", "End Summary - Tray CS - Beam Breaking",
+                    "End Summary - CS + Image Approach CS- Beam Breaking", "End Summary - CS - Image Approach CS+ Beam Breaking"};
+
+                    lstFeatures.AddRange(input_autoshape);
+
+                    break;
+
 
             }
 

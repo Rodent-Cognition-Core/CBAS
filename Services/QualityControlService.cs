@@ -128,12 +128,12 @@ namespace AngularSPAWebAPI.Services
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
                     break;
-                case "Progressive Ratio (PR)":
-                    if (!Analysis_Name.Trim().ToLower().Contains("pr"))
-                    {
-                        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
-                    }
-                    break;
+                //case "Progressive Ratio (PR)":
+                //    if (!Analysis_Name.Trim().ToLower().Contains("pr"))
+                //    {
+                //        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
+                //    }
+                //    break;
                 case "Probabilistic reversal learning (PRL)":
                     if (!Analysis_Name.Trim().ToLower().Contains("prl"))
                     {
@@ -497,41 +497,41 @@ namespace AngularSPAWebAPI.Services
                         }
 
                         break;
-                    case "Progressive Ratio (PR)":
-                        if (Analysis_Name.Trim().ToLower().Contains("pr"))
-                        {
-                            if (!(SessionName.Trim().ToLower().Contains("multiple responding training fr-1") ||
-                            SessionName.Trim().ToLower().Contains("multiple responding training fr-1") ||
-                            SessionName.Trim().ToLower().Contains("multiple responding training fr-2") ||
-                            SessionName.Trim().ToLower().Contains("multiple responding training fr-3") ||
-                            SessionName.Trim().ToLower().Contains("multiple responding training fr-5") ||
-                            SessionName.Trim().ToLower().Contains("basic pr (pr4)") ||
-                            SessionName.Trim().ToLower().Contains("baseline fr-5") ||
-                            SessionName.Trim().ToLower().Contains("high demand pr (pr4)") ||
-                            SessionName.Trim().ToLower().Contains("high demand pr (pr8)") ||
-                            SessionName.Trim().ToLower().Contains("high demand pr (pr12)") ||
-                            SessionName.Trim().ToLower().Contains("uncapped fr-5")
-                            ))
-                            {
-                                ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
-                            }
+                    //case "Progressive Ratio (PR)":
+                    //    if (Analysis_Name.Trim().ToLower().Contains("pr"))
+                    //    {
+                    //        if (!(SessionName.Trim().ToLower().Contains("multiple responding training fr-1") ||
+                    //        SessionName.Trim().ToLower().Contains("multiple responding training fr-1") ||
+                    //        SessionName.Trim().ToLower().Contains("multiple responding training fr-2") ||
+                    //        SessionName.Trim().ToLower().Contains("multiple responding training fr-3") ||
+                    //        SessionName.Trim().ToLower().Contains("multiple responding training fr-5") ||
+                    //        SessionName.Trim().ToLower().Contains("basic pr (pr4)") ||
+                    //        SessionName.Trim().ToLower().Contains("baseline fr-5") ||
+                    //        SessionName.Trim().ToLower().Contains("high demand pr (pr4)") ||
+                    //        SessionName.Trim().ToLower().Contains("high demand pr (pr8)") ||
+                    //        SessionName.Trim().ToLower().Contains("high demand pr (pr12)") ||
+                    //        SessionName.Trim().ToLower().Contains("uncapped fr-5")
+                    //        ))
+                    //        {
+                    //            ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
+                    //        }
 
-                            (bool flag, string ErrMsg) info = Check_PR(Max_Number_Trials, Max_Schedule_Time, End_Summary_Schedule_Length, PR_End_Summary_Trials_Completed, SessionName);
-
-
-                            if (info.flag)
-                            { }
-
-                            else
-                            {
-                                // type a message 
-                                ErrorMessage1 += info.ErrMsg;
-                            }
+                    //        (bool flag, string ErrMsg) info = Check_PR(Max_Number_Trials, Max_Schedule_Time, End_Summary_Schedule_Length, PR_End_Summary_Trials_Completed, SessionName);
 
 
-                        }
+                    //        if (info.flag)
+                    //        { }
 
-                        break;
+                    //        else
+                    //        {
+                    //            // type a message 
+                    //            ErrorMessage1 += info.ErrMsg;
+                    //        }
+
+
+                    //    }
+
+                    //    break;
                     case "Probabilistic reversal learning (PRL)":
                         if (Analysis_Name.Trim().ToLower().Contains("prl"))
                         {
@@ -613,17 +613,17 @@ namespace AngularSPAWebAPI.Services
                                 ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                             }
 
-                            // End_Summary_Trials_Completed does not exist in Autoshape anaylysis file, so we skip this rule now
-                            //(bool flag, string ErrMsg) info = Check_PD(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_Trials_Completed);
+                            
+                           (bool flag, string ErrMsg) info = Check_PD(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_Trials_Completed);
 
-                            //if (info.flag)
-                            //{ }
+                            if (info.flag)
+                            { }
 
-                            //else
-                            //{
-                            //    // type a message 
-                            //    ErrorMessage1 += info.ErrMsg;
-                            //}
+                            else
+                            {
+                                // type a message 
+                                ErrorMessage1 += info.ErrMsg;
+                            }
 
 
                         }
