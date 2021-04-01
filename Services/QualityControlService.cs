@@ -159,6 +159,12 @@ namespace AngularSPAWebAPI.Services
                         ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
                     }
                     break;
+                case "Heterogenous Long Sequence":
+                    if (!Analysis_Name.Trim().ToLower().Contains("long sequence"))
+                    {
+                        ErrorMessage1 = $@"Task name of experiment <b>{ExpName}</b> is <b>{TaskName}</b> and the uploaded file does not belong to this experiment <br/>";
+                    }
+                    break;
 
 
             }
@@ -237,10 +243,10 @@ namespace AngularSPAWebAPI.Services
 
             //***************************"Habituation 1 (5C, PAL, PD, LD, PR, PRL, iCPT, VMCL)"*************************
 
-            if (Analysis_Name.Trim().ToLower().Contains("habit 1"))
+            if ((SessionName.Trim().ToLower().Contains("habituation_1")))
             {
 
-                if (!(SessionName.Trim().ToLower().Contains("habituation_1")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("habit 1")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -261,10 +267,10 @@ namespace AngularSPAWebAPI.Services
 
             //***************************"Habituation 2 (5C, PAL, PD, LD, PR, PRL, iCPT, VMCL)"*************************
 
-            else if (Analysis_Name.Trim().ToLower().Contains("habit 2"))
+            else if ((SessionName.Trim().ToLower().Contains("habituation_2")))
             {
 
-                if (!(SessionName.Trim().ToLower().Contains("habituation_2")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("habit 2")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -285,9 +291,9 @@ namespace AngularSPAWebAPI.Services
 
             //************************"Initial Touch" --->"Initial Train" for (5C, PAL, PD, LD, PR, PRL,VMCL)************************
 
-            else if (Analysis_Name.Trim().ToLower().Contains("initial train"))
+            else if ((SessionName.Trim().ToLower().Contains("initial_touch")))
             {
-                if (!(SessionName.Trim().ToLower().Contains("initial_touch")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("initial train")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -306,9 +312,9 @@ namespace AngularSPAWebAPI.Services
 
             //************************"Must Touch" for (5C, PAL, PD, LD, PR, PRL, VMCL)************************
 
-            else if (Analysis_Name.Trim().ToLower().Contains("must touch"))
+            else if ((SessionName.Trim().ToLower().Contains("must_touch")))
             {
-                if (!(SessionName.Trim().ToLower().Contains("must_touch")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("must touch")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -327,9 +333,9 @@ namespace AngularSPAWebAPI.Services
 
             //************************"Must Initiate" for (5C, PAL, PD, LD, VMCL)************************
 
-            else if (Analysis_Name.Trim().ToLower().Contains("must initiate"))
+            else if ((SessionName.Trim().ToLower().Contains("must_initiate")))
             {
-                if (!(SessionName.Trim().ToLower().Contains("must_initiate")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("must initiate")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -348,10 +354,10 @@ namespace AngularSPAWebAPI.Services
 
             //**********************Punish Incorrect for (5C, PAL, PD, LD, PRL, VMCL)****************
 
-            else if (Analysis_Name.Trim().ToLower().Contains("punish"))
+            else if ((SessionName.Trim().ToLower().Contains("punish_incorrect")))
             {
 
-                if (!(SessionName.Trim().ToLower().Contains("punish_incorrect")))
+                if (!(Analysis_Name.Trim().ToLower().Contains("punish")))
                 {
                     ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
                 }
@@ -629,6 +635,31 @@ namespace AngularSPAWebAPI.Services
                         }
                         break;
 
+                    case "Heterogenous Long Sequence":
+                        if (Analysis_Name.Trim().ToLower().Contains("long sequence"))
+                        {
+                            if (!(SessionName.Trim().ToLower().Contains("long_sequence") ))
+                            {
+                                ErrorMessage1 += $"Analysis Name does not match with Schedule Name or Session Name. Analysis name is <b>{Analysis_Name}</b> and Session name is <b>{SessionName}</b>. <br/>";
+                            }
+
+                            // End_Summary_Trials_Completed does not exist in the xml file, needs investigation!!!
+
+                            (bool flag, string ErrMsg) info = Check_PD(Max_Number_Trials, Max_Schedule_Time, End_Summary_Condition, End_Summary_Corrects);
+
+                            if (info.flag)
+                            { }
+
+                            else
+                            {
+                                // type a message 
+                                ErrorMessage1 += info.ErrMsg;
+                            }
+
+
+                        }
+                        break;
+
                 }  // end of switch-case for TaskName
             } // End of else
               //****************************************************************************************************************************
@@ -697,7 +728,7 @@ namespace AngularSPAWebAPI.Services
         //************************************************************************************************************************************************************************
 
         // Function Definition for extracting the required fields from XML Files ******************
-        private string FeatureExtraction(string Tag1, string Tag2, string TagName, string TagValue, XDocument xdoc1)
+        public string FeatureExtraction(string Tag1, string Tag2, string TagName, string TagValue, XDocument xdoc1)
         {
 
             string output = "";

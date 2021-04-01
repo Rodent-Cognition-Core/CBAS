@@ -101,6 +101,10 @@ namespace AngularSPAWebAPI.Services
                     // post Processing QC for Autoshape Task
                     error = ScheduleCount_Autoshape(subExp.SubExpID);
                     break;
+                case 15:
+                    // post Processing QC for Autoshape Task
+                    error = ScheduleCount_Sequence(subExp.SubExpID);
+                    break;
 
 
             }
@@ -294,6 +298,15 @@ namespace AngularSPAWebAPI.Services
             string error1 = "";
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Autoshape_Acquisition'", "<b>Autoshape Acquisition</b>", 5, "<", "at least");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Autoshape_Reversal'", "<b>Autoshape Reversal</b>", 5, "<", "at least");
+            return error1;
+        }
+
+        // Function Definition: Post Processing QC for Sequence experiment
+        public string ScheduleCount_Sequence(int expID)
+        {
+            string error1 = "";
+            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Long_Sequence'", "<b>Heterogeneous Long Sequence</b>", 11, "!=", "");
+            
             return error1;
         }
 

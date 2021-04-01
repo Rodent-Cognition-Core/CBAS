@@ -1432,6 +1432,7 @@ namespace AngularSPAWebAPI.Services
                 case 82:
                 case 89:
                 case 92:
+                case 100:
 
                     {
                         str = "(SessionName='Habituation_1')";
@@ -1450,6 +1451,7 @@ namespace AngularSPAWebAPI.Services
                 case 83:
                 case 90:
                 case 93:
+                case 101:
                     {
                         str = "(SessionName='Habituation_2')";
                         break;
@@ -1464,6 +1466,7 @@ namespace AngularSPAWebAPI.Services
                 case 72:
                 case 84:
                 case 95:
+                case 102:
                     {
                         str = "(SessionName='Initial_Touch')";
                         break;
@@ -1478,6 +1481,7 @@ namespace AngularSPAWebAPI.Services
                 case 73:
                 case 85:
                 case 96:
+                case 103:
                     {
                         str = "(SessionName='Must_Touch')";
                         break;
@@ -1489,6 +1493,7 @@ namespace AngularSPAWebAPI.Services
                 case 62:
                 case 86:
                 case 94:
+                
                     {
                         str = "(SessionName='Must_Initiate')";
                         break;
@@ -1607,6 +1612,11 @@ namespace AngularSPAWebAPI.Services
                 case 99:
                     {
                         str = "(SessionName = 'Extinction_Probe')";
+                        break;
+                    }
+                case 104:
+                    {
+                        str = "(SessionName = 'Long_Sequence')";
                         break;
                     }
 
