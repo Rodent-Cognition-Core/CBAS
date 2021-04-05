@@ -6,18 +6,13 @@
         <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; "></a></div>
 
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
+
+            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
+
             <li><a style="text-decoration: underline;" routerLink="/home">Home</a></li>
 
-            <li>
-                <br />
-                <b>PUBSCREEN</b>
-                <ul>
-                    <li><a style="color: #354248;" href="/pubScreen">Add/Search Publications</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" href="/pubScreen-queue">Queue</a></li>
-                </ul>
-            </li>
-
             <li><a routerLink="/mb-dashboard">Dashboard</a></li>
+
             <li>
                 <br />
                 <b>TUTORIALS</b>
@@ -30,7 +25,6 @@
                 </ul>
             </li>
 
-
             <li>
                 <br />
                 <b>RESOURCES</b>
@@ -39,6 +33,8 @@
                     <li *ngFor="let navItem of navItemsResources">
                         <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
                     </li>
+
+                    ul
 
                 </ul>
             </li>
@@ -52,8 +48,6 @@
         </ul>
     </li>
     <br />-->
-
-            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank"><b>TOUCHSCREEN COGNITION</b></a></li>
 
             <li>
                 <br />
@@ -70,12 +64,22 @@
                     <!--<li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/pubScreen">PUBSCREEN</a></li>-->
                 </ul>
             </li>
+
             <li>
                 <br />
                 <b>COMPLEMENTARY DATA</b>
                 <ul>
                     <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/cogbytes">Your Repositories</a></li>
                     <li><a style="color: #354248;" href="/cogbytes-search">Search Repositories</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <br />
+                <b>PUBSCREEN</b>
+                <ul>
+                    <li><a style="color: #354248;" href="/pubScreen">Add/Search Publications</a></li>
+                    <li *ngIf="isAdmin"><a style="color: #354248;" href="/pubScreen-queue">Queue</a></li>
                 </ul>
             </li>
         </ul>
@@ -114,6 +118,7 @@
                             <span style="padding:0 10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:left;"></a></span>
                         </ul>
                         <ul class="top-nav-ul" style="float: left;">
+
                             <li style="letter-spacing: 1px; margin: 0 0 0 10px;">
                                 Touchscreen Data
                                 <ul>
@@ -128,6 +133,7 @@
                                     <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
                                 </ul>
                             </li>
+
                             <li>
                                 COMPLEMENTARY DATA
                                 <ul>
@@ -136,12 +142,7 @@
                                 </ul>
                             </li>
 
-                            <li><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-
-                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
-
-
-                            <li class="liright">
+                            <li>
                                 <br />
                                 <b>PUBSCREEN</b>
                                 <ul>
@@ -149,6 +150,12 @@
                                     <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
                                 </ul>
                             </li>
+
+
+                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+
+                            <li class="liright"><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
+
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
                             <li class="liright">
@@ -173,6 +180,7 @@
 
                         </ul>
                     </div>
+
                     <!--other sizes menu-->
                     <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true">
                         <ul class="top-nav-ul" style="float: left;" fxLayout="row">
@@ -199,7 +207,14 @@
                                 </ul>
                             </li>
 
-                            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
+                            <li>
+                                PUBSCREEN
+                                <ul>
+                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
+                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
+                                </ul>
+                            </li>
+
                             <!--<li>
         DATA INTEGRATION
         <ul>
@@ -215,13 +230,7 @@
                         <ul class="top-nav-ul" style="float: right;" fxLayout="row">
                             <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
-                            <li class="liright">
-                                PUBSCREEN
-                                <ul>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
-                                </ul>
-                            </li>
+                            <li class="liright"><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
                             <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
 

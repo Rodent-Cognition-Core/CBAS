@@ -255,6 +255,13 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Get some paper info based on Doi from Crossref
+    public getPaparInfoFromDOICrossref(doi: any): any {
+        return this.http
+            .get("/api/pubScreen/GetPaparInfoFromDOICrossref?DOI=" + doi, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
 
     // Get some paper info based on Doi from Biorxiv
     public getPaperInfo(id: any): any {

@@ -187,7 +187,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenAuthor> GetAuthors()
         {
             List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Author Order By AuthorID"))
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Author Order By LastName"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {

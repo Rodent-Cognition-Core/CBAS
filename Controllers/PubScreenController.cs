@@ -230,6 +230,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
         }
 
+        // Getting some paper information based on Doi from Crossref
+        [HttpGet("GetPaparInfoFromDOICrossref")]
+        [AllowAnonymous]
+        public IActionResult GetPaperInfoByDOICrossref(string DOI)
+        {
+            return new JsonResult(_pubScreenService.GetPaperInfoByDOICrossref(DOI));
+        }
+
         [HttpGet("GetPaparInfoByID")]
         [AllowAnonymous]
         public IActionResult GetPaparInfoByID(int ID)

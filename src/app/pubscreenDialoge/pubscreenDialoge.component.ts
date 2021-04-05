@@ -560,6 +560,33 @@ export class PubscreenDialogeComponent implements OnInit {
 
     }
 
+    addDOICrossref(doi) {
+
+        this.pubScreenService.getPaparInfoFromDOICrossref(doi).subscribe(data => {
+
+            console.log(data);
+            console.log(data.result);
+
+            if (data.result == null) {
+                alert("DOI is not valid or has not been found!");
+
+            }
+            else {
+
+                this.authorModel2 = data.result.authorString;
+                this.titleModel = data.result.title;
+                this.abstractModel = data.result.abstract;
+                this.yearModel = data.result.year;
+                this.doiModel = data.result.doi;
+                this.referenceModel = data.result.reference;
+                this.authorList2 = data.result.author;
+
+
+            }
+
+        });
+
+    }
 
     // Adding a new publication to DB by cliking on Submit button
     AddEditPublication() {

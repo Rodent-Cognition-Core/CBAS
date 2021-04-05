@@ -314,6 +314,176 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        //Function Definition to get some paper's info based on PubMedKey
+        public async Task<PubScreen> GetPaperInfoByDOICrossref(string doi)
+        {
+            // if IskeyPumbed is true then get doi and add it to object
+            HttpClient httpClient = new HttpClient();
+
+            var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
+            var incomingXml = new XElement("newXML");
+            string responseString = "";
+
+            // Pubmed API is rate-limited. If the rate limit is exceeded, the response string from the HTTP Post will indicate that.
+            // When that is the case, we wait 0.3s and attempt again, until we obtain our desired result or another error occurs
+            bool isSuccess = false;
+            while (!isSuccess)
+            {
+                try
+                {
+                    var response = await httpClient.PostAsync("https://doi.crossref.org/servlet/query?pid=mousebyt@uwo.ca&format=unixref&id=" + doi, content);
+                    responseString = await response.Content.ReadAsStringAsync();
+                    incomingXml = XElement.Parse(responseString);
+                    isSuccess = true;
+                }
+                catch
+                {
+                    Console.WriteLine(responseString);
+                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    {
+                        Console.WriteLine("Unknown Error in GetPaperInfoByDOICrossref!");
+                        throw;
+                    }
+                    else
+                    {
+                        Thread.Sleep(300);
+                    }
+                }
+            }
+
+            string articleAbstract = "";
+            string articleYear = "";
+            string articleName = "";
+
+            // Determine type of content (conference, journal, or posted content)
+            XElement crossrefElement = null;
+            if (incomingXml.Element("doi_record").Element("crossref").Element("journal") != null)
+            {
+                crossrefElement = incomingXml.Element("doi_record").Element("crossref").Element("journal").Element("journal_article");
+
+                // journal name
+                if (incomingXml.Element("doi_record").Element("crossref").Element("journal").Element("journal_metadata").Element("full_title") != null)
+                {
+                    articleName = incomingXml.Element("doi_record").Element("crossref").Element("journal").Element("journal_metadata").Element("full_title").Value;
+                }
+            }
+            else if (incomingXml.Element("doi_record").Element("crossref").Element("conference") != null)
+            {
+                crossrefElement = incomingXml.Element("doi_record").Element("crossref").Element("conference").Element("conference_paper");
+
+                // conference name
+                if (incomingXml.Element("doi_record").Element("crossref").Element("conference").Element("event_metadata").Element("conference_name") != null)
+                {
+                    articleName = incomingXml.Element("doi_record").Element("crossref").Element("conference").Element("event_metadata").Element("conference_name").Value;
+                }
+            }
+            else if (incomingXml.Element("doi_record").Element("crossref").Element("posted_content") != null)
+            {
+                crossrefElement = incomingXml.Element("doi_record").Element("crossref").Element("posted_content");
+                //if (incomingXml.Element("doi_record").Element("crossref").Element("posted_content").Element("group_title") != null)
+                //{
+                //    articleName = incomingXml.Element("doi_record").Element("crossref").Element("posted_content").Element("group_title").Value;
+                //}
+            }
+            else
+            {
+                return null;
+            }
+
+            //title
+            string articleTitle = "";
+            if (crossrefElement.Element("titles").Element("title") != null)
+            {
+                articleTitle = crossrefElement.Element("titles").Element("title").Value;
+            }
+
+            //abstract
+            if (crossrefElement.Element("abstract") != null)
+            {
+                articleAbstract = crossrefElement.Element("abstract").Value;
+            }
+
+            //articletype
+            //string articleType = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Element("PublicationTypeList").Element("PublicationType").Value;
+
+            //year
+            if (crossrefElement.Element("publication_date") != null)
+            {
+                articleYear = crossrefElement.Element("publication_date").Element("year").Value;
+            }
+            else if (crossrefElement.Element("acceptance_date") != null)
+            {
+                articleYear = crossrefElement.Element("acceptance_date").Element("year").Value;
+            }
+
+            // Extracting list of Authors and add them to author object list
+            List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
+            List<string> authorListString = new List<string>();
+            try
+            {
+                foreach (var authorElement in crossrefElement.Element("contributors").Elements("person_name").Where(id => id.Attribute("contributor_role").Value == "author"))
+                {
+                    string givenName = null, surName = null, affiliation = null;
+                    if (authorElement.Element("given_name") != null)
+                    {
+                        givenName = authorElement.Element("given_name").Value;
+                    }
+                    if (authorElement.Element("surname") != null)
+                    {
+                        surName = authorElement.Element("surname").Value;
+                    }
+                    if (authorElement.Element("affiliation") != null)
+                    {
+                        affiliation = authorElement.Element("affiliation").Value;
+                    }
+                    if (givenName != null && surName != null)
+                    {
+                        authorListString.Add(givenName.Trim() + "-" + surName.Trim());
+                        authorList.Add(new PubScreenAuthor
+                        {
+                            FirstName = givenName.Trim(),
+                            LastName = surName.Trim(),
+                            Affiliation = affiliation == null ? "" : affiliation.Split(',')[0],
+                        });
+                    }
+                }
+
+            }
+            catch (ArgumentNullException)
+            {
+
+            }
+
+            
+
+            if (crossrefElement.Element("doi_data").Element("doi") != null)
+            {
+                doi = crossrefElement.Element("doi_data").Element("doi").Value;
+            }
+
+            string authorString = string.Join(", ", authorListString);
+
+            // initialize PubScreenSearch object and fill it
+            var pubscreenObj = new PubScreen
+            {
+                Title = articleTitle,
+                Abstract = articleAbstract,
+                Year = articleYear,
+                AuthorString = authorString,
+                //PaperType = articleType,
+                Author = authorList,
+                Reference = articleName,
+                DOI = doi,
+
+
+            };
+
+            // Actually two outputs should be returned (authorList should be also returned)
+
+            return pubscreenObj;
+
+
+        }
         // Function Definition to extract list of all Paper Types
         public List<PubScreenPaperType> GetPaperTypes()
         {
@@ -586,7 +756,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenAuthor> GetAuthors()
         {
             List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author Order By LastName"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1860,81 +2030,102 @@ namespace AngularSPAWebAPI.Services
         public async Task<List<string>> AddCSVPapers(string userName)
         {
             List<string> doiList = new List<string>();
-            var reader = new StreamReader("TSPapers.csv");
 
-            while (!reader.EndOfStream)
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Publication Where Title like ''"))
             {
-                var line = reader.ReadLine();
-                Console.WriteLine(line);
-                var values = line.Split(',');
-
-                string doi = values[0].Trim().TrimEnd('.').Split(' ')[0].TrimEnd('.');
-                string pubmedID = values[1].Trim();
-
-                int? ID = null;
-                // Check for duplication based on the DOI
-
-                if (!string.IsNullOrEmpty(doi))
+                foreach (DataRow dr in dt.Rows)
                 {
-                    string sqlDOI = $@"Select ID From Publication Where DOI = '{doi}'";
-                    ID = (int?)Dal.ExecScalarPub(sqlDOI);
-                }
-
-                if (ID == null)
-                {
-                    int result;
-                    bool pubmedSuccess = false;
-                    var paper = new PubScreen();
-
-                    if (Int32.TryParse(pubmedID, out result))
+                    int id = Int32.Parse(dr["ID"].ToString());
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    try
                     {
-                        try
+                        PubScreen paper =  await GetPaperInfoByDOICrossref(doi);
+                        if (paper != null)
                         {
-                            paper = await GetPaperInfoByPubMedKey(pubmedID);
-                            pubmedSuccess = true;
-                        }
-                        catch
-                        {
-
+                            EditPublication(id, paper, userName);
                         }
                     }
-
-                    if (!pubmedSuccess)
+                    catch
                     {
-                        if (!string.IsNullOrEmpty(doi))
-                        {
-                            // Attempt to get read paper based on DOI and Pubmed
-                            paper = await GetPaperInfoByDoi(doi);
-                            if (paper == null)
-                            {
-                                // Attempt to read paper based on bioRxiv
-                                paper = await GetPaperInfoByDOIBIO(doi);
 
-                                if (paper == null)
-                                {
-                                    // If all else fails, just add DOI to database
-                                    paper = new PubScreen { DOI = doi, };
-                                }
-                            }
-                        }
-                        else
-                        {
-                            paper = null;
-                        }
-                    }
-
-                    if (paper != null)
-                    {
-                        if (paper.DOI == "")
-                        {
-                            paper.DOI = doi;
-                        }
-                        AddPublications(paper, userName);
-                        doiList.Add(doi);
                     }
                 }
-
             }
+            //var reader = new StreamReader("TSPapers.csv");
+
+            //while (!reader.EndOfStream)
+            //{
+            //    var line = reader.ReadLine();
+            //    Console.WriteLine(line);
+            //    var values = line.Split(',');
+
+            //    string doi = values[0].Trim().TrimEnd('.').Split(' ')[0].TrimEnd('.');
+            //    string pubmedID = values[1].Trim();
+
+            //    int? ID = null;
+            //    // Check for duplication based on the DOI
+
+            //    if (!string.IsNullOrEmpty(doi))
+            //    {
+            //        string sqlDOI = $@"Select ID From Publication Where DOI = '{doi}'";
+            //        ID = (int?)Dal.ExecScalarPub(sqlDOI);
+            //    }
+
+            //    if (ID == null)
+            //    {
+            //        int result;
+            //        bool pubmedSuccess = false;
+            //        var paper = new PubScreen();
+
+            //        if (Int32.TryParse(pubmedID, out result))
+            //        {
+            //            try
+            //            {
+            //                paper = await GetPaperInfoByPubMedKey(pubmedID);
+            //                pubmedSuccess = true;
+            //            }
+            //            catch
+            //            {
+
+            //            }
+            //        }
+
+            //        if (!pubmedSuccess)
+            //        {
+            //            if (!string.IsNullOrEmpty(doi))
+            //            {
+            //                // Attempt to get read paper based on DOI and Pubmed
+            //                paper = await GetPaperInfoByDoi(doi);
+            //                if (paper == null)
+            //                {
+            //                    // Attempt to read paper based on bioRxiv
+            //                    paper = await GetPaperInfoByDOIBIO(doi);
+
+            //                    if (paper == null)
+            //                    {
+            //                        // If all else fails, just add DOI to database
+            //                        paper = new PubScreen { DOI = doi, };
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                paper = null;
+            //            }
+            //        }
+
+            //        if (paper != null)
+            //        {
+            //            if (paper.DOI == "")
+            //            {
+            //                paper.DOI = doi;
+            //            }
+            //            AddPublications(paper, userName);
+            //            doiList.Add(doi);
+            //        }
+            //    }
+
+            //}
 
             return doiList;
         }
