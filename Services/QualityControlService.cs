@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Globalization;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -764,7 +765,7 @@ namespace AngularSPAWebAPI.Services
         //}
 
         // Function definition for handleing 1 seconds delay to stop executing
-        private bool IsNumberAcceptable(int exactNumber, string Machine_Var)
+        private bool IsNumberAcceptable(float exactNumber, string Machine_Var)
         {
             bool flag = false;
             if ((float.Parse(HandleNullStr(Machine_Var)) > exactNumber - 1 && float.Parse(HandleNullStr(Machine_Var)) < exactNumber + 1))
@@ -781,14 +782,14 @@ namespace AngularSPAWebAPI.Services
         {
             bool Flag = false;
             string ErrMsg1 = "";
-            if ((Int32.Parse(HandleNullStr(Max_Number_Trials)) == 0 || Max_Number_Trials == ""))
+            if ((float.Parse(HandleNullStr(Max_Number_Trials)) == 0 || Max_Number_Trials == ""))
 
             {
                 Flag = true;
             }
             else
             {
-                { ErrMsg1 += $"Max_Number_Trials should be empty or 0, but this value is equal to <b> { Int32.Parse(HandleNullStr(Max_Number_Trials))}  </b> in the uploaded file <br />"; }
+                { ErrMsg1 += $"Max_Number_Trials should be empty or 0, but this value is equal to <b> { float.Parse(HandleNullStr(Max_Number_Trials))}  </b> in the uploaded file <br />"; }
 
 
             }
@@ -801,14 +802,14 @@ namespace AngularSPAWebAPI.Services
         {
             bool Flag = false;
             string ErrMsg1 = "";
-            if ((Int32.Parse(HandleNullStr(Max_Number_Trials)) == 0 || Max_Number_Trials == ""))
+            if ((float.Parse(HandleNullStr(Max_Number_Trials)) == 0 || Max_Number_Trials == ""))
 
             {
                 Flag = true;
             }
             else
             {
-                { ErrMsg1 += $"Max_Number_Trials should be empty or 0, but this value is equal to <b>  { Int32.Parse(HandleNullStr(Max_Number_Trials))}  </b> in the uploaded file. <br />"; }
+                { ErrMsg1 += $"Max_Number_Trials should be empty or 0, but this value is equal to <b>  { float.Parse(HandleNullStr(Max_Number_Trials))}  </b> in the uploaded file. <br />"; }
 
 
             }
@@ -823,20 +824,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -846,8 +847,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0) && (float.Parse(HandleNullStr(End_Summary_No_Images)) > 0)
                 && (
-                           (float.Parse(HandleNullStr(End_Summary_No_Images)) < Int32.Parse(HandleNullStr(Max_Number_Trials)) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                        || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_No_Images)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))
+                           (float.Parse(HandleNullStr(End_Summary_No_Images)) < float.Parse(HandleNullStr(Max_Number_Trials)) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                        || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_No_Images)) == float.Parse(HandleNullStr(Max_Number_Trials))))
                     )
                 )
             {
@@ -863,11 +864,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_No_Images)) <= 0)
                 { ErrMsg1 += $@"End_Summary_No_Images should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_No_Images))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_No_Images)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_No_Images)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_No_Images)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_No_Images)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_No_Images is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_No_Images has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_No_Images is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_No_Images has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{float.Parse(HandleNullStr(End_Summary_Condition))}</b></li >
                   <li> End_Summary_No_Images = <b>{float.Parse(HandleNullStr(End_Summary_No_Images))}</b></li ></ul><br />";
@@ -887,20 +888,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -909,8 +910,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Corrects)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Corrects)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(End_Summary_Corrects)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -924,11 +925,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Corrects)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Corrects should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Corrects))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Corrects)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Corrects)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Corrects is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Corrects has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Corrects is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Corrects has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{float.Parse(HandleNullStr(End_Summary_Condition))}</b></li >
                   <li> End_Summary_Corrects = <b>{float.Parse(HandleNullStr(End_Summary_Corrects))}</b></li ></ul><br />";
@@ -947,20 +948,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -969,8 +970,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Corrects)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Corrects)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(End_Summary_Corrects)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -984,11 +985,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Corrects)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Corrects should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Corrects))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Corrects)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Corrects)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Corrects)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Corrects is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Corrects has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Corrects is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Corrects has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{float.Parse(HandleNullStr(End_Summary_Condition))}</b></li >
                   <li> End_Summary_Corrects = <b>{float.Parse(HandleNullStr(End_Summary_Corrects))}</b></li ></ul><br />";
@@ -1009,20 +1010,20 @@ namespace AngularSPAWebAPI.Services
             string ErrMsg1 = "";
 
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1031,8 +1032,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -1048,11 +1049,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file.<br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) <= Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) <= float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Trials_Completed has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Trials_Completed has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{End_Summary_Condition}</b></li >
                   <li> End_Summary_Trials_Completed = <b>{End_Summary_Trials_Completed}</b></li ></ul><br />";
@@ -1069,20 +1070,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file.  <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file.  <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1091,8 +1092,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -1108,11 +1109,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Trials_Completed has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Trials_Completed has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{End_Summary_Condition}</b></li >
                   <li> End_Summary_Trials_Completed = <b>{End_Summary_Trials_Completed}</b></li ></ul><br />";
@@ -1130,20 +1131,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (decimal.Parse(HandleNullStr(Max_Number_Trials), CultureInfo.InvariantCulture) > 0 && decimal.Parse(HandleNullStr(Max_Schedule_Time), CultureInfo.InvariantCulture) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{decimal.Parse(HandleNullStr(Max_Number_Trials), CultureInfo.InvariantCulture)}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{decimal.Parse(HandleNullStr(Max_Schedule_Time), CultureInfo.InvariantCulture)}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1152,8 +1153,8 @@ namespace AngularSPAWebAPI.Services
             if (
                (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -1169,11 +1170,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Trials_Completed has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Trials_Completed has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{End_Summary_Condition}</b></li >
                   <li> End_Summary_Trials_Completed = <b>{End_Summary_Trials_Completed}</b></li ></ul><br />";
@@ -1191,20 +1192,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1213,8 +1214,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(Threshold_Condition)) > 0)
                 && (float.Parse(HandleNullStr(Threshold_Trials)) > 0)
-                && (((float.Parse(HandleNullStr(Threshold_Trials)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), Threshold_Condition)) ||
-                ((float.Parse(HandleNullStr(Threshold_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(Threshold_Trials)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                && (((float.Parse(HandleNullStr(Threshold_Trials)) < float.Parse(HandleNullStr(Max_Number_Trials))) && IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), Threshold_Condition)) ||
+                ((float.Parse(HandleNullStr(Threshold_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(Threshold_Trials)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                 )
             {
                 Flag = true;
@@ -1229,11 +1230,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(Threshold_Trials)) <= 0)
                 { ErrMsg1 += $@"Threshold_Trials should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(Threshold_Trials))} </b> in the uploaded file. <br />"; }
 
-                if (!((((float.Parse(HandleNullStr(Threshold_Trials)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), Threshold_Condition)) ||
-                ((float.Parse(HandleNullStr(Threshold_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(Threshold_Trials)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))))
+                if (!((((float.Parse(HandleNullStr(Threshold_Trials)) < float.Parse(HandleNullStr(Max_Number_Trials))) && IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), Threshold_Condition)) ||
+                ((float.Parse(HandleNullStr(Threshold_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(Threshold_Trials)) == float.Parse(HandleNullStr(Max_Number_Trials)))))))
                 {
-                    ErrMsg1 += $@"Threshold_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the Threshold_Trials is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  Threshold_Trials has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the Threshold_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"Threshold_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the Threshold_Trials is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  Threshold_Trials has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the Threshold_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>Threshold_Condition = <b>{Threshold_Condition}</b></li >
                   <li> Threshold_Trials = <b>{Threshold_Trials}</b></li ></ul><br />";
@@ -1249,20 +1250,20 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
-                if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                 }
 
                 return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1271,8 +1272,8 @@ namespace AngularSPAWebAPI.Services
             if (
                 (float.Parse(HandleNullStr(End_Summary_Condition)) > 0)
                 && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
             {
                 Flag = true;
             }
@@ -1287,11 +1288,11 @@ namespace AngularSPAWebAPI.Services
                 if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
                 { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> { float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file. <br />"; }
 
-                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
-                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Condition)))
+                || ((float.Parse(HandleNullStr(End_Summary_Condition)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                 {
-                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-                  End_Summary_Trials_Completed has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                    ErrMsg1 += $@"End_Summary_Condition has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+                  End_Summary_Trials_Completed has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Condition is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
                   but such values are set as follows in the uploaded file: <br />
                   <ul><li>End_Summary_Condition = <b>{End_Summary_Condition}</b></li >
                   <li> End_Summary_Trials_Completed = <b>{End_Summary_Trials_Completed}</b></li ></ul><br />";
@@ -1316,20 +1317,20 @@ namespace AngularSPAWebAPI.Services
                 case "Baseline FR-5":
                     // write code here
 
-                    if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0 && Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+                    if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0 && float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
                     {
                         Flag = true;
                     }
                     else
                     {
-                        if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                        if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                         {
-                            ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                            ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                         }
 
-                        if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                        if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                         {
-                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                         }
 
                         return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1338,8 +1339,8 @@ namespace AngularSPAWebAPI.Services
                     if (
                        (float.Parse(HandleNullStr(End_Summary_Schedule_Length)) > 0)
                         && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                        && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
-                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                        && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
+                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                         )
                     {
                         Flag = true;
@@ -1355,11 +1356,11 @@ namespace AngularSPAWebAPI.Services
                         if (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) <= 0)
                         { ErrMsg1 += $@"End_Summary_Trials_Completed should be greater than 0, but this value is equal to <b> {float.Parse(HandleNullStr(End_Summary_Trials_Completed))} </b> in the uploaded file. <br />"; }
 
-                        if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
-                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials))))))
+                        if (!(((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
+                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials))))))
                         {
-                            ErrMsg1 += $@"End_Summary_Schedule_Length has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
-							  End_Summary_Trials_Completed has to be equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Schedule_Length is less than <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
+                            ErrMsg1 += $@"End_Summary_Schedule_Length has to be equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> if the End_Summary_Trials_Completed is less than <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> OR
+							  End_Summary_Trials_Completed has to be equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> if the End_Summary_Schedule_Length is less than <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b>,
 							  but such values are set as follows in the uploaded file: <br />
 							  <ul><li>End_Summary_Schedule_Length = <b>{End_Summary_Schedule_Length}</b></li >
 							  <li> End_Summary_Trials_Completed = <b>{End_Summary_Trials_Completed}</b></li ></ul><br />";
@@ -1377,15 +1378,15 @@ namespace AngularSPAWebAPI.Services
 
                     // write code here
 
-                    if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+                    if (float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
                     {
                         Flag = true;
                     }
                     else
                     {
-                        if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                        if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                         {
-                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
                         }
 
                         return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1394,8 +1395,8 @@ namespace AngularSPAWebAPI.Services
                     if (
                        (float.Parse(HandleNullStr(End_Summary_Schedule_Length)) > 0)
                         && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) > 0)
-                        && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < Int32.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
-                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < Int32.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == Int32.Parse(HandleNullStr(Max_Number_Trials)))))
+                        && (((float.Parse(HandleNullStr(End_Summary_Trials_Completed)) < float.Parse(HandleNullStr(Max_Number_Trials))) && (IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
+                        || ((float.Parse(HandleNullStr(End_Summary_Schedule_Length)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(End_Summary_Trials_Completed)) == float.Parse(HandleNullStr(Max_Number_Trials)))))
                         )
                     {
                         Flag = true;
@@ -1416,25 +1417,25 @@ namespace AngularSPAWebAPI.Services
 
                 case "Uncapped FR-5":
 
-                    if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+                    if (float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
                     {
                         Flag = true;
                     }
                     else
                     {
-                        if (Int32.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
+                        if (float.Parse(HandleNullStr(Max_Schedule_Time)) <= 0)
                         {
-                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file.";
+                            ErrMsg1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file.";
                         }
                     }
 
-                    if ((IsNumberAcceptable(Int32.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
+                    if ((IsNumberAcceptable(float.Parse(HandleNullStr(Max_Schedule_Time)), End_Summary_Schedule_Length)))
                     {
                         Flag = true;
                     }
                     else
                     {
-                        ErrMsg1 += $@"End_Summary_Schedule_Length should be equal to Max_Schedule_Time, but this value is <b>{float.Parse(HandleNullStr(End_Summary_Trials_Completed))}</b> in the uploaded file and Max_Schedule_Time is equalt to {Int32.Parse(HandleNullStr(Max_Schedule_Time))}";
+                        ErrMsg1 += $@"End_Summary_Schedule_Length should be equal to Max_Schedule_Time, but this value is <b>{float.Parse(HandleNullStr(End_Summary_Trials_Completed))}</b> in the uploaded file and Max_Schedule_Time is equalt to {float.Parse(HandleNullStr(Max_Schedule_Time))}";
                     }
 
                     return (flag: Flag, ErrMsg: ErrMsg1);
@@ -1454,15 +1455,15 @@ namespace AngularSPAWebAPI.Services
             bool Flag = false;
             string ErrMsg1 = "";
 
-            if (Int32.Parse(HandleNullStr(Max_Number_Trials)) > 0)
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                if (Int32.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
+                if (float.Parse(HandleNullStr(Max_Number_Trials)) <= 0)
                 {
-                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{Int32.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                    ErrMsg1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
                 }
 
 
