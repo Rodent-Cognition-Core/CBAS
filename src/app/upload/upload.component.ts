@@ -168,6 +168,11 @@ export class UploadComponent implements OnInit {
                 break;
 
             }
+            case 15: { //Long Sequence
+                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 15) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                break;
+
+            }
 
             default: {
                 //statements; {}

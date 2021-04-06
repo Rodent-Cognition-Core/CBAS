@@ -487,7 +487,10 @@ namespace AngularSPAWebAPI.Services
             List<float?> lstCorrectLatency = new List<float?>();
             List<float?> lstRewatdLatency = new List<float?>();
             List<float?> lstIncorLatency = new List<float?>();
+
             Dictionary<string, float?> cptDictDistractorFeatures = new Dictionary<string, float?>();  // for sessionIDUpload==42 (cpt distractor)
+            Dictionary<string, int?> SequenceDictFeatures = new Dictionary<string, int?>();
+            string end_summary_corrects = _qualityControlService.FeatureExtraction("MarkerData", "Marker", "End Summary - Corrects", "Results", xdoc1);
 
             foreach (var val in value)
             {
@@ -654,6 +657,85 @@ namespace AngularSPAWebAPI.Services
 
                     }  // end of if(tskID==11) for iCPT task
 
+                    // For Sequence Task some new features should be generated
+                    if (TaskID == 15) // Task is Sequence
+                    {
+                        switch (Attribute)
+                        {
+                            case "Blank touches at grid specific - Grid 1":
+
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                    count = count - Int32.Parse(end_summary_corrects) ;
+                                }
+                                else { count = null; }
+
+                                SequenceDictFeatures.Add("True Blank Touches at Grid 1", count);
+
+                                break;
+
+                            case "Blank touches at grid specific - Grid 2":
+
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                    count = count - Int32.Parse(end_summary_corrects);
+                                }
+                                else { count = null; }
+
+                                SequenceDictFeatures.Add("True Blank Touches at Grid 2", count);
+
+                                break;
+
+                            case "Blank touches at grid specific - Grid 3":
+
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                    count = count - Int32.Parse(end_summary_corrects);
+                                }
+                                else { count = null; }
+
+                                SequenceDictFeatures.Add("True Blank Touches at Grid 3", count);
+
+                                break;
+
+                            case "Blank touches at grid specific - Grid 4":
+
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                    count = count - Int32.Parse(end_summary_corrects);
+                                }
+                                else { count = null; }
+
+                                SequenceDictFeatures.Add("True Blank Touches at Grid 4", count);
+
+                                break;
+
+                            case "Blank touches at grid specific - Grid 5":
+
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    count = Int32.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                    count = count - Int32.Parse(end_summary_corrects);
+                                }
+                                else { count = null; }
+
+                                SequenceDictFeatures.Add("True Blank Touches at Grid 5", count);
+
+                                break;
+                        } // end of switch for sequence
+
+                    } // end of if for sequecne
+
+
                     string SourceType = ((System.Xml.Linq.XElement)val.FirstNode.NextNode).Value.ToString(); // SourceType
                     switch (SourceType.ToUpper())
                     {
@@ -738,6 +820,8 @@ namespace AngularSPAWebAPI.Services
                 cptFeatureDict = GetDictCPTFeatures_distractor(cptDictDistractorFeatures);
             }
 
+
+            // For CPT task
             int sourceType = 1;
             float? resultVal = null;
             float? durationVal = null;
@@ -769,6 +853,35 @@ namespace AngularSPAWebAPI.Services
                 };
 
                 lstMD.Add(MD);
+            }
+
+            // For Sequence Task
+            int? countnVal = null;
+            foreach (KeyValuePair<string, int?> entry in SequenceDictFeatures)
+            {
+                if (entry.Value!=null)
+                {
+                    sourceType = 2;
+                    countnVal = entry.Value;
+
+                    MarkerData MD = new MarkerData
+                    {
+                        SessionID = SessionInfoID,
+                        SourceTypeID = sourceType,
+                        FeatureName = entry.Key,
+                        Results = resultVal,
+                        Time = null,
+                        Duration = null,
+                        Count = countnVal,
+
+                    };
+
+                    lstMD.Add(MD);
+
+                }
+                
+
+                
             }
 
 
@@ -1166,7 +1279,7 @@ namespace AngularSPAWebAPI.Services
                         newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                         newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
                         newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
-                        newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];  
+                        newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
 
                         dt_latency.Rows.Add(newRow);
                         cnt = cnt + 1;
@@ -1208,7 +1321,7 @@ namespace AngularSPAWebAPI.Services
                             DataRow newRow = dt_incorrect_latency.NewRow();
                             newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
                             newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2]; 
+                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
 
                             dt_incorrect_latency.Rows.Add(newRow);
                             cnt2 = cnt2 + 1;
@@ -1723,6 +1836,16 @@ namespace AngularSPAWebAPI.Services
                     lstFeatures.AddRange(input_autoshape);
 
                     break;
+
+                //*****************Long Sequence
+                case 52:
+                    string[] input_sequence = { "End Summary - Condition", "End Summary - Corrects", "End Summary - Blank Touches", "Correct touch latency", "Correct Reward Collection",
+                        "Correct latency grid 1", "Correct latency grid 2", "Correct latency grid 3", "Correct latency grid 4",  "Correct latency grid 5",
+                        "Blank touches at grid specific - Grid 1", "Blank touches at grid specific - Grid 2", "Blank touches at grid specific - Grid 3", "Blank touches at grid specific - Grid 4",
+                        "Blank touches at grid specific - Grid 5"};
+                    lstFeatures.AddRange(input_sequence);
+                    break;
+
 
 
             }

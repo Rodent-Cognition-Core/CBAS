@@ -3,13 +3,16 @@
 <div>
 
     <div class="content">
-        <p style="padding-left:50px">
-            PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
-            that match the search criteria.
-            <br /><br />
-            <span style="color: #ceaafb">{{pubCount}}</span> Total Publications in Pubscreen
+        <p style="padding-left:50px; text-align-last:center">
+            <span style="text-align: left; width:100%">PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
+            that match the search criteria.</span>
+            <br /><br /><br />
+            <!--<span style="color: #ceaafb">{{pubCount}}</span> Total Publications in Pubscreen-->
+            <span countUp [endVal]="pubCount" style="color: #663399; font-size:large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Total Publications in Pubscreen</span>
             <br />
-            <span style="color: #ceaafb">{{featureCount}}</span> Publications with Key Features Added
+            <br />
+            <!--<span style="color: #ceaafb">{{featureCount}}</span> Publications with Key Features Added-->
+            <span countUp [endVal]="featureCount" style="color: #663399; font-size: large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Publications with Key Features Added</span>
         </p>
 
     </div>
