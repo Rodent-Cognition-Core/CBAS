@@ -6,11 +6,14 @@ import { ManageUserService } from '../services/manageuser.service';
 import { PubScreenComponent } from './pubScreen.component';
 import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
+import { CountUpModule } from 'countup.js-angular2';
+
 
 @NgModule({
     imports: [
         PubSCreenRoutingModule,
-        SharedModule
+        SharedModule,
+        CountUpModule
     ],
     declarations: [
         PubScreenComponent
