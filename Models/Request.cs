@@ -21,6 +21,8 @@ namespace AngularSPAWebAPI.Models
         public string GeneticModification { get; set; }
         public string StrainReference { get; set; }
         public string ControlSuggestion { get; set; }
+        public string TaskCategory { get; set; }
+        public string DOI { get; set; }
         public string GeneralRequest { get; set; }
 
 

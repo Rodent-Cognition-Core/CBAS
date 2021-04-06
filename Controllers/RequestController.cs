@@ -37,7 +37,7 @@ namespace AngularSPAWebAPI.Controllers
 
             _requestService.AddNewTask(request);
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new cognitive task to the system! <br /><br /> Thanks <br /> MouseBytes";
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new cognitive task to the system! <br /><br /> Thanks, <br /> MouseBytes";
             HelperService.SendEmail("", "", "New Cognitive Task Added to MouseBytes!", strBody);
 
             return new JsonResult("Done!");
@@ -52,7 +52,7 @@ namespace AngularSPAWebAPI.Controllers
 
             _requestService.AddNewPI(request);
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new PI to the system! <br /><br /> Thanks <br /> MouseBytes";
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new PI to the system! <br /><br /> Thanks, <br /> MouseBytes";
             HelperService.SendEmail("", "", "New PI Added to MouseBytes!", strBody);
 
             return new JsonResult("Done!");
@@ -68,7 +68,7 @@ namespace AngularSPAWebAPI.Controllers
 
             _requestService.AddNewAge(request);
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new Age to the system! <br /><br /> Thanks <br /> MouseBytes";
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new Age to the system! <br /><br /> Thanks, <br /> MouseBytes";
             HelperService.SendEmail("", "", "New Age Added to MouseBytes!", strBody);
 
             return new JsonResult("Done!");
@@ -84,7 +84,7 @@ namespace AngularSPAWebAPI.Controllers
 
             _requestService.AddNewMouseLine(request);
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new Mouse Line to the system! <br /><br /> Thanks <br /> MouseBytes";
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> added new Mouse Line to the system! <br /><br /> Thanks, <br /> MouseBytes";
             HelperService.SendEmail("", "", "New Mouse Line Added to MouseBytes!", strBody);
 
             return new JsonResult("Done!");
@@ -93,12 +93,26 @@ namespace AngularSPAWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("AddGeneral")]
-
         public IActionResult AddGeneral([FromBody] Request request)
         {
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a general request for MouseBytes: <br /><br /> {request.GeneralRequest.Replace("\n", "<br />")} <br /><br />Thanks <br /> MouseBytes";
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a general request for MouseBytes: <br /><br /> {request.GeneralRequest.Replace("\n", "<br />")} <br /><br />Thanks, <br /> MouseBytes";
             HelperService.SendEmail("", "", "New Request for MouseBytes!", strBody);
+
+            return new JsonResult("Done!");
+
+        }
+
+        [AllowAnonymous]
+        [HttpPost("AddPubTask")]
+        public IActionResult AddPubTask([FromBody] Request request)
+        {
+
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a request for a new Pubscreen Task: <br /><br />";
+            strBody += $@"<b>Paper in question:</b> http://www.doi.org/{request.DOI.Trim()}<br />";
+            strBody += $@"<b>Task Category:</b> {request.TaskCategory}<br />";
+            strBody += $@"<b>New Task:</b> {request.taskName} <br /><br />Thanks, <br /> MouseBytes";
+            HelperService.SendEmail("", "", "New Task Request for Pubscreen!", strBody);
 
             return new JsonResult("Done!");
 
