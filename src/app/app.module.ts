@@ -60,6 +60,7 @@ import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RouterModule, Routes } from '@angular/router'
 import { GuidelineComponent } from './guideline/guideline.component';
+import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
 import { DataExtractionComponent } from './data-extraction/data-extraction.component';
 import { DataLinkComponent } from './data-link/data-link.component';
 import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
@@ -80,6 +81,7 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
     { path: 'guidline', component: GuidelineComponent },
+    { path: 'guidline', component: GuidelineDataLabComponent },
     { path: 'guidline', component: DataExtractionComponent },
     { path: 'guidline', component: DataLinkComponent },
     { path: 'guidline', component: DataVisualizationComponent },
