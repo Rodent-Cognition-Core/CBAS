@@ -28,6 +28,7 @@ const routes: Routes = [
     { path: 'imaging', loadChildren: './imaging/imaging.module#ImagingModule' },
     { path: 'genomics', loadChildren: './genomics/genomics.module#GenomicsModule' },
     { path: 'guideline', loadChildren: './guideline/guideline.module#GuidelineModule' },
+    { path: 'guideline/datalab', loadChildren: './guidelineDataLab/guidelineDataLab.module#GuidelineDataLabModule' },
     { path: 'data-visualization', loadChildren: './data-visualization/data-visualization.module#DataVisualizationModule' },
     { path: 'mb-dashboard', loadChildren: './mb-dashboard/mb-dashboard.module#MBDashboardModule' },
     { path: 'contact-us', loadChildren: './contact-us/contact-us.module#ContactUsModule' },
