@@ -1753,7 +1753,9 @@ namespace AngularSPAWebAPI.Services
                     string[] PRlst = { "END SUMMARY - Schedule Length", "END SUMMARY - TRIALS COMPLETED", "END SUMMARY - Breakpoint", "END SUMMARY - Number of target touches",
                                        "END SUMMARY - REWARD COLLECTION LATENCY", "END SUMMARY - Revised total response time",
                                        "END SUMMARY - Revised post reinf pause (from first head entry after reward delivery until first screen touch)",
-                                       "END SUMMARY - Revised post reinf pause (head out of mag to first screen touch)"};
+                                       "END SUMMARY - Revised post reinf pause (head out of mag to first screen touch)",
+                                       "End Summary - Condition", "End Summary - Corrects", "End Summary - Blank Touches",
+                                        "Correct touch latency", "Blank Touch Latency", "Correct Centre touch latency", "Correct Reward Collection"};
                     lstFeatures.AddRange(PRlst);
                     break;
                 //******************PRL
