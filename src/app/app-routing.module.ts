@@ -37,11 +37,11 @@ const routes: Routes = [
     { path: 'video-tutorial', loadChildren: './video-tutorial/video-tutorial.module#VideoTutorialModule' },
     { path: 'pubScreen', loadChildren: './pubScreen/pubScreen.module#PubScreenModule' },
     { path: 'pubScreen-search', loadChildren: './pubScreen-search/pubScreen-search.module#PubScreenSearchModule' },
-    { path: 'cogbytes', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
-    { path: 'cogbytes-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
+    { path: 'comp', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
+    { path: 'comp-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
     { path: 'pubScreen-queue', loadChildren: './pubScreenQueue/pubScreenQueue.module#PubScreenQueueModule' },
     { path: 'pubScreen-edit', loadChildren: './pubScreenEdit/pubScreenEdit.module#PubScreenEditModule' },
-    { path: 'cogbytes-edit', loadChildren: './cogbytesEdit/cogbytesEdit.module#CogbytesEditModule' },
+    { path: 'comp-edit', loadChildren: './cogbytesEdit/cogbytesEdit.module#CogbytesEditModule' },
 
 ];
 

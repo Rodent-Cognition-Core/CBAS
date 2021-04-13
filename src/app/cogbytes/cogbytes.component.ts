@@ -227,14 +227,14 @@ export class CogbytesComponent implements OnInit {
 
             this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/cogbytes-edit?repolinkguid=" + guid;
+            this.dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
 
         });
 
     }
 
     getLinkURL() {
-        return "http://localhost:4200/cogbytes-edit?repolinkguid=" + this.getRep().repoLinkGuid;
+        return "http://localhost:4200/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
     }
 
 }

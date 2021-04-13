@@ -128,7 +128,7 @@
 
                             <!--Cognitive Task or Task Category-->
                             <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)"  required multiple>
+                                <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
                                     <mat-option *ngFor="let task of taskList" [value]="task.id">
                                         <span matTooltip="{{task.task}}">{{task.task}}</span>
                                     </mat-option>
@@ -138,7 +138,7 @@
 
                             <!--Cognitive Task or subtasks-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" required multiple>
+                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" multiple>
                                     <mat-option *ngFor="let subtask of subTaskList" [value]="subtask.id">
                                         <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
                                     </mat-option>
@@ -150,7 +150,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
-                                        {{specie.species}}
+                                        <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -160,7 +160,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
-                                        {{sex.sex}}
+                                        <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -170,7 +170,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                                     <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                        {{strain.strain}}
+                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -180,7 +180,7 @@
                             <mat-form-field style="width:15%;">
                                 <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
                                     <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
-                                        {{disease.diseaseModel}}
+                                        <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -191,7 +191,7 @@
 
                                 <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
                                     <mat-option *ngFor="let region of regionList" [value]="region.id">
-                                        {{region.brainRegion}}
+                                        <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -201,7 +201,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
                                     <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
-                                        {{subregion.subRegion}}
+                                        <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -211,7 +211,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
                                     <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
-                                        {{cell.cellType}}
+                                        <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -221,7 +221,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
                                     <mat-option *ngFor="let method of methodList" [value]="method.id">
-                                        {{method.method}}
+                                        <span matTooltip="{{method.method}}">{{method.method}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -232,7 +232,7 @@
                             <mat-form-field style="width:15%;">
                                 <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                                     <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
-                                        {{neuro.neuroTransmitter}}
+                                        <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -329,7 +329,7 @@
                                     <td>Repository Name:&nbsp; <span style="color:#909497;">{{rep.title}}</span></td>
                                     <td>Status:&nbsp; <span style="color:#909497;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">
-                                        <span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/cogbytes-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
+                                        <span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
                                     </td>
                                 </tr>
                             </table>

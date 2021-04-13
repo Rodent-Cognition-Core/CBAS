@@ -433,8 +433,6 @@ export class PubscreenDialogeComponent implements OnInit {
             
             ((this.titleModel === null || this.titleModel === "") && this.title.hasError('required')) ||
             ((this.doiModel === null || this.doiModel === "") && this.doi.hasError('required'))||
-            ((this.cognitiveTaskModel === null || this.cognitiveTaskModel.length === 0) && this.cognitiveTask.hasError('required')) ||
-            ((this.subTaskModel === null || this.subTaskModel.length === 0) && this.subTask.hasError('required')) ||
             ((this.yearModel === null || this.yearModel === "") && this.year.hasError('required')) ||
             ((this.sourceOptionModel === null || this.sourceOptionModel === "") && this.sourceOption.hasError('required')) ||
             (this.paperType.hasError('required'))
