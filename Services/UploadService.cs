@@ -502,7 +502,7 @@ namespace AngularSPAWebAPI.Services
                 int? count = null;
                 string Attribute = ((System.Xml.Linq.XElement)val.FirstNode).Value.ToString(); // Feature Name
                 //  If condition to consider only features exist in lstFeatures (only important features of each task should be considered!)
-                if (lstFeatures.Contains(Attribute) || lstFeatures == null)
+                if (lstFeatures.Contains(Attribute) || lstFeatures.Count == 0)
                 {
 
 
