@@ -76,7 +76,7 @@
                                     <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.id">
-                                        {{rep.title}}
+                                        <span matTooltip="{{rep.title}}">{{rep.title}}</span>
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -168,7 +168,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
-                                        {{specie.species}}
+                                        <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -178,7 +178,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
-                                        {{sex.sex}}
+                                        <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -190,7 +190,7 @@
                             <mat-form-field style="width:15%; padding-left:0px">
                                 <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                                     <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                        {{strain.strain}}
+                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -200,7 +200,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genoModel" multiple>
                                     <mat-option *ngFor="let geno of genoList" [value]="geno.id">
-                                        {{geno.genotype}}
+                                        <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
                                     </mat-option>
                                 </mat-select>
 

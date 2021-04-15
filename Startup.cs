@@ -178,11 +178,11 @@ namespace AngularSPAWebAPI
                  "/mb-dashboard",
                  "/pubScreen",
                  "/pubScreen-search",
-                 "/cogbytes",
-                 "/cogbytes-search",
+                 "/comp",
+                 "/comp-search",
                  "/pubScreen-queue",
                  "/pubScreen-edit",
-                 "/cogbytes-edit",
+                 "/comp-edit",
             };
 
             app.Use(async (context, next) =>

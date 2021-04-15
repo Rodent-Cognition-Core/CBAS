@@ -118,7 +118,7 @@
                     <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
 
                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.repoLinkGuid">
-                        {{rep.title}}
+                        <span matTooltip="{{rep.title}}">{{rep.title}}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>

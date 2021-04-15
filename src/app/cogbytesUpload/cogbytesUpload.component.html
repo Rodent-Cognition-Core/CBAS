@@ -62,7 +62,7 @@
             <mat-form-field style="width:20%; ">
                 <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
                     <mat-option *ngFor="let task of taskList" [value]="task.id">
-                        {{task.task}}
+                        <span matTooltip="{{task.task}}">{{task.task}}</span>
                     </mat-option>
                 </mat-select>
                 <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
@@ -72,7 +72,7 @@
             <mat-form-field style="width:20%; padding-left:30px">
                 <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjectsModel=null" multiple>
                     <mat-option *ngFor="let species of speciesList" [value]="species.id">
-                        {{species.species}}
+                        <span matTooltip="{{species.species}}">{{species.species}}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -86,7 +86,7 @@
             <mat-form-field style="width:20%; padding-left:30px">
                 <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
-                        {{sex.sex}}
+                        <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -94,7 +94,7 @@
             <mat-form-field style="width:20%; padding-left:30px">
                 <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                     <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                        {{strain.strain}}
+                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -104,7 +104,7 @@
             <mat-form-field style="width:20%; padding-left:0px">
                 <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
                     <mat-option *ngFor="let geno of genosList" [value]="geno.id">
-                        {{geno.genotype}}
+                        <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
                     </mat-option>
                 </mat-select>
             </mat-form-field>

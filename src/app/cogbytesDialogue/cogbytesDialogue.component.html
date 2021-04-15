@@ -3,8 +3,8 @@
 
     <div class="account-card-container2">
         <mat-card>
-            <mat-toolbar color=#d0d0d0>Adding Repository</mat-toolbar>
-
+            <mat-toolbar *ngIf="!isEditMode" color=#d0d0d0>Adding Repository</mat-toolbar>
+            <mat-toolbar *ngIf="isEditMode" color=#d0d0d0>Editing Repository</mat-toolbar>
             <mat-card-content>
 
                 <div>

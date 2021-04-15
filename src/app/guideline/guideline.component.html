@@ -1,83 +1,47 @@
-<div >
-    <br />
-    <div style="padding-top:30px">
-        <table class="docs-markdown-table">
-            <thead>
-                <tr>
-                    <th class="docs-markdown-th" style="font-weight:bold; color:#566573">Guidelines for extracting cognitive behavioral data from DATA LAB page</th>
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>GUIDELINES</h1></div>
 
-                </tr>
-            </thead>
-            <tbody class="docs-markdown-tbody"  [hidden]="!showItem">
-                <tr>
-                    <td class="docs-markdown-td" style="vertical-align:top;">
-                        <ul>
-                            <li>Browse MouseBytes: <a href="http://mousebytes.ca">www.mousebytes.ca.</a></li>
-                            <li>Click on <b>"DATA LAB"</b> from <b>TOUCHSCREEN</b> tab in the main menue.</li>
-                            <br />
-                            <img style="max-width: 600px; width: 90%;" src="../assets/images/ImgGuidelineCog.jpg" />
-                            <br />
-                            <br />
-                            <li>An Example for selecting the values from the drop down lists for <b>5SCRTT</b> task.</li>
-                            <ul>
-                                <li>Select <b>"Cam 5_Choice_V3"</b> from the first list.</li>
-                                <li>Select <b>"FB_5Choice"</b> and <b>"DP_5Choice"</b> from the Experiment list.</li>
-                                <li>Select <b>"Cam Mouse 5C Touch Var 1"</b> from the Session list.</li>
-                                <li>Select <b>"Schedule Name"</b> from the key feature list.</li>
-                                <li>
-                                    Select the following features: <b>"Threshold – Accuracy %"</b>, <b>"Threshold – Omission %"</b>,
-                                    <b>"Trial Analysis – Correct Response Latency"</b>, <b>"Reward Collection Latency"</b>,
-                                    <b>"Premature Response - Total"</b>, <b>"Perseverative Correct -Total".</b> from the list. Note that when a feature is selected from this list,
-                                    a new panel <b>"Animal Data"</b> gets visible.
-                                </li>
-                                <li>Select <b>"MEAN"</b> and <b>"COUNT"</b> from the aggregation function list.</li>
-                                <li>Select <b>"Dr. Marco Prado – Robarts Research Institute"</b> and <b>"Dr. Boyer Winter - University of Guelph"</b> from PI and Institution list.</li>
-                                <li>You can filter animal data like age, sex, strain, and genotype from <b>"Animal Data"</b> panel. However, If no value is filtered from this panel, everything will be automatically selected and returned in the result.</li>
-                                <li>Once everything is properly selected <b>"Get Data"</b> button will get enabled, and you can click on it to get data and browse it in a table.</li>
-                                <li>
-                                    When the result is loaded, click on <b>"Export Data"</b> button to download the result in CSV format.
-                                    You can also generate a link for the obtained result by clicking on <b>"Generate Link"</b> button and share the data with others.
-                                </li>
-                                <br />
-                                <img style="max-width: 900px; width: 90%;" src="../assets/images/ImgGuidelineCog2.jpg" />
-                                <br />
-                                <br />
-                            </ul>
-                            <li>The same steps should be followed for <b>PAL</b> and <b>PD</b> tasks. You can select the following values from the drop down lists for <b>PAL</b>:</li>
-                            <ul>
-                                <li>Select <b>"PAL_V3"</b> from the first list.</li>
-                                <li>Select <b>"FB_PAL"</b> and <b>"DP_PAL"</b> from the Experiment list.</li>
-                                <li>Select <b>"PAL Analysis"</b> from the Session list.</li>
-                                <li>Select <b>"Schedule Name"</b> from the key feature list.</li>
-                                <li>
-                                    Select the following features: <b>"End Summary - % Correct"</b>, <b>"End Summary – No Correction Trials"</b>,
-                                    <b>"Correct Touch Latency"</b>, <b>"Correct Reward Collection"</b> from list.
-                                </li>
-                                <li>Select <b>"MEAN"</b> and <b>"COUNT"</b> from the aggregation function list.</li>
-                                <li>Select <b>"Dr. Marco Prado – Robarts Research Institute"</b> and <b>"Dr. Boyer Winter - University of Guelph"</b> from PI and Institution list.</li>
-                            </ul>
-                            <br />
-                            <li>You can select the following values from the drop down lists for <b>PD</b>:</li>
-                            <ul>
-                                <li>Select <b>"PD_V3"</b> from the first list.</li>
-                                <li>Select <b>"FB_PD"</b> and <b>"DP_PD"</b> from the Experiment list.</li>
-                                <li>Select <b>"PD Analysis"</b> from the Session list.</li>
-                                <li>
-                                    Select the following features: <b>"End Summary % Correct"</b>, <b>"End Summary – No Correction Trials"</b>,
-                                    <b>"Correct Touch Latency"</b>, <b>"Correct Reward Collection"</b>
-                                </li>
-                                <li>Select <b>"MEAN"</b> and <b>"COUNT"</b> from the aggregation function list.</li>
-                                <li>Select <b>"Dr. Marco Prado – Robarts Research Institute"</b> and <b>"Dr. Boyer Winter - University of Guelph"</b> from PI and Institution list.</li>
-                            </ul>
-                        </ul>
-
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <br />
-    <br />
-    <br />
-
+<div style="padding-top:0px; padding: 80px 80px;">
+    <mat-grid-list cols="2" rowHeight="2:1">
+        <a href="/guideline/datalab">
+            <mat-grid-tile class="guideline-tile">
+                <mat-card class="guideline-card">
+                    <img alt="datalab" src="../../assets/images/cognitive2.png">
+                    <mat-card-content>Data Lab</mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+        </a>
+        <a href="../../assets/guide/Mousebytes.pdf">
+            <mat-grid-tile class="guideline-tile">
+                <mat-card class="guideline-card">
+                    <img class="logo" alt="mousebytes" src="../../assets/images/logo-pre.png">
+                    <mat-card-content class="mousebytes">Mousebytes</mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+        </a>
+        <a href="../../assets/guide/Pubscreen.pdf">
+            <mat-grid-tile class="guideline-tile">
+                <mat-card class="guideline-card">
+                    <img class="logo" alt="datalab" src="../../assets/images/Architetto----Bibliografia.svg">
+                    <mat-card-content>Pubscreen</mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+        </a>
+        <a href="../../assets/guide/COMP.pdf">
+            <mat-grid-tile class="guideline-tile">
+                <mat-card class="guideline-card">
+                    <img alt="datalab" class="logo" src="../../assets/images/image-data-integraion.png">
+                    <mat-card-content>Complementary Data Repositories</mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+        </a>
+        <a href="../../assets/guide/Glossary.pdf">
+            <mat-grid-tile class="guideline-tile">
+                <mat-card class="guideline-card">
+                    <img alt="glossary" class="logo" src="../../assets/images/Livre.svg">
+                    <mat-card-content>Glossary</mat-card-content>
+                </mat-card>
+            </mat-grid-tile>
+        </a>
+    </mat-grid-list>
 </div>
+

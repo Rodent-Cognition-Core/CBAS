@@ -453,7 +453,7 @@ export class CogbytesSearchComponent implements OnInit {
     }
 
     getLinkURL(rep) {
-        return "http://localhost:4200/cogbytes-edit?repolinkguid=" + rep.repoLinkGuid;
+        return "http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid;
     }
 }
 

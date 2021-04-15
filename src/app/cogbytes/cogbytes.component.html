@@ -39,7 +39,7 @@
                                     <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()" (selectionChange)="GetUploads()">
                                         <mat-option [value]="null">-</mat-option>
                                         <mat-option *ngFor="let rep of repList" [value]="rep.id">
-                                            {{rep.title}}
+                                            <span matTooltip="{{rep.title}}">{{rep.title}}</span>
                                         </mat-option>
                                     </mat-select>
 
