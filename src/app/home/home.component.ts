@@ -40,8 +40,8 @@ export class HomeComponent {
 
         this.images = [
             { src: '../assets/images/cognitive2.png', btnVisible: true, btnText: 'Cognitive Behavioral Data Lab', btnLink: '/data-extraction' },
-            { src: '../assets/images/image-data-integraion.png', btnVisible: true, btnText: 'Image Data Lab (Coming Soon!)', btnLink: '/' },
-            { src: '../assets/images/genetic-data-integration.png', btnVisible: true, btnText: 'Genomics Data Lab (Coming Soon!)', btnLink: '/' }
+            //{ src: '../assets/images/image-data-integraion.png', btnVisible: true, btnText: 'Image Data Lab (Coming Soon!)', btnLink: '/' },
+            //{ src: '../assets/images/genetic-data-integration.png', btnVisible: true, btnText: 'Genomics Data Lab (Coming Soon!)', btnLink: '/' }
 
         ]
 
