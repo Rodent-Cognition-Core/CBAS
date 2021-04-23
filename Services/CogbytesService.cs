@@ -176,8 +176,16 @@ namespace AngularSPAWebAPI.Services
         //// Function defintion to add a new author to database
         public int AddAuthors(PubScreenAuthor author, string userEmail)
         {
+            // Check if author is in DB
+            string sqlCount = $@"Select Count(AuthorID) From Author Where FirstName = '{author.FirstName.Trim()}' AND LastName = '{author.LastName.Trim()}'";
+            int isAuthorAdded = Int32.Parse(Dal.ExecScalarCog(sqlCount).ToString());
+            if (isAuthorAdded > 0)
+            {
+                return 0;
+            }
+
             string sql = $@"Insert into Author (FirstName, LastName, Affiliation, Username) Values
-                            ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
+                            ('{author.FirstName.Trim()}', '{author.LastName.Trim()}', '{author.Affiliation.Trim()}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
 
             return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
         }
@@ -207,7 +215,13 @@ namespace AngularSPAWebAPI.Services
 
         public int AddNewPI(Request request, string userEmail)
         {
-
+            // Check if author is in DB
+            string sqlCount = $@"Select Count(PIID) From PI Where FullName = '{request.PIFullName.Trim()}'";
+            int isPIAdded = Int32.Parse(Dal.ExecScalarCog(sqlCount).ToString());
+            if (isPIAdded > 0)
+            {
+                return 0;
+            }
 
             string sql = $@"Insert into PI (Username, FullName, Email, Affiliation) Values
                             ('{userEmail}', '{HelperService.EscapeSql(request.PIFullName)}',
@@ -278,6 +292,10 @@ namespace AngularSPAWebAPI.Services
                 sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
             }
             if (sqlPI != "") { Dal.ExecuteNonQueryCog(sqlPI); };
+
+            // Send email for new repository
+            string emailMsg = $"Repository Title: {repository.Title}\n\nUser: {Username}";
+            HelperService.SendEmail("", "", "New Complementary Data Reposiotry", emailMsg.Replace("\n", "<br \\>"));
 
             return RepositoryID;
 

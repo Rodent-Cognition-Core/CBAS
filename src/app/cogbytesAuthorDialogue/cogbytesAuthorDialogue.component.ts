@@ -45,7 +45,15 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.cogbytesService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
+        this.cogbytesService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe(result => {
+            if (result == 0) {
+                alert("Author already in database!");
+            }
+            else {
+                alert("Author successfully added!");
+            }
+            this.thisDialogRef.close()
+        });
        
     }
 

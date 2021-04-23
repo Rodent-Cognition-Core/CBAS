@@ -51,7 +51,15 @@ export class CogbytesPIDialogeComponent implements OnInit {
     onCloseSubmit(): void {      
 
         // Submiting the request to server
-        this.cogbytesService.addPI(this.reqPINameModel, this.reqInsNameModel, this.reqPIEmailModel).subscribe( this.thisDialogRef.close()); 
+        this.cogbytesService.addPI(this.reqPINameModel, this.reqInsNameModel, this.reqPIEmailModel).subscribe(result => {
+            if (result == 0) {
+                alert("PI already in database!");
+            }
+            else {
+                alert("PI successfully added!");
+            }
+            this.thisDialogRef.close()
+        }); 
        
     }
 
