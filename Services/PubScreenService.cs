@@ -20,11 +20,15 @@ using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
 using System.Reflection;
 
+
 namespace AngularSPAWebAPI.Services
 {
 
     public class PubScreenService
     {
+        const int MOUSEID = 2;
+        const int RATID = 1;
+
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
 
@@ -509,7 +513,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenTask> GetTasks()
         {
             List<PubScreenTask> TaskList = new List<PubScreenTask>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Task"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Task Order By (Case When Task not like '%None%' Then 1 Else 2 End), Task"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -532,7 +536,8 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenTask> TaskList = new List<PubScreenTask>();
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask.ID, SubTask.TaskID, Task.Task, SubTask.SubTask 
                                                              From SubTask
-                                                             Inner join Task on Task.ID = SubTask.TaskID"))
+                                                             Inner join Task on Task.ID = SubTask.TaskID
+                                                             Order By (Case When SubTask not like '%None%' Then 1 Else 2 End), TaskID, SubTask"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -555,7 +560,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSpecie> GetSpecies()
         {
             List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species Order By (Case When Species not like '%Other%' Then 1 Else 2 End), Species"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -576,7 +581,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSex> GetSex()
         {
             List<PubScreenSex> SexList = new List<PubScreenSex>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Sex"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Sex Order By Sex"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -597,7 +602,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenStrain> GetStrains()
         {
             List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Strain"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Strain Order By (Case When Strain not like '%Other%' Then 1 Else 2 End), SpeciesID Desc, Strain"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -605,8 +610,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
-
-
+                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
                     });
                 }
             }
@@ -619,7 +623,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenDisease> GetDisease()
         {
             List<PubScreenDisease> DiseaseList = new List<PubScreenDisease>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel Order By (Case When DiseaseModel not like '%Other%' Then 1 Else 2 End), DiseaseModel"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -642,7 +646,8 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion.ID, SubRegion.RID, BrainRegion.BrainRegion, SubRegion.SubRegion 
                                                              From SubRegion
-                                                             Inner join BrainRegion on BrainRegion.ID = SubRegion.RID"))
+                                                             Inner join BrainRegion on BrainRegion.ID = SubRegion.RID
+                                                             Order By (Case When SubRegion not like '%Other%' Then 1 Else 2 End), RID, SubRegion"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -665,7 +670,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenRegion> GetRegions()
         {
             List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion Order By (Case When BrainRegion not like '%Other%' Then 1 Else 2 End), BrainRegion"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -685,7 +690,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenCellType> GetCellTypes()
         {
             List<PubScreenCellType> CelltypeList = new List<PubScreenCellType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType Order By (Case When CellType not like '%Other%' Then 1 Else 2 End), CellType"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -706,7 +711,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenMethod> GetMethods()
         {
             List<PubScreenMethod> MethodList = new List<PubScreenMethod>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method Order By (Case When Method not like '%Other%' Then 1 Else 2 End), Method"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -726,7 +731,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
         {
             List<PubScreenNeuroTransmitter> NeuroTransmitterList = new List<PubScreenNeuroTransmitter>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter Order By (Case When NeuroTransmitter not like '%Other%' Then 1 Else 2 End), NeuroTransmitter"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -964,7 +969,9 @@ namespace AngularSPAWebAPI.Services
 
             //Adding to Publication_Strain
             // handling other for strain
-            ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", PublicationID, Username);
+            //ProcessOther(publication.StrainMouseOther, "Strain", "Strain", "Publication_Strain", "StrainID", PublicationID, Username);
+            ProcessOtherStrain(publication.StrainMouseOther, MOUSEID, PublicationID, Username);
+            ProcessOtherStrain(publication.StrainRatOther, RATID, PublicationID, Username);
 
             if (publication.StrainID != null && publication.StrainID.Length != 0)
             {
@@ -1273,7 +1280,9 @@ namespace AngularSPAWebAPI.Services
             }
 
             // Handking Other for Strain
-            ProcessOther(publication.StrainOther, "Strain", "Strain", "Publication_Strain", "StrainID", publicationId, Username);
+            //ProcessOther(publication.StrainMouseOther, "Strain", "Strain", "Publication_Strain", "StrainID", publicationId, Username);
+            ProcessOtherStrain(publication.StrainMouseOther, MOUSEID, publicationId, Username);
+            ProcessOtherStrain(publication.StrainRatOther, RATID, publicationId, Username);
 
             //Editing to Publication_Disease
             sqlDelete = $"DELETE From Publication_Disease where PublicationID = {publicationId}";
@@ -1973,6 +1982,31 @@ namespace AngularSPAWebAPI.Services
                         int IDOther2 = Int32.Parse((Dal.ExecScalarPub(sqlOther2).ToString()));
 
                         string sqlOther3 = $@"Insert into {tblPublication} ({tblPublicationField}, PublicationID) Values ({IDOther2}, {PublicationID}); ";
+                        Dal.ExecuteNonQueryPub(sqlOther3);
+                    }
+
+                }
+
+            }
+        }
+
+        public void ProcessOtherStrain(string inputOther, int speciesID, int PublicationID, string Username)
+        {
+            if (!String.IsNullOrEmpty(inputOther))
+            {
+                List<string> ItemList = inputOther.Split(';').Select(p => p.Trim()).ToList();
+                foreach (string item in ItemList)
+                {
+                    string sqlOther = $@"Select ID From Strain Where Strain = '{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}' AND SpeciesID = {speciesID};";
+                    var IDOther = Dal.ExecScalarPub(sqlOther);
+
+                    if (IDOther == null)
+                    {
+                        string sqlOther2 = $@"Insert Into Strain (Strain, SpeciesID, Username) Values
+                                            ('{HelperService.NullToString(HelperService.EscapeSql(item)).Trim()}', {speciesID}, '{Username}'); SELECT @@IDENTITY AS 'Identity';";
+                        int IDOther2 = Int32.Parse((Dal.ExecScalarPub(sqlOther2).ToString()));
+
+                        string sqlOther3 = $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({IDOther2}, {PublicationID}); ";
                         Dal.ExecuteNonQueryPub(sqlOther3);
                     }
 

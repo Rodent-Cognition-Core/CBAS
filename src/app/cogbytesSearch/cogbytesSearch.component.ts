@@ -82,7 +82,7 @@ export class CogbytesSearchComponent implements OnInit {
     yearTo = new FormControl('', []);
 
     public repMultiFilterCtrl: FormControl = new FormControl();
-    public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1)
+    public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public piMultiFilterCtrl: FormControl = new FormControl();

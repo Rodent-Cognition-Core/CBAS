@@ -36,7 +36,8 @@ namespace AngularSPAWebAPI.Models
         public int? YearTo { get; set; }
         public string TaskOther { get; set; }
         public string SpecieOther { get; set; }
-        public string StrainOther { get; set; }
+        public string StrainMouseOther { get; set; }
+        public string StrainRatOther { get; set; }
         public string DiseaseOther { get; set; }
         public string CelltypeOther { get; set; }
         public string MethodOther { get; set; }

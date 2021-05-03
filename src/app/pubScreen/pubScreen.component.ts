@@ -73,6 +73,7 @@ export class PubScreenComponent implements OnInit {
     yearList: any;
     subTaskList: any;
     taskSubTaskList: any;
+    subStrainList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
 
@@ -86,6 +87,9 @@ export class PubScreenComponent implements OnInit {
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public strainMultiFilterCtrl: FormControl = new FormControl();
+    public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -109,6 +113,7 @@ export class PubScreenComponent implements OnInit {
             console.log(this.featureCount);
         });
         this.GetAuthorList();
+        this.GetStrainList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
@@ -164,6 +169,22 @@ export class PubScreenComponent implements OnInit {
         return this.authorList;
     }
 
+    GetStrainList() {
+
+        this.pubScreenService.getStrain().subscribe(data => {
+            this.strainList = data;
+
+            this.strainMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterStrain();
+                });
+
+        });
+
+        return this.strainList;
+    }
+
     // handling multi filtered Author list
     private filterAuthor() {
         if (!this.authorList) {
@@ -186,6 +207,28 @@ export class PubScreenComponent implements OnInit {
         );
     }
 
+    // handling multi filtered Strain list
+    private filterStrain() {
+        if (!this.subStrainList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchStrain = this.strainMultiFilterCtrl.value;
+
+        if (!searchStrain) {
+            this.filteredStrainList.next(this.subStrainList.slice());
+            return;
+        } else {
+            searchStrain = searchStrain.toLowerCase();
+        }
+
+        // filter the strain
+        this.filteredStrainList.next(
+            this.subStrainList.filter(x => x.strain.toLowerCase().indexOf(searchStrain) > -1)
+        );
+    }
+
     selectedTaskChange(SelectedTask) {
 
         this.pubScreenService.getTaskSubTask().subscribe(data => {
@@ -198,10 +241,13 @@ export class PubScreenComponent implements OnInit {
             //console.log(filtered);
             this.subTaskList = JSON.parse(JSON.stringify(filtered));
         });
-
-
     }
 
+    selectedSpeciesChange(SelectedSpecies) {
+        this.strainModel = [];
+        this.subStrainList = this.strainList.filter(x => SelectedSpecies.includes(x.speciesID));
+        this.filteredStrainList.next(this.subStrainList.slice());
+    }
 
     selectedRegionChange(SelectedRegion) {
 

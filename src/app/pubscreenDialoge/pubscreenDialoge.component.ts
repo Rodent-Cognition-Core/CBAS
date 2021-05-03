@@ -57,7 +57,8 @@ export class PubscreenDialogeComponent implements OnInit {
     bioDoiKeyModel: any;
     taskOtherModel: string;
     specieOtherModel: string;
-    strainOtherModel: string;
+    strainOtherMouseModel: string;
+    strainOtherRatModel: string;
     diseaseOtherModel: string;
     cellOtherModel: string;
     methodOtherModel: string;
@@ -90,6 +91,7 @@ export class PubscreenDialogeComponent implements OnInit {
     paperInfoFromDoiList: any;
     subTaskList: any;
     taskSubTaskList: any;
+    subStrainList: any;
     paperInfo: any;
     
 
@@ -103,6 +105,9 @@ export class PubscreenDialogeComponent implements OnInit {
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public strainMultiFilterCtrl: FormControl = new FormControl();
+    public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -123,6 +128,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.isEditMode = false;
 
         this.GetAuthorList();
+        this.GetStrainList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; this.processList(this.taskList, "None", "task");  });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; this.processList(this.specieList, "Other", "species"); });
@@ -194,11 +200,6 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.spinnerService.hide();
             });
-
-
-
-
- 
         }
 
     }
@@ -246,6 +247,44 @@ export class PubscreenDialogeComponent implements OnInit {
         return this.authorList;
     }
 
+    GetStrainList() {
+
+        this.pubScreenService.getStrain().subscribe(data => {
+            this.strainList = data;
+
+            this.strainMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterStrain();
+                });
+
+        });
+
+        return this.strainList;
+    }
+
+    // handling multi filtered Strain list
+    private filterStrain() {
+        if (!this.subStrainList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchStrain = this.strainMultiFilterCtrl.value;
+
+        if (!searchStrain) {
+            this.filteredStrainList.next(this.subStrainList.slice());
+            return;
+        } else {
+            searchStrain = searchStrain.toLowerCase();
+        }
+
+        // filter the strain
+        this.filteredStrainList.next(
+            this.subStrainList.filter(x => x.strain.toLowerCase().indexOf(searchStrain) > -1)
+        );
+    }
+
     // Getting list of all years  in database ???
     getAllYears() {
         return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
@@ -291,6 +330,11 @@ export class PubscreenDialogeComponent implements OnInit {
 
     }
 
+    selectedSpeciesChange(SelectedSpecies) {
+        this.strainModel = [];
+        this.subStrainList = this.strainList.filter(x => SelectedSpecies.includes(x.speciesID));
+        this.filteredStrainList.next(this.subStrainList.slice());
+    }
 
     selectedRegionChange(SelectedRegion) {
 
@@ -308,7 +352,29 @@ export class PubscreenDialogeComponent implements OnInit {
         console.log(this.subRegionList);
     }
 
+    isOtherStrainMouse() {
+        if (this.strainList != undefined) {
+        
+            let otherIndex = this.strainList.find(x => x.strain == "Other (mouse)").id;
+            if (this.strainModel.includes(otherIndex)) {
+                return true;
+            }
+        }
+        this.strainOtherMouseModel = "";
+        return false;
+    }
 
+    isOtherStrainRat() {
+        if (this.strainList != undefined) {
+
+            let otherIndex = this.strainList.find(x => x.strain == "Other (rat)").id;
+            if (this.strainModel.includes(otherIndex)) {
+                return true;
+            }
+        }
+        this.strainOtherRatModel = "";
+        return false;
+    }
     //Form Validation Variables for adding publications
     author = new FormControl('', [Validators.required]);
     title = new FormControl('', [Validators.required]);
@@ -633,7 +699,8 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.transmitterID = this.neurotransmitterModel;
         this._pubscreen.taskOther = this.taskOtherModel;
         this._pubscreen.specieOther = this.specieOtherModel;
-        this._pubscreen.strainOther = this.strainOtherModel;
+        this._pubscreen.strainMouseOther = this.strainOtherMouseModel;
+        this._pubscreen.strainRatOther = this.strainOtherRatModel;
         this._pubscreen.diseaseOther = this.diseaseOtherModel;
         this._pubscreen.celltypeOther = this.cellOtherModel;
         this._pubscreen.methodOther = this.methodOtherModel;
@@ -747,7 +814,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.taskOtherModel = '';
         this.specieOtherModel = '';
-        this.strainOtherModel = '';
+        this.strainOtherMouseModel = '';
+        this.strainOtherRatModel = '';
         this.diseaseOtherModel = '';
         this.cellOtherModel = '';
         this.methodOtherModel = '';

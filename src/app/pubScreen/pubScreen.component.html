@@ -74,7 +74,7 @@
 
                             </mat-form-field>
 
-                           
+
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -148,12 +148,24 @@
 
                             <!--Species-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                         <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
                                 </mat-select>
 
+                            </mat-form-field>
+
+                            <!--Strain-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
+                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                                    </mat-option>
+                                </mat-select>
                             </mat-form-field>
 
                             <!--Sex-->
@@ -165,16 +177,7 @@
                                 </mat-select>
 
                             </mat-form-field>
-
-                            <!--Strain-->
-                            <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-                                    <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
-                                    </mat-option>
-                                </mat-select>
-
-                            </mat-form-field><br/>
+                            <br />
 
                             <!--DiseaseModel-->
                             <mat-form-field style="width:15%;">
