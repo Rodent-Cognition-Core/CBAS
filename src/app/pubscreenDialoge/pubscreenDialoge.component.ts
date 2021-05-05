@@ -46,6 +46,7 @@ export class PubscreenDialogeComponent implements OnInit {
     methodModel: any;
     neurotransmitterModel: any;
     authorMultiSelect: any;
+    strainMultiSelect: any;
     doiKeyModel: any;
     PubMedKeyModel: any;
     subTaskModel: any;

@@ -973,12 +973,23 @@ namespace AngularSPAWebAPI.Services
             ProcessOtherStrain(publication.StrainMouseOther, MOUSEID, PublicationID, Username);
             ProcessOtherStrain(publication.StrainRatOther, RATID, PublicationID, Username);
 
+            // Get 'Other' entries in Strain table
+            List<int?> otherStrainID = new List<int?>();
+            using (DataTable dt = Dal.GetDataTablePub($@"Select ID from Strain Where Strain like '%Other%'"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    otherStrainID.Add(Int32.Parse(dr["ID"].ToString()));
+                }
+            }
+
             if (publication.StrainID != null && publication.StrainID.Length != 0)
             {
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    if (publication.StrainID[i] != 19)
+                    //if (publication.StrainID[i] != 19 && publication.StrainID[i] != 4019)
+                    if (!otherStrainID.Contains(publication.StrainID[i]))
                     {
                         sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {PublicationID});";
                     }

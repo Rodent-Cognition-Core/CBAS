@@ -29,6 +29,8 @@ export class PubScreenComponent implements OnInit {
     pubCount: number;
     featureCount: number;
 
+    strainMultiSelect: any;
+
     authorModel: any;
     titleModel: any;
     abstractModel: any;

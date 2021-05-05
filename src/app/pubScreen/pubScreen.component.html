@@ -181,7 +181,7 @@
 
                             <!--DiseaseModel-->
                             <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
+                                <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" multiple>
                                     <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                         <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
                                     </mat-option>
