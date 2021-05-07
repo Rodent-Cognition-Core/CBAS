@@ -93,6 +93,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetDisease());
         }
 
+        // Extracting Disease Models list
+        [HttpGet("GetSubModels")]
+        [AllowAnonymous]
+        public IActionResult GetSubModels()
+        {
+            return new JsonResult(_pubScreenService.GetSubModels());
+        }
+
         // Extracting Regions  list
         [HttpGet("GetRegion")]
         [AllowAnonymous]

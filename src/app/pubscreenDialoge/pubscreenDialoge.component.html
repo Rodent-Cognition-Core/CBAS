@@ -42,7 +42,7 @@
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
                         </mat-radio-group>
-                        
+
                         <!--Adding Paper option for crossRef-->
                         <mat-radio-group [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 3">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
@@ -78,7 +78,7 @@
 
                         </mat-form-field>
                         <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
-                        
+
                         <!--Paper's DOI if DOI is available for Crossref-->
                         <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'">
 
@@ -211,7 +211,7 @@
 
                     <!--Species---------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
                             <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                 <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                             </mat-option>
@@ -230,6 +230,39 @@
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one specie, separate them by semicolon ( ; )"></fa>
                     </span>
 
+                    <!--Strain----------------------------------------->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
+
+                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+
+                            <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
+                                <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!--<span *ngIf="strainModel.includes(19)">-->
+                    <span *ngIf="isOtherStrainMouse()">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="New Mouse Strain" [(ngModel)]="strainOtherMouseModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
+                    </span>
+
+                    <span *ngIf="isOtherStrainRat()">
+                        &nbsp;&nbsp;
+                        <mat-form-field style="padding-left:30px">
+
+                            <input matInput placeholder="New Rat Strain" [(ngModel)]="strainOtherRatModel" required>
+
+                        </mat-form-field>
+                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
+                    </span>
+
                     <!--Sex---------------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
@@ -241,31 +274,11 @@
                         </mat-select>
                         <!--<mat-error *ngIf="sex.invalid">{{getErrorMessageSex()}}</mat-error>-->
                     </mat-form-field>
-
-                    <!--Strain----------------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-
-                            <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
-                            </mat-option>
-                        </mat-select>
-
-                    </mat-form-field>
-
-                    <span *ngIf="strainModel.includes(19)">
-                        &nbsp;&nbsp;
-                        <mat-form-field style="padding-left:30px">
-
-                            <input matInput placeholder="Insert a new value for Strain" [(ngModel)]="strainOtherModel" required>
-
-                        </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
-                    </span><br />
+                    <br />
 
                     <!--DiseaseModel----------------------------------->
                     <mat-form-field style="width:15%;">
-                        <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
+                        <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
                             <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                 <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
                             </mat-option>
@@ -283,6 +296,16 @@
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one disease model, separate them by semicolon ( ; )"></fa>
                     </span>
 
+                    <!--SubRodent Model----------------------------------->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                            <mat-option *ngFor="let sub of subSubModelList" [value]="sub.id">
+                                <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                    
                     <!--BrainRegion----------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
@@ -323,8 +346,10 @@
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one cell type, separate them by semicolon ( ; )"></fa>
                     </span>
 
+                    <br />
+
                     <!--Method--------------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
+                    <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
                             <mat-option *ngFor="let method of methodList" [value]="method.id">
                                 <span matTooltip="{{method.method}}">{{method.method}}</span>
@@ -341,11 +366,10 @@
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one method, separate them by semicolon ( ; )"></fa>
-                    </span><br />
-
+                    </span>
 
                     <!--NeuroTransmitter Systems------------------------>
-                    <mat-form-field style="width:15%;">
+                    <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                             <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
                                 <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>

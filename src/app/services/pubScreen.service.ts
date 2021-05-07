@@ -89,6 +89,16 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    // Extracting SubModel List From DB
+    public getSubModels(): any {
+
+        return this.http
+            .get("/api/pubScreen/GetSubModels", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     // Extracting Regions & Sub-regions List From DB
     public getRegionSubRegion(): any {
 

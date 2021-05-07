@@ -21,6 +21,7 @@ namespace AngularSPAWebAPI.Models
         public string Sex { get; set; }
         public string Strain { get; set; }
         public string DiseaseModel { get; set; }
+        public string SubModel { get; set; }
         public string BrainRegion { get; set; }
         public string SubRegion { get; set; }
         public string CellType { get; set; }

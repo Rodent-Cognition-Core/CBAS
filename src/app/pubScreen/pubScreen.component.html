@@ -74,7 +74,7 @@
 
                             </mat-form-field>
 
-                           
+
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -148,12 +148,24 @@
 
                             <!--Species-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                         <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
                                 </mat-select>
 
+                            </mat-form-field>
+
+                            <!--Strain-->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
+                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                                    </mat-option>
+                                </mat-select>
                             </mat-form-field>
 
                             <!--Sex-->
@@ -165,22 +177,23 @@
                                 </mat-select>
 
                             </mat-form-field>
-
-                            <!--Strain-->
-                            <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-                                    <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                        <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
-                                    </mat-option>
-                                </mat-select>
-
-                            </mat-form-field><br/>
+                            <br />
 
                             <!--DiseaseModel-->
                             <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Disease Model(s)" [(ngModel)]="diseaseModel" multiple>
+                                <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
                                     <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                         <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--SubRodent Model----------------------------------->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                                    <mat-option *ngFor="let sub of subSubModelList" [value]="sub.id">
+                                        <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -217,19 +230,20 @@
 
                             </mat-form-field>
 
+                            <br />
+
                             <!--Method-->
-                            <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-form-field style="width:15%;">
                                 <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
                                     <mat-option *ngFor="let method of methodList" [value]="method.id">
                                         <span matTooltip="{{method.method}}">{{method.method}}</span>
                                     </mat-option>
                                 </mat-select>
 
-                            </mat-form-field><br />
-
+                            </mat-form-field>
 
                             <!--NeuroTransmitter Systems-->
-                            <mat-form-field style="width:15%;">
+                            <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                                     <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
                                         <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
@@ -292,11 +306,12 @@
                         <label>Specie(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Sex:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Strain(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Disease Model(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> <br /><br />
+                        <label>Strain(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> <br /><br /> <!--&nbsp; &nbsp; &nbsp;-->
+                        <label>Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID==Null || _pubSCreenSearch.subModelID.lenght == 0 || _pubSCreenSearch.subModelID == "") ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
                         <label>Brain Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-brain Region(S):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-brain Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
 
                         <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;

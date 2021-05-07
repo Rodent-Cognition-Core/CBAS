@@ -25,6 +25,7 @@ namespace AngularSPAWebAPI.Models
         public int?[] sexID { get; set; }
         public int?[] StrainID { get; set; }
         public int?[] DiseaseID { get; set; }
+        public int?[] SubModelID { get; set; }
         public int?[] RegionID { get; set; }
         public int?[] SubRegionID { get; set; }
         public int?[] CellTypeID { get; set; }
@@ -36,7 +37,8 @@ namespace AngularSPAWebAPI.Models
         public int? YearTo { get; set; }
         public string TaskOther { get; set; }
         public string SpecieOther { get; set; }
-        public string StrainOther { get; set; }
+        public string StrainMouseOther { get; set; }
+        public string StrainRatOther { get; set; }
         public string DiseaseOther { get; set; }
         public string CelltypeOther { get; set; }
         public string MethodOther { get; set; }
