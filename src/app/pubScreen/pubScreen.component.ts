@@ -43,6 +43,7 @@ export class PubScreenComponent implements OnInit {
     sexModel: any;
     strainModel: any;
     diseaseModel: any;
+    subModel: any;
     regionModel: any;
     subRegionModel: any;
     cellTypeModel: any;
@@ -63,6 +64,7 @@ export class PubScreenComponent implements OnInit {
     sexList: any;
     strainList: any;
     diseaseList: any;
+    subModelList: any;
     regionSubregionList: any
     regionList: any;
     subRegionList: any;
@@ -76,6 +78,7 @@ export class PubScreenComponent implements OnInit {
     subTaskList: any;
     taskSubTaskList: any;
     subStrainList: any;
+    subSubModelList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
 
@@ -122,6 +125,7 @@ export class PubScreenComponent implements OnInit {
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
         this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; });
         this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; });
+        this.pubScreenService.getSubModels().subscribe(data => { this.subModelList = data;});
         this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
         this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
@@ -251,6 +255,11 @@ export class PubScreenComponent implements OnInit {
         this.filteredStrainList.next(this.subStrainList.slice());
     }
 
+    selectedModelChange(SelectedModels) {
+        this.subModel = [];
+        this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
+    }
+
     selectedRegionChange(SelectedRegion) {
 
         this.pubScreenService.getRegionSubRegion().subscribe(data => {
@@ -337,6 +346,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.sexID = this.sexModel;
         this._pubSCreenSearch.strainID = this.strainModel;
         this._pubSCreenSearch.diseaseID = this.diseaseModel;
+        this._pubSCreenSearch.subModelID = this.subModel;
         this._pubSCreenSearch.regionID = this.regionModel;
         this._pubSCreenSearch.subRegionID = this.subRegionModel;
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;

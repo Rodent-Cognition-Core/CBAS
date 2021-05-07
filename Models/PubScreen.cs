@@ -25,6 +25,7 @@ namespace AngularSPAWebAPI.Models
         public int?[] sexID { get; set; }
         public int?[] StrainID { get; set; }
         public int?[] DiseaseID { get; set; }
+        public int?[] SubModelID { get; set; }
         public int?[] RegionID { get; set; }
         public int?[] SubRegionID { get; set; }
         public int?[] CellTypeID { get; set; }

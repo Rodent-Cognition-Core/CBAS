@@ -39,6 +39,7 @@ export class PubscreenDialogeComponent implements OnInit {
     sexModel: any;
     strainModel: any;
     diseaseModel: any;
+    subModel: any;
     regionModel: any;
     subRegionModel: any;
     cellTypeModel: any;
@@ -79,6 +80,7 @@ export class PubscreenDialogeComponent implements OnInit {
     sexList: any;
     strainList: any;
     diseaseList: any;
+    subModelList: any;
     regionSubregionList: any
     regionList: any;
     subRegionList: any;
@@ -93,6 +95,7 @@ export class PubscreenDialogeComponent implements OnInit {
     subTaskList: any;
     taskSubTaskList: any;
     subStrainList: any;
+    subSubModelList: any;
     paperInfo: any;
     
 
@@ -136,6 +139,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
         this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; this.processList(this.strainList, "Other", "strain"); });
         this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; this.processList(this.diseaseList, "Other", "diseaseModel"); });
+        this.pubScreenService.getSubModels().subscribe(data => { this.subModelList = data; this.processList(this.subModelList, "Other", "subModel"); });
         this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
         this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; this.processList(this.cellTypeList, "Other", "cellType"); });
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; this.processList(this.methodList, "Other", "method"); });
@@ -174,6 +178,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.authorModel = this.paperInfo.authourID;
                 this.cellTypeModel = this.paperInfo.cellTypeID;
                 this.diseaseModel = this.paperInfo.diseaseID;
+                this.subModel = this.paperInfo.subModelID;
                 this.methodModel = this.paperInfo.methodID;
                 this.paperTypeModel = this.paperInfo.paperTypeID;
                 this.regionModel = this.paperInfo.regionID;
@@ -192,6 +197,10 @@ export class PubscreenDialogeComponent implements OnInit {
                     this.selectedTaskChange(this.cognitiveTaskModel)
                     this.subTaskModel = this.paperInfo.subTaskID;
                 });
+
+                this.subStrainList = this.strainList.filter(x => this.specieModel.includes(x.speciesID));
+                this.filteredStrainList.next(this.subStrainList.slice());
+                this.subSubModelList = this.subModelList.filter(x => this.diseaseModel.includes(x.modelID));
 
                 this.neurotransmitterModel = this.paperInfo.transmitterID;
 
@@ -335,6 +344,11 @@ export class PubscreenDialogeComponent implements OnInit {
         this.strainModel = [];
         this.subStrainList = this.strainList.filter(x => SelectedSpecies.includes(x.speciesID));
         this.filteredStrainList.next(this.subStrainList.slice());
+    }
+
+    selectedModelChange(SelectedModels) {
+        this.subModel = [];
+        this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
     }
 
     selectedRegionChange(SelectedRegion) {
@@ -693,6 +707,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.sexID = this.sexModel;
         this._pubscreen.strainID = this.strainModel;
         this._pubscreen.diseaseID = this.diseaseModel;
+        this._pubscreen.subModelID = this.subModel;
         this._pubscreen.regionID = this.regionModel;
         this._pubscreen.subRegionID = this.subRegionModel;
         this._pubscreen.cellTypeID = this.cellTypeModel;
@@ -801,6 +816,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.sexModel = [];
         this.strainModel = [];
         this.diseaseModel = [];
+        this.subModel = [];
         this.regionModel = [];
         this.subRegionModel = [];
         this.cellTypeModel = [];

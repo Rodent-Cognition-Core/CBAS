@@ -278,7 +278,7 @@
 
                     <!--DiseaseModel----------------------------------->
                     <mat-form-field style="width:15%;">
-                        <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" multiple>
+                        <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
                             <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
                                 <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
                             </mat-option>
@@ -296,6 +296,16 @@
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one disease model, separate them by semicolon ( ; )"></fa>
                     </span>
 
+                    <!--SubRodent Model----------------------------------->
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                            <mat-option *ngFor="let sub of subSubModelList" [value]="sub.id">
+                                <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                            </mat-option>
+                        </mat-select>
+
+                    </mat-form-field>
+                    
                     <!--BrainRegion----------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
@@ -336,8 +346,10 @@
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one cell type, separate them by semicolon ( ; )"></fa>
                     </span>
 
+                    <br />
+
                     <!--Method--------------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
+                    <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
                             <mat-option *ngFor="let method of methodList" [value]="method.id">
                                 <span matTooltip="{{method.method}}">{{method.method}}</span>
@@ -354,11 +366,10 @@
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one method, separate them by semicolon ( ; )"></fa>
-                    </span><br />
-
+                    </span>
 
                     <!--NeuroTransmitter Systems------------------------>
-                    <mat-form-field style="width:15%;">
+                    <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
                             <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
                                 <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>

@@ -20,6 +20,7 @@ export class Pubscreen {
     public sexID: Array<number>;
     public strainID: Array<number>;
     public diseaseID: Array<number>;
+    public subModelID: Array<number>;
     public regionID: Array<number>;
     public subRegionID: Array<number>;
     public cellTypeID: Array<number>;

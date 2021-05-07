@@ -602,7 +602,9 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenStrain> GetStrains()
         {
             List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Strain Order By (Case When Strain not like '%Other%' Then 1 Else 2 End), SpeciesID Desc, Strain"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select Strain.ID, Strain, SpeciesID
+                                                            From Strain Inner Join Species On Strain.SpeciesID = Species.ID
+                                                            Order By (Case When Strain not like '%Other%' Then 1 Else 2 End), Species, Strain"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -638,6 +640,28 @@ namespace AngularSPAWebAPI.Services
             }
 
             return DiseaseList;
+        }
+
+        // Function Definition to extract list of all Submodels
+        public List<PubScreenSubModel> GetSubModels()
+        {
+            List<PubScreenSubModel> SubModelList = new List<PubScreenSubModel>();
+            using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel.ID, SubModel, ModelID
+                                                            From SubModel Inner Join DiseaseModel On SubModel.ModelID = DiseaseModel.ID
+                                                            Order By (Case When SubModel not like '%Other%' Then 1 Else 2 End), DiseaseModel, SubModel"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    SubModelList.Add(new PubScreenSubModel
+                    {
+                        ID = Int32.Parse(dr["ID"].ToString()),
+                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
+                        ModelID = Int32.Parse(dr["ModelID"].ToString()),
+                    });
+                }
+            }
+
+            return SubModelList;
         }
 
         // Function Definition to extract list of all Regions & Sub-regions
@@ -1018,6 +1042,19 @@ namespace AngularSPAWebAPI.Services
 
             }
 
+            //Adding to Publication_SubModel
+            if (publication.SubModelID != null && publication.SubModelID.Length != 0)
+            {
+                string sqlSub = "";
+                for (int i = 0; i < publication.SubModelID.Length; i++)
+                {
+                    sqlSub += $@"Insert into Publication_SubModel (SubModelID, PublicationID) Values ({publication.SubModelID[i]}, {PublicationID});";
+
+                }
+                if (sqlSub != "") { Dal.ExecuteNonQueryPub(sqlSub); };
+
+            }
+
             //Adding to Publication_Region
             if (publication.RegionID != null && publication.RegionID.Length != 0)
             {
@@ -1275,12 +1312,23 @@ namespace AngularSPAWebAPI.Services
             sqlDelete = $"DELETE From Publication_Strain where PublicationID = {publicationId}";
             Dal.ExecuteNonQueryPub(sqlDelete);
 
+            // Get 'Other' entries in Strain table
+            List<int?> otherStrainID = new List<int?>();
+            using (DataTable dt = Dal.GetDataTablePub($@"Select ID from Strain Where Strain like '%Other%'"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    otherStrainID.Add(Int32.Parse(dr["ID"].ToString()));
+                }
+            }
+
             if (publication.StrainID != null && publication.StrainID.Length != 0)
             {
                 string sqlStrain = "";
                 for (int i = 0; i < publication.StrainID.Length; i++)
                 {
-                    if (publication.StrainID[i] != 19)
+                    //if (publication.StrainID[i] != 19)
+                    if (!otherStrainID.Contains(publication.StrainID[i]))
                     {
                         sqlStrain += $@"Insert into Publication_Strain (StrainID, PublicationID) Values ({publication.StrainID[i]}, {publicationId});";
                     }
@@ -1316,6 +1364,21 @@ namespace AngularSPAWebAPI.Services
 
             // Handling Other for Disease
             ProcessOther(publication.DiseaseOther, "DiseaseModel", "DiseaseModel", "Publication_Disease", "DiseaseID", publicationId, Username);
+
+            //Editing to Publication_SubModel
+            sqlDelete = $"DELETE From Publication_SubModel where PublicationID = {publicationId}";
+            Dal.ExecuteNonQueryPub(sqlDelete);
+            if (publication.SubModelID != null && publication.SubModelID.Length != 0)
+            {
+                string sqlSub = "";
+                for (int i = 0; i < publication.SubModelID.Length; i++)
+                {
+                    sqlSub += $@"Insert into Publication_SubModel (SubModelID, PublicationID) Values ({publication.SubModelID[i]}, {publicationId});";
+
+                }
+                if (sqlSub != "") { Dal.ExecuteNonQueryPub(sqlSub); };
+
+            }
 
             //Editing to Publication_Region
             sqlDelete = $"DELETE From Publication_Region where PublicationID = {publicationId}";
@@ -1667,6 +1730,27 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
+            // search query for Sub Model
+            if (pubScreen.SubModelID != null && pubScreen.SubModelID.Length != 0)
+            {
+                if (pubScreen.SubModelID.Length == 1)
+                {
+                    sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.SubModelID.Length; i++)
+                    {
+                        sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[i]}) +  '%' OR ";
+
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+            }
+
             // search query for BrainRegion
             if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
             {
@@ -1847,6 +1931,7 @@ namespace AngularSPAWebAPI.Services
                         Sex = Convert.ToString(dr["Sex"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
                         DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
+                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
                         BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
                         SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
                         CellType = Convert.ToString(dr["CellType"].ToString()),
@@ -1902,6 +1987,9 @@ namespace AngularSPAWebAPI.Services
 
             sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
             pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
+
+            sql = $"Select SubModelID From Publication_SubModel Where PublicationID ={id}";
+            pubScreen.SubModelID = FillPubScreenItemArray(sql, "SubModelID");
 
             sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
             pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
@@ -2258,6 +2346,7 @@ namespace AngularSPAWebAPI.Services
                     pubScreenPublication.Sex = Convert.ToString(dr["Sex"].ToString());
                     pubScreenPublication.Strain = Convert.ToString(dr["Strain"].ToString());
                     pubScreenPublication.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
+                    pubScreenPublication.SubModel = Convert.ToString(dr["SubModel"].ToString());
                     pubScreenPublication.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
                     pubScreenPublication.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
                     pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
