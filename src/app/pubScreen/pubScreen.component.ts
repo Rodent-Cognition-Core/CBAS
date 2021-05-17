@@ -236,7 +236,7 @@ export class PubScreenComponent implements OnInit {
     }
 
     selectedTaskChange(SelectedTask) {
-
+        this.subTaskModel = [];
         this.pubScreenService.getTaskSubTask().subscribe(data => {
             this.taskSubTaskList = data;
             //console.log(this.SubtaskList);
@@ -261,7 +261,7 @@ export class PubScreenComponent implements OnInit {
     }
 
     selectedRegionChange(SelectedRegion) {
-
+        this.subRegionModel = [];
         this.pubScreenService.getRegionSubRegion().subscribe(data => {
             this.regionSubregionList = data;
             //console.log(this.regionSubregionList);

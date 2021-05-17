@@ -117,7 +117,10 @@
                         <ul class="top-nav-ul">
                             <span style="padding:0 10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:left;"></a></span>
                         </ul>
+
                         <ul class="top-nav-ul" style="float: left;">
+
+                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li style="letter-spacing: 1px; margin: 0 0 0 10px;">
                                 Touchscreen Data
@@ -152,7 +155,7 @@
                             </li>
 
 
-                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+                            <!--<li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>-->
 
                             <li class="liright"><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
@@ -184,6 +187,8 @@
                     <!--other sizes menu-->
                     <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true">
                         <ul class="top-nav-ul" style="float: left;" fxLayout="row">
+                            <li><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+
                             <li>
                                 Touchscreen Data
                                 <ul>
@@ -228,7 +233,7 @@
                         </ul>
                         <span style="padding:0 20px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" style="width: 130px; vertical-align:middle"></a></span>
                         <ul class="top-nav-ul" style="float: right;" fxLayout="row">
-                            <li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+                            <!--<li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>-->
 
                             <li class="liright"><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
