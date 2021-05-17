@@ -1605,9 +1605,30 @@ namespace AngularSPAWebAPI.Services
             }
 
             // search query for PaperType
-            if (pubScreen.PaperTypeID != null)
+            //if (pubScreen.PaperTypeID != null)
+            //{
+            //    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
+            //}
+
+            // search query for Paper type
+            if (pubScreen.PaperTypeIdSearch != null && pubScreen.PaperTypeIdSearch.Length != 0)
             {
-                sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
+
+                if (pubScreen.PaperTypeIdSearch.Length == 1)
+                {
+                    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.PaperTypeIdSearch.Length; i++)
+                    {
+                        sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+
             }
 
             // search query for Task
