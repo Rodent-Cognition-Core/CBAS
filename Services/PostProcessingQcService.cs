@@ -49,7 +49,7 @@ namespace AngularSPAWebAPI.Services
             if (subExp.AgeID == minAge && !subExp.IsIntervention)
             {
                 // check the post QC for schedule names common in all tasks e.g. habituation 1
-                errorGeneral = ScheduleCount(subExp.SubExpID);
+                errorGeneral = ScheduleCount(subExp.SubExpID, TaskID);
             }
 
             string error = "";
@@ -171,16 +171,32 @@ namespace AngularSPAWebAPI.Services
 
         // Function Definition: Post Processing QC for the standard schedules
 
-        public string ScheduleCount(int expID)
+        public string ScheduleCount(int expID, int TaskID)
         {
             string error1 = "";
             error1 = GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Habituation_1'", "<b>Habituation_1</b>", 1, "!=", "");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Habituation_2'", "<b>Habituation_2</b>", 3, "!=", "");
-            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Initial_Touch'", "<b>Initial_Touch</b>", 1, "<", "at least");
-            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Touch'", "<b>Must_Touch</b>", 1, "<", "at least");
-            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Initiate'", "<b>Must_Initiate</b>", 1, "<", "at least");
-            error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Punish_Incorrect'", "<b>Punish_Incorrect</b>", 1, "<", "at least");
 
+            if ((TaskID != 11) || (TaskID != 13))
+            {
+                error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Initial_Touch'", "<b>Initial_Touch</b>", 1, "<", "at least");
+            }
+
+            if ((TaskID != 11) || (TaskID != 13))
+            {
+                error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Touch'", "<b>Must_Touch</b>", 1, "<", "at least");
+            }
+
+
+            if ((TaskID != 9) || (TaskID != 10) || (TaskID != 11) || (TaskID != 13) || (TaskID != 15))
+            {
+                error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Initiate'", "<b>Must_Initiate</b>", 1, "<", "at least");
+            }
+
+            if ((TaskID != 9) || (TaskID != 11) || (TaskID != 13) || (TaskID != 15))
+            {
+                error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Punish_Incorrect'", "<b>Punish_Incorrect</b>", 1, "<", "at least");
+            }
             return error1;
 
         }
@@ -306,7 +322,7 @@ namespace AngularSPAWebAPI.Services
         {
             string error1 = "";
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName = 'Long_Sequence'", "<b>Heterogeneous Long Sequence</b>", 11, "!=", "");
-            
+
             return error1;
         }
 
