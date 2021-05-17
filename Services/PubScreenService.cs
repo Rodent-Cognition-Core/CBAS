@@ -537,7 +537,7 @@ namespace AngularSPAWebAPI.Services
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask.ID, SubTask.TaskID, Task.Task, SubTask.SubTask 
                                                              From SubTask
                                                              Inner join Task on Task.ID = SubTask.TaskID
-                                                             Order By (Case When SubTask not like '%None%' Then 1 Else 2 End), TaskID, SubTask"))
+                                                             Order By (Case When SubTask not like '%None%' Then 1 Else 2 End), Task, SubTask"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
