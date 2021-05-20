@@ -1181,11 +1181,17 @@ namespace AngularSPAWebAPI.Services
                                                                DOI = @doi, Year = @year where id = {publicationId}";
 
             var parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@title", HelperService.NullToString(HelperService.EscapeSql(publication.Title)).Trim()));
-            parameters.Add(new SqlParameter("@abstract", HelperService.NullToString(HelperService.EscapeSql(publication.Abstract)).Trim()));
-            parameters.Add(new SqlParameter("@keywords", HelperService.NullToString(HelperService.EscapeSql(publication.Keywords)).Trim()));
-            parameters.Add(new SqlParameter("@doi", HelperService.NullToString(HelperService.EscapeSql(publication.DOI)).Trim()));
-            parameters.Add(new SqlParameter("@year", HelperService.NullToString(HelperService.EscapeSql(publication.Year)).Trim()));
+            //parameters.Add(new SqlParameter("@title", HelperService.NullToString(HelperService.EscapeSql(publication.Title)).Trim()));
+            //parameters.Add(new SqlParameter("@abstract", HelperService.NullToString(HelperService.EscapeSql(publication.Abstract)).Trim()));
+            //parameters.Add(new SqlParameter("@keywords", HelperService.NullToString(HelperService.EscapeSql(publication.Keywords)).Trim()));
+            //parameters.Add(new SqlParameter("@doi", HelperService.NullToString(HelperService.EscapeSql(publication.DOI)).Trim()));
+            //parameters.Add(new SqlParameter("@year", HelperService.NullToString(HelperService.EscapeSql(publication.Year)).Trim()));
+
+            parameters.Add(new SqlParameter("@title", HelperService.NullToString(publication.Title).Trim()));
+            parameters.Add(new SqlParameter("@abstract", HelperService.NullToString(publication.Abstract).Trim()));
+            parameters.Add(new SqlParameter("@keywords", HelperService.NullToString(publication.Keywords).Trim()));
+            parameters.Add(new SqlParameter("@doi", HelperService.NullToString(publication.DOI).Trim()));
+            parameters.Add(new SqlParameter("@year", HelperService.NullToString(publication.Year).Trim()));
 
             Int32.Parse(Dal.ExecuteNonQueryPub(CommandType.Text, sqlPublication, parameters.ToArray()).ToString());
 
@@ -2181,30 +2187,64 @@ namespace AngularSPAWebAPI.Services
             return (pubCount, featureCount);
         }
 
-        public async Task<List<string>> AddCSVPapers(string userName)
+        //public async Task<List<string>> AddCSVPapers(string userName)
+        public bool AddCSVPapers(string userName)
         {
             List<string> doiList = new List<string>();
 
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Publication Where Title like ''"))
+            // THIS SECTION: REMOVE EXTRA APOSTROPHES
+            using (DataTable dt = Dal.GetDataTablePub($@"Select ID, Title, Abstract, Keywords From Publication Where Title like '%''''%' or Abstract like '%''''%' or Keywords like '%''''%'"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     int id = Int32.Parse(dr["ID"].ToString());
-                    string doi = Convert.ToString(dr["DOI"].ToString());
-                    try
-                    {
-                        PubScreen paper =  await GetPaperInfoByDOICrossref(doi);
-                        if (paper != null)
-                        {
-                            EditPublication(id, paper, userName);
-                        }
-                    }
-                    catch
-                    {
+                    string oldTitle = Convert.ToString(dr["Title"].ToString());
+                    string oldAbstract = Convert.ToString(dr["Abstract"].ToString());
+                    string oldKeywords = Convert.ToString(dr["Keywords"].ToString());
 
+                    string newTitle = removeApostrophes(oldTitle);
+                    string newAbstract = removeApostrophes(oldAbstract);
+                    string newKeywords = removeApostrophes(oldKeywords);
+
+                    string sql = $"Update Publication Set Title = '{newTitle}', Abstract = '{newAbstract}', Keywords = '{newKeywords}' Where ID = {id}";
+                    Dal.ExecuteNonQueryPub(sql);
+
+                    string removeApostrophes(string input)
+                    {
+                        while (input.Contains("''"))
+                        {
+                            input = input.Replace("''", "'");
+                        }
+                        return HelperService.EscapeSql(input);
                     }
                 }
             }
+
+            // THIS SECTION: ADD CROSSREF DOI'S FROM PAPERS WITH EMPTY ENTRIES
+            //List<string> doiList = new List<string>();
+
+            //using (DataTable dt = Dal.GetDataTablePub($@"Select * From Publication Where Title like ''"))
+            //{
+            //    foreach (DataRow dr in dt.Rows)
+            //    {
+            //        int id = Int32.Parse(dr["ID"].ToString());
+            //        string doi = Convert.ToString(dr["DOI"].ToString());
+            //        try
+            //        {
+            //            PubScreen paper =  await GetPaperInfoByDOICrossref(doi);
+            //            if (paper != null)
+            //            {
+            //                EditPublication(id, paper, userName);
+            //            }
+            //        }
+            //        catch
+            //        {
+
+            //        }
+            //    }
+            //}
+
+            // THIS SECTION: ADD PAPERS FROM CSV LIST
             //var reader = new StreamReader("TSPapers.csv");
 
             //while (!reader.EndOfStream)
@@ -2281,7 +2321,8 @@ namespace AngularSPAWebAPI.Services
 
             //}
 
-            return doiList;
+            //return doiList;
+            return true;
         }
 
         // Function definition to get a publication from searchPub based Guid
