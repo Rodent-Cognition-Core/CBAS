@@ -23,6 +23,8 @@ namespace AngularSPAWebAPI.Models
         public string ControlSuggestion { get; set; }
         public string TaskCategory { get; set; }
         public string DOI { get; set; }
+        public string Model { get; set; }
+        public string SubModel { get; set; }
         public string GeneralRequest { get; set; }
 
 
