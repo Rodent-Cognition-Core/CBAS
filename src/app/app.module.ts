@@ -30,7 +30,8 @@ import { ReqPIDialogeComponent } from './reqPIDialoge/reqPIDialoge.component';
 import { ReqAgeDialogeComponent } from './reqAgeDialoge/reqAgeDialoge.component';
 import { ReqMouseLineDialogeComponent } from './reqMouseLineDialoge/reqMouseLineDialoge.component';
 import { ReqGeneralDialogeComponent } from './reqGeneralDialoge/reqGeneralDialoge.component';
-import { ReqPubTaskDialogeComponent } from './reqPubTaskDialoge/reqPubTaskDialoge.component'
+import { ReqPubTaskDialogeComponent } from './reqPubTaskDialoge/reqPubTaskDialoge.component';
+import { ReqPubModelDialogeComponent } from './reqPubModelDialoge/reqPubModelDialoge.component';
 import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
@@ -133,6 +134,7 @@ const ROUTES: Routes = [
         ReqMouseLineDialogeComponent,
         ReqGeneralDialogeComponent,
         ReqPubTaskDialogeComponent,
+        ReqPubModelDialogeComponent,
         TermsDialogeComponent,
         AuthorDialogeComponent,
         UploadResultDialogComponent,
@@ -182,6 +184,7 @@ const ROUTES: Routes = [
         ReqAgeDialogeComponent,
         ReqGeneralDialogeComponent,
         ReqPubTaskDialogeComponent,
+        ReqPubModelDialogeComponent,
         TermsDialogeComponent,
         ReqMouseLineDialogeComponent,
         AuthorDialogeComponent,

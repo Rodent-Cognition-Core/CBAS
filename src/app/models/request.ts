@@ -16,5 +16,7 @@ export class Request {
     public controlSuggestion: string;
     public taskCategory: string;
     public doi: string;
+    public model: string;
+    public subModel: string;
     public generalRequest: string;
 } 

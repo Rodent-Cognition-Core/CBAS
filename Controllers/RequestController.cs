@@ -117,5 +117,20 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult("Done!");
 
         }
+
+        [AllowAnonymous]
+        [HttpPost("AddPubSubModel")]
+        public IActionResult AddPubSubModel([FromBody] Request request)
+        {
+
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a request for a new Pubscreen sub-rodent model: <br /><br />";
+            strBody += $@"<b>Paper in question:</b> http://www.doi.org/{request.DOI.Trim()}<br />";
+            strBody += $@"<b>Rodent Model:</b> {request.Model}<br />";
+            strBody += $@"<b>New Sub-Model:</b> {request.SubModel} <br /><br />Thanks, <br /> MouseBytes";
+            HelperService.SendEmail("", "", "New Sub-Model Request for Pubscreen!", strBody);
+
+            return new JsonResult("Done!");
+
+        }
     }
 }
