@@ -78,6 +78,18 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    // Adding new Pubscreen Task Request
+    public addPubSubModel(request: Request): any {
+
+        const body: string = JSON.stringify(request);
+
+        return this.http
+            .post("/api/Request/AddPubSubModel", body, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+
+            });
+    }
+
     // Adding new General Request
     public addGeneral(request: Request): any {
 

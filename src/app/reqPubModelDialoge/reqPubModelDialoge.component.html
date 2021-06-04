@@ -1,0 +1,63 @@
+<div>
+    <h3 mat-dialog-title>Please fill the form to add new Pubscreen sub-rodent model:</h3>
+
+    <mat-dialog-content>
+        <br />
+
+        <!--<app-shared-experiment></app-shared-experiment>-->
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
+            <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
+            <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
+
+        </mat-form-field>
+
+
+        <!--Rodent Model or Task Category-->
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select Rodent Model" [formControl]="rodentModel" [(ngModel)]="reqRodentModel" required>
+                <mat-option *ngFor="let model of modelList" [value]="model.diseaseModel">
+                    <span matTooltip="{{model.diseaseModel}}">{{model.diseaseModel}}</span>
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="rodentModel.invalid">{{getErrorMessageModel()}}</mat-error>
+
+        </mat-form-field>
+
+        <br />
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="New Sub-rodent Model" [formControl]="newSubModel" [(ngModel)]="reqNewSubModel" required>
+            <mat-error *ngIf="newSubModel.invalid">{{getErrorMessageNewSubModel()}}</mat-error>
+
+        </mat-form-field>
+
+        <!--<mat-form-field class="full-width">
+        <textarea matInput placeholder="Enter your request" [formControl]="request" [(ngModel)]="reqRequestModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40" required></textarea>
+        <mat-error *ngIf="request.invalid">{{getErrorMessageRequest()}}</mat-error>
+
+    </mat-form-field>-->
+
+
+    </mat-dialog-content>
+    <br />
+
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+
+</div>

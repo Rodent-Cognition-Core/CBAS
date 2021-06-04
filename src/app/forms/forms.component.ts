@@ -8,6 +8,7 @@ import { ReqAgeDialogeComponent } from '../reqAgeDialoge/reqAgeDialoge.component
 import { ReqMouseLineDialogeComponent } from '../reqMouseLineDialoge/reqMouseLineDialoge.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { ReqPubTaskDialogeComponent } from '../reqPubTaskDialoge/reqPubTaskDialoge.component';
+import { ReqPubModelDialogeComponent } from '../reqPubModelDialoge/reqPubModelDialoge.component';
 
 @Component({
   selector: 'app-forms',
@@ -81,6 +82,18 @@ export class FormsComponent implements OnInit {
     openDialogPubTask(): void {
 
         let dialogref = this.dialogML.open(ReqPubTaskDialogeComponent, {
+            height: '600px',
+            width: '700px',
+            data: {}
+
+        });
+
+    }
+
+    //Function Definition to open a dialog for adding new Pubscreen task to the system
+    openDialogPubModel(): void {
+
+        let dialogref = this.dialogML.open(ReqPubModelDialogeComponent, {
             height: '600px',
             width: '700px',
             data: {}

@@ -189,6 +189,7 @@
                     <label style="color:#566573">Key Features:</label><br />
                     Note: if the relevant task or task category is not included in the dropdown lists, please fill the 'Adding new Pubscreen task' form <a href="http://localhost:4200/forms">here</a>.
                     <br />
+                    <span *ngIf="diseaseModel.length > 0">If the relevant sub-rodent model is not included in the dropdown list, please fill the 'Adding new Pubscreen sub-rodent model' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
 
                     <!--Cognitive Task or Task Category--------------------------------->
                     <mat-form-field style="width:15%;">
@@ -305,7 +306,7 @@
                         </mat-select>
 
                     </mat-form-field>
-                    
+
                     <!--BrainRegion----------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
