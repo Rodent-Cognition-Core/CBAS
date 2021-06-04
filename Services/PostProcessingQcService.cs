@@ -177,23 +177,23 @@ namespace AngularSPAWebAPI.Services
             error1 = GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Habituation_1'", "<b>Habituation_1</b>", 1, "!=", "");
             error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Habituation_2'", "<b>Habituation_2</b>", 3, "!=", "");
 
-            if ((TaskID != 11) || (TaskID != 13))
+            if ((TaskID != 11) && (TaskID != 13))
             {
                 error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Initial_Touch'", "<b>Initial_Touch</b>", 1, "<", "at least");
             }
 
-            if ((TaskID != 11) || (TaskID != 13))
+            if ((TaskID != 11) && (TaskID != 13))
             {
                 error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Touch'", "<b>Must_Touch</b>", 1, "<", "at least");
             }
 
 
-            if ((TaskID != 9) || (TaskID != 10) || (TaskID != 11) || (TaskID != 13) || (TaskID != 15))
+            if ((TaskID != 9) && (TaskID != 10) && (TaskID != 11) && (TaskID != 13) && (TaskID != 15))
             {
                 error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Must_Initiate'", "<b>Must_Initiate</b>", 1, "<", "at least");
             }
 
-            if ((TaskID != 9) || (TaskID != 11) || (TaskID != 13) || (TaskID != 15))
+            if ((TaskID != 9) && (TaskID != 11) && (TaskID != 13) && (TaskID != 15))
             {
                 error1 += GetScheduleCount_Error(expID, "SessionInfo.SessionName= 'Punish_Incorrect'", "<b>Punish_Incorrect</b>", 1, "<", "at least");
             }
