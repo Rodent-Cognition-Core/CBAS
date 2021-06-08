@@ -39,8 +39,9 @@ class PubscreenScrapyPipeline:
         today = datetime.date.today()
         #print(pubTitle)
         #print(f"INSERT INTO PubmedQueue (PubmedID, PubDate, QueueDate, DOI, Title) VALUES ({pubmedid}, '{pubdate}', '{today}', '{pubdoi}', '{pubTitle}')")
+        titleEscape = pubTitle.replace("'", "''")
         spider.cursor.execute(f"INSERT INTO PubmedQueue (PubmedID, PubDate, QueueDate, DOI, Title) VALUES "
-                              f"({pubmedid}, '{pubdate}', '{today}', '{pubdoi}', '{pubTitle}')")
+                              f"({pubmedid}, '{pubdate}', '{today}', '{pubdoi}', '{titleEscape}')")
         spider.conn.commit()
         spider.is_queue_updated = True
 
