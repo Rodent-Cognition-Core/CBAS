@@ -11,7 +11,7 @@ namespace AngularSPAWebAPI.Models
         public float? Results { get; set; }
         public float? Time { get; set; }
         public float? Duration { get; set; }
-        public int? Count { get; set; }
+        public float? Count { get; set; }
        
 
     }
