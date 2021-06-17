@@ -1889,90 +1889,94 @@ namespace AngularSPAWebAPI.Services
 
                 foreach (DataRow dr in dt.Rows)
                 {
-                    sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                               Inner join Task on Task.ID = Experiment.TaskID
-                               Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-
-                    // empty lstExperiment list
-                    lstExperiment.Clear();
-                    using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    if (String.IsNullOrEmpty(doi) == false)
                     {
-                        foreach (DataRow drExp in dtExp.Rows)
+                        sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                                   Inner join Task on Task.ID = Experiment.TaskID
+                                   Where DOI = '{doi}'";
+
+                        // empty lstExperiment list
+                        lstExperiment.Clear();
+                        using (DataTable dtExp = Dal.GetDataTable(sqlMB))
                         {
-
-                            lstExperiment.Add(new Experiment
+                            foreach (DataRow drExp in dtExp.Rows)
                             {
-                                ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                                ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                                StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                                TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                                DOI = Convert.ToString(drExp["DOI"].ToString()),
-                                Status = Convert.ToBoolean(drExp["Status"]),
-                                TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
 
-                            });
+                                lstExperiment.Add(new Experiment
+                                {
+                                    ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                                    ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                                    StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                                    TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                                    DOI = Convert.ToString(drExp["DOI"].ToString()),
+                                    Status = Convert.ToBoolean(drExp["Status"]),
+                                    TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                                });
+                            }
+
                         }
 
-                    }
-
-                    sqlCog = $"Select * From UserRepository Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-                    lstRepo.Clear();
-                    using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
-                    {
-                        foreach (DataRow drCog in dtCog.Rows)
+                        sqlCog = $"Select * From UserRepository Where DOI = '{doi}'";
+                        lstRepo.Clear();
+                        using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
                         {
-                            var cogbytesService = new CogbytesService();
-                            int repID = Int32.Parse(drCog["RepID"].ToString());
-                            lstRepo.Add(new Cogbytes
+                            foreach (DataRow drCog in dtCog.Rows)
                             {
-                                ID = repID,
-                                RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
-                                Title = Convert.ToString(drCog["Title"].ToString()),
-                                Date = Convert.ToString(drCog["Date"].ToString()),
-                                Keywords = Convert.ToString(drCog["Keywords"].ToString()),
-                                DOI = Convert.ToString(drCog["DOI"].ToString()),
-                                Link = Convert.ToString(drCog["Link"].ToString()),
-                                PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
-                                Description = Convert.ToString(drCog["Description"].ToString()),
-                                AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
-                                AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                                PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                            });
+                                var cogbytesService = new CogbytesService();
+                                int repID = Int32.Parse(drCog["RepID"].ToString());
+                                lstRepo.Add(new Cogbytes
+                                {
+                                    ID = repID,
+                                    RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                                    Title = Convert.ToString(drCog["Title"].ToString()),
+                                    Date = Convert.ToString(drCog["Date"].ToString()),
+                                    Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                                    DOI = Convert.ToString(drCog["DOI"].ToString()),
+                                    Link = Convert.ToString(drCog["Link"].ToString()),
+                                    PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                                    Description = Convert.ToString(drCog["Description"].ToString()),
+                                    AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                                    AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                                    PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                                });
+                            }
+
                         }
 
                     }
 
                     lstPubScreen.Add(new PubScreenSearch
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
-                        Year = Convert.ToString(dr["Year"].ToString()),
-                        Author = Convert.ToString(dr["Author"].ToString()),
-                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
-                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
-                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-                        SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
-                        CellType = Convert.ToString(dr["CellType"].ToString()),
-                        Method = Convert.ToString(dr["Method"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-                        Reference = Convert.ToString(dr["Reference"].ToString()),
-                        Experiment = new List<Experiment>(lstExperiment),
-                        Repo = new List<Cogbytes>(lstRepo)
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
+                            Title = Convert.ToString(dr["Title"].ToString()),
+                            Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                            DOI = Convert.ToString(dr["DOI"].ToString()),
+                            Year = Convert.ToString(dr["Year"].ToString()),
+                            Author = Convert.ToString(dr["Author"].ToString()),
+                            PaperType = Convert.ToString(dr["PaperType"].ToString()),
+                            Task = Convert.ToString(dr["Task"].ToString()),
+                            SubTask = Convert.ToString(dr["SubTask"].ToString()),
+                            Species = Convert.ToString(dr["Species"].ToString()),
+                            Sex = Convert.ToString(dr["Sex"].ToString()),
+                            Strain = Convert.ToString(dr["Strain"].ToString()),
+                            DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
+                            SubModel = Convert.ToString(dr["SubModel"].ToString()),
+                            BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
+                            SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
+                            CellType = Convert.ToString(dr["CellType"].ToString()),
+                            Method = Convert.ToString(dr["Method"].ToString()),
+                            NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
+                            Reference = Convert.ToString(dr["Reference"].ToString()),
+                            Experiment = new List<Experiment>(lstExperiment),
+                            Repo = new List<Cogbytes>(lstRepo)
 
-                    });
-                    //lstExperiment.Clear();
+                        });
+                        //lstExperiment.Clear();
+                    }
                 }
-
-            }
 
             // search MouseBytes database to see if the dataset exists********************************************
 
