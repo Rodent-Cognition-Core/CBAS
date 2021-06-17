@@ -108,11 +108,10 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation functions' names
     private aggregationFunction: any[] = [
 
-        //{ name: 'Detail' },
-
         { name: 'COUNT' },
         { name: 'MEAN' },
-        { name: 'STDEV' }
+        { name: 'STDEV' },
+        { name: 'SUM'}
 
     ];
 

@@ -831,16 +831,6 @@ namespace AngularSPAWebAPI.Services
                     dtFinalResult.Columns["Stimulus_Duration"].ColumnName = "Stimulus_Duration";
                 }
 
-                //DataColumnCollection columns = dtFinalResult.Columns;
-                //if (columns.Contains("Schedule_Name"))
-                //{
-                //    dtFinalResult.Columns.Remove("ScheduleName");
-                //}
-                //else
-                //{
-                //    dtFinalResult.Columns["ScheduleName"].ColumnName = "Schedule_Name";
-                //}
-
             }
             else
             {
@@ -1146,16 +1136,6 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-            ////Show imageDescription col if more than 2 iamges or 3 iamges selected 
-            //string ImageDescription = string.Empty;
-            //if(TaskID==3 || TaskID == 4)
-            //{
-            //    ImageDescription = ", ss.ImageDescription";
-            //}
-
-
-            // Creating subQuery 1 from 
-
             string subQuery1 = $@"Select Animal.UserAnimalID as AnimalID, Age.AgeInMonth as Age, Animal.Sex as Sex, Genotype.Genotype,
                                  Strain.Strain, SessionInfo.ExpID, SessionInfo.SessionID, Experiment.ExpName, ss.Housing, ss.LightCycle, CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser, SessionName,
                                  ss.SubExpID,
@@ -1214,9 +1194,6 @@ namespace AngularSPAWebAPI.Services
                     {
                         if ((aggNames[j]).Contains("MEAN")) { aggNames[j] = "AVG"; }
 
-                        //if ((aggNames[j]).Contains("STDEV")) { aggNames[j] = "STD"; }
-                        //if ((aggNames[j]).Contains("COUNT")) { aggNames[j] = "CNT"; }
-
                         string subString = $"[{aggNames[j]}_{markerInfoNames[i]}]";
 
                         FeaturesLst.Add(subString);
@@ -1226,7 +1203,6 @@ namespace AngularSPAWebAPI.Services
             }
 
             var strFeatureLst = string.Join(", ", FeaturesLst);
-            // var strConditionLst = string.Join(" OR ", ConditionLst);
 
             string strSessionIdDrop = "";
             string subQuery2 = "Select * From ( Select SessionID as S_ID ";
