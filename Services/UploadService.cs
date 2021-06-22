@@ -900,7 +900,7 @@ namespace AngularSPAWebAPI.Services
             string[] results_features = { "Normalized - End Summary - Touches to lit CS+", "Normalized - End Summary - Touches to lit CS-", "Normalized - End Summary - All CS+ touches", "Normalized - End Summary - All CS- touches" };
             string[] count_features = { "Normalized - End Summary - Tray Entries during first 5s CS+ lit - Tray Count 1st 5s CS+", "Normalized - End Summary - Tray Entries during last 5s CS+ lit - Tray Count last 5s CS+",
                                         "Normalized - End Summary - Tray Entries during first 5s CS- lit - Tray Count 1st 5s CS-", "Normalized - End Summary - Tray Entries during last 5s CS- lit - Tray Count last 5s CS-" };
-            string[] time_features = { "Normalized - End Summary - CS + Beam Breaking", "End Summary - CS - Beam Breaking", "Normalized - End Summary - CS + Image Presentation Beam Breaking", "Normalized - End Summary - CS - Image Presentation Beam Breaking",
+            string[] time_features = { "Normalized - End Summary - CS + Beam Breaking", "Normalized - End Summary - CS - Beam Breaking", "Normalized - End Summary - CS + Image Presentation Beam Breaking", "Normalized - End Summary - CS - Image Presentation Beam Breaking",
                                         "Normalized - End Summary - Tray Beam Breaking", "Normalized - End Summary - Tray CS + Beam Breaking", "Normalized - End Summary - Tray CS - Beam Breaking", "Normalized - End Summary - CS + Image Approach CS- Beam Breaking", "Normalized - End Summary - CS - Image Approach CS+ Beam Breaking" };
 
             foreach (KeyValuePair<string, float?> entry in AutoshapeDictFeatures)
@@ -1766,23 +1766,23 @@ namespace AngularSPAWebAPI.Services
                 
                 autoshapeDictFeatures.Add("Normalized - End Summary - Touches to lit CS+", End_Summary_Touches_lit_CS_plus/ number_plus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Touches to lit CS-", End_Summary_Touches_lit_CS_minus / number_minus_trials);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - All CS+ touches", End_Summary_All_CS_plus_touches / number_plus_trials);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - All CS- touches", End_Summary_All_CS_minus_touches / number_minus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - All CS+ touches", End_Summary_All_CS_plus_touches / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - All CS- touches", End_Summary_All_CS_minus_touches / number_minus_trials);
 
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray Entries during first 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_first_5s_CS_plus_lit / number_plus_trials);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray Entries during last 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_last_5s_CS_plus_lit / number_plus_trials);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray Entries during first 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_first_5s_CS_minus_lit / number_minus_trials);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray Entries during last 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_last_5s_CS_minus_lit / number_minus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during first 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_first_5s_CS_plus_lit / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_last_5s_CS_plus_lit / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during first 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_first_5s_CS_minus_lit / number_minus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_last_5s_CS_minus_lit / number_minus_trials);
 
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS + Beam Breaking", (End_Summary_CS_plus_Beam_Breaking / total_length) * 10 );
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS - Beam Breaking", (End_Summary_CS_minus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS + Image Presentation Beam Breaking", (End_Summary_CS_plus_Image_Presentation_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS - Image Presentation Beam Breaking", (End_Summary_CS_minus_Image_Presentation_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray Beam Breaking", (End_Summary_Tray_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray CS + Beam Breaking", (End_Summary_Tray_CS_plus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - Tray CS - Beam Breaking", (End_Summary_Tray_CS_minus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS + Image Approach CS- Beam Breaking", (End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normlaized - End Summary - CS - Image Approach CS+ Beam Breaking", (End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Beam Breaking", (End_Summary_CS_plus_Beam_Breaking / total_length) * 10 );
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Beam Breaking", (End_Summary_CS_minus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Presentation Beam Breaking", (End_Summary_CS_plus_Image_Presentation_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Presentation Beam Breaking", (End_Summary_CS_minus_Image_Presentation_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Beam Breaking", (End_Summary_Tray_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS + Beam Breaking", (End_Summary_Tray_CS_plus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS - Beam Breaking", (End_Summary_Tray_CS_minus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Approach CS- Beam Breaking", (End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Approach CS+ Beam Breaking", (End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking / total_length) * 10);
             }
 
             return autoshapeDictFeatures;
