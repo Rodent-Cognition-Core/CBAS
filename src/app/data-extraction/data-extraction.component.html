@@ -55,7 +55,7 @@
                                 </button>
                             </mat-option>
                             <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID">
-                                <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
+                                <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="exp.invalid">{{getErrorMessageExp()}}</mat-error>
@@ -121,14 +121,14 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--PISite Information-->
-                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
+                    <!--<mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
                         <mat-select [formControl]="PISite" placeholder="Select PI and institution" [(ngModel)]="selectedPiSiteValue" multiple>
                             <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.pusid">
                                 <span matTooltip="{{exp.piSiteUser}}">{{exp.piSiteUser}}</span>
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp;-->
 
                     <!--Show Intervention information if the selected experiments do have intervention-->
                     <mat-form-field *ngIf="InterventionList.length>0 && selectedExpvalue.length > 0 && selectedSubTaskValue!=null ">
