@@ -2187,7 +2187,8 @@ namespace AngularSPAWebAPI.Services
         public (int, int) GetPubCount()
         {
             int pubCount = (int)Dal.ExecScalarPub("Select Count(ID) From SearchPub");
-            int featureCount = (int)Dal.ExecScalarPub("Select Count(Task) From SearchPub");
+            int featureCount = (int)Dal.ExecScalarPub("Select Count (*) From SearchPub where  (species is not NUll or sex is not Null or Strain is not null " +
+                "or DiseaseModel is not null or BrainRegion is not null or CellType is not null or method is not null or Neurotransmitter is not null or task is not null)");
             return (pubCount, featureCount);
         }
 

@@ -3,3 +3,7 @@
 @import './styles/variables.scss';
 @import './styles/app-theme.scss';
 @import './styles/app.scss';
+
+.mat-tab-label {
+    font-weight: bold;
+}
