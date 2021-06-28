@@ -140,11 +140,19 @@ namespace AngularSPAWebAPI.Services
               $" SELECT @@IDENTITY AS 'Identity';";
 
             // Calling function to send an email to Admin that new Exp with public Status has been added to MouseBytes
+            if (experiment.Status)
+            {
+                string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just created the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
+                                    with public Status!  <br /><br />";
+                if (!String.IsNullOrEmpty(experiment.DOI))
+                {
+                    strBody += $@"DOI: {experiment.DOI} - please consider adding data to CONP <br /><br />";
+                }
+                strBody += $@"Thanks <br /> MouseBytes";
 
-            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just created the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
-                                    with public Status!  <br /><br /> Thanks <br /> MouseBytes";
-            HelperService.SendEmail("", "", "New Experiment with pubic status added!", strBody);
-
+                HelperService.SendEmail("", "", "New Experiment with pubic status added!", strBody);
+            }
+            
 
             return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }
@@ -168,7 +176,12 @@ namespace AngularSPAWebAPI.Services
             if (experiment.Status)
             {
                 string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just changed the status of the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
-                                    to public!  <br /><br /> Thanks <br /> MouseBytes";
+                                    to public!  <br /><br />";
+                if (!String.IsNullOrEmpty(experiment.DOI))
+                {
+                    strBody += $@"DOI: {experiment.DOI} - please consider adding data to CONP <br /><br />";
+                }
+                strBody += $@"Thanks <br /> MouseBytes";
                 HelperService.SendEmail("", "", "Status of experiment changed to public!", strBody);
             }
 
