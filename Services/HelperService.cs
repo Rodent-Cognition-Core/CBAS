@@ -210,6 +210,18 @@ namespace CBAS.Helpers
                     lstGenoID.Add(37);
                     break;
 
+                case 29:
+                    lstGenoID.Add(38);
+                    lstGenoID.Add(39);
+                    lstGenoID.Add(40);
+                    break;
+                case 30:
+                    lstGenoID.Add(39);
+                    break;
+                case 31:
+                    lstGenoID.Add(40);
+                    break;
+
             }
 
             return lstGenoID;

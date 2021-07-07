@@ -283,12 +283,12 @@ export class DataExtractionComponent implements OnInit {
                     }
                 case 98:
                 case 99:
-                    {
+                    { // Extinction
                         this.subSessionList = this.subSessionList.filter(x => (x.taskID === 14));
                         break;
                     }
                 case 104:
-                    {
+                    { // Long-sequence
                         this.subSessionList = this.subSessionList.filter(x => (x.taskID === 15));
                         break;
                     }
@@ -585,6 +585,23 @@ export class DataExtractionComponent implements OnInit {
             if (selected_StrainVal.indexOf(28) > -1) {
                 this.genoIDList.push(37);
                 
+            }
+
+            if (selected_StrainVal.indexOf(29) > -1) {
+                this.genoIDList.push(38);
+                this.genoIDList.push(39);
+                this.genoIDList.push(40);
+
+            }
+
+            if (selected_StrainVal.indexOf(30) > -1) {
+                this.genoIDList.push(39);
+
+            }
+
+            if (selected_StrainVal.indexOf(31) > -1) {
+                this.genoIDList.push(40);
+
             }
 
             //console.log(this.genoIDList);
