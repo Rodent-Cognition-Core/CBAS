@@ -1750,15 +1750,15 @@ namespace AngularSPAWebAPI.Services
             float? End_Summary_Tray_Entries_during_last_5s_CS_minus_lit = lstMD.Where(x => x.FeatureName == "End Summary - Tray Entries during last 5s CS- lit - Tray Count last 5s CS-").Select(x => x.Count).FirstOrDefault();
 
            // For features occurring more than once in the xml file, first apply sum then divide it to the cs+/cs- trials OR total length
-            float? End_Summary_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_CS_plus_Image_Presentation_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Image Presentation Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_CS_minus_Image_Presentation_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Image Presentation Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_Tray_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_Tray_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray CS + Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_Tray_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray CS - Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Image Approach CS- Beam Breaking").Sum(x => x.Duration)) / 1000000;
-            float? End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Image Approach CS+ Beam Breaking").Sum(x => x.Duration)) / 1000000;
+            float? End_Summary_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_CS_plus_Image_Presentation_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Image Presentation Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_CS_minus_Image_Presentation_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Image Presentation Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_Tray_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_Tray_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray CS + Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_Tray_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - Tray CS - Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS + Image Approach CS- Beam Breaking").Sum(x => x.Duration));
+            float? End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking = Convert.ToSingle(lstMD.Where(x => x.FeatureName == "End Summary - CS - Image Approach CS+ Beam Breaking").Sum(x => x.Duration));
 
             if (number_all_trials !=null && number_plus_trials !=null)
             {
@@ -1766,21 +1766,21 @@ namespace AngularSPAWebAPI.Services
                 
                 autoshapeDictFeatures.Add("Normalized - End Summary - Touches to lit CS+", End_Summary_Touches_lit_CS_plus/ number_plus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Touches to lit CS-", End_Summary_Touches_lit_CS_minus / number_minus_trials);
-                autoshapeDictFeatures.Add("Normalized - End Summary - All CS+ touches", End_Summary_All_CS_plus_touches / number_plus_trials);
-                autoshapeDictFeatures.Add("Normalized - End Summary - All CS- touches", End_Summary_All_CS_minus_touches / number_minus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - All CS+ touches", (End_Summary_All_CS_plus_touches / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - All CS- touches", (End_Summary_All_CS_minus_touches / total_length) * 10);
 
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during first 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_first_5s_CS_plus_lit / number_plus_trials);
-                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS+ lit - Tray Count 1st 5s CS+", End_Summary_Tray_Entries_during_last_5s_CS_plus_lit / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS+ lit - Tray Count last 5s CS+", End_Summary_Tray_Entries_during_last_5s_CS_plus_lit / number_plus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during first 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_first_5s_CS_minus_lit / number_minus_trials);
-                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS- lit - Tray Count 1st 5s CS-", End_Summary_Tray_Entries_during_last_5s_CS_minus_lit / number_minus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray Entries during last 5s CS- lit - Tray Count last 5s CS-", End_Summary_Tray_Entries_during_last_5s_CS_minus_lit / number_minus_trials);
 
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS + Beam Breaking", (End_Summary_CS_plus_Beam_Breaking / total_length) * 10 );
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS - Beam Breaking", (End_Summary_CS_minus_Beam_Breaking / total_length) * 10);
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Presentation Beam Breaking", (End_Summary_CS_plus_Image_Presentation_Beam_Breaking / total_length) * 10);
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Presentation Beam Breaking", (End_Summary_CS_minus_Image_Presentation_Beam_Breaking / total_length) * 10);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray Beam Breaking", (End_Summary_Tray_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS + Beam Breaking", (End_Summary_Tray_CS_plus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS - Beam Breaking", (End_Summary_Tray_CS_minus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS + Beam Breaking", End_Summary_Tray_CS_plus_Beam_Breaking / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS - Beam Breaking", End_Summary_Tray_CS_minus_Beam_Breaking / number_minus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Approach CS- Beam Breaking", (End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking / total_length) * 10);
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Approach CS+ Beam Breaking", (End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking / total_length) * 10);
             }
@@ -1938,7 +1938,8 @@ namespace AngularSPAWebAPI.Services
                              "End Summary - CS + Beam Breaking", "End Summary - CS - Beam Breaking", "End Summary - CS + Image Presentation Beam Breaking",
                              "End Summary - CS - Image Presentation Beam Breaking", "End Summary - Tray Beam Breaking", "End Summary - Tray CS + Beam Breaking",
                              "End Summary - Tray CS - Beam Breaking", "End Summary - CS + Image Approach CS- Beam Breaking",
-                             "End Summary - CS - Image Approach CS+ Beam Breaking", "End Summary - Total Trials"
+                             "End Summary - CS - Image Approach CS+ Beam Breaking", "End Summary - Total Trials", "Trial Analysis - CS+ Approach Latency", "Trial Analysis - CS- Approach Latency",
+                             "Trial Analysis - CS+ Touch Latency", "Trial Analysis - CS- Touch Latency"
                               };
 
                     lstFeatures.AddRange(input_autoshape);
