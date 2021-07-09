@@ -134,7 +134,7 @@ namespace AngularSPAWebAPI.Services
             string sql = $"insert into Experiment " +
               $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status, TaskBattery, MultipleSessions, RepoGuid) Values " +
               $"('{userID}', {experiment.PUSID}, '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
-              $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
+              $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql((HelperService.NullToString(experiment.TaskDescription)).Trim())}'," +
               $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}', {(experiment.MultipleSessions ? 1 : 0)}, " +
               $" {repoString} );" +
               $" SELECT @@IDENTITY AS 'Identity';";
