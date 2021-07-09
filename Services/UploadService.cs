@@ -1776,13 +1776,13 @@ namespace AngularSPAWebAPI.Services
 
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS + Beam Breaking", (End_Summary_CS_plus_Beam_Breaking / total_length) * 10 );
                 autoshapeDictFeatures.Add("Normalized - End Summary - CS - Beam Breaking", (End_Summary_CS_minus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Presentation Beam Breaking", (End_Summary_CS_plus_Image_Presentation_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Presentation Beam Breaking", (End_Summary_CS_minus_Image_Presentation_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Presentation Beam Breaking", End_Summary_CS_plus_Image_Presentation_Beam_Breaking / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Presentation Beam Breaking", End_Summary_CS_minus_Image_Presentation_Beam_Breaking / number_minus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray Beam Breaking", (End_Summary_Tray_Beam_Breaking / total_length) * 10);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS + Beam Breaking", End_Summary_Tray_CS_plus_Beam_Breaking / number_plus_trials);
                 autoshapeDictFeatures.Add("Normalized - End Summary - Tray CS - Beam Breaking", End_Summary_Tray_CS_minus_Beam_Breaking / number_minus_trials);
-                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Approach CS- Beam Breaking", (End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking / total_length) * 10);
-                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Approach CS+ Beam Breaking", (End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking / total_length) * 10);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS + Image Approach CS- Beam Breaking", End_Summary_CS_plus_Image_Approach_CS_minus_Beam_Breaking / number_plus_trials);
+                autoshapeDictFeatures.Add("Normalized - End Summary - CS - Image Approach CS+ Beam Breaking", End_Summary_CS_minus_Image_Approach_CS_plus_Beam_Breaking / number_minus_trials);
             }
 
             return autoshapeDictFeatures;
