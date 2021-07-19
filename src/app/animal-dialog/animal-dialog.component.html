@@ -23,7 +23,7 @@
         <mat-form-field class="full-width">
             <mat-select placeholder="Animal Strain" [formControl]="strain" required [(ngModel)]="strainModel" (selectionChange)="selectedStrainChange(strainModel)">
                 <mat-option *ngFor="let strain of StrainList" [value]="strain.id">
-                    {{strain.strain}}
+                    <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                 </mat-option>
             </mat-select>
             <mat-error *ngIf="strain.invalid">{{getErrorMessageStrain()}}</mat-error>
@@ -33,7 +33,7 @@
         <mat-form-field class="full-width">
             <mat-select placeholder="Animal Genotype" [formControl]="genotype" required [(ngModel)]="genotypeModel">
                 <mat-option *ngFor="let geno of GenoList" [value]="geno.id">
-                    {{geno.genotype}}, <a href="{{geno.link}}" target="_blank">Reference</a> {{geno.description}}
+                    <span matTooltip="{{geno.genotype}}">{{geno.genotype}}, <a href="{{geno.link}}" target="_blank">Reference</a> {{geno.description}}</span>
                 </mat-option>
             </mat-select>
             <mat-error *ngIf="genotype.invalid">{{getErrorMessageGenotype()}}</mat-error>
