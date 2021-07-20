@@ -1805,7 +1805,7 @@ namespace AngularSPAWebAPI.Services
                 case 6:
                     string[] preTraininglst = {"End Summary - Condition", "Reward Collection Latency", "End Summary - No. images", "End Summary - Corrects",
                                                 "Correct touch latency", "Correct Reward Collection", "End Summary - Trials Completed", "End Summary - No Correction Trials",
-                                                "End Summary - % Correct"};
+                                                "End Summary - % Correct", "Trial Analysis - Reward Collection Latency"};
                     lstFeatures.AddRange(preTraininglst);
                     break;
                 //***************5-choice
