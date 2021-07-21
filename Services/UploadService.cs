@@ -1509,9 +1509,10 @@ namespace AngularSPAWebAPI.Services
             List<double?> IQRVectorCheck(List<double?> dataVec, double IQRRange = IQRRANGE)
             {
                 dataVec.RemoveAll(x => x == null);
-                double dataIQR = Statistics.InterquartileRange(dataVec) * IQRRange;
-                double data25 = Statistics.Quantile(dataVec, 0.25);
-                double data75 = Statistics.Quantile(dataVec, 0.75);
+                double data25 = Statistics.QuantileCustom(dataVec, 0.25, QuantileDefinition.R7);
+                double data75 = Statistics.QuantileCustom(dataVec, 0.75, QuantileDefinition.R7);
+                // double dataIQR = Statistics.InterquartileRange(dataVec) * IQRRange;
+                double dataIQR = (data75 - data25) * IQRRange;
                 dataVec.RemoveAll(x => x < (data25 - dataIQR));
                 dataVec.RemoveAll(x => x > (data75 + dataIQR));
                 return dataVec;
