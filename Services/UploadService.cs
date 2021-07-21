@@ -1600,7 +1600,8 @@ namespace AngularSPAWebAPI.Services
                                 if (lstMistake[i] == 1)
                                 {
                                     sessionMistake[distState]++;
-                                    sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
+                                    //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
+                                    sessionIncorlat[distState].Add((double?)lstIncorLatency[incorlatMod++] / (double?)1000000);
                                     corrActive = true;
                                 }
                                 else
@@ -1613,8 +1614,10 @@ namespace AngularSPAWebAPI.Services
                                 if (lstHits[i] == 1)
                                 {
                                     sessionHit[distState]++;
-                                    sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
-                                    sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
+                                    //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
+                                    //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
+                                    sessionCorlat[distState].Add((double?)lstCorrectLatency[corlatMod++] / (double?)1000000);
+                                    sessionRewlat[distState].Add((double?)lstRewatdLatency[rewlatMod++] / (double?)1000000);
                                 }
                                 else
                                 {
@@ -1671,9 +1674,9 @@ namespace AngularSPAWebAPI.Services
                 cptFeatureDict.Add(distState[i] + "False Alarm Rate", (float?)falseAlarmRate[i]);
                 cptFeatureDict.Add(distState[i] + "Sensitivity (d)", (float?)sensitivity[i]);
                 cptFeatureDict.Add(distState[i] + "Response Bias", (float?)responseBias[i]);
-                cptFeatureDict.Add(distState[i] + "Hit Latency", (float?)hitLatency[i] / 1000000);
-                cptFeatureDict.Add(distState[i] + "False Alarm Latency", (float?)falseAlarmLatency[i] / 1000000);
-                cptFeatureDict.Add(distState[i] + "Reward Latency", (float?)rewardLatency[i] / 1000000);
+                cptFeatureDict.Add(distState[i] + "Hit Latency", (float?)hitLatency[i]); // / 1000000);
+                cptFeatureDict.Add(distState[i] + "False Alarm Latency", (float?)falseAlarmLatency[i]); // / 1000000);
+                cptFeatureDict.Add(distState[i] + "Reward Latency", (float?)rewardLatency[i]); // / 10000000);
             }
 
             return cptFeatureDict;
