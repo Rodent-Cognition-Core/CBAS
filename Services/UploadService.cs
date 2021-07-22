@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using MathNet;
 using MathNet.Numerics.Distributions;
+using MathNet.Numerics.Statistics;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -488,6 +489,12 @@ namespace AngularSPAWebAPI.Services
             List<float?> lstRewatdLatency = new List<float?>();
             List<float?> lstIncorLatency = new List<float?>();
 
+            List<int?> lstCurrentImage = new List<int?>();
+            List<int?> lstCTCorrej = new List<int?>();
+            List<int?> lstCTMistakes = new List<int?>();
+            List<float?> lstDistractor = new List<float?>();
+            List<int?> lstITI = new List<int?>();
+
             Dictionary<string, float?> cptDictDistractorFeatures = new Dictionary<string, float?>();  // for sessionIDUpload==42 (cpt distractor)
             Dictionary<string, int?> SequenceDictFeatures = new Dictionary<string, int?>(); //  Extra features need to be calculated for sequence task
             Dictionary<string, float?> AutoshapeDictFeatures = new Dictionary<string, float?>(); // Extra features need to be calculated for autoshape task
@@ -654,6 +661,60 @@ namespace AngularSPAWebAPI.Services
                                 lstIncorLatency.Add((float)result);
                                 break;
 
+                            case "trial by trial anal - Current image":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstCurrentImage.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Correction Trial Correct Rejections":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstCTCorrej.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Correction Trial Mistakes":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstCTMistakes.Add((int)result);
+                                break;
+
+                            case "trial by trial anal - Distractor Time":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstDistractor.Add(result);
+                                break;
+
+                            case "trial by trial anal - ITI":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = 0; }
+
+                                lstITI.Add((int)result);
+                                break;
                         }  // End of switch case
 
 
@@ -811,6 +872,12 @@ namespace AngularSPAWebAPI.Services
             if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39)  // cpt with different SDs
             {
                 cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, sessionIDUpload);
+                // If distractor times are present, additional features must be added (stage 4 only for now)
+                if (sessionIDUpload == 39 && lstDistractor.Any())
+                {
+                    cptFeatureDict = GetDictCPTFeaturesDistractorAnal(cptFeatureDict, lstCurrentImage, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCTCorrej, lstCTMistakes,
+                        lstCorrectLatency, lstIncorLatency, lstRewatdLatency, lstDistractor, lstITI);
+                }
             }
             else if (sessionIDUpload == 41) // cpt with different contrast levels
             {
@@ -828,10 +895,12 @@ namespace AngularSPAWebAPI.Services
             float? durationVal = null;
             foreach (KeyValuePair<string, float?> entry in cptFeatureDict)
             {
-                if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency"))
+                if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency")
+                    || entry.Key.Contains("Hit Latency") || entry.Key.Contains("False Alarm Latency") || entry.Key.Contains("Reward Latency"))
                 {
                     sourceType = 3;
                     durationVal = entry.Value;
+                    resultVal = null;
 
                 }
                 else
@@ -1467,6 +1536,197 @@ namespace AngularSPAWebAPI.Services
             return cptFeatureDict;
         }
 
+        enum DistractorState
+        {
+            NO_DISTRACTOR,
+            DISTRACTOR_PRESENTATION,
+            DISTRACTOR_0_5SEC_DELAY,
+            DISTRACTOR_1SEC_DELAY
+        }
+
+        private Dictionary<string, float?> GetDictCPTFeaturesDistractorAnal(Dictionary<string, float?> cptFeatureDict, List<int?> lstCurrentImage,
+                        List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake, List<int?> lstcCorrectRejection, List<int?> lstCTCorrej,
+                        List<int?> lstCTMistakes, List<float?> lstCorrectLatency, List<float?> lstIncorLatency, List<float?> lstRewatdLatency,
+                        List<float?> lstDistractor, List<int?> lstITI)
+        {
+            const double IQRRANGE = 1.5;
+            List<double?> IQRVectorCheck(List<double?> dataVec, double IQRRange = IQRRANGE)
+            {
+                dataVec.RemoveAll(x => x == null);
+                double data25 = Statistics.QuantileCustom(dataVec, 0.25, QuantileDefinition.R7);
+                double data75 = Statistics.QuantileCustom(dataVec, 0.75, QuantileDefinition.R7);
+                // double dataIQR = Statistics.InterquartileRange(dataVec) * IQRRange;
+                double dataIQR = (data75 - data25) * IQRRange;
+                dataVec.RemoveAll(x => x < (data25 - dataIQR));
+                dataVec.RemoveAll(x => x > (data75 + dataIQR));
+                return dataVec;
+            }
+
+            int[] sessionHit = { 0, 0, 0, 0 };
+            int[] sessionMiss = { 0, 0, 0, 0 };
+            int[] sessionMistake = { 0, 0, 0, 0 };
+            int[] sessionCorrej = { 0, 0, 0, 0 };
+
+            List<double?>[] sessionCorlat = new List<double?>[4];
+            List<double?>[] sessionIncorlat = new List<double?>[4];
+            List<double?>[] sessionRewlat = new List<double?>[4];
+            for (int i = 0; i < 4; i++)
+            {
+                sessionCorlat[i] = new List<double?>();
+                sessionIncorlat[i] = new List<double?>();
+                sessionRewlat[i] = new List<double?>();
+            }
+
+            int corlatMod = 0, incorlatMod = 0, rewlatMod = 0, preHit = 0;
+            bool corrActive = false, preHitActive = true;
+
+            int numTrials = lstCurrentImage.Count();
+
+            for (int i = 0; i < numTrials; i++)
+            {
+                if (lstDistractor[i] != null)
+                {
+                    if (!corrActive)
+                    {
+                        int distState = -1;
+                        if (lstITI[i] == 3)
+                        {
+                            switch (lstDistractor[i])
+                            {
+                                case 0:
+                                    distState = (int)DistractorState.NO_DISTRACTOR;
+                                    break;
+
+                                case 2:
+                                    distState = (int)DistractorState.DISTRACTOR_1SEC_DELAY;
+                                    break;
+
+                                case 2.5f:
+                                    distState = (int)DistractorState.DISTRACTOR_0_5SEC_DELAY;
+                                    break;
+
+                                case 3:
+                                    distState = (int)DistractorState.DISTRACTOR_PRESENTATION;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (lstDistractor[i])
+                            {
+                                case 0:
+                                    distState = (int)DistractorState.NO_DISTRACTOR;
+                                    break;
+
+                                case 1:
+                                    distState = (int)DistractorState.DISTRACTOR_1SEC_DELAY;
+                                    break;
+
+                                case 1.5f:
+                                    distState = (int)DistractorState.DISTRACTOR_0_5SEC_DELAY;
+                                    break;
+
+                                case 2:
+                                    distState = (int)DistractorState.DISTRACTOR_PRESENTATION;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+
+                        if (distState != -1)
+                        {
+                            if (lstCurrentImage[i] != 2)
+                            {
+                                if (lstMistake[i] == 1)
+                                {
+                                    sessionMistake[distState]++;
+                                    //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
+                                    sessionIncorlat[distState].Add((double?)lstIncorLatency[incorlatMod++] / (double?)1000000);
+                                    corrActive = true;
+                                }
+                                else
+                                {
+                                    sessionCorrej[distState]++;
+                                }
+                            }
+                            else
+                            {
+                                if (lstHits[i] == 1)
+                                {
+                                    sessionHit[distState]++;
+                                    //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
+                                    //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
+                                    sessionCorlat[distState].Add((double?)lstCorrectLatency[corlatMod++] / (double?)1000000);
+                                    sessionRewlat[distState].Add((double?)lstRewatdLatency[rewlatMod++] / (double?)1000000);
+                                }
+                                else
+                                {
+                                    sessionMiss[distState]++;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (lstCTMistakes[i] != 1)
+                        {
+                            corrActive = false;
+                        }
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                sessionCorlat[i] = IQRVectorCheck(sessionCorlat[i]);
+                sessionIncorlat[i] = IQRVectorCheck(sessionIncorlat[i]);
+                sessionRewlat[i] = IQRVectorCheck(sessionRewlat[i]);
+            }
+
+            double[] hitRate = new double[4];
+            double[] falseAlarmRate = new double[4];
+            double[] sensitivity = new double[4];
+            double[] responseBias = new double[4];
+            double?[] hitLatency = new double?[4];
+            double?[] falseAlarmLatency = new double?[4];
+            double?[] rewardLatency = new double?[4];
+
+            for (int i = 0; i < 4; i++)
+            {
+                string[] distState = { "No Distractor ", "Distrator Presentation ", "Distractor 0.5s Delay ", "Distractor 1s Delay " };
+
+                hitRate[i] = (double)sessionHit[i] / (double)(sessionHit[i] + sessionMiss[i]);
+                falseAlarmRate[i] = (double)sessionMistake[i] / (double)(sessionMistake[i] + sessionCorrej[i]);
+                double hrz = Normal.InvCDF(0, 1, hitRate[i]);
+                double farz = Normal.InvCDF(0, 1, falseAlarmRate[i]);
+                sensitivity[i] = hrz - farz;
+                responseBias[i] = 0.5 * (hrz + farz);
+                hitLatency[i] = sessionCorlat[i].Average();
+                falseAlarmLatency[i] = sessionIncorlat[i].Average();
+                rewardLatency[i] = sessionRewlat[i].Average();
+
+                cptFeatureDict.Add(distState[i] + "Hit", sessionHit[i]);
+                cptFeatureDict.Add(distState[i] + "Miss", sessionMiss[i]);
+                cptFeatureDict.Add(distState[i] + "Mistake", sessionMistake[i]);
+                cptFeatureDict.Add(distState[i] + "Correct Rejection", sessionCorrej[i]);
+                cptFeatureDict.Add(distState[i] + "Hit Rate", (float?)hitRate[i]);
+                cptFeatureDict.Add(distState[i] + "False Alarm Rate", (float?)falseAlarmRate[i]);
+                cptFeatureDict.Add(distState[i] + "Sensitivity (d)", (float?)sensitivity[i]);
+                cptFeatureDict.Add(distState[i] + "Response Bias", (float?)responseBias[i]);
+                cptFeatureDict.Add(distState[i] + "Hit Latency", (float?)hitLatency[i]); // / 1000000);
+                cptFeatureDict.Add(distState[i] + "False Alarm Latency", (float?)falseAlarmLatency[i]); // / 1000000);
+                cptFeatureDict.Add(distState[i] + "Reward Latency", (float?)rewardLatency[i]); // / 10000000);
+            }
+
+            return cptFeatureDict;
+        }
+
         // Function definition to extract calculated metrics for cpt task when the contrast level is different
         private Dictionary<string, float?> GetDictCPTFeatures_contrastLevel(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
                         List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency)
@@ -1907,7 +2167,8 @@ namespace AngularSPAWebAPI.Services
                                        "Incorrect Choice Latency non distractor trial", "Incorrect Choice Latency congruent trial", "Incorrect Choice Latency incongruent trial",
                                        "End Summary - Centre ITI Touches", "End Summary - S+ Distractor touched during congruent trial -  Counter",
                                        "End Summary - S- Distractor touched during congruent trial -  Counter", "End Summary - S+ Distractor touched during incongruent trial -  Counter",
-                                       "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast", "End Summary - Stimulus Duration"};
+                                       "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast", "End Summary - Stimulus Duration",
+                                       "trial by trial anal - Correction Trial Correct Rejections", "trial by trial anal - Correction Trial Mistakes", "trial by trial anal - Distractor Time"};
 
                     lstFeatures.AddRange(input_CPT);
                     break;
