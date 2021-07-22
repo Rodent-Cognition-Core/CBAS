@@ -518,7 +518,7 @@ namespace AngularSPAWebAPI.Services
                     if (TaskID == 11) // Task is iCPT
                     {
 
-                        if ((Attribute.Equals("End Summary - Stimulus Duration")) && (sessionIDUpload == 38 || sessionIDUpload == 39))
+                        if ((Attribute.Equals("End Summary - Stimulus Duration")) && (sessionIDUpload == 38 || sessionIDUpload == 39 || sessionIDUpload == 53))
                         {
 
                             if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
@@ -869,11 +869,11 @@ namespace AngularSPAWebAPI.Services
 
             // Function call to get the dictionary with all the metrics calculated at each SD
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();  // to save all the metrics calculated at each SD, or contrast level or distractor
-            if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39)  // cpt with different SDs
+            if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39 || sessionIDUpload == 53)  // cpt with different SDs
             {
                 cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, sessionIDUpload);
                 // If distractor times are present, additional features must be added (stage 4 only for now)
-                if (sessionIDUpload == 39 && lstDistractor.Any())
+                if (sessionIDUpload == 53 && lstDistractor.Any())
                 {
                     cptFeatureDict = GetDictCPTFeaturesDistractorAnal(cptFeatureDict, lstCurrentImage, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCTCorrej, lstCTMistakes,
                         lstCorrectLatency, lstIncorLatency, lstRewatdLatency, lstDistractor, lstITI);
@@ -1318,7 +1318,7 @@ namespace AngularSPAWebAPI.Services
             var distSDValues = lstSD.Distinct();
 
             // if the file belongs to stage 3 and 4 for cpt task
-            if (uploadsessionID == 38 || uploadsessionID == 39)
+            if (uploadsessionID == 38 || uploadsessionID == 39 || uploadsessionID == 53)
             {
                 float avgCorrectLatency = lstCorrectLatency.Average(x => Convert.ToSingle(x));
                 float avgRewardLatency = lstRewatdLatency.Average(x => Convert.ToSingle(x));
@@ -1332,9 +1332,25 @@ namespace AngularSPAWebAPI.Services
                 var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
                 var sumMistake = lstMistake.Sum(x => Convert.ToInt32(x));
                 var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
+
                 // Calculated features
-                float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
-                float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                float hitRate, falseAlarmRate;
+                if (sumMiss == 0)
+                {
+                    hitRate = 1.0f - 1.0f / (2.0f * sumHit);
+                }
+                else
+                {
+                    hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                }
+                if (sumMistake == 0)
+                {
+                    falseAlarmRate = 1.0f / (2.0f * sumCorrectRejection);
+                }
+                else
+                {
+                    falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                }
 
                 float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
                 discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
@@ -1493,9 +1509,25 @@ namespace AngularSPAWebAPI.Services
                         var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
                         var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
                         var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+
                         // Calculated features
-                        float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
-                        float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                        float hitRate, falseAlarmRate;
+                        if (sumMiss == 0)
+                        {
+                            hitRate = 1.0f - 1.0f / (2.0f * sumHit);
+                        }
+                        else
+                        {
+                            hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                        }
+                        if (sumMistake == 0)
+                        {
+                            falseAlarmRate = 1.0f / (2.0f * sumCorrectRejection);
+                        }
+                        else
+                        {
+                            falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                        };
 
                         float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
                         discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
@@ -1646,7 +1678,7 @@ namespace AngularSPAWebAPI.Services
                                 {
                                     sessionMistake[distState]++;
                                     //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
-                                    sessionIncorlat[distState].Add((double?)lstIncorLatency[incorlatMod++] / (double?)1000000);
+                                    sessionIncorlat[distState].Add((double?)lstIncorLatency[incorlatMod++] / 1000000.0);
                                     corrActive = true;
                                 }
                                 else
@@ -1661,8 +1693,8 @@ namespace AngularSPAWebAPI.Services
                                     sessionHit[distState]++;
                                     //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
                                     //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
-                                    sessionCorlat[distState].Add((double?)lstCorrectLatency[corlatMod++] / (double?)1000000);
-                                    sessionRewlat[distState].Add((double?)lstRewatdLatency[rewlatMod++] / (double?)1000000);
+                                    sessionCorlat[distState].Add((double?)lstCorrectLatency[corlatMod++] / 1000000.0);
+                                    sessionRewlat[distState].Add((double?)lstRewatdLatency[rewlatMod++] / 1000000.0);
                                 }
                                 else
                                 {
@@ -1701,8 +1733,25 @@ namespace AngularSPAWebAPI.Services
             {
                 string[] distState = { "No Distractor ", "Distrator Presentation ", "Distractor 0.5s Delay ", "Distractor 1s Delay " };
 
-                hitRate[i] = (double)sessionHit[i] / (double)(sessionHit[i] + sessionMiss[i]);
-                falseAlarmRate[i] = (double)sessionMistake[i] / (double)(sessionMistake[i] + sessionCorrej[i]);
+                // Calculated features
+                if (sessionMiss[i] == 0)
+                {
+                    hitRate[i] = 1.0 - 1.0 / (2.0 * sessionHit[i]);
+                }
+                else
+                {
+                    hitRate[i] = (double)sessionHit[i] / (double)(sessionHit[i] + sessionMiss[i]);
+                }
+                if (sessionMistake[i] == 0)
+                {
+                    falseAlarmRate[i] = 1.0 / (2.0 * sessionCorrej[i]);
+                }
+                else
+                {
+                    falseAlarmRate[i] = (double)sessionMistake[i] / (double)(sessionMistake[i] + sessionCorrej[i]);
+                };
+                //hitRate[i] = (double)sessionHit[i] / (double)(sessionHit[i] + sessionMiss[i]);
+                //falseAlarmRate[i] = (double)sessionMistake[i] / (double)(sessionMistake[i] + sessionCorrej[i]);
                 double hrz = Normal.InvCDF(0, 1, hitRate[i]);
                 double farz = Normal.InvCDF(0, 1, falseAlarmRate[i]);
                 sensitivity[i] = hrz - farz;
@@ -1883,9 +1932,25 @@ namespace AngularSPAWebAPI.Services
                     var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
                     var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
                     var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+
                     // Calculated features
-                    float hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
-                    float falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                    float hitRate, falseAlarmRate;
+                    if (sumMiss == 0)
+                    {
+                        hitRate = 1.0f - 1.0f / (2.0f * sumHit);
+                    }
+                    else
+                    {
+                        hitRate = (float)(sumHit) / (float)(sumHit + sumMiss);
+                    }
+                    if (sumMistake == 0)
+                    {
+                        falseAlarmRate = 1.0f / (2.0f * sumCorrectRejection);
+                    }
+                    else
+                    {
+                        falseAlarmRate = (float)sumMistake / (float)(sumMistake + sumCorrectRejection);
+                    };
 
                     float? discriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, hitRate) - Normal.InvCDF(0d, 1d, falseAlarmRate));
                     discriminationSensitivity = double.IsInfinity((double)discriminationSensitivity) ? null : discriminationSensitivity;
@@ -1935,8 +2000,26 @@ namespace AngularSPAWebAPI.Services
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
 
             // non-distractor trials
-            float? nonDistHitRate = cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"]);
-            float? nonDisFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
+            float? nonDistHitRate, nonDisFalseALarmRate;
+            if (cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"] == 0)
+            {
+                nonDistHitRate = 1.0f - 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"]);
+            }
+            else
+            {
+                nonDistHitRate = cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"]);
+            }
+            if (cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] == 0)
+            {
+                nonDisFalseALarmRate = 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
+            }
+            else
+            {
+                nonDisFalseALarmRate = (float)cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] / (float)(cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
+            };
+
+            //float? nonDistHitRate = cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during non-distractor trials - Generic Counter"]);
+            //float? nonDisFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during non-distractor trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during non-distractor trials - Count #1"]);
 
             float? nonDisdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)nonDistHitRate) - Normal.InvCDF(0d, 1d, (float)nonDisFalseALarmRate));
             nonDisdiscriminationSensitivity = double.IsInfinity((double)nonDisdiscriminationSensitivity) ? null : nonDisdiscriminationSensitivity;
@@ -1955,8 +2038,25 @@ namespace AngularSPAWebAPI.Services
             cptFeatureDict.Add(nonDistTitleResponseBias, (float)nonDistresponseBias);
 
             // congruent trials
-            float? CongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"]);
-            float? CongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
+            float? CongDistHitRate, CongFalseALarmRate;
+            if (cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"] == 0)
+            {
+                CongDistHitRate = 1.0f - 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"]);
+            }
+            else
+            {
+                CongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"]);
+            }
+            if (cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] == 0)
+            {
+                CongFalseALarmRate = 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
+            }
+            else
+            {
+                CongFalseALarmRate = (float)cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] / (float)(cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
+            };
+            //float? CongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during congruent trials - Generic Counter"]);
+            //float? CongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during congruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during congruent trials - Count #1"]);
             float? CongdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)CongDistHitRate) - Normal.InvCDF(0d, 1d, (float)CongFalseALarmRate));
             float? CongresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)CongDistHitRate) + Normal.InvCDF(0d, 1d, (float)CongFalseALarmRate)));
 
@@ -1971,8 +2071,25 @@ namespace AngularSPAWebAPI.Services
             cptFeatureDict.Add(CongTitleResponseBias, (float)CongresponseBias);
 
             // incongruent trials
-            float? inCongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"]);
-            float? inCongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
+            float? inCongDistHitRate, inCongFalseALarmRate;
+            if (cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"] == 0)
+            {
+                inCongDistHitRate = 1.0f - 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"]);
+            }
+            else
+            {
+                inCongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"]);
+            }
+            if (cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] == 0)
+            {
+                inCongFalseALarmRate = 1.0f / (2.0f * cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
+            }
+            else
+            {
+                inCongFalseALarmRate = (float)cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] / (float)(cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
+            };
+            //float? inCongDistHitRate = cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Hits during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Misses during incongruent trials - Generic Counter"]);
+            //float? inCongFalseALarmRate = cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] / (cptDictDistractorFeatures["End Summary - Mistakes during incongruent trials - Count #1"] + cptDictDistractorFeatures["End Summary - Correct Rejections during incongruent trials - Count #1"]);
             float? inCongdiscriminationSensitivity = (float)(Normal.InvCDF(0d, 1d, (float)inCongDistHitRate) - Normal.InvCDF(0d, 1d, (float)inCongFalseALarmRate));
             float? inCongresponseBias = (float)(-0.5 * (Normal.InvCDF(0d, 1d, (float)inCongDistHitRate) + Normal.InvCDF(0d, 1d, (float)inCongFalseALarmRate)));
 
@@ -2143,6 +2260,7 @@ namespace AngularSPAWebAPI.Services
                 case 41:
                 case 42:
                 case 43:
+                case 53: // NEW STAGE 4 FOR AUDIO DISTRACTOR!
                 case 44:
                     string[] input_CPT = { "End Summary - Schedule length", "End Summary - No of non correction trials", "End Summary - Hits",
                                        "End Summary - Misses", "End Summary - Mistakes", "End Summary - Correct Rejections", "End Summary - Correct Image",
