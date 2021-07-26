@@ -820,6 +820,7 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication_SubRegion Where PublicationID = {pubId};
                              Delete From Publication_Task Where PublicationID = {pubId};
                              Delete From Publication_SubTask Where PublicationID = {pubId};
+                             Delete From EditLog Where PubID = {pubId};
                              Delete From Publication Where id = { pubId};";
 
             Dal.ExecuteNonQueryPub(sql);
