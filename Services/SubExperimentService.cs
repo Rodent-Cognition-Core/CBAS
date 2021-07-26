@@ -187,8 +187,10 @@ namespace AngularSPAWebAPI.Services
                          Delete From SessionInfo_Dynamic Where SessionID in
                          (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
 
-                         Delete From rbt_data_cached Where SessionID in
-                         (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                        Delete From rbt_data_cached_1 Where SessionID in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
+                        Delete From rbt_data_cached_2 Where SessionId2 in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
+                        Delete From rbt_data_cached_3 Where SessionId3 in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
+                        Delete From rbt_data_cached_4 Where SessionId4 in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
 
                         Delete From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
                         Delete From Upload Where SubExpID = {subExpID};
