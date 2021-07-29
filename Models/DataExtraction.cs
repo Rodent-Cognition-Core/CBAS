@@ -13,7 +13,7 @@ namespace AngularSPAWebAPI.Models
         public string SubTaskName { get; set; }
         public string[] SessionInfoNames { get; set; }
         public string[] MarkerInfoNames { get; set; }
-        public string[] AggNames { get; set; }
+        public string AggNames { get; set; }
         public int[] PiSiteIDS { get; set; }
         public int[] AgeVals { get; set; }
         public string[] SexVals { get; set; }

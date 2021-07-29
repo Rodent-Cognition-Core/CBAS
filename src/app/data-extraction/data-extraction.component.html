@@ -111,7 +111,7 @@
 
                     <!--List of Aggregation Function-->
                     <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null && !isTrialByTrial">
-                        <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function" [(ngModel)]="selectedAggFunction" multiple>
+                        <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function" [(ngModel)]="selectedAggFunction">
                             <mat-option *ngFor="let agg of aggregationFunction" [value]="agg.name">
                                 {{agg.name}}
                             </mat-option>
