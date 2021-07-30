@@ -764,7 +764,7 @@ namespace AngularSPAWebAPI.Services
                 linkModel.AnimalSexCsv, linkModel.AnimalGenotypeCsv, linkModel.AnimalStrainCsv,
                 linkModel.PiSiteIdsCsv, linkModel.SessionInfoNamesCsv,
                 linkModel.MarkerInfoNamesCsv.Split('§'),
-                linkModel.AggNamesCsv.Split('§'), linkModel.IsTrialByTrials, linkModel.SubExpIDcsv, linkModel.SessionNameCsv);
+                linkModel.AggNamesCsv, linkModel.IsTrialByTrials, linkModel.SubExpIDcsv, linkModel.SessionNameCsv);
 
             var dtSummaryResult = Dal.GetDataTable(sql);
             DataTable dtFinalResult = new DataTable();
@@ -978,7 +978,7 @@ namespace AngularSPAWebAPI.Services
             string ExpIDcsv = String.Join(",", data_extraction.ExpIDs.Select(x => x.ToString()).ToArray());
             int SubTaskID = data_extraction.SubTaskID;
             string[] MarkerInfoNames = data_extraction.MarkerInfoNames;
-            string[] AggNames = data_extraction.AggNames;
+            string AggNames = data_extraction.AggNames;
             string AnimalAgeCsv = "";
             string AnimalSexCsv = "";
             string AnimalGenotypeCsv = "";
@@ -1048,7 +1048,8 @@ namespace AngularSPAWebAPI.Services
                 PiSiteIdsCsv = PiSiteIDsCsv,
                 SessionInfoNamesCsv = SessionInfoNamesCsv,
                 MarkerInfoNamesCsv = MarkerInfoNames.Length > 0 ? string.Join("§", MarkerInfoNames) : "", // § is separator char
-                AggNamesCsv = AggNames.Length > 0 ? string.Join("§", AggNames) : "",
+                //AggNamesCsv = AggNames.Length > 0 ? string.Join("§", AggNames) : "",
+                AggNamesCsv = AggNames,
                 IsTrialByTrials = data_extraction.IsTrialByTrials,
                 SubExpIDcsv = SubExpIDcsv,
                 SessionNameCsv = SessionNamesCsv,
@@ -1066,7 +1067,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition for dataextractionQuery
         public string DataExtractionQuery(int TaskID, int SpeciesID, int subTaskId, string expIDcsv, string animalAgeCsv, string animalSexCsv,
             string animalGenotypeCsv, string animalStrainCsv, string piSiteIdsCsv, string sessionInfoNamesCsv, string[] markerInfoNames,
-            string[] aggNames, bool isTrialByTrial, string SubExpIDcsv, string SessionNamesCsv)
+            string aggNames, bool isTrialByTrial, string SubExpIDcsv, string SessionNamesCsv)
         {
             string sql = "";
             string AgeCondition = "";
@@ -1187,15 +1188,15 @@ namespace AngularSPAWebAPI.Services
             if (!isTrialByTrial)
 
             {
+                string[] aggNamesList = aggNames.Split('§');
 
                 for (int i = 0; i < markerInfoNames.Length; i++)
                 {
-                    for (int j = 0; j < aggNames.Length; j++)
+
+                    for (int j = 0; j < aggNamesList.Length; j++)
                     {
-                        if ((aggNames[j]).Contains("MEAN")) { aggNames[j] = "AVG"; }
-
-                        string subString = $"[{aggNames[j]}_{markerInfoNames[i]}]";
-
+                        if (aggNamesList[j] == "MEAN") { aggNamesList[j] = "AVG"; };
+                        string subString = $"[{aggNamesList[j]}_{markerInfoNames[i]}]";
                         FeaturesLst.Add(subString);
 
                     }
@@ -1216,8 +1217,32 @@ namespace AngularSPAWebAPI.Services
             else
             {
                 subQuery2 += ", " + strFeatureLst;
-                subQuery2 += @" From rbt_data_cached
+                switch(aggNames)
+                {
+                    case "MEAN":
+                        subQuery2 += @" From rbt_data_cached_avg
                                 ) tmp ";
+                        break;
+                    case "STDEV":
+                        subQuery2 += @" From rbt_data_cached_std
+                                ) tmp ";
+                        break;
+                    case "COUNT":
+                        subQuery2 += @" From rbt_data_cached_cnt
+                                ) tmp ";
+                        break;
+                    case "SUM":
+                        subQuery2 += @" From rbt_data_cached_sum
+                                ) tmp ";
+                        break;
+                    default:
+                        subQuery2 += @" From rbt_data_cached
+                                ) tmp ";
+                        break;
+                }
+
+                //subQuery2 += @" From rbt_data_cached
+                //                ) tmp ";
 
                 strSessionIdDrop = ", SessionID";
 

@@ -192,7 +192,10 @@ namespace AngularSPAWebAPI.Services
         public void DeleteExpByExpID(int expID)
         {
             string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From rbt_data_cached Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
+                            Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
+                            Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
+                            Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
+                            Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
                             Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
                             Delete From SessionInfo Where ExpID = {expID};
                             Delete From Upload Where ExpID ={expID};
@@ -207,7 +210,10 @@ namespace AngularSPAWebAPI.Services
         public void DeleteExpByUploadID(int uploadID)
         {
             string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From rbt_data_cached Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
+                            Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
+                            Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
+                            Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
+                            Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
                             Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
                             Delete From SessionInfo Where UploadID = {uploadID};
                             Delete From Upload Where UploadID = {uploadID};";

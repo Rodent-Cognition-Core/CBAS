@@ -810,6 +810,7 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication_Author Where PublicationID = {pubId};
                              Delete From Publication_CellType Where PublicationID = {pubId};
                              Delete From Publication_Disease Where PublicationID = {pubId};
+                             Delete From Publication_SubModel Where PublicationID = {pubId};
                              Delete From Publication_Method Where PublicationID = {pubId};
                              Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
                              Delete From Publication_PaperType Where PublicationID = {pubId};

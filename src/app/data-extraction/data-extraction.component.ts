@@ -142,7 +142,7 @@ export class DataExtractionComponent implements OnInit {
         this.selectedSessionInfoValue = [];
         this.selectedMarkerInfoValue = [];
         this.selectedPiSiteValue = [];
-        this.selectedAggFunction = [];
+        this.selectedAggFunction = '';
         this.selectedAgeValue = [];
         this.selectedStrainValue = [];
         this.selectedGenotypeValue = [];
@@ -787,7 +787,7 @@ export class DataExtractionComponent implements OnInit {
         // Function Definition 
         this._dataExtractionObj.isTrialByTrials = this.isTrialByTrial;
         if (this.isTrialByTrial) {
-            this.selectedAggFunction = ['COUNT'];
+            this.selectedAggFunction = 'COUNT';
         }
 
         this._dataExtractionObj.taskID = this.selectedTaskvalue;

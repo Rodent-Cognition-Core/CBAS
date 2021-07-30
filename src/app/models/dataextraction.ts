@@ -7,7 +7,7 @@ export class DataExtraction {
     public subTaskName: string;
     public sessionInfoNames: Array<string>;
     public markerInfoNames: Array<string>;
-    public aggNames: Array<string>;
+    public aggNames: string;
     public pisiteIDs: Array<number>;
     public ageVals: Array<number>;
     public sexVals: Array<string>;
