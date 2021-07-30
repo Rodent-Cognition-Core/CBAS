@@ -764,7 +764,7 @@ namespace AngularSPAWebAPI.Services
                 linkModel.AnimalSexCsv, linkModel.AnimalGenotypeCsv, linkModel.AnimalStrainCsv,
                 linkModel.PiSiteIdsCsv, linkModel.SessionInfoNamesCsv,
                 linkModel.MarkerInfoNamesCsv.Split('§'),
-                linkModel.AggNamesCsv.Split('§')[0], linkModel.IsTrialByTrials, linkModel.SubExpIDcsv, linkModel.SessionNameCsv);
+                linkModel.AggNamesCsv, linkModel.IsTrialByTrials, linkModel.SubExpIDcsv, linkModel.SessionNameCsv);
 
             var dtSummaryResult = Dal.GetDataTable(sql);
             DataTable dtFinalResult = new DataTable();
@@ -1188,22 +1188,18 @@ namespace AngularSPAWebAPI.Services
             if (!isTrialByTrial)
 
             {
+                string[] aggNamesList = aggNames.Split('§');
 
                 for (int i = 0; i < markerInfoNames.Length; i++)
                 {
-                    if (aggNames == "MEAN") { aggNames = "AVG";  };
-                    string subString = $"[{aggNames}_{markerInfoNames[i]}]";
-                    FeaturesLst.Add(subString);
 
-                    //for (int j = 0; j < aggNames.Length; j++)
-                    //{
-                    //    if ((aggNames[j]).Contains("MEAN")) { aggNames[j] = "AVG"; }
+                    for (int j = 0; j < aggNamesList.Length; j++)
+                    {
+                        if (aggNamesList[j] == "MEAN") { aggNamesList[j] = "AVG"; };
+                        string subString = $"[{aggNamesList[j]}_{markerInfoNames[i]}]";
+                        FeaturesLst.Add(subString);
 
-                    //    string subString = $"[{aggNames[j]}_{markerInfoNames[i]}]";
-
-                    //    FeaturesLst.Add(subString);
-
-                    //}
+                    }
                 }
             }
 
@@ -1223,7 +1219,7 @@ namespace AngularSPAWebAPI.Services
                 subQuery2 += ", " + strFeatureLst;
                 switch(aggNames)
                 {
-                    case "AVG":
+                    case "MEAN":
                         subQuery2 += @" From rbt_data_cached_avg
                                 ) tmp ";
                         break;
@@ -1240,7 +1236,8 @@ namespace AngularSPAWebAPI.Services
                                 ) tmp ";
                         break;
                     default:
-                        throw new Exception();
+                        subQuery2 += @" From rbt_data_cached
+                                ) tmp ";
                         break;
                 }
 
