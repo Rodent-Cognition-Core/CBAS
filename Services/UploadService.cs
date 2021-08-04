@@ -393,25 +393,25 @@ namespace AngularSPAWebAPI.Services
                                     int TaskID, int sessionIDUpload)
         {
 
-            string path = filePath + "\\" + fileName;
-            var xdoc = XDocument.Load(path);
-
-            // Console.WriteLine(path);
-
-            // Extract SessionInfo Data
-            SessionInfo si = ExtractSessionInfo("SessionInformation", "Information", xdoc);
-            si.ExpID = expID;
-            si.UserID = userID;
-            si.UploadID = uploadID;
-            si.AnimalID = animalId;
-            si.SessionName = SessionName;
-
-            int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
-
             // Extract Marker Data
             List<MarkerData> lstMD = new List<MarkerData>();
             try
             {
+                string path = filePath + "\\" + fileName;
+                var xdoc = XDocument.Load(path);
+
+                // Console.WriteLine(path);
+
+                // Extract SessionInfo Data
+                SessionInfo si = ExtractSessionInfo("SessionInformation", "Information", xdoc);
+                si.ExpID = expID;
+                si.UserID = userID;
+                si.UploadID = uploadID;
+                si.AnimalID = animalId;
+                si.SessionName = SessionName;
+
+                int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
+
                 lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName, sessionIDUpload);
             }
             catch (Exception e)
