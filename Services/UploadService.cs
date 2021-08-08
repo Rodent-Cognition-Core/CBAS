@@ -147,7 +147,17 @@ namespace AngularSPAWebAPI.Services
                         if (IsUploaded1 == true)
                         {
                             // write a function to get filename, filepath, uploadid as inputs and then insert to above mentioend tables
-                            InsertFileData(tempFileName, pathString, uploadID, expID, userID, info.SysAnimalID, SessionName, TaskID, sessionID);
+                            try
+                            {
+                                InsertFileData(tempFileName, pathString, uploadID, expID, userID, info.SysAnimalID, SessionName, TaskID, sessionID);
+                            }
+                            catch (InvalidOperationException e)
+                            {
+                                fur.IsUploaded = false;
+                                fur.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
+                                UpdateUpload(fur, uploadID);
+                                uploadResult.Add(fur);
+                            }
 
                         }
 
@@ -239,8 +249,18 @@ namespace AngularSPAWebAPI.Services
                 // Get Upload session ID from "Upload_SessionInfo" Table using its SessionName
                 int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
 
-                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
-                               furInstance.SessionName, furInstance.TaskID, UploadSessionID);
+                try
+                {
+                    InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
+                                   furInstance.SessionName, furInstance.TaskID, UploadSessionID);
+                }
+                catch (InvalidOperationException e)
+                {
+                    furInstance.IsUploaded = false;
+                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
+                    UpdateUpload(furInstance, uploadID);
+                    return false;
+                }
 
                 string sql = $"UPDATE Upload " +
                      $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
@@ -261,8 +281,21 @@ namespace AngularSPAWebAPI.Services
             foreach (var furInstance in lstFur)
             {
                 int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
-                InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
+
+                try
+                {
+                    InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
                                furInstance.SessionName, furInstance.TaskID, UploadSessionID);
+                }
+                catch (InvalidOperationException e)
+                {
+                    furInstance.IsUploaded = false;
+                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
+                    UpdateUpload(furInstance, furInstance.UploadID);
+                    return false;
+                }
+
+                
 
                 string sql = $"UPDATE Upload " +
                      $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
@@ -360,23 +393,32 @@ namespace AngularSPAWebAPI.Services
                                     int TaskID, int sessionIDUpload)
         {
 
-            string path = filePath + "\\" + fileName;
-            var xdoc = XDocument.Load(path);
-
-            // Console.WriteLine(path);
-
-            // Extract SessionInfo Data
-            SessionInfo si = ExtractSessionInfo("SessionInformation", "Information", xdoc);
-            si.ExpID = expID;
-            si.UserID = userID;
-            si.UploadID = uploadID;
-            si.AnimalID = animalId;
-            si.SessionName = SessionName;
-
-            int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
-
             // Extract Marker Data
-            List<MarkerData> lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName, sessionIDUpload);
+            List<MarkerData> lstMD = new List<MarkerData>();
+            try
+            {
+                string path = filePath + "\\" + fileName;
+                var xdoc = XDocument.Load(path);
+
+                // Console.WriteLine(path);
+
+                // Extract SessionInfo Data
+                SessionInfo si = ExtractSessionInfo("SessionInformation", "Information", xdoc);
+                si.ExpID = expID;
+                si.UserID = userID;
+                si.UploadID = uploadID;
+                si.AnimalID = animalId;
+                si.SessionName = SessionName;
+
+                int sessionid = InsertSessionInfoToTable(si); // Should be sent to Marker Data Table in Database
+
+                lstMD = ExtractMarkerData("MarkerData", "Marker", xdoc, sessionid, TaskID, SessionName, sessionIDUpload);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error in data.  Contents not added to database.  Please review then delete file.", e);
+            }
+            
             if (lstMD.Count > 0)
             {
                 InsertMarketDataToTable(lstMD, SessionName);
@@ -1613,6 +1655,9 @@ namespace AngularSPAWebAPI.Services
             bool corrActive = false, preHitActive = true;
 
             int numTrials = lstCurrentImage.Count();
+
+            int? sumHit = lstHits.Sum(); int? sumMistake = lstMistake.Sum();
+            int lthCorrectChoice = lstCorrectLatency.Count(); int lthIncorrectChoice = lstIncorLatency.Count(); int lthRewardLatency = lstRewatdLatency.Count();
 
             for (int i = 0; i < numTrials; i++)
             {
