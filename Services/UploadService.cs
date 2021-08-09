@@ -28,7 +28,6 @@ namespace AngularSPAWebAPI.Services
             _qualityControlService = new QualityControlService();
         }
 
-        // TEST CHANGE
         // Function Definition to read the file sent by the client, read the content, do some processing (e.g. Quality Control Rules), then insert it into Database
         public async Task<List<FileUploadResult>> UploadFiles(IFormFileCollection files, string TaskName, int expID, int subExpId, string ExpName,
                                                                 string Username, string userID, string SessionName, int TaskID, int sessionID)
