@@ -228,6 +228,13 @@ namespace CBAS.Helpers
                 case 33:
                     lstGenoID.Add(42);
                     break;
+                case 34:
+                    lstGenoID.Add(43);
+                    lstGenoID.Add(44);
+                    break;
+                case 35:
+                    lstGenoID.Add(44);
+                    break;
 
             }
 
