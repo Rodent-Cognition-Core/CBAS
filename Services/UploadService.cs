@@ -1656,7 +1656,7 @@ namespace AngularSPAWebAPI.Services
 
             int numTrials = lstCurrentImage.Count();
 
-            int? sumHit = lstHits.Sum(); int? sumMistake = lstMistake.Sum();
+            int? sumHit = lstHits.Sum(); int? sumMistake = lstMistake.Sum(); int? sumCR = lstcCorrectRejection.Sum(); int? sumCTCR = lstCTCorrej.Sum(); int? sumCTMistakes = lstCTMistakes.Sum();
             int lthCorrectChoice = lstCorrectLatency.Count(); int lthIncorrectChoice = lstIncorLatency.Count(); int lthRewardLatency = lstRewatdLatency.Count();
 
             for (int i = 0; i < numTrials; i++)
