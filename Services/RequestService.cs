@@ -55,18 +55,14 @@ namespace AngularSPAWebAPI.Services
         {
 
 
-            string sql = $@"Insert into Request (Type, FullName, Email, MouseStrain, GeneticModification, StrainReference, ControlSuggestion) Values
-                            ('AddMouseLine', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.MouseStrain)}',
+            string sql = $@"Insert into Request (Type, FullName, Email, MouseStrain, Genotype, GeneticModification, StrainReference, ControlSuggestion) Values
+                            ('AddMouseLine', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.MouseStrain)}', '{HelperService.EscapeSql(request.Genotype)}',
                              '{HelperService.EscapeSql(request.GeneticModification)}', '{HelperService.EscapeSql(request.StrainReference)}',
                              '{HelperService.EscapeSql(request.ControlSuggestion)}'); SELECT @@IDENTITY AS 'Identity';";
 
             Int32.Parse(Dal.ExecScalar(sql).ToString());
 
         }
-
-
-
-
 
     }
 }

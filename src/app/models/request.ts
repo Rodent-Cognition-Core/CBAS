@@ -19,4 +19,5 @@ export class Request {
     public model: string;
     public subModel: string;
     public generalRequest: string;
+    public genotype: string;
 } 

@@ -23,6 +23,7 @@ export class ReqMouseLineDialogeComponent implements OnInit {
     reqNameModel: string;
     reqEmailModel: string;
     reqStrainModel: string;
+    reqGenoModel: string;
     geneticModificationModel: string
     refModel: string
     controlModel: string
@@ -71,6 +72,7 @@ export class ReqMouseLineDialogeComponent implements OnInit {
         this._request.fullName = this.reqNameModel;
         this._request.email = this.reqEmailModel;
         this._request.mouseStrain = this.reqStrainModel;
+        this._request.genotype = this.reqGenoModel;
         this._request.geneticModification = this.geneticModificationModel;
         this._request.strainReference = this.refModel;
         this._request.controlSuggestion = this.controlModel;
