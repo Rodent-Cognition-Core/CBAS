@@ -221,9 +221,10 @@ namespace AngularSPAWebAPI.Services
             if (upload.FileUniqueID != null) { upload.FileUniqueID = upload.FileUniqueID.Trim(); }
 
             string sql = $"UPDATE Upload " +
-                 $"SET ExpID = {upload.ExpID} , AnimalID = {upload.AnimalID}, SubExpID = {upload.SubExpID} , UserFileName = '{upload.UserFileName}', SysFileName = '{upload.SysFileName}', SessionName ='{upload.SessionName}', ErrorMessage = '{upload.ErrorMessage}'," +
-                 $"WarningMessage= '{upload.WarningMessage}', IsUploaded = '{upload.IsUploaded}', DateFileCreated = '{upload.DateFileCreated}', DateUpload = '{upload.DateUpload}', FileSize= '{upload.FileSize}', " +
-                 $" IsQcPassed = '{upload.IsQcPassed}', IsIdentifierPassed = '{upload.IsIdentifierPassed}' WHERE FileUniqueID = '{upload.FileUniqueID}' and UploadID = {UploadId};";
+                 $"SET ExpID = {upload.ExpID} , AnimalID = {upload.AnimalID}, SubExpID = {upload.SubExpID} , UserFileName = '{upload.UserFileName}', SysFileName = '{upload.SysFileName}', " +
+                 $"SessionName ='{upload.SessionName}', ErrorMessage = '{HelperService.EscapeSql(upload.ErrorMessage)}'," + $"WarningMessage= '{HelperService.EscapeSql(upload.WarningMessage)}', " +
+                 $"IsUploaded = '{upload.IsUploaded}', DateFileCreated = '{upload.DateFileCreated}', DateUpload = '{upload.DateUpload}', FileSize= '{upload.FileSize}', " +
+                 $"IsQcPassed = '{upload.IsQcPassed}', IsIdentifierPassed = '{upload.IsIdentifierPassed}' WHERE FileUniqueID = '{upload.FileUniqueID}' and UploadID = {UploadId};";
 
 
             Dal.ExecuteNonQuery(sql);
@@ -530,6 +531,7 @@ namespace AngularSPAWebAPI.Services
             List<float?> lstCorrectLatency = new List<float?>();
             List<float?> lstRewatdLatency = new List<float?>();
             List<float?> lstIncorLatency = new List<float?>();
+            List<float?> lstCTLatency = new List<float?>();
 
             List<int?> lstCurrentImage = new List<int?>();
             List<int?> lstCTCorrej = new List<int?>();
@@ -555,8 +557,6 @@ namespace AngularSPAWebAPI.Services
                 //  If condition to consider only features exist in lstFeatures (only important features of each task should be considered!)
                 if (lstFeatures.Contains(Attribute) || lstFeatures.Count == 0)
                 {
-
-
                     if (TaskID == 11) // Task is iCPT
                     {
 
@@ -598,8 +598,6 @@ namespace AngularSPAWebAPI.Services
 
                             }
                         }
-
-
 
                         // add switch case to get the value for features occurring multiple times and save each in a separate list for icpt task
                         switch (Attribute)
@@ -672,35 +670,45 @@ namespace AngularSPAWebAPI.Services
                                 lstcCorrectRejection.Add((int)result);
                                 break;
 
-                            case "Correct Choice Latency":
+                            case "trial by trial anal - Correct Choice Latency":
 
-                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                                 {
                                     result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
                                 }
                                 else { result = null; }
-                                lstCorrectLatency.Add((float)result);
+                                lstCorrectLatency.Add(result);
 
                                 break;
 
-                            case "Reward Retrieval Latency":
+                            case "trial by trial anal - Reward Retrieval Latency":
 
-                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                                 {
                                     result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
                                 }
                                 else { result = null; }
-                                lstRewatdLatency.Add((float)result);
+                                lstRewatdLatency.Add(result);
                                 break;
 
-                            case "Incorrect Choice Latency":
+                            case "trial by trial anal - Mistake Latency":
 
-                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode) != null)
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
                                 {
                                     result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
                                 }
                                 else { result = null; }
-                                lstIncorLatency.Add((float)result);
+                                lstIncorLatency.Add(result);
+                                break;
+
+                            case "trial by trial anal - Correction Trial Mistake Latency":
+
+                                if (((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode) != null)
+                                {
+                                    result = float.Parse(((System.Xml.Linq.XElement)val.FirstNode.NextNode.NextNode.NextNode).Value.ToString());
+                                }
+                                else { result = null; }
+                                lstCTLatency.Add(result);
                                 break;
 
                             case "trial by trial anal - Current image":
@@ -913,7 +921,7 @@ namespace AngularSPAWebAPI.Services
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();  // to save all the metrics calculated at each SD, or contrast level or distractor
             if (sessionIDUpload == 40 || sessionIDUpload == 38 || sessionIDUpload == 39 || sessionIDUpload == 53)  // cpt with different SDs
             {
-                cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, sessionIDUpload);
+                cptFeatureDict = GetDictCPTFeatures(lstSD, lstHits, lstMiss, lstMistake, lstcCorrectRejection, lstCorrectLatency, lstRewatdLatency, lstIncorLatency, lstCTLatency, sessionIDUpload);
                 // If distractor times are present, additional features must be added (stage 4 only for now)
                 if (sessionIDUpload == 53 && lstDistractor.Any())
                 {
@@ -1350,7 +1358,8 @@ namespace AngularSPAWebAPI.Services
 
         // **********************Function definition to extract cpt features with different stimulation duration and stage 3 & 4
         private Dictionary<string, float?> GetDictCPTFeatures(List<float?> lstSD, List<int?> lstHits, List<int?> lstMiss, List<int?> lstMistake,
-                       List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency, int uploadsessionID)
+                       List<int?> lstcCorrectRejection, List<float?> lstCorrectLatency, List<float?> lstRewatdLatency, List<float?> lstIncorLatency,
+                       List<float?> lstCTLatency, int uploadsessionID)
         {
 
             Dictionary<string, float?> cptFeatureDict = new Dictionary<string, float?>();
@@ -1362,17 +1371,27 @@ namespace AngularSPAWebAPI.Services
             // if the file belongs to stage 3 and 4 for cpt task
             if (uploadsessionID == 38 || uploadsessionID == 39 || uploadsessionID == 53)
             {
-                float avgCorrectLatency = lstCorrectLatency.Average(x => Convert.ToSingle(x));
-                float avgRewardLatency = lstRewatdLatency.Average(x => Convert.ToSingle(x));
+                //float avgCorrectLatency = lstCorrectLatency.Average(x => Convert.ToSingle(x));
+                //float avgRewardLatency = lstRewatdLatency.Average(x => Convert.ToSingle(x));
+                float? avgCorrectLatency = lstCorrectLatency.Average();
+                float? avgRewardLatency = lstRewatdLatency.Average();
                 var titleCorrectLatency = $"Average - Correct Choice Latency at {distSDValues.ToList()[0].ToString()}s SD";
                 var titleRewardLatency = $"Average - Reward Retrieval Latency at {distSDValues.ToList()[0].ToString()}s SD";
 
-                float avgIncorrectLatency = lstIncorLatency.Average(x => Convert.ToSingle(x));
-                var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {distSDValues.ToList()[0].ToString()}s SD";
+                //float avgIncorrectLatency = lstIncorLatency.Average(x => Convert.ToSingle(x));
+                // var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {distSDValues.ToList()[0].ToString()}s SD";
+                float? avgIncorrectLatency = lstIncorLatency.Average();
+                var titleInCorrectLatency = $"Average - Mistake Latency at {distSDValues.ToList()[0].ToString()}s SD";
 
-                var sumHit = lstHits.Sum(x => Convert.ToInt32(x));
+                float? avgCTLatency = lstCTLatency.Average();
+                var titleCTLatency = $"Average - Correction Trial Mistake Latency at {distSDValues.ToList()[0].ToString()}s SD";
+
+
+                var sumHitNaive = lstHits.Sum(x => Convert.ToInt32(x));
+                var sumHit = lstCorrectLatency.Count(x => x != null);
                 var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
-                var sumMistake = lstMistake.Sum(x => Convert.ToInt32(x));
+                var sumMistakeNaive = lstMistake.Sum(x => Convert.ToInt32(x));
+                var sumMistake = lstIncorLatency.Count(x => x != null);
                 var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
 
                 // Calculated features
@@ -1415,6 +1434,7 @@ namespace AngularSPAWebAPI.Services
                 cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
                 cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
                 cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+                cptFeatureDict.Add(titleCTLatency, avgCTLatency / 1000000);
 
                 //cptFeatureDict.Add(titleHit, sumHit);
                 //cptFeatureDict.Add(titleMiss, sumMiss);
@@ -1440,20 +1460,23 @@ namespace AngularSPAWebAPI.Services
                 dt_latency.Columns.Add("RewardLatency", typeof(int));
 
                 // filling data table dt_latency
-                int cnt = 0;
+                // int cnt = 0;
                 for (int j = 0; j < maxIndexValue; j++)
                 {
 
-                    if (lstHits[j] > 0)
+                    //if (lstHits[j] > 0)
+                    if (lstHits[j] > 0 && lstCorrectLatency[j] != null)
                     {
                         DataRow newRow = dt_latency.NewRow();
-                        newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                        newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                        newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
-                        newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
+                        newRow["SD"] = lstSD.Count <= j ? (object)DBNull.Value : lstSD[j];
+                        newRow["Hit"] = lstHits.Count <= j ? (object)DBNull.Value : lstHits[j];
+                        // newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                        // newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
+                        newRow["CorrectLatency"] = lstCorrectLatency.Count <= j ? (object)DBNull.Value : lstCorrectLatency[j];
+                        newRow["RewardLatency"] = lstRewatdLatency.Count <= j ? (object)DBNull.Value : lstRewatdLatency[j];
 
                         dt_latency.Rows.Add(newRow);
-                        cnt = cnt + 1;
+                        // cnt = cnt + 1;
                     }
 
                 }
@@ -1483,19 +1506,20 @@ namespace AngularSPAWebAPI.Services
                     dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
 
                     // filling data table dt_latency
-                    int cnt2 = 0;
+                    // int cnt2 = 0;
                     for (int j = 0; j < maxIndexValue; j++)
                     {
 
-                        if (lstMistake[j] > 0)
+                        if (lstMistake[j] > 0 && lstIncorLatency[j] != null)
                         {
                             DataRow newRow = dt_incorrect_latency.NewRow();
-                            newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                            newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
+                            newRow["SD"] = lstSD.Count <= j ? (object)DBNull.Value : lstSD[j];
+                            newRow["Mistake"] = lstMistake.Count <= j ? (object)DBNull.Value : lstMistake[j];
+                            // newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
+                            newRow["IncorrectLatency"] = lstIncorLatency.Count <= j ? (object)DBNull.Value : lstIncorLatency[j];
 
                             dt_incorrect_latency.Rows.Add(newRow);
-                            cnt2 = cnt2 + 1;
+                            //cnt2 = cnt2 + 1;
                         }
 
                     }
@@ -1532,11 +1556,13 @@ namespace AngularSPAWebAPI.Services
                 for (int j = 0; j < maxIndexValue; j++)
                 {
                     DataRow newRow = dt.NewRow();
-                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                    newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
-                    newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                    newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
+                    newRow["SD"] = lstSD.Count <= j ? (object)DBNull.Value : lstSD[j];
+                    // newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
+                    newRow["Miss"] = lstMiss.Count <= j ? (object)DBNull.Value : lstMiss[j];
+                    // newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
+                    newRow["Hit"] = lstHits.Count <= j ? (object)DBNull.Value : (lstCorrectLatency != null ? lstHits[j] : 0);
+                    newRow["Mistake"] = lstMistake.Count <= j ? (object)DBNull.Value : (lstIncorLatency != null ? lstMistake[j] : 0);
+                    newRow["CorrectRejection"] = lstcCorrectRejection.Count <= j ? (object)DBNull.Value : lstcCorrectRejection[j];
                     dt.Rows.Add(newRow);
                 }
 
@@ -1547,10 +1573,13 @@ namespace AngularSPAWebAPI.Services
                     if (dt.Select("SD = " + sd).Count() > 0)
                     {
                         var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
-                        var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
-                        var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
-                        var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
-                        var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+
+                        var sumHitNaive = lstHits.Sum(x => Convert.ToInt32(x));
+                        var sumHit = lstCorrectLatency.Count(x => x != null);
+                        var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
+                        var sumMistakeNaive = lstMistake.Sum(x => Convert.ToInt32(x));
+                        var sumMistake = lstIncorLatency.Count(x => x != null);
+                        var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
 
                         // Calculated features
                         float hitRate, falseAlarmRate;
@@ -1651,7 +1680,7 @@ namespace AngularSPAWebAPI.Services
                 sessionRewlat[i] = new List<double?>();
             }
 
-            int corlatMod = 0, incorlatMod = 0, rewlatMod = 0, preHit = 0;
+            // int corlatMod = 0, incorlatMod = 0, rewlatMod = 0, preHit = 0;
             bool corrActive = false, preHitActive = true;
 
             int numTrials = lstCurrentImage.Count();
@@ -1721,10 +1750,13 @@ namespace AngularSPAWebAPI.Services
                             {
                                 if (lstMistake[i] == 1)
                                 {
-                                    sessionMistake[distState]++;
-                                    //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
-                                    sessionIncorlat[distState].Add((double?)lstIncorLatency[incorlatMod++] / 1000000.0);
-                                    corrActive = true;
+                                    if (lstIncorLatency[i] != null)
+                                    {
+                                        sessionMistake[distState]++;
+                                        //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
+                                        sessionIncorlat[distState].Add((double?)lstIncorLatency[i] / 1000000.0);
+                                        corrActive = true;
+                                    }
                                 }
                                 else
                                 {
@@ -1735,11 +1767,14 @@ namespace AngularSPAWebAPI.Services
                             {
                                 if (lstHits[i] == 1)
                                 {
-                                    sessionHit[distState]++;
-                                    //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
-                                    //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
-                                    sessionCorlat[distState].Add((double?)lstCorrectLatency[corlatMod++] / 1000000.0);
-                                    sessionRewlat[distState].Add((double?)lstRewatdLatency[rewlatMod++] / 1000000.0);
+                                    if (lstCorrectLatency[i] != null)
+                                    {
+                                        sessionHit[distState]++;
+                                        //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
+                                        //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
+                                        sessionCorlat[distState].Add((double?)lstCorrectLatency[i] / 1000000.0);
+                                        sessionRewlat[distState].Add((double?)lstRewatdLatency[i] / 1000000.0);
+                                    }
                                 }
                                 else
                                 {
@@ -1840,20 +1875,22 @@ namespace AngularSPAWebAPI.Services
             dt_latency.Columns.Add("RewardLatency", typeof(int));
 
             // filling data table dt_latency
-            int cnt = 0;
+            //int cnt = 0;
             for (int j = 0; j < maxIndexValue; j++)
             {
 
                 if (lstHits[j] > 0)
                 {
                     DataRow newRow = dt_latency.NewRow();
-                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                    newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                    newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
-                    newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
+                    newRow["SD"] = lstSD.Count <= j ? (object)DBNull.Value : lstSD[j];
+                    newRow["Hit"] = lstHits.Count <= j ? (object)DBNull.Value : lstHits[j];
+                    //newRow["CorrectLatency"] = lstCorrectLatency.Count <= cnt ? (object)DBNull.Value : lstCorrectLatency[cnt];
+                    //newRow["RewardLatency"] = lstRewatdLatency.Count <= cnt ? (object)DBNull.Value : lstRewatdLatency[cnt];
+                    newRow["CorrectLatency"] = lstCorrectLatency.Count <= j ? (object)DBNull.Value : lstCorrectLatency[j];
+                    newRow["RewardLatency"] = lstRewatdLatency.Count <= j ? (object)DBNull.Value : lstRewatdLatency[j];
 
                     dt_latency.Rows.Add(newRow);
-                    cnt = cnt + 1;
+                    //cnt = cnt + 1;
                 }
 
             }
@@ -1898,19 +1935,20 @@ namespace AngularSPAWebAPI.Services
             dt_incorrect_latency.Columns.Add("IncorrectLatency", typeof(int));
 
             // filling data table dt_latency
-            int cnt2 = 0;
+            // int cnt2 = 0;
             for (int j = 0; j < maxIndexValue; j++)
             {
 
                 if (lstMistake[j] > 0)
                 {
                     DataRow newRow = dt_incorrect_latency.NewRow();
-                    newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                    newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                    newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
+                    newRow["SD"] = lstSD.Count <= j ? (object)DBNull.Value : lstSD[j];
+                    newRow["Mistake"] = lstMistake.Count <= j ? (object)DBNull.Value : lstMistake[j];
+                    // newRow["IncorrectLatency"] = lstIncorLatency.Count <= cnt2 ? (object)DBNull.Value : lstIncorLatency[cnt2];
+                    newRow["IncorrectLatency"] = lstIncorLatency.Count <= j ? (object)DBNull.Value : lstIncorLatency[j];
 
                     dt_incorrect_latency.Rows.Add(newRow);
-                    cnt2 = cnt2 + 1;
+                    // cnt2 = cnt2 + 1;
                 }
 
             }
@@ -1959,11 +1997,11 @@ namespace AngularSPAWebAPI.Services
             for (int j = 0; j < maxIndexValue; j++)
             {
                 DataRow newRow = dt.NewRow();
-                newRow["SD"] = lstSD.Count < j ? null : lstSD[j];
-                newRow["Hit"] = lstHits.Count < j ? null : lstHits[j];
-                newRow["Miss"] = lstMiss.Count < j ? null : lstMiss[j];
-                newRow["Mistake"] = lstMistake.Count < j ? null : lstMistake[j];
-                newRow["CorrectRejection"] = lstcCorrectRejection.Count < j ? null : lstcCorrectRejection[j];
+                newRow["SD"] = lstSD.Count <= j ? null : lstSD[j];
+                newRow["Hit"] = lstHits.Count <= j ? null : lstHits[j];
+                newRow["Miss"] = lstMiss.Count <= j ? null : lstMiss[j];
+                newRow["Mistake"] = lstMistake.Count <= j ? null : lstMistake[j];
+                newRow["CorrectRejection"] = lstcCorrectRejection.Count <= j ? null : lstcCorrectRejection[j];
                 dt.Rows.Add(newRow);
             }
 
@@ -1973,10 +2011,12 @@ namespace AngularSPAWebAPI.Services
                 if (dt.Select("SD = " + sd).Count() > 0)
                 {
                     var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
-                    var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
-                    var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
-                    var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
-                    var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
+                    var sumHitNaive = lstHits.Sum(x => Convert.ToInt32(x));
+                    var sumHit = lstCorrectLatency.Count(x => x != null);
+                    var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
+                    var sumMistakeNaive = lstMistake.Sum(x => Convert.ToInt32(x));
+                    var sumMistake = lstIncorLatency.Count(x => x != null);
+                    var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
 
                     // Calculated features
                     float hitRate, falseAlarmRate;
@@ -2309,7 +2349,8 @@ namespace AngularSPAWebAPI.Services
                 case 44:
                     string[] input_CPT = { "End Summary - Schedule length", "End Summary - No of non correction trials", "End Summary - Hits",
                                        "End Summary - Misses", "End Summary - Mistakes", "End Summary - Correct Rejections", "End Summary - Correct Image",
-                                       "Correct Choice Latency", "Incorrect Choice Latency", "Reward Retrieval Latency", "trial by trial anal - Current image",
+                                       // "Correct Choice Latency", "Incorrect Choice Latency", "Reward Retrieval Latency",
+                                       "trial by trial anal - Current image",
                                        "trial by trial anal - Stimulus Duration", "trial by trial anal - Hits", "trial by trial anal - Misses", "trial by trial anal - Mistakes",
                                        "trial by trial anal - Correct Rejections", "End Summary - After Reward Pause", "trial by trial anal - ITI",
                                        "End Summary - Correction Trial Correct Rejections", "End Summary - Correction Trial Mistakes",
@@ -2326,12 +2367,13 @@ namespace AngularSPAWebAPI.Services
                                        "End Summary - Correct Rejections during incongruent trials - Count #1", "trial by trial anal - Current image", "trial by trial anal - Distractor",
                                        "trial by trial anal - ITI", "trial by trial anal - Hits", "trial by trial anal - Misses",
                                        "trial by trial anal - Mistakes", "trial by trial anal - Correct Rejections",
-                                       "Correct Choice Latency non distractor trial", "Correct Choice Latency congruent trial", "Correct Choice Latency incongruent trial",
-                                       "Incorrect Choice Latency non distractor trial", "Incorrect Choice Latency congruent trial", "Incorrect Choice Latency incongruent trial",
+                                       // "Correct Choice Latency non distractor trial", "Correct Choice Latency congruent trial", "Correct Choice Latency incongruent trial",
+                                       // "Incorrect Choice Latency non distractor trial", "Incorrect Choice Latency congruent trial", "Incorrect Choice Latency incongruent trial",
                                        "End Summary - Centre ITI Touches", "End Summary - S+ Distractor touched during congruent trial -  Counter",
                                        "End Summary - S- Distractor touched during congruent trial -  Counter", "End Summary - S+ Distractor touched during incongruent trial -  Counter",
                                        "End Summary - S- Distractor touched during incongruent trial -  Counter", "trial by trial anal - Contrast", "End Summary - Stimulus Duration",
-                                       "trial by trial anal - Correction Trial Correct Rejections", "trial by trial anal - Correction Trial Mistakes", "trial by trial anal - Distractor Time"};
+                                       "trial by trial anal - Correction Trial Correct Rejections", "trial by trial anal - Correction Trial Mistakes", "trial by trial anal - Distractor Time",
+                                       "trial by trial anal - Correct Choice Latency", "trial by trial anal - Mistake Latency", "trial by trial anal - Correction Trial Mistake Latency", "trial by trial anal - Reward Retrieval Latency"};
 
                     lstFeatures.AddRange(input_CPT);
                     break;
