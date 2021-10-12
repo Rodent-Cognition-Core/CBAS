@@ -4,6 +4,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
+import { AuthenticationService } from '../services/authentication.service';
+import { User } from '../models/user'
 import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
@@ -16,6 +18,7 @@ export class DataVisualizationComponent implements OnInit {
     selectedCogTaskValue: any = '';
     dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
+    user: User;
 
     // SessionInfo Features' names
     public cogTaskList: any[] = [
@@ -40,6 +43,7 @@ export class DataVisualizationComponent implements OnInit {
 
     constructor(
         public dialog: MatDialog,
+        private authenticationService: AuthenticationService,
         private spinnerService: Ng4LoadingSpinnerService,
         private router: Router,
         private route: ActivatedRoute) {
@@ -47,6 +51,8 @@ export class DataVisualizationComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        this.user = this.authenticationService.getUser();
         this.route.queryParams.subscribe(params => {
 
             if (params['taskid'] != null) {
@@ -67,13 +73,13 @@ export class DataVisualizationComponent implements OnInit {
         this.spinnerService.show();
 
         if (this.selectedCogTaskValue == 1) {
-            this.loadAnalysis("MB_5C_Visualization_main");
+            this.loadAnalysis("MB_5C_userbased");
         }
         else if (this.selectedCogTaskValue == 2) {
-            this.loadAnalysis("MB_PAL_visualization_main");
+            this.loadAnalysis("MB_PAL_userbased");
         }
         else if (this.selectedCogTaskValue == 3) {
-            this.loadAnalysis("MB_PD_visualization_main");
+            this.loadAnalysis("MB_PD_userbased");
 
         }
 
@@ -118,7 +124,7 @@ export class DataVisualizationComponent implements OnInit {
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.cac.queensu.ca/spotfire/wp/", customization);
-        var configuration = '';
+        var configuration = 'mbusername=\"' + this.user.userName + '\";';
 
         var onError = function (errorCode, description) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
@@ -131,7 +137,7 @@ export class DataVisualizationComponent implements OnInit {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/" + spotfireAnalysisName, "contentpanel", configuration);
+        this.app.open("/Public/User_Based_Visualizations/" + spotfireAnalysisName, "contentpanel", configuration);
 
         // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan: http://localhost:4200/data-visualization?taskid=2&sara=1,3
         // 2. when user comes to this page with querystring set, get values from querystring and set filters

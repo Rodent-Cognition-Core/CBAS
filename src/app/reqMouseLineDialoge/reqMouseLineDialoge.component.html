@@ -35,11 +35,16 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
+            <input matInput placeholder="Enter genotype" [(ngModel)]="reqGenoModel">
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
             <input matInput placeholder="Enter Strain Reference (e.g. DOI of strain publication or supplier website (e.g. JAX link))" [(ngModel)]="refModel" type="url">
 
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf ="geneticModificationModel==='Transgenic' || geneticModificationModel === 'KnockIn' || geneticModificationModel === 'KnockOut'">
+        <mat-form-field class="full-width" *ngIf="geneticModificationModel==='Transgenic' || geneticModificationModel === 'KnockIn' || geneticModificationModel === 'KnockOut'">
             <textarea matInput placeholder="Enter all the possible control suggestions for the strain separated by comma:" [(ngModel)]="controlModel" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
 
