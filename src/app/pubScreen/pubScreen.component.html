@@ -234,9 +234,19 @@
 
                             <!--Method-->
                             <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Method" [(ngModel)]="methodModel" multiple>
+                                <mat-select placeholder="Select Method" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
                                     <mat-option *ngFor="let method of methodList" [value]="method.id">
                                         <span matTooltip="{{method.method}}">{{method.method}}</span>
+                                    </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+                            <!--SubMethod Model----------------------------------->
+                            <mat-form-field style="width:15%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                                    <mat-option *ngFor="let sub of subSubMethodList" [value]="sub.id">
+                                        <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
                                     </mat-option>
                                 </mat-select>
 
@@ -315,6 +325,7 @@
 
                         <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subMethod =="") ?  "N/A" : (_pubSCreenSearch.subMethodID==Null || _pubSCreenSearch.subMethodID.lenght == 0 || _pubSCreenSearch.subMethodID == "") ? row.subMethod  : "<b>" + row.subMethod + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Neurotransmitter:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">

@@ -45,6 +45,7 @@ export class PubscreenDialogeComponent implements OnInit {
     cellTypeModel: any;
     addingOptionModel: any;
     methodModel: any;
+    subMethodModel: any;
     neurotransmitterModel: any;
     authorMultiSelect: any;
     strainMultiSelect: any;
@@ -86,6 +87,7 @@ export class PubscreenDialogeComponent implements OnInit {
     subRegionList: any;
     cellTypeList: any;
     methodList: any;
+    subMethodList: any;
     neurotransmitterList: any;
     authorList: any;
     authorList2: any;
@@ -96,6 +98,7 @@ export class PubscreenDialogeComponent implements OnInit {
     taskSubTaskList: any;
     subStrainList: any;
     subSubModelList: any;
+    subSubMethodList: any;
     paperInfo: any;
     
 
@@ -143,6 +146,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
         this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; this.processList(this.cellTypeList, "Other", "cellType"); });
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; this.processList(this.methodList, "Other", "method"); });
+        this.pubScreenService.getSubMethod().subscribe(data => { this.subMethodList = data; });
         this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; this.processList(this.neurotransmitterList, "Other", "neuroTransmitter"); });
 
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
@@ -180,6 +184,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.diseaseModel = this.paperInfo.diseaseID;
                 this.subModel = this.paperInfo.subModelID;
                 this.methodModel = this.paperInfo.methodID;
+                this.subMethodModel = this.paperInfo.subMethodID;
                 this.paperTypeModel = this.paperInfo.paperTypeID;
                 this.regionModel = this.paperInfo.regionID;
                 this.sexModel = this.paperInfo.sexID;
@@ -201,6 +206,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.subStrainList = this.strainList.filter(x => this.specieModel.includes(x.speciesID));
                 this.filteredStrainList.next(this.subStrainList.slice());
                 this.subSubModelList = this.subModelList.filter(x => this.diseaseModel.includes(x.modelID));
+                this.subSubMethodList = this.subMethodList.filter(x => this.methodModel.includes(x.methodID));
 
                 this.neurotransmitterModel = this.paperInfo.transmitterID;
 
@@ -349,6 +355,11 @@ export class PubscreenDialogeComponent implements OnInit {
     selectedModelChange(SelectedModels) {
         this.subModel = [];
         this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
+    }
+
+    selectedMethodChange(SelectedMethods) {
+        this.subMethodModel = [];
+        this.subSubMethodList = this.subMethodList.filter(x => SelectedMethods.includes(x.methodID));
     }
 
     selectedRegionChange(SelectedRegion) {
@@ -712,6 +723,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this._pubscreen.subRegionID = this.subRegionModel;
         this._pubscreen.cellTypeID = this.cellTypeModel;
         this._pubscreen.methodID = this.methodModel;
+        this._pubscreen.subMethodID = this.subMethodModel;
         this._pubscreen.transmitterID = this.neurotransmitterModel;
         this._pubscreen.taskOther = this.taskOtherModel;
         this._pubscreen.specieOther = this.specieOtherModel;
@@ -864,8 +876,4 @@ export class PubscreenDialogeComponent implements OnInit {
         return data
     }
     
-
-
-
-
 }

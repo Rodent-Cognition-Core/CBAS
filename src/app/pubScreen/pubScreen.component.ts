@@ -49,6 +49,7 @@ export class PubScreenComponent implements OnInit {
     cellTypeModel: any;
     addingOptionModel: any;
     methodModel: any;
+    subMethodModel: any;
     neurotransmitterModel: any;
     yearFromSearchModel: any;
     yearToSearchModel: any;
@@ -70,6 +71,7 @@ export class PubScreenComponent implements OnInit {
     subRegionList: any;
     cellTypeList: any;
     methodList: any;
+    subMethodList: any;
     neurotransmitterList: any;
     authorList: any;
     authorList2: any;
@@ -79,6 +81,7 @@ export class PubScreenComponent implements OnInit {
     taskSubTaskList: any;
     subStrainList: any;
     subSubModelList: any;
+    subSubMethodList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
 
@@ -129,6 +132,7 @@ export class PubScreenComponent implements OnInit {
         this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
         this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
+        this.pubScreenService.getSubMethod().subscribe(data => { this.subMethodList = data; });
         this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
@@ -260,6 +264,11 @@ export class PubScreenComponent implements OnInit {
         this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
     }
 
+    selectedMethodChange(SelectedMethods) {
+        this.subMethodModel = [];
+        this.subSubMethodList = this.subMethodList.filter(x => SelectedMethods.includes(x.methodID));
+    }
+
     selectedRegionChange(SelectedRegion) {
         this.subRegionModel = [];
         this.pubScreenService.getRegionSubRegion().subscribe(data => {
@@ -351,6 +360,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.subRegionID = this.subRegionModel;
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
+        this._pubSCreenSearch.subMethodID = this.subMethodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
         this._pubSCreenSearch.yearTo = this.yearToSearchModel;
