@@ -137,13 +137,24 @@
                             </mat-form-field>
 
                             <!--Cognitive Task or subtasks-->
+                            <!--<mat-form-field style="width:15%; padding-left:30px">
+        <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" multiple>
+            <mat-option *ngFor="let subtask of subSubTaskList" [value]="subtask.id">
+                <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
+            </mat-option>
+        </mat-select>
+
+    </mat-form-field>-->
+                            <!--SubTask-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" multiple>
-                                    <mat-option *ngFor="let subtask of subTaskList" [value]="subtask.id">
-                                        <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
+                                <mat-select placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let subTask of filteredSubTaskList | async" [value]="subTask.id">
+                                        <span matTooltip="{{subTask.subTask}}">{{subTask.subTask}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                             <!--Species-->
@@ -180,86 +191,102 @@
                             <br />
 
                             <!--DiseaseModel-->
-                            <mat-form-field style="width:15%;">
+                            <mat-form-field style="width:15%">
                                 <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
-                                    <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let disease of filteredDiseaseList | async" [value]="disease.id">
                                         <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
-                            <!--SubRodent Model----------------------------------->
+                            <!--SubModel-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
-                                    <mat-option *ngFor="let sub of subSubModelList" [value]="sub.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
                                         <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
-                            <!--BrainRegion-->
+                            <!--Region-->
                             <mat-form-field style="width:15%; padding-left:30px">
-
                                 <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
-                                    <mat-option *ngFor="let region of regionList" [value]="region.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let region of filteredRegionList | async" [value]="region.id">
                                         <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                             <!--SubRegion-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
-                                    <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
                                         <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
+
 
                             <!--CellType-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
-                                    <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let cell of filteredCellTypeList | async" [value]="cell.id">
                                         <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                             <br />
-
+                            
                             <!--Method-->
-                            <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Method" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
-                                    <mat-option *ngFor="let method of methodList" [value]="method.id">
+                            <mat-form-field style="width:15%">
+                                <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let method of filteredMethodList | async" [value]="method.id">
                                         <span matTooltip="{{method.method}}">{{method.method}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
-                            <!--SubMethod Model----------------------------------->
+                            <!--SubMethod-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
-                                    <mat-option *ngFor="let sub of subSubMethodList" [value]="sub.id">
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
                                         <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                             <!--NeuroTransmitter Systems-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Neurotransmitter System" [(ngModel)]="neurotransmitterModel" multiple>
-                                    <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
+                                <mat-select placeholder="Select Neurotransmitter System(s)" [(ngModel)]="neurotransmitterModel" multiple>
+
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
+
+                                    <mat-option *ngFor="let neuro of filteredNeurotransmitterList | async" [value]="neuro.id">
                                         <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
                                     </mat-option>
                                 </mat-select>
-
                             </mat-form-field>
 
                         </div>
@@ -277,8 +304,12 @@
     <!--<div>{{isAdmin}}</div>-->
     <!--Adding table to show result of search-->
     <br /><br />
+    <!--<div *ngIf="searchResultList? != null">
+        <button mat-button>Having Trouble Finding What You Are Looking For?</button>
+    </div>-->
     <div *ngIf="searchResultList?.length == 0">
         <table class="docs-markdown-table">
+            <tr><td style="text-align:center;"><button mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
             <tr><td style="text-align:center;"><span style="color:red; font-size:large">No results found for search criteria!</span></td></tr>
         </table>
     </div>
@@ -287,11 +318,12 @@
         <table class="docs-markdown-table">
             <thead>
                 <tr>
-                    <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications</th>
+                    <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications ({{searchResultList?.length}} Results)</th>
 
                 </tr>
             </thead>
             <tbody class="docs-markdown-tbody">
+                <tr style="border-bottom:1pt solid #8D8E90"><td style="text-align:center;"><button mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
                 <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of searchResultList">
                     <td>
                         <label style="color:#8D8E90"><b>Paper Information:</b></label>
@@ -299,7 +331,7 @@
                         <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Get Paper Link" (click)="getLink(row.paperLinkGuid)"><mat-icon>link</mat-icon></button></span>&nbsp;
                         <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
                         <div style="clear:both"></div>
-                        <br /><br />
+                        <br />
 
                         <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
                         <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
