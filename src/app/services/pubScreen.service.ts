@@ -139,6 +139,16 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    // Extracting Method List From DB
+    public getSubMethod(): any {
+
+        return this.http
+            .get("/api/pubScreen/GetSubMethod", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     // Extracting NeuroTransmitter List From DB
     public getNeurotransmitter(): any {
 

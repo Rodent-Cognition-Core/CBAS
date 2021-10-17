@@ -133,6 +133,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_pubScreenService.GetMethods());
         }
 
+        // Extracting SubMethod list
+        [HttpGet("GetSubMethod")]
+        [AllowAnonymous]
+        public IActionResult GetSubMethod()
+        {
+            return new JsonResult(_pubScreenService.GetSubMethods());
+        }
+
         // Extracting NeuroTransmitter list
         [HttpGet("GetNeurotransmitter")]
         [AllowAnonymous]

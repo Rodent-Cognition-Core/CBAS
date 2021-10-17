@@ -751,6 +751,28 @@ namespace AngularSPAWebAPI.Services
             return MethodList;
         }
 
+        // Function Definition to extract list of all SubMethods
+        public List<PubScreenSubMethod> GetSubMethods()
+        {
+            List<PubScreenSubMethod> SubMethodList = new List<PubScreenSubMethod>();
+            using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod.ID, SubMethod, MethodID
+                                                            From SubMethod Inner Join Method On SubMethod.MethodID = Method.ID
+                                                            Order By (Case When SubMethod not like '%Other%' Then 1 Else 2 End), Method, SubMethod"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    SubMethodList.Add(new PubScreenSubMethod
+                    {
+                        ID = Int32.Parse(dr["ID"].ToString()),
+                        SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
+                        MethodID = Int32.Parse(dr["MethodID"].ToString()),
+                    });
+                }
+            }
+
+            return SubMethodList;
+        }
+
         // Function Definition to extract list of Neurotransmitter 
         public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
         {
@@ -812,6 +834,7 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication_Disease Where PublicationID = {pubId};
                              Delete From Publication_SubModel Where PublicationID = {pubId};
                              Delete From Publication_Method Where PublicationID = {pubId};
+                             Delete From Publication_SubMethod Where PublicationID = {pubId};
                              Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
                              Delete From Publication_PaperType Where PublicationID = {pubId};
                              Delete From Publication_Region Where PublicationID = {pubId};
@@ -1121,6 +1144,19 @@ namespace AngularSPAWebAPI.Services
 
             }
 
+            //Adding to Publication_SubModel
+            if (publication.SubMethodID != null && publication.SubMethodID.Length != 0)
+            {
+                string sqlSubMethod = "";
+                for (int i = 0; i < publication.SubMethodID.Length; i++)
+                {
+                    sqlSubMethod += $@"Insert into Publication_SubMethod (SubMethodID, PublicationID) Values ({publication.SubMethodID[i]}, {PublicationID});";
+
+                }
+                if (sqlSubMethod != "") { Dal.ExecuteNonQueryPub(sqlSubMethod); };
+
+            }
+
             //Adding to Publication_NeuroTransmitter
             //hanlding other for NeuroTransmitter
             ProcessOther(publication.NeurotransOther, "Neurotransmitter", "NeuroTransmitter", "Publication_NeuroTransmitter", "TransmitterID", PublicationID, Username);
@@ -1174,6 +1210,7 @@ namespace AngularSPAWebAPI.Services
                     origPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
                     origPub.CellType = Convert.ToString(dr["CellType"].ToString());
                     origPub.Method = Convert.ToString(dr["Method"].ToString());
+                    origPub.SubMethod = Convert.ToString(dr["SubMethod"].ToString());
                     origPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
                     origPub.Reference = Convert.ToString(dr["Reference"].ToString());
                 }
@@ -1464,6 +1501,21 @@ namespace AngularSPAWebAPI.Services
             //Handling Other for method
             ProcessOther(publication.MethodOther, "Method", "Method", "Publication_Method", "MethodID", publicationId, Username);
 
+            //Editing to Publication_SubMethod
+            sqlDelete = $"DELETE From Publication_SubMethod where PublicationID = {publicationId}";
+            Dal.ExecuteNonQueryPub(sqlDelete);
+            if (publication.SubMethodID != null && publication.SubMethodID.Length != 0)
+            {
+                string sqlSubMethod = "";
+                for (int i = 0; i < publication.SubMethodID.Length; i++)
+                {
+                    sqlSubMethod += $@"Insert into Publication_SubMethod (SubMethodID, PublicationID) Values ({publication.SubMethodID[i]}, {publicationId});";
+
+                }
+                if (sqlSubMethod != "") { Dal.ExecuteNonQueryPub(sqlSubMethod); };
+
+            }
+
             //Editing to Publication_NeuroTransmitter
             sqlDelete = $"DELETE From Publication_NeuroTransmitter where PublicationID = {publicationId}";
             Dal.ExecuteNonQueryPub(sqlDelete);
@@ -1513,6 +1565,7 @@ namespace AngularSPAWebAPI.Services
                     newPub.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
                     newPub.CellType = Convert.ToString(dr["CellType"].ToString());
                     newPub.Method = Convert.ToString(dr["Method"].ToString());
+                    newPub.SubMethod = Convert.ToString(dr["SubMethod"].ToString());
                     newPub.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
                     newPub.Reference = Convert.ToString(dr["Reference"].ToString());
                 }
@@ -1859,6 +1912,28 @@ namespace AngularSPAWebAPI.Services
                     sql += ") AND ";
                 }
             }
+
+            // search query for Sub Method
+            if (pubScreen.SubMethodID != null && pubScreen.SubMethodID.Length != 0)
+            {
+                if (pubScreen.SubMethodID.Length == 1)
+                {
+                    sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[0]}) +  '%' AND ";
+
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.SubMethodID.Length; i++)
+                    {
+                        sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[i]}) +  '%' OR ";
+
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+            }
+
             // search query for Neuro Transmitter
             if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
             {
@@ -1970,6 +2045,7 @@ namespace AngularSPAWebAPI.Services
                             SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
                             CellType = Convert.ToString(dr["CellType"].ToString()),
                             Method = Convert.ToString(dr["Method"].ToString()),
+                            SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
                             NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
                             Reference = Convert.ToString(dr["Reference"].ToString()),
                             Experiment = new List<Experiment>(lstExperiment),
@@ -2026,6 +2102,9 @@ namespace AngularSPAWebAPI.Services
 
             sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
             pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
+
+            sql = $"Select SubMethodID From Publication_SubMethod Where PublicationID ={id}";
+            pubScreen.SubMethodID = FillPubScreenItemArray(sql, "SubMethodID");
 
             sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
             pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
@@ -2420,6 +2499,7 @@ namespace AngularSPAWebAPI.Services
                     pubScreenPublication.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
                     pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
                     pubScreenPublication.Method = Convert.ToString(dr["Method"].ToString());
+                    pubScreenPublication.SubMethod = Convert.ToString(dr["SubMethod"].ToString());
                     pubScreenPublication.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
                     pubScreenPublication.Experiment = new List<Experiment>(lstExperiment);
                     pubScreenPublication.Repo = new List<Cogbytes>(lstRepo);

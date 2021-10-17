@@ -30,6 +30,7 @@ namespace AngularSPAWebAPI.Models
         public int?[] SubRegionID { get; set; }
         public int?[] CellTypeID { get; set; }
         public int?[] MethodID { get; set; }
+        public int?[] SubMethodID { get; set; }
         public int?[] TransmitterID { get; set; }
         public string Reference { get; set; }
         public string Source { get; set; }

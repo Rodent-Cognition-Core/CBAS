@@ -25,6 +25,7 @@ export class Pubscreen {
     public subRegionID: Array<number>;
     public cellTypeID: Array<number>;
     public methodID: Array<number>;
+    public subMethodID: Array<number>;
     public transmitterID: Array<number>;
     public author: Array<PubscreenAuthor>;
     public reference: string;

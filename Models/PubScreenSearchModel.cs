@@ -26,6 +26,7 @@ namespace AngularSPAWebAPI.Models
         public string SubRegion { get; set; }
         public string CellType { get; set; }
         public string Method { get; set; }
+        public string SubMethod { get; set; }
         public string NeuroTransmitter { get; set; }
         public string Reference { get; set; }
 

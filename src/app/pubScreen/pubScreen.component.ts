@@ -17,6 +17,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
+import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 
 
 @Component({
@@ -29,7 +30,17 @@ export class PubScreenComponent implements OnInit {
     pubCount: number;
     featureCount: number;
 
+    authorMultiSelect: any;
     strainMultiSelect: any;
+    subTaskMultiSelect: any;
+    diseaseMultiSelect: any;
+    subModelMultiSelect: any;
+    regionMultiSelect: any;
+    subRegionMultiSelect: any;
+    cellTypeMultiSelect: any;
+    methodMultiSelect: any;
+    subMethodMultiSelect: any;
+    neurotransmitterMultiSelect: any;
 
     authorModel: any;
     titleModel: any;
@@ -49,10 +60,10 @@ export class PubScreenComponent implements OnInit {
     cellTypeModel: any;
     addingOptionModel: any;
     methodModel: any;
+    subMethodModel: any;
     neurotransmitterModel: any;
     yearFromSearchModel: any;
     yearToSearchModel: any;
-    authorMultiSelect: any;
     subTaskModel: any;
 
     panelOpenState = false;
@@ -65,20 +76,22 @@ export class PubScreenComponent implements OnInit {
     strainList: any;
     diseaseList: any;
     subModelList: any;
-    regionSubregionList: any
     regionList: any;
     subRegionList: any;
     cellTypeList: any;
     methodList: any;
+    subMethodList: any;
     neurotransmitterList: any;
     authorList: any;
     authorList2: any;
     searchResultList: any;
     yearList: any;
     subTaskList: any;
-    taskSubTaskList: any;
+    subSubTaskList: any;
     subStrainList: any;
+    subSubRegionList: any;
     subSubModelList: any;
+    subSubMethodList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
 
@@ -95,6 +108,34 @@ export class PubScreenComponent implements OnInit {
 
     public strainMultiFilterCtrl: FormControl = new FormControl();
     public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subTaskMultiFilterCtrl: FormControl = new FormControl();
+    public filteredSubTaskList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public diseaseMultiFilterCtrl: FormControl = new FormControl();
+    public filteredDiseaseList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subModelMultiFilterCtrl: FormControl = new FormControl();
+    public filteredSubModelList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public regionMultiFilterCtrl: FormControl = new FormControl();
+    public filteredRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subRegionMultiFilterCtrl: FormControl = new FormControl();
+    public filteredSubRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public cellTypeMultiFilterCtrl: FormControl = new FormControl();
+    public filteredCellTypeList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public methodMultiFilterCtrl: FormControl = new FormControl();
+    public filteredMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subMethodMultiFilterCtrl: FormControl = new FormControl();
+    public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public neurotransmitterMultiFilterCtrl: FormControl = new FormControl();
+    public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -107,7 +148,8 @@ export class PubScreenComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,) { }
+        private spinnerService: Ng4LoadingSpinnerService,
+        public dialogML: MatDialog,    ) { }
 
     ngOnInit() {
 
@@ -118,18 +160,21 @@ export class PubScreenComponent implements OnInit {
             console.log(this.featureCount);
         });
         this.GetAuthorList();
-        this.GetStrainList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
+        this.GetSubTaskList();
+        // this.pubScreenService.getTaskSubTask().subscribe(data => { this.subTaskList = data; });
         this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
         this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
-        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; });
-        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; });
-        this.pubScreenService.getSubModels().subscribe(data => { this.subModelList = data;});
-        this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
-        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
+        this.GetStrainList();
+        this.GetDiseaseList();
+        this.GetSubModelList();
+        this.GetRegionList();
+        this.GetSubRegionList();
+        this.GetCellTypeList();
+        this.GetMethodList();
+        this.GetSubMethodList();
+        this.GetNeurotransmitterList();
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
@@ -191,6 +236,150 @@ export class PubScreenComponent implements OnInit {
         return this.strainList;
     }
 
+    GetSubTaskList() {
+
+        this.pubScreenService.getTaskSubTask().subscribe(data => {
+            this.subTaskList = data;
+
+            this.subTaskMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubTask();
+                });
+
+        });
+
+        return this.subTaskList;
+    }
+
+    GetDiseaseList() {
+
+        this.pubScreenService.getDisease().subscribe(data => {
+            this.diseaseList = data;
+            this.filteredDiseaseList.next(this.diseaseList.slice());
+            this.diseaseMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterDisease();
+                });
+
+        });
+
+        return this.diseaseList;
+    }
+
+    GetSubModelList() {
+
+        this.pubScreenService.getSubModels().subscribe(data => {
+            this.subModelList = data;
+
+            this.subModelMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubModel();
+                });
+
+        });
+
+        return this.subModelList;
+    }
+
+    GetRegionList() {
+
+        this.pubScreenService.getRegion().subscribe(data => {
+            this.regionList = data;
+            this.filteredRegionList.next(this.regionList.slice());
+            this.regionMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterRegion();
+                });
+
+        });
+
+        return this.regionList;
+    }
+
+    GetSubRegionList() {
+
+        this.pubScreenService.getRegionSubRegion().subscribe(data => {
+            this.subRegionList = data;
+
+            this.subRegionMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubRegion();
+                });
+
+        });
+
+        return this.subRegionList;
+    }
+
+    GetCellTypeList() {
+
+        this.pubScreenService.getCellType().subscribe(data => {
+            this.cellTypeList = data;
+            this.filteredCellTypeList.next(this.cellTypeList.slice());
+            this.cellTypeMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterCellType();
+                });
+
+        });
+
+        return this.cellTypeList;
+    }
+
+    GetMethodList() {
+
+        this.pubScreenService.getMethod().subscribe(data => {
+            this.methodList = data;
+            this.filteredMethodList.next(this.methodList.slice());
+            this.methodMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterMethod();
+                });
+
+        });
+
+        return this.methodList;
+    }
+
+    GetSubMethodList() {
+
+        this.pubScreenService.getSubMethod().subscribe(data => {
+            this.subMethodList = data;
+
+            this.subMethodMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubMethod();
+                });
+
+        });
+
+        return this.subMethodList;
+    }
+
+    GetNeurotransmitterList() {
+
+        this.pubScreenService.getNeurotransmitter().subscribe(data => {
+            this.neurotransmitterList = data;
+            this.filteredNeurotransmitterList.next(this.neurotransmitterList.slice());
+            this.neurotransmitterMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterNeurotransmitter();
+                });
+
+        });
+
+        return this.neurotransmitterList;
+    }
+
     // handling multi filtered Author list
     private filterAuthor() {
         if (!this.authorList) {
@@ -235,18 +424,208 @@ export class PubScreenComponent implements OnInit {
         );
     }
 
+    // handling multi filtered SubTask list
+    private filterSubTask() {
+        if (!this.subSubTaskList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubTask = this.subTaskMultiFilterCtrl.value;
+
+        if (!searchSubTask) {
+            this.filteredSubTaskList.next(this.subSubTaskList.slice());
+            return;
+        } else {
+            searchSubTask = searchSubTask.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubTaskList.next(
+            this.subSubTaskList.filter(x => x.subTask.toLowerCase().indexOf(searchSubTask) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterDisease() {
+        if (!this.diseaseList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchDisease = this.diseaseMultiFilterCtrl.value;
+
+        if (!searchDisease) {
+            this.filteredDiseaseList.next(this.diseaseList.slice());
+            return;
+        } else {
+            searchDisease = searchDisease.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredDiseaseList.next(
+            this.diseaseList.filter(x => x.diseaseModel.toLowerCase().indexOf(searchDisease) > -1)
+        );
+    }
+
+    // handling multi filtered SubTask list
+    private filterSubModel() {
+        if (!this.subSubModelList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubModel = this.subModelMultiFilterCtrl.value;
+
+        if (!searchSubModel) {
+            this.filteredSubModelList.next(this.subSubModelList.slice());
+            return;
+        } else {
+            searchSubModel = searchSubModel.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubModelList.next(
+            this.subSubModelList.filter(x => x.subModel.toLowerCase().indexOf(searchSubModel) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterRegion() {
+        if (!this.regionList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchRegion = this.regionMultiFilterCtrl.value;
+
+        if (!searchRegion) {
+            this.filteredRegionList.next(this.regionList.slice());
+            return;
+        } else {
+            searchRegion = searchRegion.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredRegionList.next(
+            this.regionList.filter(x => x.brainRegion.toLowerCase().indexOf(searchRegion) > -1)
+        );
+    }
+
+    // handling multi filtered Sub Region list
+    private filterSubRegion() {
+        if (!this.subSubRegionList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubRegion = this.subRegionMultiFilterCtrl.value;
+
+        if (!searchSubRegion) {
+            this.filteredSubRegionList.next(this.subSubRegionList.slice());
+            return;
+        } else {
+            searchSubRegion = searchSubRegion.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubRegionList.next(
+            this.subSubRegionList.filter(x => x.subRegion.toLowerCase().indexOf(searchSubRegion) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterCellType() {
+        if (!this.cellTypeList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchCellType = this.cellTypeMultiFilterCtrl.value;
+
+        if (!searchCellType) {
+            this.filteredCellTypeList.next(this.cellTypeList.slice());
+            return;
+        } else {
+            searchCellType = searchCellType.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredCellTypeList.next(
+            this.cellTypeList.filter(x => x.cellType.toLowerCase().indexOf(searchCellType) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterMethod() {
+        if (!this.methodList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchMethod = this.methodMultiFilterCtrl.value;
+
+        if (!searchMethod) {
+            this.filteredMethodList.next(this.methodList.slice());
+            return;
+        } else {
+            searchMethod = searchMethod.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredMethodList.next(
+            this.methodList.filter(x => x.method.toLowerCase().indexOf(searchMethod) > -1)
+        );
+    }
+
+    // handling multi filtered SubTask list
+    private filterSubMethod() {
+        if (!this.subSubMethodList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubMethod = this.subMethodMultiFilterCtrl.value;
+
+        if (!searchSubMethod) {
+            this.filteredSubMethodList.next(this.subSubMethodList.slice());
+            return;
+        } else {
+            searchSubMethod = searchSubMethod.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubMethodList.next(
+            this.subSubMethodList.filter(x => x.subMethod.toLowerCase().indexOf(searchSubMethod) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterNeurotransmitter() {
+        if (!this.neurotransmitterList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchNeurotransmitter = this.neurotransmitterMultiFilterCtrl.value;
+
+        if (!searchNeurotransmitter) {
+            this.filteredNeurotransmitterList.next(this.neurotransmitterList.slice());
+            return;
+        } else {
+            searchNeurotransmitter = searchNeurotransmitter.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredNeurotransmitterList.next(
+            this.neurotransmitterList.filter(x => x.neuroTransmitter.toLowerCase().indexOf(searchNeurotransmitter) > -1)
+        );
+    }
+
     selectedTaskChange(SelectedTask) {
         this.subTaskModel = [];
-        this.pubScreenService.getTaskSubTask().subscribe(data => {
-            this.taskSubTaskList = data;
-            //console.log(this.SubtaskList);
-            var filtered = this.taskSubTaskList.filter(function (item) {
-                return SelectedTask.indexOf(item.taskID) !== -1;
-            });
-
-            //console.log(filtered);
-            this.subTaskList = JSON.parse(JSON.stringify(filtered));
-        });
+        this.subSubTaskList = this.subTaskList.filter(x => SelectedTask.includes(x.taskID));
+        this.filteredSubTaskList.next(this.subSubTaskList.slice());
     }
 
     selectedSpeciesChange(SelectedSpecies) {
@@ -258,22 +637,19 @@ export class PubScreenComponent implements OnInit {
     selectedModelChange(SelectedModels) {
         this.subModel = [];
         this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
+        this.filteredSubModelList.next(this.subSubModelList.slice());
+    }
+
+    selectedMethodChange(SelectedMethods) {
+        this.subMethodModel = [];
+        this.subSubMethodList = this.subMethodList.filter(x => SelectedMethods.includes(x.methodID));
+        this.filteredSubMethodList.next(this.subSubMethodList.slice());
     }
 
     selectedRegionChange(SelectedRegion) {
         this.subRegionModel = [];
-        this.pubScreenService.getRegionSubRegion().subscribe(data => {
-            this.regionSubregionList = data;
-            //console.log(this.regionSubregionList);
-            var filtered = this.regionSubregionList.filter(function (item) {
-                return SelectedRegion.indexOf(item.rid) !== -1;
-            });
-
-            //console.log(filtered);
-            this.subRegionList = JSON.parse(JSON.stringify(filtered));
-        });
-
-       
+        this.subSubRegionList = this.subRegionList.filter(x => SelectedRegion.includes(x.rid));
+        this.filteredSubRegionList.next(this.subSubRegionList.slice());
     }
 
     setDisabledValSearch() {
@@ -351,6 +727,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.subRegionID = this.subRegionModel;
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
+        this._pubSCreenSearch.subMethodID = this.subMethodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
         this._pubSCreenSearch.yearTo = this.yearToSearchModel;
@@ -407,7 +784,17 @@ export class PubScreenComponent implements OnInit {
 
     }
 
+    //Function Definition to open a dialog for adding new mouse line to the system
+    openDialogGeneral(): void {
 
+        let dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
+            height: '600px',
+            width: '700px',
+            data: {}
+
+        });
+
+    }
 
 }
 
