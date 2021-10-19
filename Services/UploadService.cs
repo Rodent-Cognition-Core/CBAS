@@ -1803,8 +1803,8 @@ namespace AngularSPAWebAPI.Services
 
             double[] hitRate = new double[4];
             double[] falseAlarmRate = new double[4];
-            double[] sensitivity = new double[4];
-            double[] responseBias = new double[4];
+            double?[] sensitivity = new double?[4];
+            double?[] responseBias = new double?[4];
             double?[] hitLatency = new double?[4];
             double?[] falseAlarmLatency = new double?[4];
             double?[] rewardLatency = new double?[4];
@@ -1832,8 +1832,10 @@ namespace AngularSPAWebAPI.Services
                 };
                 //hitRate[i] = (double)sessionHit[i] / (double)(sessionHit[i] + sessionMiss[i]);
                 //falseAlarmRate[i] = (double)sessionMistake[i] / (double)(sessionMistake[i] + sessionCorrej[i]);
-                double hrz = Normal.InvCDF(0, 1, hitRate[i]);
-                double farz = Normal.InvCDF(0, 1, falseAlarmRate[i]);
+                double? hrz = Normal.InvCDF(0, 1, hitRate[i]);
+                hrz = double.IsInfinity((double)hrz) ? null : hrz;
+                double? farz = Normal.InvCDF(0, 1, falseAlarmRate[i]);
+                farz = double.IsInfinity((double)farz) ? null : farz;
                 sensitivity[i] = hrz - farz;
                 responseBias[i] = 0.5 * (hrz + farz);
                 hitLatency[i] = sessionCorlat[i].Average();
