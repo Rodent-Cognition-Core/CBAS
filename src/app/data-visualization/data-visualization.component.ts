@@ -24,7 +24,8 @@ export class DataVisualizationComponent implements OnInit {
     public cogTaskList: any[] = [
         { cogTaskID: 1, name: '5-CSRTT' },
         { cogTaskID: 2, name: 'PAL' },
-        { cogTaskID: 3, name: 'PD' }
+        { cogTaskID: 3, name: 'PD' },
+        { cogTaskID: 4, name: 'iCPT' }
     ];
 
     //private filteringSchemeNames: any = {
@@ -80,6 +81,10 @@ export class DataVisualizationComponent implements OnInit {
         }
         else if (this.selectedCogTaskValue == 3) {
             this.loadAnalysis("MB_PD_userbased");
+
+        }
+        else if (this.selectedCogTaskValue == 4) {
+            this.loadAnalysis("MB_CPT_userbased");
 
         }
 
