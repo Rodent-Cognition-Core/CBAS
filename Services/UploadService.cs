@@ -1811,7 +1811,7 @@ namespace AngularSPAWebAPI.Services
 
             for (int i = 0; i < 4; i++)
             {
-                string[] distState = { "No Distractor ", "Distrator Presentation ", "Distractor 0.5s Delay ", "Distractor 1s Delay " };
+                string[] distState = { "No Distractor ", "Distractor Presentation ", "Distractor 0.5s Delay ", "Distractor 1s Delay " };
 
                 // Calculated features
                 if (sessionMiss[i] == 0)
