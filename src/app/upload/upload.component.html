@@ -9,6 +9,14 @@
             <tr *ngIf="experimentID!=null && subExpID!=null">
                 <td class="docs-markdown-td" style="height:25px; color:#566573">
                     Task of selected experiment is <b>{{expTask}}</b>. Please select the session type or schedule name of the xml files you want to upload: &nbsp;
+                    <div *ngIf="expTask == 'Image Continuous Performance Task (iCPT)'">
+                        <br />
+                        <span style="color: red; font-weight:bold">
+                            NOTE: CPT is undergoing changes in the ABET-II Analysis File.  We suggest you not upload your CPT files until further notice.
+                            If you have any questions, please feel free to email mousebyt@uwo.ca
+                        </span>
+                        <br />
+                    </div>
                     <mat-form-field>
                         <mat-select placeholder="Select Session Type" [(ngModel)]="sessionNameVal">
                             <mat-option *ngFor="let session of SessionList" [value]="session.sessionName">
