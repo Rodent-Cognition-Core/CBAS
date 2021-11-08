@@ -945,8 +945,9 @@ namespace AngularSPAWebAPI.Services
             float? durationVal = null;
             foreach (KeyValuePair<string, float?> entry in cptFeatureDict)
             {
-                if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency")
-                    || entry.Key.Contains("Hit Latency") || entry.Key.Contains("False Alarm Latency") || entry.Key.Contains("Reward Latency"))
+                //if (entry.Key.Contains("Correct Choice Latency") || entry.Key.Contains("Reward Retrieval Latency") || entry.Key.Contains("Incorrect Choice Latency")
+                //    || entry.Key.Contains("Hit Latency") || entry.Key.Contains("False Alarm Latency") || entry.Key.Contains("Reward Latency"))
+                if (entry.Key.Contains("Latency"))
                 {
                     sourceType = 3;
                     durationVal = entry.Value;
@@ -1431,10 +1432,10 @@ namespace AngularSPAWebAPI.Services
                 var titleResponseBias = $"Response Bias at {distSDValues.ToList()[0]}s";
 
                 // Adding key/value pairs in cptFeatureDict 
-                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
-                cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
-                cptFeatureDict.Add(titleCTLatency, avgCTLatency / 1000000);
+                cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency);
+                cptFeatureDict.Add(titleRewardLatency, avgRewardLatency);
+                cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency);
+                cptFeatureDict.Add(titleCTLatency, avgCTLatency);
 
                 //cptFeatureDict.Add(titleHit, sumHit);
                 //cptFeatureDict.Add(titleMiss, sumMiss);
@@ -1491,8 +1492,8 @@ namespace AngularSPAWebAPI.Services
                         var titleCorrectLatency = $"Average - Correct Choice Latency at {sd.ToString()}s SD";
                         var titleRewardLatency = $"Average - Reward Retrieval Latency at {sd.ToString()}s SD";
 
-                        cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                        cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                        cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency);
+                        cptFeatureDict.Add(titleRewardLatency, avgRewardLatency);
                     }
 
                 }
@@ -1530,9 +1531,9 @@ namespace AngularSPAWebAPI.Services
                         {
                             float avgIncorrectLatency = Convert.ToSingle(dt_incorrect_latency.Compute("AVG(IncorrectLatency)", "SD = " + sd));
 
-                            var titleInCorrectLatency = $"Average - Incorrect Choice Latency at {sd.ToString()}s SD";
+                            var titleInCorrectLatency = $"Average - Mistake Latency at {sd.ToString()}s SD";
 
-                            cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency / 1000000);
+                            cptFeatureDict.Add(titleInCorrectLatency, avgIncorrectLatency);
                         }
                         else
                         {
@@ -1754,7 +1755,7 @@ namespace AngularSPAWebAPI.Services
                                     {
                                         sessionMistake[distState]++;
                                         //sessionIncorlat[distState].Add(lstIncorLatency[incorlatMod++]);
-                                        sessionIncorlat[distState].Add((double?)lstIncorLatency[i] / 1000000.0);
+                                        sessionIncorlat[distState].Add((double?)lstIncorLatency[i]);
                                         corrActive = true;
                                     }
                                 }
@@ -1772,8 +1773,8 @@ namespace AngularSPAWebAPI.Services
                                         sessionHit[distState]++;
                                         //sessionCorlat[distState].Add(lstCorrectLatency[corlatMod++]);
                                         //sessionRewlat[distState].Add(lstRewatdLatency[rewlatMod++]);
-                                        sessionCorlat[distState].Add((double?)lstCorrectLatency[i] / 1000000.0);
-                                        sessionRewlat[distState].Add((double?)lstRewatdLatency[i] / 1000000.0);
+                                        sessionCorlat[distState].Add((double?)lstCorrectLatency[i]);
+                                        sessionRewlat[distState].Add((double?)lstRewatdLatency[i]);
                                     }
                                 }
                                 else
@@ -1850,9 +1851,9 @@ namespace AngularSPAWebAPI.Services
                 cptFeatureDict.Add(distState[i] + "False Alarm Rate", (float?)falseAlarmRate[i]);
                 cptFeatureDict.Add(distState[i] + "Sensitivity (d)", (float?)sensitivity[i]);
                 cptFeatureDict.Add(distState[i] + "Response Bias", (float?)responseBias[i]);
-                cptFeatureDict.Add(distState[i] + "Hit Latency", (float?)hitLatency[i]); // / 1000000);
-                cptFeatureDict.Add(distState[i] + "False Alarm Latency", (float?)falseAlarmLatency[i]); // / 1000000);
-                cptFeatureDict.Add(distState[i] + "Reward Latency", (float?)rewardLatency[i]); // / 10000000);
+                cptFeatureDict.Add(distState[i] + "Hit Latency", (float?)hitLatency[i]);
+                cptFeatureDict.Add(distState[i] + "False Alarm Latency", (float?)falseAlarmLatency[i]);
+                cptFeatureDict.Add(distState[i] + "Reward Latency", (float?)rewardLatency[i]);
             }
 
             return cptFeatureDict;
@@ -1924,8 +1925,8 @@ namespace AngularSPAWebAPI.Services
                     var titleCorrectLatency = $"Average - Correct Choice Latency at {contrastLevel.ToString()} contrast level";
                     var titleRewardLatency = $"Average - Reward Retrieval Latency at {contrastLevel.ToString()} contrast level";
 
-                    cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency / 1000000);
-                    cptFeatureDict.Add(titleRewardLatency, avgRewardLatency / 1000000);
+                    cptFeatureDict.Add(titleCorrectLatency, avgCorrectLatency);
+                    cptFeatureDict.Add(titleRewardLatency, avgRewardLatency);
                 }
 
             }
