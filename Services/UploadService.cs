@@ -1575,12 +1575,10 @@ namespace AngularSPAWebAPI.Services
                     {
                         var countSD = Convert.ToInt32(dt.Select("SD = " + sd).Count());
 
-                        var sumHitNaive = lstHits.Sum(x => Convert.ToInt32(x));
-                        var sumHit = lstCorrectLatency.Count(x => x != null);
-                        var sumMiss = lstMiss.Sum(x => Convert.ToInt32(x));
-                        var sumMistakeNaive = lstMistake.Sum(x => Convert.ToInt32(x));
-                        var sumMistake = lstIncorLatency.Count(x => x != null);
-                        var sumCorrectRejection = lstcCorrectRejection.Sum(x => Convert.ToInt32(x));
+                        var sumHit = Convert.ToInt32(dt.Compute("Sum(Hit)", "SD = " + sd));
+                        var sumMiss = Convert.ToInt32(dt.Compute("Sum(Miss)", "SD = " + sd));
+                        var sumMistake = Convert.ToInt32(dt.Compute("Sum(Mistake)", "SD = " + sd));
+                        var sumCorrectRejection = Convert.ToInt32(dt.Compute("Sum(CorrectRejection)", "SD = " + sd));
 
                         // Calculated features
                         float hitRate, falseAlarmRate;
