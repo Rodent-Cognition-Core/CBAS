@@ -19,8 +19,8 @@ class PubmedSpider(Spider):
     def __init__(self):
         # Connect to pubscreen database
         self.conn = pyodbc.connect('Driver={SQL Server};'
-                                   'Server=.\\SQLEXPRESS;'
-                                   'Database=Pubscreen_NEW;'
+                                   'Server=.\\sqlstandard2017;'
+                                   'Database=PubScreen;'
                                    'Trusted_Connection=True')
         self.cursor = self.conn.cursor()
 
@@ -106,9 +106,9 @@ class PubmedSpider(Spider):
                 server.starttls(context=context)
                 server.login(sender_email, "")
 
-                # If there was an error, send email to Eric
+                # If there was an error, send email to Mousebytes
                 if self.is_error:
-                    receiver_email = "ejiang6@uwo.ca"
+                    receiver_email = "mousebyt@uwo.ca"
                     msg = MIMEText(open("log.txt").read())
                     msg['Subject'] = "ERROR IN PUBMED_SPIDER"
                     msg['From'] = sender_email
@@ -117,7 +117,7 @@ class PubmedSpider(Spider):
 
                 # If queue was updated, send email to Julie
                 if self.is_queue_updated:
-                    receiver_email = "ejiang6@uwo.ca"
+                    receiver_email = "jdumont2@uwo.ca"
                     msg = MIMEText(open("julie_msg.txt").read())
                     msg['Subject'] = "Pubscreen Queue Updated"
                     msg['From'] = sender_email
