@@ -128,7 +128,7 @@ export class DataVisualizationComponent implements OnInit {
         //customization.showUndoRedo = false;
         customization.showCollaboration = false;
 
-        this.app = new spotfire.webPlayer.Application("https://mouse.cac.queensu.ca/spotfire/wp/", customization);
+        this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = 'mbusername=\"' + this.user.userName + '\";';
 
         var onError = function (errorCode, description) {
@@ -144,7 +144,7 @@ export class DataVisualizationComponent implements OnInit {
 
         this.app.open("/Public/User_Based_Visualizations/" + spotfireAnalysisName, "contentpanel", configuration);
 
-        // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan: http://localhost:4200/data-visualization?taskid=2&sara=1,3
+        // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan: https://mousebytes.ca/data-visualization?taskid=2&sara=1,3
         // 2. when user comes to this page with querystring set, get values from querystring and set filters
 
 
@@ -190,7 +190,7 @@ export class DataVisualizationComponent implements OnInit {
     //    //this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
     //    //});
 
-    //    //this.dialogRefLink.componentInstance.message = "http://localhost:4200/" + "?taskid=" + this.selectedCogTaskValue + filterQuerystring;
+    //    //this.dialogRefLink.componentInstance.message = "https://mousebytes.ca/" + "?taskid=" + this.selectedCogTaskValue + filterQuerystring;
 
 
 

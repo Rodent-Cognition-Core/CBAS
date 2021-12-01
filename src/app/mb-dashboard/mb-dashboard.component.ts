@@ -69,7 +69,7 @@ export class MBDashboardComponent implements OnInit {
         //customization.showUndoRedo = false;
         customization.showCollaboration = false;
 
-        this.app = new spotfire.webPlayer.Application("https://mouse.cac.queensu.ca/spotfire/wp/", customization);
+        this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = '';
 
         var onError = function (errorCode, description) {
