@@ -1,5 +1,8 @@
 <h1 mat-dialog-title></h1>
-<div mat-dialog-content>{{message}}</div>
+<div mat-dialog-content>{{message}}&nbsp;<button mat-icon-button matTooltip="Copy Content"  (click)="copyMessage(message)"><mat-icon>content_copy</mat-icon></button></div>
 <div mat-dialog-actions>
+    <!--<button [cdkCopyToClipboard]="message">Copy to clipboard</button>-->
+    
     <button mat-button (click)="dialogRef.close(false)">close</button>
+
 </div>

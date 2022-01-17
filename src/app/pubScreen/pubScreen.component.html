@@ -4,8 +4,10 @@
 
     <div class="content">
         <p style="padding-left:50px; text-align-last:center">
-            <span style="text-align: left; width:100%">PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
-            that match the search criteria.</span>
+            <span style="text-align: left; width:100%">
+                PubScreen is an interactive database enabling users to deposit key features from papers that use touchscreen technology and also to search/find the publication(s)
+                that match the search criteria.
+            </span>
             <br /><br /><br />
             <!--<span style="color: #ceaafb">{{pubCount}}</span> Total Publications in Pubscreen-->
             <span countUp [endVal]="pubCount" style="color: #663399; font-size:large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Total Publications in Pubscreen</span>
@@ -138,13 +140,13 @@
 
                             <!--Cognitive Task or subtasks-->
                             <!--<mat-form-field style="width:15%; padding-left:30px">
-        <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" multiple>
-            <mat-option *ngFor="let subtask of subSubTaskList" [value]="subtask.id">
-                <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
-            </mat-option>
-        </mat-select>
+                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="subTaskModel" multiple>
+                                    <mat-option *ngFor="let subtask of subSubTaskList" [value]="subtask.id">
+                                        <span matTooltip="{{subtask.subTask}}">{{subtask.subTask}}</span>
+                                    </mat-option>
+                                </mat-select>
 
-    </mat-form-field>-->
+                            </mat-form-field>-->
                             <!--SubTask-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
@@ -203,17 +205,18 @@
                             </mat-form-field>
 
                             <!--SubModel-->
-                            <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                            <span [hidden]="subSubModelList == null || subSubModelList == 'undefined' || subSubModelList.length == 0">
+                                <mat-form-field style="width:15%; padding-left:30px">
+                                    <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
 
-                                    <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
-                                        <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
+                                        <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
+                                            <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </span>
                             <!--Region-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
@@ -252,7 +255,7 @@
                             </mat-form-field>
 
                             <br />
-                            
+
                             <!--Method-->
                             <mat-form-field style="width:15%">
                                 <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
@@ -266,20 +269,21 @@
                             </mat-form-field>
 
                             <!--SubMethod-->
-                            <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                            <span [hidden]="subSubMethodList == null || subSubMethodList == 'undefined' || subSubMethodList.length == 0">
+                                <mat-form-field style="width:15%; padding-left:30px">
+                                    <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
 
-                                    <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
-                                        <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
+                                        <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
+                                            <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </span>
                             <!--NeuroTransmitter Systems-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Neurotransmitter System(s)" [(ngModel)]="neurotransmitterModel" multiple>
+                                <mat-select placeholder="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -328,7 +332,7 @@
                     <td>
                         <label style="color:#8D8E90"><b>Paper Information:</b></label>
                         <span *ngIf="isAdmin || isUser" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                        <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Get Paper Link" (click)="getLink(row.paperLinkGuid)"><mat-icon>link</mat-icon></button></span>&nbsp;
+                        <span style="float:right;"><button mat-icon-button matTooltip="Get Paper Link" (click)="getLink(row.paperLinkGuid)"><mat-icon>link</mat-icon></button></span>&nbsp;
                         <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
                         <div style="clear:both"></div>
                         <br />

@@ -303,17 +303,18 @@
                     </span>
 
                     <!--SubRodent Model----------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                    <span [hidden]="subSubModelList == null || subSubModelList == 'undefined' || subSubModelList.length == 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
 
-                            <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
-                                <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
+                                <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
+                                    <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
                     <!--Region-->
                     <mat-form-field style="width:15%; padding-left:30px">
                         <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
@@ -385,20 +386,21 @@
                     </span>
 
                     <!--SubMethod Model----------------------------------->
-                    <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                    <span [hidden]="subSubMethodList == null || subSubMethodList == 'undefined' || subSubMethodList.length == 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
 
-                            <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
-                                <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
+                                <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
+                                    <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
                     <!--NeuroTransmitter Systems------------------------>
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Neurotransmitter System(s)" [(ngModel)]="neurotransmitterModel" multiple>
+                        <mat-select placeholder="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
 
                             <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
 
