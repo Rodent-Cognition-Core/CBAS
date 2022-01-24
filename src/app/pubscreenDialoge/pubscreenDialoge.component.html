@@ -317,7 +317,7 @@
                     </span>
                     <!--Region-->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Brain Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                        <mat-select placeholder="Select Neuroanaotmical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
                             <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -328,16 +328,18 @@
                     </mat-form-field>
 
                     <!--SubRegion-->
-                    <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Sub-brain Region(s)" [(ngModel)]="subRegionModel" multiple>
+                    <span [hidden]="subSubRegionList == null || subSubRegionList == 'undefined' || subSubRegionList.length == 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Neuroanaotmical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
-                            <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
-                                <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                                <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
+                                    <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
 
                     <!--CellType------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
