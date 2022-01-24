@@ -47,12 +47,12 @@
                         <label>Rodent Model(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.diseaseModel =="") ?  "N/A" : paperInfo.diseaseModel}}</span>&nbsp; &nbsp; &nbsp;
                         <label>Sub-Rodent Model(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subModel =="") ?  "N/A" : paperInfo.subModel}}</span>&nbsp; &nbsp; &nbsp;
 
-                        <label>Brain Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.brainRegion =="") ?  "N/A" : paperInfo.brainRegion}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Sub-brain Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subRegion =="") ?  "N/A" : paperInfo.subRegion}}</span><br /><br />
+                        <label>Neuroanatomical Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.brainRegion =="") ?  "N/A" : paperInfo.brainRegion}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Sub-Neuroanatomical Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subRegion =="") ?  "N/A" : paperInfo.subRegion}}</span><br /><br />
                         <label>Cell Type(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.cellType =="") ?  "N/A" : paperInfo.cellType}}</span>&nbsp; &nbsp; &nbsp;
                         <label>Method(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.method =="") ?  "N/A" : paperInfo.method}}</span>&nbsp; &nbsp; &nbsp;
                         <label>Sub-Method(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subMethod =="") ?  "N/A" : paperInfo.subMethod}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Neurotransmitter:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.neuroTransmitter =="") ?  "N/A" : paperInfo.neuroTransmitter}}</span><br /><br />
+                        <label>Neurochemical:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.neuroTransmitter =="") ?  "N/A" : paperInfo.neuroTransmitter}}</span><br /><br />
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="paperInfo.experiment.length>0">
                             <mat-expansion-panel-header>
