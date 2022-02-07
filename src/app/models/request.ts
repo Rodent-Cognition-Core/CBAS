@@ -20,4 +20,6 @@ export class Request {
     public subModel: string;
     public generalRequest: string;
     public genotype: string;
+    public method: string;
+    public subMethod: string;
 } 

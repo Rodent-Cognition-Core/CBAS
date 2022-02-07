@@ -189,8 +189,8 @@
                     <label style="color:#566573">Key Features:</label><br />
                     Note: if the relevant task or task category is not included in the dropdown lists, please fill the 'Adding new Pubscreen task' form <a href="http://localhost:4200/forms">here</a>.
                     <br />
-                    <span *ngIf="diseaseModel.length > 0">If the relevant sub-rodent model is not included in the dropdown list, please fill the 'Adding new Pubscreen sub-rodent model' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
-
+                    <span *ngIf="diseaseModel.includes(14) > 0">If the relevant sub-rodent model is not included in the dropdown list, please fill the 'Adding new Pubscreen sub-rodent model' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
+                    <span *ngIf="methodModel.includes(23)">If the relevant sub method is not included in the dropdown list, please fill the 'Adding new sub method' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
                     <!--Cognitive Task or Task Category--------------------------------->
                     <mat-form-field style="width:15%;">
                         <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
@@ -220,6 +220,8 @@
                                 <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                             </mat-option>
                         </mat-select>
+
+
 
                         <!--<mat-error *ngIf="specie.invalid">{{getErrorMessageSpecie()}}</mat-error>-->
                     </mat-form-field>
@@ -317,7 +319,7 @@
                     </span>
                     <!--Region-->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Neuroanatomical Region(s)" matTooltip="Select Neuroanatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                        <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
                             <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -330,7 +332,7 @@
                     <!--SubRegion-->
                     <span [hidden]="subSubRegionList == null || subSubRegionList == 'undefined' || subSubRegionList.length == 0">
                         <mat-form-field style="width:15%; padding-left:30px">
-                            <mat-select placeholder="Select Sub-Neuroanatomical Region(s)" matTooltip="Select Sub-Neuroanatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
+                            <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
                                 <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -377,7 +379,7 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <span *ngIf="methodModel.includes(23)">
+                    <!--<span *ngIf="methodModel.includes(23)">
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
@@ -385,7 +387,7 @@
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one method, separate them by semicolon ( ; )"></fa>
-                    </span>
+                    </span>-->
 
                     <!--SubMethod Model----------------------------------->
                     <span [hidden]="subSubMethodList == null || subSubMethodList == 'undefined' || subSubMethodList.length == 0">

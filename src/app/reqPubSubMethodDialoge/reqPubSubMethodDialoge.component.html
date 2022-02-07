@@ -1,0 +1,58 @@
+<div>
+    <h3 mat-dialog-title>Please fill the form to add new Pubscreen sub-method:</h3>
+
+    <mat-dialog-content>
+        <br />
+
+        <!--<app-shared-experiment></app-shared-experiment>-->
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameMethod" required>
+            <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailMethod" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
+            <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIMethod" required>
+            <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
+
+        </mat-form-field>
+
+
+        <!--Rodent Model or Task Category-->
+        <mat-form-field class="full-width">
+            <mat-select placeholder="Select Method" [formControl]="method" [(ngModel)]="reqMethod" required>
+                <mat-option *ngFor="let method of methodList" [value]="method.method">
+                    <span matTooltip="{{method.method}}">{{method.method}}</span>
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="method.invalid">{{getErrorMessageMethod()}}</mat-error>
+
+        </mat-form-field>
+
+        <br />
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="New Sub-method" [formControl]="newSubMethod" [(ngModel)]="reqNewSubMethod" required>
+            <mat-error *ngIf="newSubMethod.invalid">{{getErrorMessageNewSubMethod()}}</mat-error>
+
+        </mat-form-field>
+
+
+
+    </mat-dialog-content>
+    <br />
+
+    <mat-dialog-actions>
+        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+    </mat-dialog-actions>
+
+</div>

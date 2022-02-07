@@ -560,7 +560,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSpecie> GetSpecies()
         {
             List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species Order By (Case When Species not like '%Other%' Then 1 Else 2 End), Species"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species Order By (Case When Species not like '%Other%'  and  Species  <> ltrim(rtrim('none')) Then 1 Else 2 End), Species"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -604,7 +604,7 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
             using (DataTable dt = Dal.GetDataTablePub($@"Select Strain.ID, Strain, SpeciesID
                                                             From Strain Inner Join Species On Strain.SpeciesID = Species.ID
-                                                            Order By (Case When Strain not like '%Other%' Then 1 Else 2 End), Species, Strain"))
+                                                            Order By (Case When Strain not like '%Other%'  and  Strain  <> ltrim(rtrim('none')) Then 1 Else 2 End), Species, Strain"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -625,7 +625,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenDisease> GetDisease()
         {
             List<PubScreenDisease> DiseaseList = new List<PubScreenDisease>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel Order By (Case When DiseaseModel not like '%Other%' Then 1 Else 2 End), DiseaseModel"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel Order By (Case When DiseaseModel not like '%Other%'  and  DiseaseModel  <> ltrim(rtrim('none')) Then 1 Else 2 End), DiseaseModel"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -648,7 +648,7 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenSubModel> SubModelList = new List<PubScreenSubModel>();
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel.ID, SubModel, ModelID
                                                             From SubModel Inner Join DiseaseModel On SubModel.ModelID = DiseaseModel.ID
-                                                            Order By (Case When SubModel not like '%Other%' Then 1 Else 2 End), DiseaseModel, SubModel"))
+                                                            Order By (Case When SubModel not like '%Other%'  and  SubModel  <> ltrim(rtrim('none'))  Then 1 Else 2 End), DiseaseModel, SubModel"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -671,7 +671,7 @@ namespace AngularSPAWebAPI.Services
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion.ID, SubRegion.RID, BrainRegion.BrainRegion, SubRegion.SubRegion 
                                                              From SubRegion
                                                              Inner join BrainRegion on BrainRegion.ID = SubRegion.RID
-                                                             Order By (Case When SubRegion not like '%Other%' Then 1 Else 2 End), RID, SubRegion"))
+                                                             Order By (Case When SubRegion not like '%Other%'  and  SubRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), RID, SubRegion"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -694,7 +694,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenRegion> GetRegions()
         {
             List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion Order By (Case When BrainRegion not like '%Other%' Then 1 Else 2 End), BrainRegion"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion Order By (Case When BrainRegion not like '%Other%'  and  BrainRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), BrainRegion"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -714,7 +714,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenCellType> GetCellTypes()
         {
             List<PubScreenCellType> CelltypeList = new List<PubScreenCellType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType Order By (Case When CellType not like '%Other%' Then 1 Else 2 End), CellType"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType Order By (Case When CellType not like '%Other%'  and  CellType <> ltrim(rtrim('none'))  Then 1 Else 2 End), CellType"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -735,7 +735,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenMethod> GetMethods()
         {
             List<PubScreenMethod> MethodList = new List<PubScreenMethod>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method Order By (Case When Method not like '%Other%' Then 1 Else 2 End), Method"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method Order By (Case When Method not like '%Other%'   and  Method <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -757,7 +757,7 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenSubMethod> SubMethodList = new List<PubScreenSubMethod>();
             using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod.ID, SubMethod, MethodID
                                                             From SubMethod Inner Join Method On SubMethod.MethodID = Method.ID
-                                                            Order By (Case When SubMethod not like '%Other%' Then 1 Else 2 End), Method, SubMethod"))
+                                                            Order By (Case When SubMethod not like '%Other%'  and  SubMethod <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method, SubMethod"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -777,7 +777,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
         {
             List<PubScreenNeuroTransmitter> NeuroTransmitterList = new List<PubScreenNeuroTransmitter>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter Order By (Case When NeuroTransmitter not like '%Other%' Then 1 Else 2 End), NeuroTransmitter"))
+            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter Order By (Case When NeuroTransmitter not like '%Other%'  and  NeuroTransmitter <> ltrim(rtrim('none'))  Then 1 Else 2 End), NeuroTransmitter"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {

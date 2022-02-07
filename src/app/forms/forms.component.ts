@@ -9,6 +9,8 @@ import { ReqMouseLineDialogeComponent } from '../reqMouseLineDialoge/reqMouseLin
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { ReqPubTaskDialogeComponent } from '../reqPubTaskDialoge/reqPubTaskDialoge.component';
 import { ReqPubModelDialogeComponent } from '../reqPubModelDialoge/reqPubModelDialoge.component';
+import { ReqPubSubMethodDialogeComponent } from '../reqPubSubMethodDialoge/reqPubSubMethodDialoge.component';
+
 
 @Component({
   selector: 'app-forms',
@@ -101,6 +103,18 @@ export class FormsComponent implements OnInit {
         });
 
     }
+
+    openDialogPubSubMethod(): void {
+
+        let dialogref = this.dialogML.open(ReqPubSubMethodDialogeComponent, {
+            height: '600px',
+            width: '700px',
+            data: {}
+
+        });
+
+    }
+
     //Function Definition to open a dialog for adding new mouse line to the system
     openDialogGeneral(): void {
 

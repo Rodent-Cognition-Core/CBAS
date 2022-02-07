@@ -132,5 +132,20 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult("Done!");
 
         }
+        [AllowAnonymous]
+        [HttpPost("AddPubSubMethod")]
+        public IActionResult AddPubSubMethod([FromBody] Request request)
+        {
+
+            string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{request.Email}</b> has a request for a new Pubscreen sub-method: <br /><br />";
+            strBody += $@"<b>Paper in question:</b> http://www.doi.org/{request.DOI.Trim()}<br />";
+            strBody += $@"<b>Method:</b> {request.Method}<br />";
+            strBody += $@"<b>New Sub-Method:</b> {request.SubMethod} <br /><br />Thanks, <br /> MouseBytes";
+            HelperService.SendEmail("", "", "New Sub-Method Request for Pubscreen!", strBody);
+
+            return new JsonResult("Done!");
+
+        }
+
     }
 }

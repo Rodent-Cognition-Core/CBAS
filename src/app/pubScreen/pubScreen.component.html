@@ -219,7 +219,7 @@
                             </span>
                             <!--Region-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Neuroanatomical Region(s)" matTooltip="Select Neuroanatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                                <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -232,7 +232,7 @@
                             <!--SubRegion-->
                             <span [hidden]="subSubRegionList == null || subSubRegionList == 'undefined' || subSubRegionList.length == 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
-                                    <mat-select placeholder="Select Sub-Neuroanatomical Region(s)" matTooltip="Select Sub-Neuroanatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
+                                    <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
                                         <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -357,8 +357,8 @@
                         <label>Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID==Null || _pubSCreenSearch.subModelID.lenght == 0 || _pubSCreenSearch.subModelID == "") ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Neuroanatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Neuroanatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
+                        <label>Anatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
 
                         <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
                         <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;

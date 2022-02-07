@@ -26,7 +26,10 @@ namespace AngularSPAWebAPI.Models
         public string Model { get; set; }
         public string SubModel { get; set; }
         public string GeneralRequest { get; set; }
-        public string Genotype { get; set; } 
+        public string Genotype { get; set; }
+        public string Method { get; set; }
+        public string SubMethod { get; set; }
+        
 
     }
 

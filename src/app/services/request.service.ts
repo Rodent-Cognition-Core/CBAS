@@ -90,6 +90,16 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public addPubSubMethod(request: Request): any {
+
+        const body: string = JSON.stringify(request);
+
+        return this.http
+            .post("/api/Request/addPubSubMethod", body, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+
+            });
+    }
     // Adding new General Request
     public addGeneral(request: Request): any {
 
