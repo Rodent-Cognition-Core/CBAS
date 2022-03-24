@@ -295,7 +295,7 @@ namespace AngularSPAWebAPI.Services
 
             // Send email for new repository
             string emailMsg = $"Repository Title: {repository.Title}\n\nUser: {Username}";
-            HelperService.SendEmail("", "", "New Complementary Data Reposiotry", emailMsg.Replace("\n", "<br \\>"));
+            HelperService.SendEmail("", "", "New Complementary Data Reposiotry in MouseBytes+", emailMsg.Replace("\n", "<br \\>"));
 
             return RepositoryID;
 
