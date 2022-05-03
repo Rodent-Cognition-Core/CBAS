@@ -176,6 +176,7 @@ namespace AngularSPAWebAPI
                  "/contact-us",
                  "/account/reset",
                  "/mb-dashboard",
+                 "/pubScreen-dashboard",
                  "/pubScreen",
                  "/pubScreen-search",
                  "/comp",

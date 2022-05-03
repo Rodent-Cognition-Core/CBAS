@@ -67,6 +67,7 @@ import { DataExtractionComponent } from './data-extraction/data-extraction.compo
 import { DataLinkComponent } from './data-link/data-link.component';
 import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
 import { MBDashboardComponent } from './mb-dashboard/mb-dashboard.component';
+import { PSDashboardComponent } from './pubScreen-dashboard/pubScreen-dashboard.component';
 import { ImagingComponent } from './imaging/imaging.component';
 import { GenomicsComponent } from './genomics/genomics.component';
 import { VideoTutorialComponent } from './video-tutorial/video-tutorial.component';

@@ -143,6 +143,7 @@ export class AppComponent implements OnInit {
             routerUrl.toUpperCase() === '/data-extraction'.toUpperCase() ||
             routerUrl.toUpperCase() === '/data-visualization'.toUpperCase() ||
             routerUrl.toUpperCase() === '/mb-dashboard'.toUpperCase() ||
+            routerUrl.toUpperCase() === '/pubScreen-dashboard'.toUpperCase() ||
             routerUrl.toUpperCase().indexOf('/data-link'.toUpperCase()) != -1 ||
             routerUrl.toUpperCase() === '/guideline'.toUpperCase() ||
             routerUrl.toUpperCase() === '/imaging'.toUpperCase() ||

@@ -31,6 +31,7 @@ const routes: Routes = [
     { path: 'guideline-datalab', loadChildren: './guidelineDataLab/guidelineDataLab.module#GuidelineDataLabModule' },
     { path: 'data-visualization', loadChildren: './data-visualization/data-visualization.module#DataVisualizationModule' },
     { path: 'mb-dashboard', loadChildren: './mb-dashboard/mb-dashboard.module#MBDashboardModule' },
+    { path: 'pubScreen-dashboard', loadChildren: './pubScreen-dashboard/pubScreen-dashboard.module#PSDashboardModule' },
     { path: 'contact-us', loadChildren: './contact-us/contact-us.module#ContactUsModule' },
     { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },
     { path: 'terms', loadChildren: './terms/terms.module#TermsModule' },
