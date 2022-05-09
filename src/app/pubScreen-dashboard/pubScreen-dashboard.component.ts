@@ -28,7 +28,7 @@ export class PSDashboardComponent implements OnInit {
 
     ngOnInit() {
 
-        this.loadAnalysis("View_MB_Data")
+        this.loadAnalysis("pubscreen_dashboard")
         
     }
 
