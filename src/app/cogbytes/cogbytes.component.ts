@@ -46,6 +46,7 @@ export class CogbytesComponent implements OnInit {
 
     isAdmin: boolean;
     isUser: boolean;
+    isFullDataAccess: boolean;
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -69,6 +70,7 @@ export class CogbytesComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
 
         if (this.isAdmin || this.isUser) {
 

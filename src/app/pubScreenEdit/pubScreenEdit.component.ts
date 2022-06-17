@@ -24,6 +24,7 @@ export class PubScreenEditComponent implements OnInit {
    
     paperLinkGuid: string;
     isAdmin: boolean;
+    isFullDataAccess: boolean;
     isLoaded: boolean;
 
 
@@ -54,6 +55,7 @@ export class PubScreenEditComponent implements OnInit {
     ngOnInit() {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
     }
 
     GetDataByLinkGuid(paperLinkGuid) {

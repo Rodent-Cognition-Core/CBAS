@@ -31,6 +31,7 @@ export class PubScreenQueueComponent implements OnInit {
 
     isAdmin: boolean;
     isUser: boolean;
+    isFullDataAccess: boolean;
 
     dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     showGeneratedLink: any;
@@ -48,6 +49,7 @@ export class PubScreenQueueComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
 
         this.pubScreenService.getPubmedQueue().subscribe(
             data => {

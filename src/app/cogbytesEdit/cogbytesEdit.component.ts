@@ -29,6 +29,7 @@ export class CogbytesEditComponent implements OnInit {
    
     repoLinkGuid: string;
     isAdmin: boolean;
+    isFullDataAccess: boolean;
     
    
     public authorMultiFilterCtrl: FormControl = new FormControl();
@@ -56,6 +57,7 @@ export class CogbytesEditComponent implements OnInit {
     ngOnInit() {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
     }
 
     GetDataByLinkGuid(repoLinkGuid) {

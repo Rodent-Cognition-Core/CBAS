@@ -195,6 +195,7 @@ export class DataExtractionComponent implements OnInit {
 
         var isUser = this.authenticationService.isInRole("user");
         var isAdmin = this.authenticationService.isInRole("administrator");
+        var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
         this.subSessionList = [];
 
         if (isUser || isAdmin) {
@@ -319,7 +320,9 @@ export class DataExtractionComponent implements OnInit {
     // Getting ExpList for the selected Task ID
     getExpList(selected_TaskValue, userGuid, selectedSpeciesvalue): any {
 
-        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, selectedSpeciesvalue).subscribe(data => {
+        var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+
+        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe(data => {
             this.expList = data;
             //console.log(this.expList);
 

@@ -64,6 +64,7 @@ export class PubScreenSearchComponent implements OnInit {
     paperInfoFromDoiList: any;
 
     isAdmin: boolean;
+    isFullDataAccess: boolean;
    
 
     _pubSCreenSearch = new Pubscreen();
@@ -93,6 +94,7 @@ export class PubScreenSearchComponent implements OnInit {
         this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
     }
 
     ngOnDestroy() {

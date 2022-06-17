@@ -97,6 +97,7 @@ export class PubScreenComponent implements OnInit {
 
     isAdmin: boolean;
     isUser: boolean;
+    isFullDataAccess: boolean;
 
     //yearFrom = new FormControl('', []);
     yearTo = new FormControl('', []);
@@ -178,6 +179,7 @@ export class PubScreenComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
         this.yearList = this.GetYear(1970).sort().reverse();
 
         

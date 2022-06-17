@@ -37,11 +37,12 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        public List<Experiment> GetAllExperimentByTaskId(int TaskId, string userID, int speciesId)
+        public List<Experiment> GetAllExperimentByTaskId(int TaskId, string userID, string isFullDataAccess, int speciesId)
         {
             List<Experiment> lstExp = new List<Experiment>();
 
             var userIdCondition = (string.IsNullOrEmpty(userID)) ? "" : $"OR Experiment.UserID ='{userID}'";
+            var isFullAccessCondition = (isFullDataAccess.ToUpper() == "TRUE") ? "" : $"and (Experiment.Status = 1 {userIdCondition} )";
 
             using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, tt2.PISiteName, tt2.UserName, CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser from Experiment 
 
@@ -57,7 +58,7 @@ namespace AngularSPAWebAPI.Services
 														) as tt on tt.PSID = PIUserSite.PSID
 														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
 														 as tt2 on tt2.PUSID = Experiment.PUSID
-                                                        WHERE TaskID ={TaskId} and SpeciesID = {speciesId} and (Experiment.Status = 1 {userIdCondition} )"))
+                                                        WHERE TaskID ={TaskId} and SpeciesID = {speciesId} {isFullAccessCondition}"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {

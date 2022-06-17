@@ -54,6 +54,7 @@ export class AppComponent implements OnInit {
     name: string;
     isAdmin: boolean;
     isUser: boolean;
+    isFullDataAccess: boolean;
     key: any;
     showFooter: boolean;
 
@@ -84,6 +85,7 @@ export class AppComponent implements OnInit {
                 this.name = user.givenName;
                 this.isAdmin = this.authenticationService.isInRole("administrator");
                 this.isUser = this.authenticationService.isInRole("user");
+                this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
             });
 
 

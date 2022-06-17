@@ -57,9 +57,9 @@ namespace AngularSPAWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetExpByTaskID")]
-        public IActionResult GetExpByTaskID(int taskId, string userGuid, int speciesId)
+        public IActionResult GetExpByTaskID(int taskId, string userGuid, string isFullDataAccess, int speciesId)
         {
-            return new JsonResult(_DataExtractionService.GetAllExperimentByTaskId(taskId, userGuid, speciesId));
+            return new JsonResult(_DataExtractionService.GetAllExperimentByTaskId(taskId, userGuid, isFullDataAccess, speciesId));
         }
 
 

@@ -73,6 +73,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     isAdmin: boolean;
     isUser: boolean;
+    isFullDataAccess: boolean;
 
     _cogbytesSearch = new CogbytesSearch;
     isSearch: boolean;
@@ -116,6 +117,7 @@ export class CogbytesSearchComponent implements OnInit {
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
         this.yearList = this.GetYear(1970).sort().reverse();
 
         this.interventionModel = "All";
