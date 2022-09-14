@@ -250,6 +250,7 @@ namespace CBAS.Helpers
                     lstGenoID.Add(49);
                     lstGenoID.Add(50);
                     lstGenoID.Add(51);
+                    lstGenoID.Add(55);
                     break;
                 case 39:
                     lstGenoID.Add(52);

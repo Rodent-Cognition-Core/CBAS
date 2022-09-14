@@ -645,6 +645,7 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(49);
                 this.genoIDList.push(50);
                 this.genoIDList.push(51);
+                this.genoIDList.push(55);
 
             }
 
