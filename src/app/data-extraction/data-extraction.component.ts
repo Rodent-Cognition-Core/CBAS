@@ -660,6 +660,21 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(53);
 
             }
+            if (selected_StrainVal.indexOf(41) > -1) {
+                this.genoIDList.push(56);
+                this.genoIDList.push(57);
+                this.genoIDList.push(58);
+
+            }
+            if (selected_StrainVal.indexOf(42) > -1) {
+                this.genoIDList.push(57);
+
+            }
+            if (selected_StrainVal.indexOf(43) > -1) {
+                this.genoIDList.push(58);
+
+            }
+
 
             //console.log(this.genoIDList);
             //selected_ExpVal
