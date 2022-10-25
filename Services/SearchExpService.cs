@@ -16,7 +16,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<SearchExp> lstExp = new List<SearchExp>();
 
-            using (DataTable dt = Dal.GetDataTable($@"select Experiment.ExpName, task.name as CognitiveTask, Case Experiment.Status
+            using (DataTable dt = Dal.GetDataTable($@"select Experiment.ExpID, Experiment.ExpName, task.name as CognitiveTask, Case Experiment.Status
 													   When 1 Then 'Public'
 													   When 0 Then 'Private'
 											  	
@@ -68,6 +68,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     lstExp.Add(new SearchExp
                     {
+                        ExpId = Convert.ToString(dr["ExpID"].ToString()),
                         ExpName = Convert.ToString(dr["ExpName"].ToString()),
                         CognitiveTask = Convert.ToString(dr["CognitiveTask"].ToString()),
                         Status = Convert.ToString(dr["Status"].ToString()),

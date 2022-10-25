@@ -19,7 +19,7 @@ export class SearchExperimentComponent implements OnInit {
 
     constructor(private pagerService: PagerService,
         public dialog: MatDialog,
-        private searchexperimentService: SearchExperimentService, ) { }
+        private searchexperimentService: SearchExperimentService,) { }
 
     ngOnInit() {
 
@@ -61,5 +61,52 @@ export class SearchExperimentComponent implements OnInit {
             e.username.toUpperCase().includes(s.toUpperCase()) || e.period.toUpperCase().includes(s.toUpperCase())); 
 
     }
+
+    DownloadDsFile(file: any): void {
+
+        let path = "ds_" + file;
+        this.searchexperimentService.downloadExpDs(path)
+            .subscribe(result => {
+
+                // console.log('downloadresult', result);
+                //let url = window.URL.createObjectURL(result);
+                //window.open(url);
+
+                var fileData = new Blob([result]);
+                var csvURL = null;
+                if (navigator.msSaveBlob) {
+                    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
+                } else {
+                    csvURL = window.URL.createObjectURL(fileData);
+                }
+                var tempLink = document.createElement('a');
+                tempLink.href = csvURL;
+                tempLink.setAttribute('download', path + '.csv');
+                document.body.appendChild(tempLink);
+                tempLink.click();
+
+            },
+                error => {
+                    if (error.error instanceof Error) {
+                        console.log('An error occurred:', error.error.message);
+                    } else {
+                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    }
+                });
+    }
+
+    //copyMessage(val: string) {
+    //    const selBox = document.createElement('textarea');
+    //    selBox.style.position = 'fixed';
+    //    selBox.style.left = '0';
+    //    selBox.style.top = '0';
+    //    selBox.style.opacity = '0';
+    //    selBox.value = val;
+    //    document.body.appendChild(selBox);
+    //    selBox.focus();
+    //    selBox.select();
+    //    document.execCommand('copy');
+    //    document.body.removeChild(selBox);
+    //}
 
 }

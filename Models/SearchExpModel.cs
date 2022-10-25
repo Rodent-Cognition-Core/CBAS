@@ -4,6 +4,7 @@ namespace AngularSPAWebAPI.Models
 {
     public class SearchExp
     {
+        public string ExpId { get; set; }
         public string ExpName { get; set; }
         public string CognitiveTask { get; set; }
         public string Status { get; set; }

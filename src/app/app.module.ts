@@ -72,6 +72,7 @@ import { ImagingComponent } from './imaging/imaging.component';
 import { GenomicsComponent } from './genomics/genomics.component';
 import { VideoTutorialComponent } from './video-tutorial/video-tutorial.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
+import { DownloadDsComponent } from './download-ds/download-ds.component';
 import { FormsComponent } from './forms/forms.component';
 import { TermsComponent } from './terms/terms.component';
 import { SearchExperimentComponent } from './search-experiment/search-experiment.component';
@@ -93,6 +94,7 @@ const ROUTES: Routes = [
     { path: 'guidline', component: GenomicsComponent },
     { path: 'guidline', component: VideoTutorialComponent },
     { path: 'guidline', component: ContactUsComponent },
+    { path: 'guidline', component: DownloadDsComponent },
     { path: 'guidline', component: FormsComponent },
     { path: 'guidline', component: TermsComponent },
     { path: 'guidline', component: SearchExperimentComponent },

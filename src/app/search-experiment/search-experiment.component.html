@@ -18,7 +18,7 @@
     <table class="docs-markdown-table">
         <thead>
 
-            <tr><th colspan="12" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Experiment List</th></tr>
+            <tr><th colspan="13" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Experiment List</th></tr>
             <tr style=" text-align: center; color:#566573;">
 
                 <td class="docs-markdown-td">Experiment Name</td>
@@ -33,13 +33,13 @@
                 <td class="docs-markdown-td">Researcher</td>
                 <td class="docs-markdown-td">Email</td>
                 <td class="docs-markdown-td">DOI</td>
-
+                <td class="docs-markdown-td">Download</td>
             </tr>
 
         </thead>
 
         <tbody class="docs-markdown-tbody">
-            <tr *ngFor="let row of pagedItems; let i = index">
+            <tr colspan="13"  *ngFor="let row of pagedItems; let i = index">
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.expName}}</td>
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.cognitiveTask}}</td>
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.status}}</td>
@@ -53,7 +53,11 @@
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.email}}</td>
                 <!--<td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.doi}}</td>-->
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td"><a href="{{'http://www.doi.org/' + row.doi}}" target="_blank">{{row.doi}}</a></td>
-
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                    <button mat-icon-button matTooltip="Download File" (click)="DownloadDsFile(row.expId)"><mat-icon>get_app</mat-icon></button>
+                    <a href="https://mousebytes.ca/download-ds?ds={{row.expId}}" target="_blank">https://mousebytes.ca/download-ds?ds={{row.expId}}</a>
+                    <!--<button mat-icon-button matTooltip="Copy Link" (click)="copyMessage("test")"><mat-icon>content_copy</mat-icon></button>-->
+                </td>
 
             </tr>
 

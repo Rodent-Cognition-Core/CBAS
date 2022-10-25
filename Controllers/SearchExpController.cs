@@ -2,10 +2,12 @@ using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AngularSPAWebAPI.Controllers
@@ -22,10 +24,16 @@ namespace AngularSPAWebAPI.Controllers
 
         private readonly UserManager<ApplicationUser> _manager;
 
-        public SearchExpController(UserManager<ApplicationUser> manager)
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+
+
+        public SearchExpController(UserManager<ApplicationUser> manager, IHostingEnvironment hostingEnvironment)
         {
             _searchExperiment = new SearchExpService();
             _manager = manager;
+            _hostingEnvironment = hostingEnvironment;
+
         }
 
         private async Task<ApplicationUser> GetCurrentUser()
@@ -42,14 +50,63 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpGet("DownloadExpDs")]
+        [AllowAnonymous]
+        public async Task<IActionResult> DownloadExpDs(string expDsFileName)
+        {
+            var expDsFilePath = _hostingEnvironment.ContentRootPath + "\\UPLOAD\\datasets\\" + expDsFileName + ".csv";
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(expDsFilePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(expDsFilePath), expDsFileName + ".csv");
+        }
 
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
 
-
-
-
-
-
-
-
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docm", "application/vnd.ms-word.document.macroEnabled.12"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.ms-excel"},
+                {".ppt", "application/vnd.ms-powerpoint"},
+                {".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12" },
+                {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".xml", "text/xml"} ,
+                {".bak", "application/bak"},
+                {".c", "text/plain" },
+                {".zip", "application/x-zip-compressed" },
+                {".tex", "application/x-tex" },
+                {".tar", "application/x-tar" },
+                {".rar", "application/octet-stream" },
+                {".latex", "application/x-latex" },
+                {".cpp", "text/plain" },
+                {".r", "text/plain" },
+                {".py", "text/plain" },
+                {".avi", "video/x-msvideo"},
+                {".mp3", "audio/mpeg"},
+                {".mp4", "video/mp4"},
+                {".mp4v", "video/mp4"},
+                {".h5", "application/x-hdf5"},
+            };
+        }
     }
 }

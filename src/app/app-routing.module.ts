@@ -33,6 +33,7 @@ const routes: Routes = [
     { path: 'mb-dashboard', loadChildren: './mb-dashboard/mb-dashboard.module#MBDashboardModule' },
     { path: 'pubScreen-dashboard', loadChildren: './pubScreen-dashboard/pubScreen-dashboard.module#PSDashboardModule' },
     { path: 'contact-us', loadChildren: './contact-us/contact-us.module#ContactUsModule' },
+    { path: 'download-ds', loadChildren: './download-ds/download-ds.module#DownloadDsModule' },
     { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },
     { path: 'terms', loadChildren: './terms/terms.module#TermsModule' },
     { path: 'video-tutorial', loadChildren: './video-tutorial/video-tutorial.module#VideoTutorialModule' },
