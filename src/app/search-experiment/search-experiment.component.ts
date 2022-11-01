@@ -5,6 +5,8 @@ import { PagerService } from '../services/pager.service';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { IdentityService } from '../services/identity.service';
 
+declare var $: any;
+
 @Component({
     selector: 'app-search-experiment',
     templateUrl: './search-experiment.component.html',
@@ -52,6 +54,14 @@ export class SearchExperimentComponent implements OnInit {
 
     search(): any {
         this.setPage(1);
+
+        setTimeout(() => {
+
+            $('.pane-hScroll').scroll(function () {
+                $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
+            });
+
+        }, 500);
     }
 
     filterByString(data, s): any {

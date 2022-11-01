@@ -14,71 +14,79 @@
     </div>
     <div style="clear: both;"></div>
     <br />
+    <div class="panel panel-default" style="margin-top:10px; text-align:center; margin:auto; width:90%">
+        <div class="tableData">
+            <div class="pane pane--table1">
+                <div class="pane-hScroll">
+                    <div colspan="13" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E; background-color: #f5f5f5">Experiment List</div>
+                    <table class="docs-markdown-table">
+                        <thead>
 
-    <table class="docs-markdown-table">
-        <thead>
+                            <tr style=" text-align: center; color:#566573; background-color:#fafafa;">
 
-            <tr><th colspan="13" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Experiment List</th></tr>
-            <tr style=" text-align: center; color:#566573;">
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Experiment Name</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Cognitive Task</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Status</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Age</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Strain</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Genotype</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word; width: 260px; max-width: 260px; min-width: 260px;">Task Description</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Start Date-End Date</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">PI and Site</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Researcher</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Email</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">DOI</td>
+                                <td class="docs-markdown-td" style="font-weight:bold; font-size: 10pt; word-break: break-word">Download</td>
+                            </tr>
 
-                <td class="docs-markdown-td">Experiment Name</td>
-                <td class="docs-markdown-td">Cognitive Task</td>
-                <td class="docs-markdown-td">Status</td>
-                <td class="docs-markdown-td">Age</td>
-                <td class="docs-markdown-td">Strain</td>
-                <td class="docs-markdown-td">Genotype</td>
-                <td class="docs-markdown-td">Task Description</td>
-                <td class="docs-markdown-td">Start Date-End Date</td>
-                <td class="docs-markdown-td">PI and Site</td>
-                <td class="docs-markdown-td">Researcher</td>
-                <td class="docs-markdown-td">Email</td>
-                <td class="docs-markdown-td">DOI</td>
-                <td class="docs-markdown-td">Download</td>
-            </tr>
+                        </thead>
 
-        </thead>
+                        <tbody class="docs-markdown-tbody">
+                            <tr colspan="13" *ngFor="let row of pagedItems; let i = index">
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.expName}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.cognitiveTask}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.status}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-age"><div [innerHTML]="row.age"></div></td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><div [innerHTML]="row.strain"></div></td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.genotype}}</td>
+                                <td style="text-align: center; color:#909497; width: 260px; max-width: 260px; min-width: 260px;" class="docs-markdown-td">{{row.taskDescription}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.period}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.piSiteName}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.username}}</td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.email}}</td>
+                                <!--<td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.doi}}</td>-->
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><a href="{{'http://www.doi.org/' + row.doi}}" target="_blank">{{row.doi}}</a></td>
+                                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                                    <button mat-icon-button matTooltip="Download File" (click)="DownloadDsFile(row.expId)"><mat-icon>get_app</mat-icon></button>
+                                    <br />
+                                    <a href="https://mousebytes.ca/download-ds?ds={{row.expId}}" target="_blank">https://mousebytes.ca/download-ds?ds={{row.expId}}</a>
+                                    <!--<button mat-icon-button matTooltip="Copy Link" (click)="copyMessage("test")"><mat-icon>content_copy</mat-icon></button>-->
+                                </td>
 
-        <tbody class="docs-markdown-tbody">
-            <tr colspan="13"  *ngFor="let row of pagedItems; let i = index">
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.expName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.cognitiveTask}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.status}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-age"><div [innerHTML]="row.age"></div></td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><div [innerHTML]="row.strain"></div></td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.genotype}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.taskDescription}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.period}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{row.piSiteName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.username}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.email}}</td>
-                <!--<td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.doi}}</td>-->
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><a href="{{'http://www.doi.org/' + row.doi}}" target="_blank">{{row.doi}}</a></td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                    <button mat-icon-button matTooltip="Download File" (click)="DownloadDsFile(row.expId)"><mat-icon>get_app</mat-icon></button>
-                    <a href="https://mousebytes.ca/download-ds?ds={{row.expId}}" target="_blank">https://mousebytes.ca/download-ds?ds={{row.expId}}</a>
-                    <!--<button mat-icon-button matTooltip="Copy Link" (click)="copyMessage("test")"><mat-icon>content_copy</mat-icon></button>-->
-                </td>
+                            </tr>
 
-            </tr>
+                            <tr>
+                                <td colspan="13" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
+                                    <!-- pager -->
+                                    <div class="pagination-custom">
+                                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                                        <span *ngFor="let page of pager.pages">
+                                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                                        </span>
+                                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                                    </div>
+                                </td>
+                            </tr>
 
-            <tr>
-                <td colspan="13" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
-                    <!-- pager -->
-                    <div class="pagination-custom">
-                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
-                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
-                        <span *ngFor="let page of pager.pages">
-                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
-                        </span>
-                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
-                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
-                    </div>
-                </td>
-            </tr>
+                        </tbody>
 
-        </tbody>
-
-    </table>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <br />
 <br />

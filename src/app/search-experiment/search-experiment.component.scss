@@ -13,3 +13,50 @@
     max-width: 100px;
     min-width: 110px;
 }
+
+
+
+
+.tableData * {
+    box-sizing: border-box;
+}
+
+.tableData table {
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tableData th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+
+}
+
+.tableData td {
+    padding: 13px 16px;
+    text-align: center;
+    word-break: break-all;
+}
+
+.tableData .pane {
+    background: #eee;
+}
+
+.tableData .pane-hScroll {
+    overflow: auto;
+    width: 100%;
+    background: green;
+}
+
+.tableData .pane-vScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*height: 600px;*/
+    background: red;
+}
