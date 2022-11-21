@@ -46,7 +46,16 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult GetSearchList()
         {
 
-            return new JsonResult(_searchExperiment.GetAllExpList());
+            return new JsonResult(_searchExperiment.GetAllExpList(0));
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetSearchByExpID")]
+        public IActionResult GetSearchByExpID(int expID)
+        {
+
+            return new JsonResult(_searchExperiment.GetAllExpList(expID));
 
         }
 
@@ -54,6 +63,12 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> DownloadExpDs(string expDsFileName)
         {
+            var expId = expDsFileName.Replace("ds_", "");
+            var exp = _searchExperiment.GetAllExpList(int.Parse(expId));
+            if (exp[0].Status != "Public") {
+                return new JsonResult("");
+            }
+
             var expDsFilePath = _hostingEnvironment.ContentRootPath + "\\UPLOAD\\datasets\\" + expDsFileName + ".csv";
             var memory = new MemoryStream();
             using (var stream = new FileStream(expDsFilePath, FileMode.Open))

@@ -11,6 +11,7 @@ export class DownloadDsComponent implements OnInit {
 
     text: string;
     dsName: string;
+    expObj: any;
 
     constructor(
         private route: ActivatedRoute,
@@ -27,16 +28,26 @@ export class DownloadDsComponent implements OnInit {
 
     ngOnInit() {
         console.log(this.dsName);
+        
         if (this.dsName != "") {
-            this.text = "Data download should start shortly!";
-            this.DownloadDsFile(this.dsName);
+            this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe(data => {
+                this.expObj = data[0];
+                this.expObj.age = this.expObj.age.replaceAll('<br/>', ', ');
+                this.expObj.strain = this.expObj.strain.replaceAll('<br/>', ', ');
+                console.log(this.expObj);
+
+                //this.text = "Data download should start shortly!";
+                //this.DownloadDsFile(this.dsName);
+
+            })
+            
 
         } else {
             this.text = "Something went wrong! Please try again and report the issue in case problem persists.";
         }
     }
 
-
+    
     DownloadDsFile(file: string): void {
 
         let path = "ds_" + file;

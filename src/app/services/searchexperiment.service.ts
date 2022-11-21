@@ -26,6 +26,15 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public GetSearchByExpID(expID): any {
+
+        return this.http
+            .get("/api/searchexp/GetSearchByExpID?expID=" + expID, {
+                //headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
     downloadExpDs(expDsFileName): Observable<Blob> {
 
         return this.http.get("/api/searchexp/DownloadExpDs?expDsFileName=" + expDsFileName,

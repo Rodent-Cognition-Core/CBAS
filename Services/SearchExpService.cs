@@ -12,8 +12,13 @@ namespace AngularSPAWebAPI.Services
 
     public class SearchExpService
     {
-        public List<SearchExp> GetAllExpList()
+        public List<SearchExp> GetAllExpList(int experiment_id)
         {
+            string expIDCondition = "";
+            if(experiment_id != 0)
+            {
+                expIDCondition = $"where ExpID={experiment_id}";
+            }
             List<SearchExp> lstExp = new List<SearchExp>();
 
             using (DataTable dt = Dal.GetDataTable($@"select Experiment.ExpID, Experiment.ExpName, task.name as CognitiveTask, Case Experiment.Status
@@ -62,7 +67,8 @@ namespace AngularSPAWebAPI.Services
 														
 														) as tt on tt.PSID = PIUserSite.PSID
 														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
-														 as tt2 on tt2.PUSID = Experiment.PUSID"))
+														 as tt2 on tt2.PUSID = Experiment.PUSID
+                                                        {expIDCondition}"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
