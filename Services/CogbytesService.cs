@@ -252,7 +252,7 @@ namespace AngularSPAWebAPI.Services
 
             return PIList;
         }
-       
+
 
         ////************************************************************************************Adding Repository*************************************************************************************
         // Function Definition to add a new repository to database Cogbytes
@@ -504,7 +504,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         numSubjects = num;
                     };
-                    
+
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
@@ -584,7 +584,7 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@housing", HelperService.NullToString(HelperService.EscapeSql(upload.Housing)).Trim()));
             parameters.Add(new SqlParameter("@lightCycle", HelperService.NullToString(HelperService.EscapeSql(upload.LightCycle)).Trim()));
             parameters.Add(new SqlParameter("@taskBattery", HelperService.NullToString(HelperService.EscapeSql(upload.TaskBattery)).Trim()));
-            parameters.Add(new SqlParameter("@numSubjects", (object) upload.NumSubjects ?? DBNull.Value));
+            parameters.Add(new SqlParameter("@numSubjects", (object)upload.NumSubjects ?? DBNull.Value));
 
             Int32.Parse(Dal.ExecuteNonQueryCog(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
 
@@ -1110,6 +1110,53 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<Cogbytes> ShowAllRepositories()
+        {
+            List<Cogbytes> RepList = new List<Cogbytes>();
+            //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+            using (DataTable dt = Dal.GetDataTableCog($@"SELECT        UserRepository.RepID, RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, UserRepository.Description, UserRepository.AdditionalNotes, Link, Username, DateRepositoryCreated, 
+                         STUFF
+                             ((SELECT        ', ' + CONCAT(Author.FirstName, '-', Author.LastName)
+                                 FROM            RepAuthor INNER JOIN
+                                                          Author ON Author.AuthorID = RepAuthor.AuthorID
+                                 WHERE        RepAuthor.RepID = UserRepository.RepID
+                                 ORDER BY AuthorOrder FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS Author, STUFF
+                             ((SELECT        ', ' + PI.FullName
+                                 FROM            RepPI INNER JOIN
+                                                          PI ON PI.PIID = RepPI.PIID
+                                 WHERE        RepPI.RepID = UserRepository.RepID FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS PI
+
+                            FROM            UserRepository "))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int repID = Int32.Parse(dr["RepID"].ToString());
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    RepList.Add(new Cogbytes
+                    {
+                        ID = repID,
+                        RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        Date = Convert.ToString(dr["Date"].ToString()),
+                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                        DOI = doi,
+                        Link = Convert.ToString(dr["Link"].ToString()),
+                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        AuthorString = Convert.ToString(dr["Author"].ToString()),
+                        PIString = Convert.ToString(dr["PI"].ToString()),
+                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
+                    });
+                }
+            }
+
+            return RepList;
+
+
+        }
+
+
         //// Function Definition to extract all repositories 
         public List<Cogbytes> GetAllRepositories()
         {
@@ -1183,7 +1230,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             var pubscreenService = new PubScreenService();
-            var pub = new PubScreen{ DOI = doi };
+            var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())
             {
@@ -1273,12 +1320,12 @@ namespace AngularSPAWebAPI.Services
                         NumSubjects = numSubjects,
                         Paper = publication
                     });
-                    
+
                 }
             }
-       
+
             return RepList;
-                        
+
         }
 
 

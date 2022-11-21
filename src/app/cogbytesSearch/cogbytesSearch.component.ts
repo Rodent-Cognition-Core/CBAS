@@ -16,6 +16,7 @@ import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -54,6 +55,8 @@ export class CogbytesSearchComponent implements OnInit {
     // Definiing List Variables
     repList: any;
 
+    repShowList: any;
+
     paperTypeList: any;
     taskList: any;
     specieList: any;
@@ -91,6 +94,8 @@ export class CogbytesSearchComponent implements OnInit {
     piMultiSelect: any;
     repMultiSelect: any;
 
+    showAll: boolean;
+
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -100,20 +105,35 @@ export class CogbytesSearchComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,) { }
+        private spinnerService: Ng4LoadingSpinnerService,
+        private route: ActivatedRoute, ) {
+        this.route.queryParams.subscribe(params => {
+            this.showAll = false;
+            if (params['showall'] != null && params['showall'] == 'true') {
+                this.showAll = true;
+            }
+            console.log(this.showAll);
+        });
+    }
 
     ngOnInit() {
 
-        this.GetRepositories();
-        this.GetAuthorList();
-        this.GetPIList();
-        this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
-        this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
-        this.cogbytesService.getSpecies().subscribe(data => { this.specieList = data; });
-        this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
-        this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
-        this.cogbytesService.getGenos().subscribe(data => { this.genoList = data; });
-        this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+        if (this.showAll == true) {
+            this.ShowRepositories();
+        } else {
+            this.GetRepositories();
+            this.GetAuthorList();
+            this.GetPIList();
+            this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
+            this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
+            this.cogbytesService.getSpecies().subscribe(data => { this.specieList = data; });
+            this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
+            this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
+            this.cogbytesService.getGenos().subscribe(data => { this.genoList = data; });
+            this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+        }
+
+
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
@@ -123,6 +143,8 @@ export class CogbytesSearchComponent implements OnInit {
         this.interventionModel = "All";
 
         this.isSearch = false;
+
+
 
     }
 
@@ -158,6 +180,15 @@ export class CogbytesSearchComponent implements OnInit {
         });
 
         return this.repList;
+    }
+
+    ShowRepositories() {
+
+        this.cogbytesService.showAllRepositories().subscribe(data => {
+            this.repShowList = data;
+            console.log(this.repShowList);
+
+        });
     }
 
     // handling multi filtered Rep list
@@ -270,12 +301,11 @@ export class CogbytesSearchComponent implements OnInit {
     setDisabledValSearch() {
 
         if
-        (
+            (
             this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == null
             && this.doiModel == null && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
             && this.strainModel == null && this.genoModel == null && this.ageModel == null
-        )
-        {
+        ) {
             return true;
         }
 
@@ -286,12 +316,12 @@ export class CogbytesSearchComponent implements OnInit {
     selectYearToChange(yearFromVal, yearToVal) {
         console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
-        
+
         yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
 
     }
 
-    
+
     getErrorMessageYearTo() {
         //return this.yearTo.getError('Year To should be greater than Year From');
         return 'Year To should be greater than Year From'

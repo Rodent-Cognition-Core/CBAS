@@ -67,6 +67,7 @@
                 <ul>
                     <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/comp">Your Repositories</a></li>
                     <li><a style="color: #354248;" href="/comp-search">Search Repositories</a></li>
+                    <li><a style="color: #354248;" href="/comp-search?showall=true">Repositories</a></li>
                 </ul>
             </li>
 
@@ -139,6 +140,7 @@
                                 <ul>
                                     <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
                                     <li><a routerLink="/comp-search">Search Repositories</a></li>
+                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
                                 </ul>
                             </li>
 
@@ -207,6 +209,7 @@
                                 <ul>
                                     <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
                                     <li><a routerLink="/comp-search">Search Repositories</a></li>
+                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
                                 </ul>
                             </li>
 

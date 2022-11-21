@@ -264,6 +264,15 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public showAllRepositories() {
+
+        return this.http
+            .get("/api/cogbytes/ShowAllRepositories", {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     //// Extracting List of repositories from database
     public getAllRepositories(): any {
 

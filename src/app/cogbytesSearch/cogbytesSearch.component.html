@@ -1,7 +1,10 @@
-<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>SEARCH MOUSEBYTES+ DATA</h1></div>
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title">
+    <h1 *ngIf="showAll != true">SEARCH MOUSEBYTES+ DATA</h1>
+    <h1 *ngIf="showAll == true">MOUSEBYTES+ REPOSITORIES</h1>
+</div>
 
 <div>
-    <div class="content">
+    <div class="content" *ngIf="showAll != true">
         <p style="padding-left:50px; line-height: 1.8;">
             Touchscreen datasets can be coupled with different neuro-technologies such as fiber photometry, miniscopes, optogenetics, MRI, PET, and OMICs analysis to evaluate the brain basis of behaviour.
             In this new feature of MouseBytes, users can upload processed datasets, scripts and codes related to these and other technologies and link them to cognitive data in MouseBytes and raw data in
@@ -14,7 +17,7 @@
 
     </div>
 
-    <div style="padding-top:0px">
+    <div style="padding-top:0px" *ngIf="showAll != true">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
@@ -59,15 +62,15 @@
                             </mat-form-field>&nbsp;
 
                             <!--<mat-form-field style="padding-left: 25px">
-    <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>-->
+                            <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>-->
                             <!--<ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>-->
                             <!--<ngx-mat-select-search placeholderLabel="Search based on last name"></ngx-mat-select-search>-->
                             <!--<mat-option *ngFor="let pi of piList" [value]="pi.id">
-                {{pi.piFullName}}
-            </mat-option>
+                                        {{pi.piFullName}}
+                                    </mat-option>
 
-        </mat-select>
-    </mat-form-field>&nbsp;-->
+                                </mat-select>
+                            </mat-form-field>&nbsp;-->
 
                             <br /><br />
 
@@ -89,10 +92,10 @@
                             <!--Paper Abstract-->
                             <!--<mat-form-field style="width:30%; padding-left:35px">
 
-        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                                <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
 
-        </textarea>
-    </mat-form-field>-->
+                                </textarea>
+                            </mat-form-field>-->
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
@@ -233,7 +236,7 @@
         </table>
     </div>
 
-    
+
     <br /><br />
 
     <div *ngIf="isSearch">
@@ -366,3 +369,43 @@
         </table>
     </div>
 
+
+
+
+    <div *ngIf="showAll == true">
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">List of repositories</th>
+                </tr>
+            </thead>
+
+            <tbody class="docs-markdown-tbody">
+                <ng-container *ngFor="let rep of repShowList">
+                    <tr style="border-bottom:1pt solid #8D8E90;">
+                        <td>
+                            <label><b>Repository Information:</b></label><br /><br />
+                            <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Authors:</label> &nbsp; <span style="color:#909497;">{{rep.authorString}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>PIs:</label> &nbsp; <span style="color:#909497;">{{rep.piString}}</span><br /><br />
+                            <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#909497;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
+                            <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
+                            <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
+                            <br /><br />
+
+
+
+
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+
+</div>
