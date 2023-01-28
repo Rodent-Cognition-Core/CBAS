@@ -674,6 +674,55 @@ export class DataExtractionComponent implements OnInit {
                 this.genoIDList.push(58);
 
             }
+            if (selected_StrainVal.indexOf(44) > -1) {
+                this.genoIDList.push(59);
+                this.genoIDList.push(60);
+                this.genoIDList.push(61);
+                this.genoIDList.push(62);
+                this.genoIDList.push(63);
+
+            }
+            if (selected_StrainVal.indexOf(45) > -1) {
+                this.genoIDList.push(60);
+
+            }
+            if (selected_StrainVal.indexOf(46) > -1) {
+                this.genoIDList.push(61);
+
+            }
+            if (selected_StrainVal.indexOf(47) > -1) {
+                this.genoIDList.push(62);
+
+            }
+            if (selected_StrainVal.indexOf(48) > -1) {
+                this.genoIDList.push(63);
+
+            }
+            if (selected_StrainVal.indexOf(49) > -1) {
+                this.genoIDList.push(64);
+                this.genoIDList.push(65);
+                this.genoIDList.push(66);
+                this.genoIDList.push(67);
+                this.genoIDList.push(68);
+
+            }
+            if (selected_StrainVal.indexOf(50) > -1) {
+                this.genoIDList.push(65);
+
+            }
+            if (selected_StrainVal.indexOf(51) > -1) {
+                this.genoIDList.push(66);
+
+            }
+            if (selected_StrainVal.indexOf(52) > -1) {
+                this.genoIDList.push(67);
+
+            }
+            if (selected_StrainVal.indexOf(53) > -1) {
+                this.genoIDList.push(68);
+
+            }
+
 
 
             //console.log(this.genoIDList);
