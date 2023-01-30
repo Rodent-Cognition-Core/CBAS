@@ -17,6 +17,7 @@ namespace AngularSPAWebAPI.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string DOI { get; set; }
+        public string DataCiteURL { get; set; }
 
     } 
 }

@@ -21,7 +21,7 @@ namespace AngularSPAWebAPI.Services
             }
             List<SearchExp> lstExp = new List<SearchExp>();
 
-            using (DataTable dt = Dal.GetDataTable($@"select Experiment.ExpID, Experiment.ExpName, task.name as CognitiveTask, Case Experiment.Status
+            using (DataTable dt = Dal.GetDataTable($@"select Experiment.ExpID, Experiment.ExpName, task.name as CognitiveTask, Experiment.DataCiteURL, Case Experiment.Status
 													   When 1 Then 'Public'
 													   When 0 Then 'Private'
 											  	
@@ -87,6 +87,7 @@ namespace AngularSPAWebAPI.Services
                         Username = Convert.ToString(dr["Username"].ToString()),
                         Email = Convert.ToString(dr["Email"].ToString()),
                         DOI = Convert.ToString(dr["DOI"].ToString()),
+                        DataCiteURL = Convert.ToString(dr["DataCiteURL"].ToString()),
 
                     });
                 }
