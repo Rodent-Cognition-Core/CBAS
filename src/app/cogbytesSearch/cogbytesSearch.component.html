@@ -395,7 +395,8 @@
                             <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
                             <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
-                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
+                            <!--<span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>-->
+                            <span *ngIf="rep.dataCiteURL.trim() != ''"><label>Repository Link:</label>&nbsp; <a href="{{rep.dataCiteURL}}" style="color:#909497;" target="_blank">{{rep.dataCiteURL}}</a></span>
                             <br /><br />
 
 

@@ -1114,7 +1114,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
             //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
-            using (DataTable dt = Dal.GetDataTableCog($@"SELECT        UserRepository.RepID, RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, UserRepository.Description, UserRepository.AdditionalNotes, Link, Username, DateRepositoryCreated, 
+            using (DataTable dt = Dal.GetDataTableCog($@"SELECT        UserRepository.RepID, RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, UserRepository.Description, UserRepository.AdditionalNotes, Link, Username, DateRepositoryCreated, UserRepository.DataCiteURL, 
                          STUFF
                              ((SELECT        ', ' + CONCAT(Author.FirstName, '-', Author.LastName)
                                  FROM            RepAuthor INNER JOIN
@@ -1147,6 +1147,7 @@ namespace AngularSPAWebAPI.Services
                         AuthorString = Convert.ToString(dr["Author"].ToString()),
                         PIString = Convert.ToString(dr["PI"].ToString()),
                         Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
+                        DataCiteURL = Convert.ToString(dr["DataCiteURL"].ToString()),
                     });
                 }
             }
