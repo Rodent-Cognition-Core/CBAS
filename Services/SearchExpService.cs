@@ -68,7 +68,7 @@ namespace AngularSPAWebAPI.Services
 														) as tt on tt.PSID = PIUserSite.PSID
 														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
 														 as tt2 on tt2.PUSID = Experiment.PUSID
-                                                        {expIDCondition}"))
+                                                        {expIDCondition} order by Experiment.ExpID "))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
