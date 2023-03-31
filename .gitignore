@@ -353,3 +353,6 @@ Thumbs.db
 /UPLOAD
 /TempUpload
 /COGBYTES_FILES
+/yarn.lock
+/package - backup mar 29 2023.json
+/.npmignore
