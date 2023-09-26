@@ -28,7 +28,7 @@ export class SearchExperimentComponent implements OnInit {
         this.searchexperimentService.GetSearchList().subscribe(data => {
             this.searchList = data;
             this.setPage(1);
-            console.log(this.searchList);
+            //console.log(this.searchList);
 
         })
     }
@@ -98,9 +98,9 @@ export class SearchExperimentComponent implements OnInit {
             },
                 error => {
                     if (error.error instanceof Error) {
-                        console.log('An error occurred:', error.error.message);
+                        //console.log('An error occurred:', error.error.message);
                     } else {
-                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                        //console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
                     }
                 });
     }

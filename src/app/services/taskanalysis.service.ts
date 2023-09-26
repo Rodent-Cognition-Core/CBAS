@@ -31,9 +31,9 @@ import { AuthenticationService } from './authentication.service';
             },
             (error: HttpErrorResponse) => {
                 if (error.error instanceof Error) {
-                    console.log('An error occurred:', error.error.message);
+                    //console.log('An error occurred:', error.error.message);
                 } else {
-                    console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    //console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
                 }
             });
     }
@@ -54,7 +54,7 @@ import { AuthenticationService } from './authentication.service';
         this.http.post("/api/taskAnalysis/CreateTaskAnalysis", body ,{
             headers: this.authenticationService.getAuthorizationHeader()
         })
-            .map((res: Response) => { console.log(res); }).subscribe();
+            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
 
     }
 
@@ -63,7 +63,7 @@ import { AuthenticationService } from './authentication.service';
         this.http.post("/api/taskAnalysis/GetTaskAnalysisByID", taskAnalysisID, {
             headers: this.authenticationService.getAuthorizationHeader()
         })
-            .map((res: Response) => { console.log(res); }).subscribe();
+            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
 
     }
 

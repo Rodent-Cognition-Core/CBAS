@@ -17,6 +17,7 @@ import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
+import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 
 
 @Component({
@@ -74,7 +75,7 @@ export class CogbytesComponent implements OnInit {
 
         if (this.isAdmin || this.isUser) {
 
-            this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; console.log(data)});
+        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; /*console.log(data) */});
             this.GetAuthorList();
             this.GetPIList();
         }
@@ -126,7 +127,7 @@ export class CogbytesComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             this.repModel = null;
             this.GetRepositories();
            
@@ -145,7 +146,7 @@ export class CogbytesComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             this.GetRepositories();
         });
     }
@@ -155,7 +156,7 @@ export class CogbytesComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete this repository and all associated uploads and files?"
+        this.dialogRef.componentInstance.confirmMessage = CONFRIMREPOSITORYDETLETE;
 
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {

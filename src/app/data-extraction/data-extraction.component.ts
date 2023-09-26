@@ -17,6 +17,7 @@ import { Geno } from '../models/geno';
 import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
+import { REQUIREDTOENTERAVALUE } from '../shared/messages';
 
 declare var $: any;
 
@@ -756,7 +757,7 @@ export class DataExtractionComponent implements OnInit {
     // Task Dropdown
     getErrorMessageTask() {
 
-        return this.task.hasError('required') ? 'You must enter a value' :
+        return this.task.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
 
     }
@@ -765,7 +766,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageExp() {
 
 
-        return this.exp.hasError('required') ? 'You must enter a value' :
+        return this.exp.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
 
     }
@@ -774,7 +775,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSubTask() {
 
 
-        return this.subtask.hasError('required') ? 'You must enter a value' :
+        return this.subtask.hasError('required') ? REQUIREDTOENTERAVALUE:
             '';
 
     }
@@ -783,7 +784,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSessionInfo() {
 
 
-        return this.sessioninfo.hasError('required') ? 'You must enter a value' :
+        return this.sessioninfo.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
 
     }
@@ -791,7 +792,7 @@ export class DataExtractionComponent implements OnInit {
     // MarkerInfo Dropdown
     getErrorMessageMarkerInfo() {
 
-        return this.markerinfo.hasError('required') ? 'You must enter a value' :
+        return this.markerinfo.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
 
     }
@@ -799,7 +800,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageAggregation() {
 
-        return this.aggFunc.hasError('required') ? 'You must enter a value' :
+        return this.aggFunc.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
     }
 
@@ -807,7 +808,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageSpecies() {
 
-        return this.species.hasError('required') ? 'You must enter a value' :
+        return this.species.hasError('required') ? REQUIREDTOENTERAVALUE :
             '';
     }
 
@@ -938,7 +939,7 @@ export class DataExtractionComponent implements OnInit {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (key) { return console.log(key); });
+                Object.keys(a).forEach(function (key) { return /*console.log(key)*/; });
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
@@ -981,7 +982,7 @@ export class DataExtractionComponent implements OnInit {
 
 
             } else {
-                console.log('Not Done!');
+                //console.log('Not Done!');
 
             }
         });
@@ -1010,7 +1011,7 @@ export class DataExtractionComponent implements OnInit {
                         // The '\r\n' adds a new line
                         if (key == 'AnimalID') { csv = ''; }
                         csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                        console.log(csv)
+                        //console.log(csv)
                         keysCounter++
                     }
                 }

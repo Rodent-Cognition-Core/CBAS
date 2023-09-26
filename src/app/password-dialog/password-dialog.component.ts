@@ -6,6 +6,7 @@ import { Animal } from '../models/animal';
 import { IdentityService } from '../services/identity.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { MatSnackBar } from '@angular/material';
+import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
 
 @Component({
     selector: 'app-password-dialog',
@@ -50,7 +51,7 @@ export class PasswordDialogComponent implements OnInit {
                 } else {
                     if (res.succeeded) {
                         //this.showSuccess = true;
-                        this.snackBar.open("Your password has been successfully changed!", "", {
+                        this.snackBar.open(PASSWORDSUCCESSFULLYCHANGED, "", {
                             duration: 2000,
                             horizontalPosition: 'right',
                             verticalPosition: 'top',
@@ -67,7 +68,7 @@ export class PasswordDialogComponent implements OnInit {
             (error: any) => {
                 const errMsg = (error.message) ? error.message :
                     error.status ? `${error.status} - ${error.statusText}` : "Server error";
-                console.log(errMsg);
+                //console.log(errMsg);
                 this.errorMessages.push({ description: "Server error. Try later." });
             });
 

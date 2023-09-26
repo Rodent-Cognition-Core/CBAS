@@ -67,8 +67,8 @@ export class CogbytesEditComponent implements OnInit {
 
             this.repObj = data[0];
             this.repoList = data;
-            console.log(this.repObj);
-            console.log(this.repoList);
+            //console.log(this.repObj);
+            //console.log(this.repoList);
 
         });
 

@@ -39,7 +39,7 @@ export class ManageUserComponent implements OnInit {
         this.manageruserService.GetAllUser().subscribe(data => {
             this.userList = data;
             this.setPage(1);
-            console.log(this.userList);
+            //console.log(this.userList);
         })
 
     }
@@ -68,7 +68,7 @@ export class ManageUserComponent implements OnInit {
 
     filterByString(data, s): any {
         s = s.trim();
-        console.log(s.toString());
+        //console.log(s.toString());
         return data.filter(e => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
         //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }

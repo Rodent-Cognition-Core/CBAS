@@ -157,7 +157,7 @@ export class PubScreenSearchComponent implements OnInit {
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
 
-        console.log(this.subRegionList);
+        //console.log(this.subRegionList);
     }
 
     setDisabledValSearch() {
@@ -175,7 +175,7 @@ export class PubScreenSearchComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             //this.DialogResult = result;
             //this.GetExpSelect();
         });
@@ -201,12 +201,12 @@ export class PubScreenSearchComponent implements OnInit {
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
-        console.log(this._pubSCreenSearch);
+        //console.log(this._pubSCreenSearch);
 
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
 
             this.searchResultList = data;
-            console.log(this.searchResultList);
+            //console.log(this.searchResultList);
         });
 
     }
