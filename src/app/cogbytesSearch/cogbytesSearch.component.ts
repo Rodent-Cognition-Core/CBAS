@@ -112,7 +112,7 @@ export class CogbytesSearchComponent implements OnInit {
             if (params['showall'] != null && params['showall'] == 'true') {
                 this.showAll = true;
             }
-            console.log(this.showAll);
+            //console.log(this.showAll);
         });
     }
 
@@ -186,7 +186,7 @@ export class CogbytesSearchComponent implements OnInit {
 
         this.cogbytesService.showAllRepositories().subscribe(data => {
             this.repShowList = data;
-            console.log(this.repShowList);
+            //console.log(this.repShowList);
 
         });
     }
@@ -314,7 +314,7 @@ export class CogbytesSearchComponent implements OnInit {
     }
 
     selectYearToChange(yearFromVal, yearToVal) {
-        console.log(yearToVal)
+        //console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
 
         yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
@@ -362,7 +362,7 @@ export class CogbytesSearchComponent implements OnInit {
         this.cogbytesService.searchRepositories(this._cogbytesSearch).subscribe(data => {
 
             this.searchResultList = data;
-            console.log(this.searchResultList);
+            //console.log(this.searchResultList);
             this.isSearch = true;
         });
     }

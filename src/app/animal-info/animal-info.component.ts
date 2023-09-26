@@ -45,7 +45,7 @@ export class AnimalInfoComponent implements OnInit {
         this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
-            console.log(this.AnimalList)
+            //console.log(this.AnimalList)
 
         });
 
@@ -59,7 +59,7 @@ export class AnimalInfoComponent implements OnInit {
     }
 
     openDialog(Animal): void {
-        console.log(Animal);
+        //console.log(Animal);
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',

@@ -89,7 +89,7 @@ export class SharedExperimentComponent implements OnInit {
         this.SubExpModel = this.selectedSubExpValue;
         var selectedSubExp: any;
         selectedSubExp = this.getSelectedSubExp(this.selectedSubExpValue);
-        console.log(selectedSubExp)
+        //console.log(selectedSubExp)
         if (selectedSubExp.imageIds != null) {
             this.selectedImageResult = selectedSubExp.imageIds.length;
         }
@@ -107,7 +107,7 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             this.DialogResult = result;
             this.GetExpSelect();
         });
@@ -115,7 +115,7 @@ export class SharedExperimentComponent implements OnInit {
 
     // Creating Sub experiment
     openDialogSubExp(SubExperiment, ExpID): void {
-        console.log(SubExperiment);
+        //console.log(SubExperiment);
         var Experiment = this.getSelectedExp(ExpID)
         let dialogref = this.dialog.open(SubExpDialogeComponent, {
             width: '600px',
@@ -124,7 +124,7 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
 
             this.GetSubExpSelect(this.selectedExpValue);
         });
@@ -182,7 +182,7 @@ export class SharedExperimentComponent implements OnInit {
     ngOnInit() {
         //this.imageDescriptionNotNull = false;
         this.GetExpSelect();
-        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(this.repList); });
+        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; /*console.log(this.repList);*/ });
 
         if (this.hideSubExperiment == null) {
             this.hideSubExperiment = false;
@@ -198,7 +198,7 @@ export class SharedExperimentComponent implements OnInit {
 
         this.uploadService.getAllExperiment().subscribe(data => {
             this.expList = data;
-            console.log(this.expList);
+            //console.log(this.expList);
         });
 
     }
@@ -229,7 +229,7 @@ export class SharedExperimentComponent implements OnInit {
 
     // Deleting Sub Experiment
     delSubExp(subExp) {
-        console.log(subExp)
+        //console.log(subExp)
         this.openSubExpConfirmationDialog(subExp);
 
     }

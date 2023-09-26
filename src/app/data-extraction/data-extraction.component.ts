@@ -938,7 +938,7 @@ export class DataExtractionComponent implements OnInit {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (key) { return console.log(key); });
+                Object.keys(a).forEach(function (key) { return /*console.log(key)*/; });
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
@@ -981,7 +981,7 @@ export class DataExtractionComponent implements OnInit {
 
 
             } else {
-                console.log('Not Done!');
+                //console.log('Not Done!');
 
             }
         });
@@ -1010,7 +1010,7 @@ export class DataExtractionComponent implements OnInit {
                         // The '\r\n' adds a new line
                         if (key == 'AnimalID') { csv = ''; }
                         csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                        console.log(csv)
+                        //console.log(csv)
                         keysCounter++
                     }
                 }

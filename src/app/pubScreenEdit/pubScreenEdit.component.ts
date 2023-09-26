@@ -64,7 +64,7 @@ export class PubScreenEditComponent implements OnInit {
         this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe(data => {
 
             this.paperInfo = data;
-            console.log(this.paperInfo)
+            //console.log(this.paperInfo)
 
             this.isLoaded = true;
 
@@ -86,7 +86,7 @@ export class PubScreenEditComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             //this.search();
         });
     }

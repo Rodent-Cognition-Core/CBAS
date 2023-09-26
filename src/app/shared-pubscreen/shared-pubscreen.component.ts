@@ -174,7 +174,7 @@ export class SharedPubscreenComponent implements OnInit {
 
     // Getting list of all years  in database ???
     getAllYears() {
-        return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
+        return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; /*console.log(this.yearList);*/ });
     }
 
 
@@ -214,7 +214,7 @@ export class SharedPubscreenComponent implements OnInit {
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
 
-        console.log(this.subRegionList);
+        //console.log(this.subRegionList);
     }
 
     // Handling Error for the required fields
@@ -356,8 +356,8 @@ export class SharedPubscreenComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            /*console.log(data);
+            console.log(data.result);*/
 
             if (data.result == null) {
                 alert("DOI is not valid or has not been found!");
@@ -387,8 +387,8 @@ export class SharedPubscreenComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("Pubmed Key is not valid or has not been found!");
@@ -416,8 +416,8 @@ export class SharedPubscreenComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("DOI is not valid or has not been found!");
@@ -447,14 +447,14 @@ export class SharedPubscreenComponent implements OnInit {
 
         if (this.authorModel != null && this.authorModel.length != 0) {
             this._pubscreen.authourID = this.authorModel;
-            console.log(this.authorModel)
+            //console.log(this.authorModel)
         }
         else {
 
             this._pubscreen.author = this.authorList2;
             this._pubscreen.authorString = this.authorModel2;
-            console.log(this._pubscreen.author)
-            console.log(this.authorList2);
+            //console.log(this._pubscreen.author)
+            //console.log(this.authorList2);
 
         }
 

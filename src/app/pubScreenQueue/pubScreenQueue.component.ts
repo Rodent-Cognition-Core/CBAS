@@ -54,7 +54,7 @@ export class PubScreenQueueComponent implements OnInit {
         this.pubScreenService.getPubmedQueue().subscribe(
             data => {
                 this.pubmedQueue = data;
-                console.log(this.pubmedQueue);
+                //console.log(this.pubmedQueue);
             }
         );
     }
@@ -83,14 +83,14 @@ export class PubScreenQueueComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                console.log(pubmedID);
+                //console.log(pubmedID);
 
                 this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe(data => {
                     alert('Publication successfully added to Pubscreen!')
                     this.pubScreenService.getPubmedQueue().subscribe(
                         data => {
                             this.pubmedQueue = data;
-                            console.log(this.pubmedQueue);
+                            //console.log(this.pubmedQueue);
                             this.spinnerService.hide();
                         }
                     );
@@ -110,14 +110,14 @@ export class PubScreenQueueComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                console.log(pubmedID);
+                //console.log(pubmedID);
 
                 this.pubScreenService.rejectQueuePaper(pubmedID).subscribe(result => {
                     alert('Publication rejected!')
                     this.pubScreenService.getPubmedQueue().subscribe(
                         data => {
                             this.pubmedQueue = data;
-                            console.log(this.pubmedQueue);
+                            //console.log(this.pubmedQueue);
                             this.spinnerService.hide();
                         }
                     );

@@ -67,7 +67,7 @@ export class PasswordDialogComponent implements OnInit {
             (error: any) => {
                 const errMsg = (error.message) ? error.message :
                     error.status ? `${error.status} - ${error.statusText}` : "Server error";
-                console.log(errMsg);
+                //console.log(errMsg);
                 this.errorMessages.push({ description: "Server error. Try later." });
             });
 
