@@ -10,3 +10,4 @@ export const GENOTYPEREQUIRED = "Genotype is required";
 export const ANIMALIDDOESNOTEXIST = "The edited Animal Id does not exist in database";
 export const CONFIRMDELETE =  "Are you sure you want to delete?";
 export const REQUIREDTOENTERAVALUE = "You must enter a value";
+export const CONFRIMREPOSITORYDETLETE = "Are you sure you want to delete this repository and all associated uploads and files?";
