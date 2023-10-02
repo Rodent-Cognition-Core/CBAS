@@ -8,6 +8,7 @@ import { ProfileService } from '../services/profile.service';
 import { IdentityService } from '../services/identity.service';
 import { User } from '../models/user';
 import { PasswordDialogComponent } from '../password-dialog/password-dialog.component';
+import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/messages';
 
 @Component({
     selector: 'app-profile',
@@ -131,13 +132,13 @@ export class ProfileComponent implements OnInit {
 
     getErrorMessageGN() {
 
-        return this.givenName.hasError('required') ? 'You must enter a value' :
+        return this.givenName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageFN() {
 
-        return this.familyName.hasError('required') ? 'You must enter a value' :
+        return this.familyName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
@@ -170,7 +171,7 @@ export class ProfileComponent implements OnInit {
             (res: any) => {
                 // IdentityResult.
                 if (res == 'Invalid Email!') {
-                    this.errorMessages.push({ description: "Invalid Email!" });
+                    this.errorMessages.push({ description: INVALIDEMAILADDRESS });
                 } else {
                     if (res.succeeded) {
                         this.showSuccess = true;
@@ -184,7 +185,7 @@ export class ProfileComponent implements OnInit {
                 const errMsg = (error.message) ? error.message :
                     error.status ? `${error.status} - ${error.statusText}` : "Server error";
                 console.log(errMsg);
-                this.errorMessages.push({ description: "Server error. Try later." });
+                this.errorMessages.push({ description: SERVERERROR });
             });
 
 
