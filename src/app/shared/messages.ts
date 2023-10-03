@@ -32,3 +32,7 @@ export const YEARNEEDSTOBEGREATER = "Year To should be greater than Year From";
 export const DOINOTVALID = "DOI is not valid or has not been found";
 export const PUBMEDKEYNOTVALID = "Pubmed Key is not valid or has not been found";
 export const YEARNOTVALID = 'Year is not valid';
+export const PUBLICATIONEDITSUCCESSFULL = "Publication was successfully edited";
+export const PUBLICATIONEDITFAILED  = "Error in editing publication! Please try again, if this happens again contact admin";
+export const PUBLICATIONSUCESSFULLYADDED = "Publication was successfully added to the system";
+export const PUBLICATIONWITHSAMEDOI = "Publication with the same DOI exists in the database";

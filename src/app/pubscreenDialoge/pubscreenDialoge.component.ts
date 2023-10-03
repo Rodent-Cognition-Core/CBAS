@@ -15,7 +15,7 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { take, takeUntil } from 'rxjs/operators';
-import { DOINOTVALID, FIELDISREQUIRED, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
+import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUCCESSFULL, PUBLICATIONSUCESSFULLYADDED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 
 @Component({
 
@@ -1181,10 +1181,10 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.pubScreenService.EditPublicationPublic(this.publicationId, this._pubscreen).subscribe(data => {
 
                     if (data === true) {
-                        alert("Publication was successfully edited!");
+                        alert(PUBLICATIONEDITSUCCESSFULL);
                         this.thisDialogRef.close();
                     } else {
-                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
+                        alert(PUBLICATIONEDITFAILED)
                     }
 
                     setTimeout(() => {
@@ -1198,10 +1198,10 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.pubScreenService.EditPublication(this.publicationId, this._pubscreen).subscribe(data => {
 
                     if (data === true) {
-                        alert("Publication was successfully edited!");
+                        alert(PUBLICATIONEDITSUCCESSFULL);
                         this.thisDialogRef.close();
                     } else {
-                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
+                        alert(PUBLICATIONEDITFAILED)
                     }
 
                     setTimeout(() => {
@@ -1216,10 +1216,10 @@ export class PubscreenDialogeComponent implements OnInit {
             this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {
 
                 if (data === null) {
-                    alert("Publication with the same DOI exists in the database!");
+                    alert(PUBLICATIONWITHSAMEDOI);
                 } else {
                     this.thisDialogRef.close();
-                    alert("Publication was successfully added to the system!");
+                    alert(PUBLICATIONSUCESSFULLYADDED);
                 }
                 this.resetFormVals();
 
