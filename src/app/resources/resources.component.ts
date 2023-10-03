@@ -28,9 +28,9 @@ export class ResourcesComponent implements OnInit {
             },
             (error: HttpErrorResponse) => {
                 if (error.error instanceof Error) {
-                    console.log('An error occurred:', error.error.message);
+                    //console.log('An error occurred:', error.error.message);
                 } else {
-                    console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    //console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
                 }
             });
     }

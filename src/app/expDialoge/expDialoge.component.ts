@@ -61,9 +61,9 @@ export class ExpDialogeComponent implements OnInit {
         private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, private cogbytesService: CogbytesService) { }
 
     ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; console.log(this.taskList); });
+        this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; /*console.log(this.taskList)*/; });
         this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
+        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; /*console.log(this.speciesList)*/; });
         this.GetRepList();
 
         this.isRepoLink = '0';

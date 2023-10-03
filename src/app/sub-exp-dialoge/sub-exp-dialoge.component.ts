@@ -70,7 +70,7 @@ export class SubExpDialogeComponent implements OnInit {
 
         this.subexpDialogeService.getAllImages().subscribe(data => { this.imageList = data;  });
 
-        console.log(this.data.subexperimentObj);
+        //console.log(this.data.subexperimentObj);
         if (this.data.subexperimentObj != null) {
             this.subExpNameModel = this.data.subexperimentObj.subExpName;
             this.ageInMonthModel = this.data.subexperimentObj.ageID;
@@ -232,8 +232,8 @@ export class SubExpDialogeComponent implements OnInit {
     
     onCloseCancel(): void {
 
-        console.log(this.drugModel);
-        console.log(this.isDrugModel);
+        //console.log(this.drugModel);
+        //console.log(this.isDrugModel);
         this.thisDialogRef.close('Cancel');
 
     }
@@ -278,7 +278,7 @@ export class SubExpDialogeComponent implements OnInit {
         this._subexperiment.Housing = this.housingModel;
         this._subexperiment.LightCycle = this.lightCycleModel;
 
-        console.log(this._subexperiment);
+        //console.log(this._subexperiment);
         if (this.data.subexperimentObj == null) {
             // Insert Mode: Insert sub Experiment
             this.isTakenSubExpName = false;
@@ -287,8 +287,8 @@ export class SubExpDialogeComponent implements OnInit {
 
             this.subexpDialogeService.createSubExp(this._subexperiment).map(res => {
 
-                console.log('create');
-                console.log(res);
+                //console.log('create');
+                //console.log(res);
 
                 if (res == "TakenSubExpName") {
                     this.isTakenSubExpName = true;
@@ -311,7 +311,7 @@ export class SubExpDialogeComponent implements OnInit {
                 (this.taskID == 11 && this._subexperiment.ImageIds.length <=6) || (this.taskID == 12 && this._subexperiment.ImageIds.length <=4))
             {
                 this._subexperiment.ImageDescription = "";
-                console.log(123456);
+                //console.log(123456);
 
             }
             
@@ -321,8 +321,8 @@ export class SubExpDialogeComponent implements OnInit {
             this._subexperiment.SubExpID = this.data.subexperimentObj.subExpID;
             this.subexpDialogeService.updateSubExp(this._subexperiment).map(res => {
 
-                console.log('update');
-                console.log(res);
+                //console.log('update');
+                //console.log(res);
 
                 if (res == "TakenSubExpName") {
                     this.isTakenSubExpName = true;

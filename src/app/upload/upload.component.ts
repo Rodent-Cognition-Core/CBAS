@@ -81,26 +81,26 @@ export class UploadComponent implements OnInit {
 
     ngOnInit() {
 
-        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; console.log(this.SessionList); });
+        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; /*console.log(this.SessionList);*/ });
 
     }
 
     SelectedExpChanged(experiment) {
 
-        console.log(experiment);
+        //console.log(experiment);
         this.experimentName = experiment.expName;
         this.experimentID = experiment.expID;
         this.expTask = experiment.taskName;
         this.expTaskID = experiment.taskID;
 
-        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; console.log(this.SessionList); });
+        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; /*console.log(this.SessionList);*/ });
         this.subExpID = null;
         this.sessionNameVal = null;
 
     }
 
     SelectedSubExpChanged(subExperiment) {
-        console.log(subExperiment);
+        //console.log(subExperiment);
         this.subExpID = subExperiment.subExpID;
         this.drugName = subExperiment.drugName;
         this.interventionDescription = subExperiment.interventionDescription;
@@ -110,12 +110,12 @@ export class UploadComponent implements OnInit {
         this.ageInMonth = subExperiment.ageInMonth;
 
         this.sessionNameVal = null;
-        console.log(this.expTaskID);
+        //console.log(this.expTaskID);
 
         switch (this.expTaskID) {
             case 2: { // 5-choice
                 this.SessionList = this.SessionList.filter((x => x.taskID === 1 || x.taskID === 2));
-                console.log(this.SessionList);
+                //console.log(this.SessionList);
                 break;
 
             }
@@ -270,18 +270,18 @@ export class UploadComponent implements OnInit {
 
         if (args[1] == "You can't upload files of this type.") {
             this.uploadErrorFileType = this.uploadErrorFileType + "You can't upload files of this type: '" + args[0].name + "'" + "\n\r";
-            console.log("You can't upload files of this type: '" + args[0].name + "'");
+            //console.log("You can't upload files of this type: '" + args[0].name + "'");
         } else {
             this.uploadErrorServer = "Error in upload, please contact administrator at MouseBytes@uwo.ca";
         }
 
         this.resetDropzoneUploads();
-        console.log('onUploadError:', args);
+        //console.log('onUploadError:', args);
     }
 
     public maxfilesexceeded(args: any) {
 
-        console.log('max exceeded!');
+        //console.log('max exceeded!');
     }
 
     public onUploadSuccess(args: any) {

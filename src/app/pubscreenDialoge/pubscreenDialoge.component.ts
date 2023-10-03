@@ -200,7 +200,7 @@ export class PubscreenDialogeComponent implements OnInit {
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
 
-        console.log(this.data);
+        //console.log(this.data);
         // if it is an Edit model
 
         if (this.data.isPublic != null) {
@@ -209,7 +209,7 @@ export class PubscreenDialogeComponent implements OnInit {
         else {
             this.isPublicMode = false;
         }
-        console.log("isPublicMode: " + this.isPublicMode);
+        //console.log("isPublicMode: " + this.isPublicMode);
         if (this.data.publicationObj != null) {
 
             this.isEditMode = true;
@@ -219,7 +219,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
             this.pubScreenService.getPaperInfo(this.publicationId).subscribe(data => {
                 this.paperInfo = data;
-                console.log(this.paperInfo)
+                //console.log(this.paperInfo)
                 this.doiModel = this.paperInfo.doi;
                 this.keywordsModel = this.paperInfo.keywords;
                 this.titleModel = this.paperInfo.title;
@@ -501,7 +501,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     // Getting list of all years  in database ???
     getAllYears() {
-        return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
+    return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; /*console.log(this.yearList); */ });
     }
 
 
@@ -1019,8 +1019,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("Pubmed Key is not valid or has not been found!");
@@ -1047,8 +1047,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("DOI is not valid or has not been found!");
@@ -1076,8 +1076,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.pubScreenService.getPaparInfoFromDOICrossref(doi).subscribe(data => {
 
-            console.log(data);
-            console.log(data.result);
+            //console.log(data);
+            //console.log(data.result);
 
             if (data.result == null) {
                 alert("DOI is not valid or has not been found!");
@@ -1112,14 +1112,14 @@ export class PubscreenDialogeComponent implements OnInit {
 
         if (this.authorModel !== null && this.authorModel.length !== 0) {
             this._pubscreen.authourID = this.authorModel;
-            console.log(this.authorModel)
+            //console.log(this.authorModel)
         }
         else {
 
             this._pubscreen.author = this.authorList2;
             this._pubscreen.authorString = this.authorModel2;
-            console.log(this._pubscreen.author)
-            console.log(this.authorList2);
+            //console.log(this._pubscreen.author)
+            //console.log(this.authorList2);
 
         }
 

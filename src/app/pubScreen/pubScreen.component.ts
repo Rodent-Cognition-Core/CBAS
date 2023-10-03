@@ -157,8 +157,8 @@ export class PubScreenComponent implements OnInit {
         this.pubScreenService.getPubCount().subscribe(data => {
             this.pubCount = data.item1;
             this.featureCount = data.item2;
-            console.log(this.pubCount);
-            console.log(this.featureCount);
+            //console.log(this.pubCount);
+            //console.log(this.featureCount);
         });
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
@@ -674,7 +674,7 @@ export class PubScreenComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             //this.DialogResult = result;
             this.GetAuthorList();
         });
@@ -690,13 +690,13 @@ export class PubScreenComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            console.log('the dialog was closed');
+            //console.log('the dialog was closed');
             this.search();
         });
     }
     
     selectYearToChange(yearFromVal, yearToVal) {
-        console.log(yearToVal)
+        //console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
         
         yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
