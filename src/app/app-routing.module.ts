@@ -25,7 +25,6 @@ const routes: Routes = [
     { path: 'search-experiment', loadChildren: './search-experiment/search-experiment.module#SearchExperimentModule' },
     { path: 'manage-user', loadChildren: './manage-user/manage-user.module#ManageUserModule' },
     { path: 'profile', loadChildren: './profile/profile.module#ProfileModule' },
-    { path: 'imaging', loadChildren: './imaging/imaging.module#ImagingModule' },
     { path: 'genomics', loadChildren: './genomics/genomics.module#GenomicsModule' },
     { path: 'guideline', loadChildren: './guideline/guideline.module#GuidelineModule' },
     { path: 'guideline-datalab', loadChildren: './guidelineDataLab/guidelineDataLab.module#GuidelineDataLabModule' },
@@ -42,7 +41,6 @@ const routes: Routes = [
     { path: 'comp', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
     { path: 'comp-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
     { path: 'pubScreen-queue', loadChildren: './pubScreenQueue/pubScreenQueue.module#PubScreenQueueModule' },
-    { path: 'pubScreen-edit', loadChildren: './pubScreenEdit/pubScreenEdit.module#PubScreenEditModule' },
     { path: 'comp-edit', loadChildren: './cogbytesEdit/cogbytesEdit.module#CogbytesEditModule' },
 
 ];
