@@ -36,3 +36,7 @@ export const PUBLICATIONEDITSUCCESSFULL = "Publication was successfully edited";
 export const PUBLICATIONEDITFAILED  = "Error in editing publication! Please try again, if this happens again contact admin";
 export const PUBLICATIONSUCESSFULLYADDED = "Publication was successfully added to the system";
 export const PUBLICATIONWITHSAMEDOI = "Publication with the same DOI exists in the database";
+export const CONFIRMACCEPTPAPERTOPUBSCREEN = "Are you sure you wish to accept the paper into Pubscreen?";
+export const SUCCESSFULLYADDEDPUBLICATION = "Publication successfully added to Pubscreen!";
+export const CONFIRMREJECTPAPER = "Are you sure you wish to reject the paper from Pubscreen?";
+export const PAPERREJECTED = 'Publication rejected';

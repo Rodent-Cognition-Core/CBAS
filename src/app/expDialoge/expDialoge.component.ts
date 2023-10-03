@@ -277,14 +277,14 @@ export class ExpDialogeComponent implements OnInit {
 
     getErrorMessageExpBattery() {
 
-        return this.expBattery.hasError('required') ? FIELDISREQUIRED + ' ' + NAIFNOTAPPLICABLE:
+        return this.expBattery.hasError('required') ? FIELDISREQUIRED + ' ' + NAIFNOTAPPLICABLE :
             '';
 
     }
 
     getErrorMessageMultipleSessions() {
 
-        return this.isMultipleSessions.hasError('required') ?  :
+        return this.isMultipleSessions.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
