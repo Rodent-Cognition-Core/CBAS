@@ -40,3 +40,5 @@ export const CONFIRMACCEPTPAPERTOPUBSCREEN = "Are you sure you wish to accept th
 export const SUCCESSFULLYADDEDPUBLICATION = "Publication successfully added to Pubscreen!";
 export const CONFIRMREJECTPAPER = "Are you sure you wish to reject the paper from Pubscreen?";
 export const PAPERREJECTED = 'Publication rejected';
+export const POSTPROCESSINGDONE = "Post Processing Done"
+export const PLEASERUNPREPROCESSING = "The result is not availble yet! Please run the pre-processing."

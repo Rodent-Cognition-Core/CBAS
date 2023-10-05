@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material';
 import * as _ from 'underscore';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
+import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
 
 @Component({
     selector: 'app-shared-experiment',
@@ -135,7 +136,7 @@ export class SharedExperimentComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
 
 
         this.dialogRef.afterClosed().subscribe(result => {
@@ -161,7 +162,7 @@ export class SharedExperimentComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
 
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
@@ -257,7 +258,7 @@ export class SharedExperimentComponent implements OnInit {
             if (errorMessage == "") {
                 // this.GetAllSubExp();
             } else {
-                this.snackBar.open("Post Processing Done!", "", {
+                this.snackBar.open(POSTPROCESSINGDONE, "", {
                     duration: 2000,
                     horizontalPosition: 'right',
                     verticalPosition: 'top',
@@ -277,7 +278,7 @@ export class SharedExperimentComponent implements OnInit {
         
         this.postProcessingQcService.getPostProcessingResult(subExpID).subscribe(errorMessage => {
             if (errorMessage == "")
-                errorMessage = "The result is not availble yet! Please run the pre-processing.";
+                errorMessage = PLEASERUNPREPROCESSING;
 
             this.dialogRefPostProcessingResult = this.dialog.open(GenericDialogComponent, {
                 disableClose: false
