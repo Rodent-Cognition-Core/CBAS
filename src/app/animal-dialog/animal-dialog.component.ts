@@ -5,7 +5,7 @@ import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ANIMALIDDOESNOTEXIST, ANIMALIDREQUIRED, ANIMALIDTAKEN, ANIMALSEXREQUIRED, CANNOTSAVEEDITS, GENOTYPEREQUIRED, NOTEXIST, STRAINREQUIRED, SUCCESSFUL, TAKEN } from '../shared/messages';
+import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
 
 @Component({
     selector: 'app-animal-dialog',
@@ -78,20 +78,20 @@ export class AnimalDialogComponent implements OnInit {
     genotype = new FormControl('', [Validators.required]);
 
     getErrorMessageId() {
-        return this.userAnimalId.hasError('required') ? ANIMALIDREQUIRED : '';
+        return this.userAnimalId.hasError('required') ? FIELDISREQUIRED : '';
     }
     getErrorMessageIdTaken() {
         return this.userAnimalId.hasError('taken') ? ANIMALIDTAKEN : '';
     }
 
     getErrorMessageGender() {
-        return this.gender.hasError('required') ? ANIMALSEXREQUIRED : '';
+        return this.gender.hasError('required') ? FIELDISREQUIRED : '';
     }
     getErrorMessageStrain() {
-        return this.strain.hasError('required') ? STRAINREQUIRED : '';
+        return this.strain.hasError('required') ? FIELDISREQUIRED : '';
     }
     getErrorMessageGenotype() {
-        return this.genotype.hasError('required') ? GENOTYPEREQUIRED : '';
+        return this.genotype.hasError('required') ? FIELDISREQUIRED : '';
     }
 
 
