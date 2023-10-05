@@ -44,3 +44,6 @@ export const POSTPROCESSINGDONE = "Post Processing Done";
 export const PLEASERUNPREPROCESSING = "The result is not availble yet! Please run the pre-processing.";
 export const SUBEXPERIMENTNAMETAKEN = 'This sub-experiment name was already taken'; 
 export const SUBEXPERIEMENTWITHSAMECONDITIONS = 'Sub-experiment with the same conditions already exists';
+export const UPLOADERROR = "Error in upload";
+export const CANNOTUPLOADFILETYPE = "You can't upload files of this type.";
+
