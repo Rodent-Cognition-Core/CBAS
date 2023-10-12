@@ -6,6 +6,7 @@ import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { SharedModule } from '../shared/shared.module';
+import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
@@ -80,14 +81,14 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     getErrorMessage()
     {
 
-        return this.name.hasError('required') ? 'You must enter a value' :
+        return this.name.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageEmail()
     {
 
-        return this.email.hasError('required') ? 'You must enter a value' :
+        return this.email.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -95,30 +96,30 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     getErrorMessageEmailValid()
     {
 
-        return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
+        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
             '';
     }
 
     getErrorMessageTaskCategory() {
 
-        return this.taskCategory.hasError('required') ? 'You must select a value' :
+        return this.taskCategory.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
     getErrorMessageNewCategory() {
 
-        return this.newCategory.hasError('required') ? 'You must enter a value' :
+        return this.newCategory.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
 
     getErrorMessageNewTask() {
-        return this.newTask.hasError('required') ? 'You must enter a value' :
+        return this.newTask.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageDOI() {
-        return this.doi.hasError('required') ? 'You must enter a value' :
+        return this.doi.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 

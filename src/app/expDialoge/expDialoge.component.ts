@@ -14,6 +14,7 @@ import { CogbytesService } from '../services/cogbytes.service'
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subject } from 'rxjs/Subject';
 import { take, takeUntil } from 'rxjs/operators';
+import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
 
 @Component({
@@ -219,26 +220,26 @@ export class ExpDialogeComponent implements OnInit {
 
     getErrorMessage() {
 
-        return this.exp.hasError('required') ? 'You must enter a value' :
+        return this.exp.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageTaken() {
 
-        return this.exp.hasError('taken') ? 'This Experiment Name was already taken!' :
+        return this.exp.hasError('taken') ? EXPERIMENTNAMETAKEN :
             '';
 
     }
 
     getErrorMessagesDate() {
 
-        return this.sDate.hasError('required') ? 'You must enter a value' :
+        return this.sDate.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageeDate() {
 
-        return this.eDate.hasError('required') ? 'You must enter a value' :
+        return this.eDate.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -246,7 +247,7 @@ export class ExpDialogeComponent implements OnInit {
     getErrorMessageTask() {
 
 
-        return this.task.hasError('required') ? 'You must enter a value' :
+        return this.task.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -254,36 +255,36 @@ export class ExpDialogeComponent implements OnInit {
     getErrorMessagePiSite() {
 
 
-        return this.piSite.hasError('required') ? 'You must enter a value' :
+        return this.piSite.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
 
-    getErrorMessageStatus() {
-        return this.status.hasError('required') ? 'Status of experiment is required' :
+    getErrorMessageStatus() {   
+        return this.status.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageExpDescription() {
-        return this.expDescription.hasError('required') ? 'Experiment description is required' :
+        return this.expDescription.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageSpecies() {
-        return this.species.hasError('required') ? 'Species is required' :
+        return this.species.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageExpBattery() {
 
-        return this.expBattery.hasError('required') ? 'Battery of Task is required. Please put NA if it is not applicable' :
+        return this.expBattery.hasError('required') ? FIELDISREQUIRED + ' ' + NAIFNOTAPPLICABLE :
             '';
 
     }
 
     getErrorMessageMultipleSessions() {
 
-        return this.isMultipleSessions.hasError('required') ? 'You must enter a value' :
+        return this.isMultipleSessions.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 

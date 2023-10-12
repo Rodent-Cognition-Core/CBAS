@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 import { Experiment } from '../models/experiment';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import * as _ from 'underscore';
+import { CONFIRMDELETE } from '../shared/messages';
 
 @Component({
     selector: 'app-experiment',
@@ -84,7 +85,7 @@ export class ExperimentComponent implements OnInit {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
 
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {

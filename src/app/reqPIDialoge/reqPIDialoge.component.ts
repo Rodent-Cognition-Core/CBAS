@@ -5,6 +5,7 @@ import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { SharedModule } from '../shared/shared.module';
+import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
@@ -71,14 +72,14 @@ export class ReqPIDialogeComponent implements OnInit {
     getErrorMessage()
     {
 
-        return this.name.hasError('required') ? 'You must enter a value' :
+        return this.name.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageEmail()
     {
 
-        return this.email.hasError('required') ? 'You must enter a value' :
+        return this.email.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -86,30 +87,30 @@ export class ReqPIDialogeComponent implements OnInit {
     getErrorMessageEmailValid()
     {
 
-        return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
+        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
             '';
     }
 
     getErrorMessagePIName() {
-        return this.piName.hasError('required') ? 'You must enter a value' :
+        return this.piName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageIns() {
-        return this.institution.hasError('required') ? 'You must enter a value' :
+        return this.institution.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessagePIEmail() {
 
-        return this.emailPI.hasError('required') ? 'You must enter a value' :
+        return this.emailPI.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
 
     getErrorMessagePIEmailValid() {
 
-        return this.emailPI.hasError('pattern') ? 'Enter Valid Email Address' :
+        return this.emailPI.hasError('pattern') ? INVALIDEMAILADDRESS :
             '';
     }
 
