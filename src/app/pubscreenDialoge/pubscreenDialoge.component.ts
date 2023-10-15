@@ -15,7 +15,6 @@ import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { take, takeUntil } from 'rxjs/operators';
-import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUCCESSFULL, PUBLICATIONSUCESSFULLYADDED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 
 @Component({
 
@@ -844,17 +843,17 @@ export class PubscreenDialogeComponent implements OnInit {
     // Handling Error for the required fields
     getErrorMessageAuthor() {
 
-        return this.author.hasError('required') ? FIELDISREQUIRED : '';
+        return this.author.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessageTitle() {
 
-        return this.title.hasError('required') ? FIELDISREQUIRED : '';
+        return this.title.hasError('required') ? 'You must enter a value' : '';
         
     }
 
     getErrorMessageYear() {
-        return this.year.hasError('required') ? FIELDISREQUIRED : '';
+        return this.year.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessageYearVal() {
@@ -862,45 +861,45 @@ export class PubscreenDialogeComponent implements OnInit {
     }
 
     getErrorMessageDOI() {
-        return this.doi.hasError('required') ? FIELDISREQUIRED : '';
+        return this.doi.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessagePaperType() {
 
-        return this.paperType.hasError('required') ? FIELDISREQUIRED : '';
+        return this.paperType.hasError('required') ? 'You must enter a value' : '';
 
     }
 
     getErrorMessageTask() {
-        return this.cognitiveTask.hasError('required') ? FIELDISREQUIRED : '';
+        return this.cognitiveTask.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessageSubTask() {
-        return this.subTask.hasError('required') ? FIELDISREQUIRED : '';
+        return this.subTask.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessagePaperOption() {
-        return this.addingOption.hasError('required') ? FIELDISREQUIRED : '';
+        return this.addingOption.hasError('required') ? 'You must select one of the options' : '';
     }
 
     getErrorMessageDOIKey() {
-        return this.doiKey.hasError('required') ? FIELDISREQUIRED : '';
+        return this.doiKey.hasError('required') ? 'You must enter the value' : '';
     }
 
     getErrorMessagePubMedKey() {
-        return this.pubMedKey.hasError('required') ? FIELDISREQUIRED : '';
+        return this.pubMedKey.hasError('required') ? 'You must enter the value' : '';
     }
 
     getErrorMessagePaperSource() {
-        return this.sourceOption.hasError('required') ? FIELDISREQUIRED : '';
+        return this.sourceOption.hasError('required') ? 'You must enter the value' : '';
     }
 
     getErrorMessagePaperOptionBio() {
-        return this.bioAddingOption.hasError('required') ? FIELDISREQUIRED : '';
+        return this.bioAddingOption.hasError('required') ? 'You must enter the value' : '';
     }
 
     getErrorMessageDOIKeyBio() {
-        return this.doiKeyBio.hasError('required') ? FIELDISREQUIRED : '';
+        return this.doiKeyBio.hasError('required') ? 'You must enter the value' : '';
     }
 
     setDisabledVal() {
@@ -994,7 +993,7 @@ export class PubscreenDialogeComponent implements OnInit {
             //console.log(data.result);
 
             if (data.result == null) {
-                alert(DOINOTVALID);
+                alert("DOI is not valid or has not been found!");
 
             }
             else {
@@ -1024,7 +1023,7 @@ export class PubscreenDialogeComponent implements OnInit {
             //console.log(data.result);
 
             if (data.result == null) {
-                alert(PUBMEDKEYNOTVALID);
+                alert("Pubmed Key is not valid or has not been found!");
 
             }
             else {
@@ -1052,7 +1051,7 @@ export class PubscreenDialogeComponent implements OnInit {
             //console.log(data.result);
 
             if (data.result == null) {
-                alert(DOINOTVALID);
+                alert("DOI is not valid or has not been found!");
 
             }
             else {
@@ -1081,7 +1080,7 @@ export class PubscreenDialogeComponent implements OnInit {
             //console.log(data.result);
 
             if (data.result == null) {
-                alert(DOINOTVALID);
+                alert("DOI is not valid or has not been found!");
 
             }
             else {
@@ -1107,7 +1106,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.spinnerService.show();
 
         if (!this.yearModel.match(/^(19|20)\d{2}$/)) {
-            alert(YEARNOTVALID);
+            alert('year is not valid!');
             return;
         }
 
@@ -1181,10 +1180,10 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.pubScreenService.EditPublicationPublic(this.publicationId, this._pubscreen).subscribe(data => {
 
                     if (data === true) {
-                        alert(PUBLICATIONEDITSUCCESSFULL);
+                        alert("Publication was successfully edited!");
                         this.thisDialogRef.close();
                     } else {
-                        alert(PUBLICATIONEDITFAILED)
+                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
                     }
 
                     setTimeout(() => {
@@ -1198,10 +1197,10 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.pubScreenService.EditPublication(this.publicationId, this._pubscreen).subscribe(data => {
 
                     if (data === true) {
-                        alert(PUBLICATIONEDITSUCCESSFULL);
+                        alert("Publication was successfully edited!");
                         this.thisDialogRef.close();
                     } else {
-                        alert(PUBLICATIONEDITFAILED)
+                        alert("Error in editing publication! Please try again, if this happens again contact admin.")
                     }
 
                     setTimeout(() => {
@@ -1216,10 +1215,10 @@ export class PubscreenDialogeComponent implements OnInit {
             this.pubScreenService.addPublication(this._pubscreen).subscribe(data => {
 
                 if (data === null) {
-                    alert(PUBLICATIONWITHSAMEDOI);
+                    alert("Publication with the same DOI exists in the database!");
                 } else {
                     this.thisDialogRef.close();
-                    alert(PUBLICATIONSUCESSFULLYADDED);
+                    alert("Publication was successfully added to the system!");
                 }
                 this.resetFormVals();
 

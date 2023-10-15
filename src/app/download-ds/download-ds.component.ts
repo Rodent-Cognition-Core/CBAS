@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { SearchExperimentService } from '../services/searchexperiment.service';
-import { DOWNLOADERROR } from '../shared/messages';
 
 @Component({
     selector: 'app-download-ds',
@@ -44,7 +43,7 @@ export class DownloadDsComponent implements OnInit {
             
 
         } else {
-            this.text = DOWNLOADERROR;
+            this.text = "Something went wrong! Please try again and report the issue in case problem persists.";
         }
     }
 

@@ -4,7 +4,6 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 import { NgModel } from '@angular/forms';
 import { SubExperiment } from '../models/subexperiment';
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
-import { FIELDISREQUIRED, SUBEXPERIEMENTWITHSAMECONDITIONS, SUBEXPERIMENTNAMETAKEN } from '../shared/messages';
 
 @Component({
     selector: 'app-sub-exp-dialoge',
@@ -120,72 +119,72 @@ export class SubExpDialogeComponent implements OnInit {
 
     getErrorMessage() {
 
-        return this.subExp.hasError('required') ? FIELDISREQUIRED :
+        return this.subExp.hasError('required') ? 'You must enter a value!' :
             '';
     }
 
     getErrorMessageTaken() {
 
-        return this.subExp.hasError('takenSubExpName') ? SUBEXPERIMENTNAMETAKEN :
+        return this.subExp.hasError('takenSubExpName') ? 'This sub-experiment name was already taken!' :
             '';
 
     }
 
     getErrorMessageAge() {
-        return this.ageInMonth.hasError('required') ? FIELDISREQUIRED : '';
+        return this.ageInMonth.hasError('required') ? 'Animal age is required!' : '';
     }
 
     getErrorMessageIntervention() {
-        return this.intervention.hasError('required') ? FIELDISREQUIRED : '';
+        return this.intervention.hasError('required') ? 'You must enter a value!' : '';
     }
 
     getErrorMessageIsDrug() {
-        return this.isDrug.hasError('required') ? FIELDISREQUIRED : '';
+        return this.isDrug.hasError('required') ? 'You must provide a value' : '';
     }
 
     getErrorMessageDrug() {
-        return this.drug.hasError('required') ? FIELDISREQUIRED : '';
+        return this.drug.hasError('required') ? 'You must enter a value!' : '';
     }
 
 
     getErrorMessageDrugQunatity() {
-        return this.drugQuantity.hasError('required') ? FIELDISREQUIRED : '';
+        return this.drugQuantity.hasError('required') ? 'You must enter a value!' : '';
     }
 
     getErrorMessageDrugQunatityNumber() {
-        return this.drugQuantity.hasError('pattern') ? FIELDISREQUIRED : '';
+        return this.drugQuantity.hasError('pattern') ? 'You must ennter a number!' : '';
     }
 
     getErrorMessageDrugUnit() {
-        return this.drugUnit.hasError('required') ? FIELDISREQUIRED : '';
+        return this.drugUnit.hasError('required') ? 'You must enter a value!' : '';
     }
 
     getErrorMessageIntDesc() {
-        return this.intDes.hasError('required') ? FIELDISREQUIRED : '';
+        return this.intDes.hasError('required') ? 'You must enter a value!' : '';
     }
 
     getErrorMessageTakenAge() {
-        return this.ageInMonth.hasError('takenAge') ? SUBEXPERIEMENTWITHSAMECONDITIONS:
+        return this.ageInMonth.hasError('takenAge') ? 'Sub-experiment with the same conditions already exists!' :
             '';
 
     }
 
     getErrorMessageImage() {
-        return this.imageInfo.hasError('required') ? FIELDISREQUIRED : '';
+        return this.imageInfo.hasError('required') ? 'Selecting image is required' : '';
     }
 
     getErrorMessageImageDescription() {
-        return this.imageDescription.hasError('required') ? FIELDISREQUIRED : '';
+        return this.imageDescription.hasError('required') ? 'You should explain why more than the required number of images selected' : '';
 
     }
 
     getErrorMessageHousing() {
-        return this.housing.hasError('required') ? FIELDISREQUIRED :
+        return this.housing.hasError('required') ? 'Housing information is required' :
             '';
     }
 
     getErrorMessageLightCycle() {
-        return this.lightCycle.hasError('required') ? FIELDISREQUIRED :
+        return this.lightCycle.hasError('required') ? 'Light cycle information is required' :
             '';
     }
 

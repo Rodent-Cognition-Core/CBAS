@@ -12,7 +12,6 @@ import {
 import { ViewChild } from '@angular/core'
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component'
 import { OAuthService } from 'angular-oauth2-oidc';
-import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
 
 
 @Component({
@@ -174,22 +173,22 @@ export class CogbytesUploadComponent implements OnInit {
     numSubjects = new FormControl('', [Validators.pattern('[0-9]*')]);
 
     getErrorMessageFileType() {
-        return this.fileType.hasError('required') ? FIELDISREQUIRED : '';
+        return this.fileType.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessageName() {
-        return this.name.hasError('required') ? FIELDISREQUIRED : '';
+        return this.name.hasError('required') ? 'You must enter a value' : '';
     }
     getErrorMessageTask() {
-        return this.cognitiveTask.hasError('required') ? FIELDISREQUIRED : '';
+        return this.cognitiveTask.hasError('required') ? 'You must enter a value' : '';
     }
 
     getErrorMessageIntervention() {
-        return this.intervention.hasError('required') ? FIELDISREQUIRED : '';
+        return this.intervention.hasError('required') ? 'You must enter a value!' : '';
     }
 
     getErrorMessageNumSubjects() {
-        return this.numSubjects.hasError('pattern') ? INVALIDNUMBERICALVALUE: '';
+        return this.numSubjects.hasError('pattern') ? 'Please enter a numerical value!' : '';
     }
 
     //getErrorMessageName() {
@@ -270,10 +269,10 @@ export class CogbytesUploadComponent implements OnInit {
         this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
 
             if (data === null) {
-                alert(FEATURESUPLOADFAILED);
+                alert("Failed to add upload features to Cogbytes");
             }
             else {
-                alert(FEATURESUPLOADSUCESS);
+                alert("Upload features were successfully added to the system! Please upload your files via the dropzone.");
                 this.isUploadAdded = true;
                 this.uploadID = data;
             }
@@ -309,10 +308,10 @@ export class CogbytesUploadComponent implements OnInit {
         this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
 
             if (data === null) {
-                alert(FEATUREEDITFAILED);
+                alert("Failed to edit features to Cogbytes");
             }
             else {
-                alert(FEATUREEDITSUCCESSFULL);
+                alert("Features were successfully edited to the system!");
             }
         })
     }
@@ -329,10 +328,10 @@ export class CogbytesUploadComponent implements OnInit {
     public onUploadError(args: any) {
 
         if (!this.isUploadAdded) {
-            this.uploadErrorServer = FAILEDTOADDUPLOADDUETOMISSINGFEATURES;
+            this.uploadErrorServer = 'Error: upload zone disabled until required features are selected and saved.'
         }
         else {
-            this.uploadErrorServer = FAILEDTOADDUPLOADDUETOSERVER;
+            this.uploadErrorServer = "Error in upload: please ensure all file types are supported.  If so, please contact administrator at MouseBytes@uwo.ca";
         }
         
         this.resetDropzoneUploads();
@@ -354,7 +353,7 @@ export class CogbytesUploadComponent implements OnInit {
 
         this.resetDropzoneUploads();
 
-        alert(UPLOADSUCCESS);
+        alert('Files were successfully uploaded to the database!');
 
         this.proceedUpload = false;
 
@@ -439,7 +438,7 @@ export class CogbytesUploadComponent implements OnInit {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
+        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete this file?"
 
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
@@ -476,7 +475,7 @@ export class CogbytesUploadComponent implements OnInit {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
+        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete all of the above features and files?"
 
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
