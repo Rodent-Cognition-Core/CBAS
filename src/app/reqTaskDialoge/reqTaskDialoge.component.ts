@@ -5,7 +5,6 @@ import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { SharedModule } from '../shared/shared.module';
-import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
@@ -67,20 +66,20 @@ export class ReqTaskDialogeComponent implements OnInit {
     getErrorMessage()
     {
 
-        return this.name.hasError('required') ? FIELDISREQUIRED :
+        return this.name.hasError('required') ? 'You must enter a value' :
             '';
     }
 
     getErrorMessageTask() {
 
-        return this.task.hasError('required') ? FIELDISREQUIRED :
+        return this.task.hasError('required') ? 'You must enter a value' :
             '';
     }
 
     getErrorMessageEmail()
     {
 
-        return this.email.hasError('required') ? FIELDISREQUIRED :
+        return this.email.hasError('required') ? 'You must enter a value' :
             '';
 
     }
@@ -89,7 +88,7 @@ export class ReqTaskDialogeComponent implements OnInit {
     getErrorMessageEmailValid()
     {
 
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+        return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
             '';
     }
 

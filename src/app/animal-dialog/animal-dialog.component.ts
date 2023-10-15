@@ -5,7 +5,6 @@ import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
 
 @Component({
     selector: 'app-animal-dialog',
@@ -78,20 +77,20 @@ export class AnimalDialogComponent implements OnInit {
     genotype = new FormControl('', [Validators.required]);
 
     getErrorMessageId() {
-        return this.userAnimalId.hasError('required') ? FIELDISREQUIRED : '';
+        return this.userAnimalId.hasError('required') ? 'Animal ID is required' : '';
     }
     getErrorMessageIdTaken() {
-        return this.userAnimalId.hasError('taken') ? ANIMALIDTAKEN : '';
+        return this.userAnimalId.hasError('taken') ? 'This Animal Id already exists in this experiment!' : '';
     }
 
     getErrorMessageGender() {
-        return this.gender.hasError('required') ? FIELDISREQUIRED : '';
+        return this.gender.hasError('required') ? 'Animal sex is required' : '';
     }
     getErrorMessageStrain() {
-        return this.strain.hasError('required') ? FIELDISREQUIRED : '';
+        return this.strain.hasError('required') ? 'Strain is required' : '';
     }
     getErrorMessageGenotype() {
-        return this.genotype.hasError('required') ? FIELDISREQUIRED : '';
+        return this.genotype.hasError('required') ? 'Genotype is required' : '';
     }
 
 
@@ -121,7 +120,7 @@ export class AnimalDialogComponent implements OnInit {
             this.isTaken = false;
 
             this.animalService.createAnimal(this._animal).map(res => {
-                if (res == TAKEN) {
+                if (res == "Taken") {
                     this.isTaken = true;
                     this.userAnimalId.setErrors({ 'taken': true });
                 } else {
@@ -146,18 +145,18 @@ export class AnimalDialogComponent implements OnInit {
 
                 // Check If edited UserAnimalID exist in Table Animal
                 this.animalService.IsUserAnimalIDExist(this.userAnimalIdModel.trim(), this.data.experimentId).map(res => {
-                    if (res == NOTEXIST) {
-                        alert("ERROR: " + ANIMALIDDOESNOTEXIST);
+                    if (res == "Not Exist") {
+                        alert("ERROR! The edited Animal Id does not Exist in Database");
 
                     } else {
                         // Edit UserAnimalId based what exists in tbl Animal in Database
                         this.animalService.EditUserAnimalID(this.userAnimalIdModel.trim(), this.data.animalObj.animalID, this.data.experimentId).map(res => {
                             // close it so we can see the loading
-                            if (res == SUCCESSFUL) {
+                            if (res == "Successful") {
                                 this.thisDialogRef.close(false);
                             }
                             else {
-                                alert(CANNOTSAVEEDITS);
+                                alert("Edit cannot be performed!")
                             }
 
                         }).subscribe();

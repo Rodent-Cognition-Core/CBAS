@@ -17,7 +17,6 @@ import {
 } from 'ngx-dropzone-wrapper';
 import { SubExperiment } from '../models/subexperiment';
 import { Services } from '@angular/core/src/view';
-import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
 
 @Component({
     selector: 'app-upload',
@@ -217,7 +216,7 @@ export class UploadComponent implements OnInit {
                 if (result) {
 
                     if (this.uploadErrorFileType != "") {
-                        alert(UPLOADERROR + this.uploadErrorFileType);
+                        alert("Error in upload-> " + this.uploadErrorFileType);
 
                         setTimeout(() => {
                             this.spinnerService.hide();
@@ -269,11 +268,11 @@ export class UploadComponent implements OnInit {
 
     public onUploadError(args: any) {
 
-        if (args[1] == CANNOTUPLOADFILETYPE) {
+        if (args[1] == "You can't upload files of this type.") {
             this.uploadErrorFileType = this.uploadErrorFileType + "You can't upload files of this type: '" + args[0].name + "'" + "\n\r";
             //console.log("You can't upload files of this type: '" + args[0].name + "'");
         } else {
-            this.uploadErrorServer = FAILEDTOADDUPLOADDUETOSERVER;
+            this.uploadErrorServer = "Error in upload, please contact administrator at MouseBytes@uwo.ca";
         }
 
         this.resetDropzoneUploads();

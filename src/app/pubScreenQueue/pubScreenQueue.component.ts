@@ -17,7 +17,6 @@ import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { CONFIRMACCEPTPAPERTOPUBSCREEN, CONFIRMREJECTPAPER, PAPERREJECTED, SUCCESSFULLYADDEDPUBLICATION  } from '../shared/messages';
 
 
 @Component({
@@ -78,7 +77,7 @@ export class PubScreenQueueComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMACCEPTPAPERTOPUBSCREEN
+        this.dialogRef.componentInstance.confirmMessage = "Are you sure you wish to accept the paper into Pubscreen?"
 
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
@@ -87,7 +86,7 @@ export class PubScreenQueueComponent implements OnInit {
                 //console.log(pubmedID);
 
                 this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe(data => {
-                    alert(SUCCESSFULLYADDEDPUBLICATION)
+                    alert('Publication successfully added to Pubscreen!')
                     this.pubScreenService.getPubmedQueue().subscribe(
                         data => {
                             this.pubmedQueue = data;
@@ -105,7 +104,7 @@ export class PubScreenQueueComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMREJECTPAPER;
+        this.dialogRef.componentInstance.confirmMessage = "Are you sure you wish to reject the paper from Pubscreen?"
 
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
@@ -114,7 +113,7 @@ export class PubScreenQueueComponent implements OnInit {
                 //console.log(pubmedID);
 
                 this.pubScreenService.rejectQueuePaper(pubmedID).subscribe(result => {
-                    alert(PAPERREJECTED);
+                    alert('Publication rejected!')
                     this.pubScreenService.getPubmedQueue().subscribe(
                         data => {
                             this.pubmedQueue = data;
