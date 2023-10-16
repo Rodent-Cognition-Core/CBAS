@@ -19,7 +19,7 @@
                               [carouselClasses]="['owl-carousel', 'owl-theme', 'row', 'sliding']">
                     <div class="item" *ngFor="let image of images;let i = index">
                         <div class="textcenter" fxLayout="column" style="text-align:center;">
-                            <img style="max-width: 400px; min-width: 200px; width: 25%;" src="{{image.src}}" />
+                            <img style="max-width: 400px; min-width: 200px; width: 25%;" src="{{image.src}}" alt="{{image.alt}}"  />
                             <span style="margin: auto;">
                                 <a routerLink="{{image.btnLink}}">
                                     <button mat-raised-button style=" background-color: #795d9c; color: white ;" *ngIf="image.btnVisible">{{image.btnText}}</button>
