@@ -18,6 +18,7 @@ import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
+import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
 
 
 @Component({
@@ -706,7 +707,7 @@ export class PubScreenComponent implements OnInit {
     
     getErrorMessageYearTo() {
         //return this.yearTo.getError('Year To should be greater than Year From');
-        return 'Year To should be greater than Year From'
+        return YEARNEEDSTOBEGREATER;
     }
 
     // Function definition for searching publications based on search criteria
@@ -755,7 +756,7 @@ export class PubScreenComponent implements OnInit {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
 
 
         this.dialogRef.afterClosed().subscribe(result => {

@@ -9,6 +9,7 @@ import { PagerService } from '../services/pager.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { AnimalService } from '../services/animal.service';
 import { ExperimentService } from '../services/experiment.service';
+import { CONFIRMDELETE } from '../shared/messages';
 
 
 
@@ -76,7 +77,7 @@ export class DashboardComponent implements OnInit {
         this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelAnimal.componentInstance.confirmMessage = "Are you sure you want to delete this animal and all the corresponding files?"
+        this.dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE
 
         this.dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
@@ -218,7 +219,7 @@ export class DashboardComponent implements OnInit {
         this.dialogRefDelErrorList = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelErrorList.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRefDelErrorList.componentInstance.confirmMessage = CONFIRMDELETE
 
         this.dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
@@ -254,7 +255,7 @@ export class DashboardComponent implements OnInit {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to delete this file?"
+        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
 
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
