@@ -3,6 +3,7 @@ export const TAKEN = "Taken";
 export const NOTEXIST = "Not Exist";
 export const CANNOTSAVEEDITS = "The edits you made could not be saved"
 export const ANIMALIDDOESNOTEXIST = "The edited Animal Id does not exist in database";
+export const ANIMALIDTAKEN = "This Animal Id already exists in this experiment!";
 export const CONFIRMDELETE =  "Are you sure you want to delete?";
 export const FIELDISREQUIRED = "This field is required";
 export const CONFRIMREPOSITORYDETLETE = "Are you sure you want to delete this repository and all associated uploads and files?";

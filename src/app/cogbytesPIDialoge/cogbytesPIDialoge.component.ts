@@ -5,7 +5,7 @@ import { NgModel } from '@angular/forms';
 //import { Request } from '../models/request';
 import { CogbytesService } from '../services/cogbytes.service';
 import { SharedModule } from '../shared/shared.module';
-import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, REQUIREDTOENTERAVALUE } from '../shared/messages';
+import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
 import { INVALID } from '@angular/forms/src/model';
 
 
@@ -67,18 +67,18 @@ export class CogbytesPIDialogeComponent implements OnInit {
 
 
     getErrorMessagePIName() {
-        return this.piName.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.piName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageIns() {
-        return this.institution.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.institution.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessagePIEmail() {
 
-        return this.emailPI.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.emailPI.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }

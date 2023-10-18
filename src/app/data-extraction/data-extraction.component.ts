@@ -17,7 +17,7 @@ import { Geno } from '../models/geno';
 import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
-import { REQUIREDTOENTERAVALUE } from '../shared/messages';
+import { FIELDISREQUIRED } from '../shared/messages';
 
 declare var $: any;
 
@@ -757,7 +757,7 @@ export class DataExtractionComponent implements OnInit {
     // Task Dropdown
     getErrorMessageTask() {
 
-        return this.task.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.task.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -766,7 +766,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageExp() {
 
 
-        return this.exp.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.exp.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -775,7 +775,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSubTask() {
 
 
-        return this.subtask.hasError('required') ? REQUIREDTOENTERAVALUE:
+        return this.subtask.hasError('required') ? FIELDISREQUIRED:
             '';
 
     }
@@ -784,7 +784,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSessionInfo() {
 
 
-        return this.sessioninfo.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.sessioninfo.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -792,7 +792,7 @@ export class DataExtractionComponent implements OnInit {
     // MarkerInfo Dropdown
     getErrorMessageMarkerInfo() {
 
-        return this.markerinfo.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.markerinfo.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -800,7 +800,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageAggregation() {
 
-        return this.aggFunc.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.aggFunc.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
@@ -808,7 +808,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageSpecies() {
 
-        return this.species.hasError('required') ? REQUIREDTOENTERAVALUE :
+        return this.species.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
