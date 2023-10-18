@@ -18,7 +18,7 @@
                         <br />
                     </div>-->
                     <mat-form-field>
-                        <mat-select placeholder="Select Session Type" [(ngModel)]="sessionNameVal">
+                        <mat-select aria-label="Select session type" placeholder="Select Session Type" [(ngModel)]="sessionNameVal">
                             <mat-option *ngFor="let session of SessionList" [value]="session.sessionName">
                                 <span matTooltip="{{session.sessionDescription}}">{{session.sessionName}}</span>
                             </mat-option>

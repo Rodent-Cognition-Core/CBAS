@@ -31,12 +31,12 @@
                         <div>
                             <div style="padding-bottom:10px" *ngIf="(isAdmin || isUser); else other_content">
                                 <label>Add new repository: </label>
-                                <button mat-icon-button matTooltip="Add new repository" (click)="openDialogAddRepository()"><mat-icon>add</mat-icon></button>
+                                <button aria-label="Add new repository" mat-icon-button matTooltip="Add new repository" (click)="openDialogAddRepository()"><mat-icon>add</mat-icon></button>
                                 <br />
 
                                 <!--Repository List-->
                                 <mat-form-field style="padding-left:0px">
-                                    <mat-select matInput placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()" (selectionChange)="GetUploads()">
+                                    <mat-select matInput aria-label="Select your repositories" placeholder="Your repositories" [(ngModel)]="repModel" (openedChange)="GetRepositories()" (selectionChange)="GetUploads()">
                                         <mat-option [value]="null">-</mat-option>
                                         <mat-option *ngFor="let rep of repList" [value]="rep.id">
                                             <span matTooltip="{{rep.title}}">{{rep.title}}</span>
@@ -62,8 +62,8 @@
                                 </label>
                             </div>
                             <span style="float:right; padding-left: 20px;">
-                                <button mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditRepository()"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button matTooltip="Delete Repository" (click)="deleteRepository()" color="warn"><mat-icon>delete</mat-icon></button>
+                                <button aria-label="Edit" mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditRepository()"><mat-icon>edit</mat-icon></button>
+                                <button aria-label="Delete" mat-icon-button matTooltip="Delete Repository" (click)="deleteRepository()" color="warn"><mat-icon>delete</mat-icon></button>
                             </span>
                             <div style="clear:both"></div>
                             <hr /><br />

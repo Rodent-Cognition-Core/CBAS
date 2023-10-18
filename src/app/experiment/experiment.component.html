@@ -8,11 +8,11 @@
 <div *ngIf="selectedSubExperiment!=null">
     <div style="float: left; margin-left: 10%; width: 80%;">
         <mat-input-container class="md-icon-float full-width">
-            <input matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
+            <input aria-label="Search by file, animal id, or session name" matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
         </mat-input-container>
     </div>
     <div style="float: left">
-        <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+        <button aria-label="search" mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
     </div>
     <div style="clear: both;"></div>
     <br />
@@ -59,8 +59,8 @@
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button aria-label="Download file" mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
+                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button aria-label="Delete file" mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
 
 
             </tr>

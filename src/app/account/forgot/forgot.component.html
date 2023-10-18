@@ -14,9 +14,10 @@
                     </mat-form-field>-->
 
 
-                    <mat-form-field class="full-width">
-                        <input type="text" matInput [(ngModel)]="model.username" name="username" #username="ngModel" placeholder="email" (keyup)="clearMessages()"
-                               pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+                    <mat-form-field class="full-width" >
+
+                        <input type="text" matInput [(ngModel)]="model.username" name="username" #username="ngModel" aria-label="Enter your email address" placeholder="email" (keyup)="clearMessages()"
+                               pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required >
                         <mat-error *ngIf="username.hasError('required')">
                             Required
                         </mat-error>
@@ -41,7 +42,7 @@
                 <!--<div><span *ngIf=""><br />Please check your Email to reset your password! <br />You have an email in your inbox if you are registered with mousebytes.<br /></span></div>-->
 
                 <div>
-                    <button mat-raised-button color="accent" type="submit" class="full-width">Submit</button>
+                    <button mat-raised-button color="accent" type="submit" class="full-width" aria-label="Submit">Submit</button>
                 </div>
             </form>
         </mat-card-content>

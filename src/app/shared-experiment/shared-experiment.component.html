@@ -12,7 +12,7 @@
                 <div>
                     <label>please select your experiment: </label><br /><br />
                     <mat-form-field>
-                        <mat-select placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
+                        <mat-select aria-label="Select your experiment" placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
                             <mat-option *ngFor="let exp of expList" [value]="exp.expID">
                                 <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
                             </mat-option>
@@ -25,7 +25,7 @@
                 <div *ngIf="selectedExpValue!=null && hideSubExperiment==false">
                     <label>please select your sub-experiment: </label><br /><br />
                     <mat-form-field>
-                        <mat-select placeholder="select your sub-experiment" [(ngModel)]="selectedSubExpValue" (selectionChange)="selectSubExpChangeDD()">
+                        <mat-select aria-label="Select your sub experiement" placeholder="select your sub-experiment" [(ngModel)]="selectedSubExpValue" (selectionChange)="selectSubExpChangeDD()">
                             <mat-option *ngFor="let subexp of subExpList" [value]="subexp.subExpID">
                                 <span matTooltip="{{subexp.subExpName}}, {{subexp.ageInMonth}}m">{{subexp.subExpName}}, {{subexp.ageInMonth}}m</span>
                             </mat-option>
@@ -33,7 +33,7 @@
 
                     </mat-form-field>
                     &nbsp;
-                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
+                    <button aria-label="Click to add new sub experiement based on animal age" mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
                 </div>
             </td>
             <td class="docs-markdown-td" style="vertical-align:top;">
@@ -43,8 +43,8 @@
                             Experiment Information
                         </label>
                     </div>
-                    <span style="float:right;"><button mat-icon-button matTooltip="Edit Experiment" (click)="openDialog(getSelectedExp(selectedExpValue))"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                    <span style="float:right;"><button mat-icon-button matTooltip="Delete Experiment" (click)="delExp(getSelectedExp(selectedExpValue).expID)" color="warn"><mat-icon>delete</mat-icon></button></span>
+                    <span style="float:right;"><button aria-label="Edit experiment" mat-icon-button matTooltip="Edit Experiment" (click)="openDialog(getSelectedExp(selectedExpValue))"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                    <span style="float:right;"><button aria-label="Delete experiment" mat-icon-button matTooltip="Delete Experiment" (click)="delExp(getSelectedExp(selectedExpValue).expID)" color="warn"><mat-icon>delete</mat-icon></button></span>
                     <div style="clear:both"></div>
                     <hr /><br />
                     <label>Experiment name:</label>&nbsp; <span style="color:#909497;" *ngIf="selectedExpValue!=null">{{getSelectedExp(selectedExpValue).expName}}</span>&nbsp; &nbsp; &nbsp;
@@ -93,7 +93,7 @@
                     <tbody class="docs-markdown-tbody">
                         <tr *ngFor="let subexp of subExpList">
                             <td style="text-align: center; color:#909497;">
-                                <mat-radio-group [(ngModel)]="SubExpModel">
+                                <mat-radio-group aria-label="Select Sub Experiment" [(ngModel)]="SubExpModel">
                                     <mat-radio-button [value]="subexp.subExpID" (change)="SelectedSubExpChangedRD($event)">
 
                                     </mat-radio-button>

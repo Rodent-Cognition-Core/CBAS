@@ -1,5 +1,5 @@
 <div>
-    <h3 mat-dialog-title>Please fill the form to add a new author to the system:</h3>
+    <h3 mat-dialog-title>Please fill the form to add a new author to the systeSUJIm:</h3>
 
     <mat-dialog-content>
         <br />
@@ -9,7 +9,7 @@
         <mat-form-field class="full-width">
 
 
-            <input matInput placeholder="Author's First Name" [formControl]="authorName" [(ngModel)]="authorNameModel" required>
+            <input type="text" aria-label="Please enter your first name"  matInput placeholder="Author's First NamSUJIe" [formControl]="authorName" [(ngModel)]="authorNameModel" required>
             <mat-error *ngIf="authorName.invalid">{{getErrorMessageName()}}</mat-error>
         </mat-form-field>
 
@@ -17,7 +17,7 @@
         <mat-form-field class="full-width">
             &nbsp;&nbsp;
 
-            <input matInput placeholder="Author's Last Name" [formControl]="authorLastName" [(ngModel)]="authorLastNameModel" required>
+            <input matInput placeholder="Author's Last Name" [formControl]="authorLastName" [(ngModel)]="authorLastNameModel" required aria-label="Enter author's last name">
             <mat-error *ngIf="authorName.invalid">{{getErrorMessageLastName()}}</mat-error>
 
         </mat-form-field>
@@ -25,7 +25,7 @@
         <!--Author Affiliation-->
         <mat-form-field class="full-width">
             &nbsp;&nbsp;
-            <input matInput placeholder="Author's Affiliation" [(ngModel)]="authorAffiliationModel">
+            <input matInput placeholder="Author's Affiliation" [(ngModel)]="authorAffiliationModel" aria-label="Enter aurthor's affiliation" >
 
         </mat-form-field><br /><br />
 
@@ -35,7 +35,7 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="submit" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
         <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 

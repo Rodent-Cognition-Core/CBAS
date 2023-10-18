@@ -11,13 +11,13 @@
                 <br />
                 <span style="color: #666;"><b>Name:</b></span>
                 <mat-form-field style="width:40%;">
-                    <input matInput style="text-align:center" [formControl]="givenName" [(ngModel)]="givenNameModel" required>
+                    <input aria-label="Enter given name" matInput style="text-align:center" [formControl]="givenName" [(ngModel)]="givenNameModel" required>
 
                 </mat-form-field>
 
                 &nbsp;&nbsp;<span style="color: #666;"><b>Last Name:</b></span>
                 <mat-form-field style="width:40%;">
-                    <input matInput style="text-align:center" [formControl]="familyName" [(ngModel)]="familyNameModel" required>
+                    <input aria-label="Enter family name" matInput style="text-align:center" [formControl]="familyName" [(ngModel)]="familyNameModel" required>
 
                 </mat-form-field>
                 <br />
@@ -45,7 +45,7 @@
 
                 <!--Adding new PI to the  profile-->
                 <mat-form-field class="full-width">
-                    <mat-select placeholder="Add New PI(s) & Institution(s)" [(ngModel)]="selectePISiteModel" multiple>
+                    <mat-select aria-label="Add new principal investigator and institution" placeholder="Add New PI(s) & Institution(s)" [(ngModel)]="selectePISiteModel" multiple>
                         <mat-option *ngFor="let PIS of piSiteListByUserIDFilter" [value]="PIS.psid">{{PIS.piSiteName}}</mat-option>
                     </mat-select>
 
@@ -53,8 +53,8 @@
 
                 <br />
                 <br />
-                <button mat-raised-button color="accent" [disabled]="setDisabledVal()" (click)="updateUserProfile()">Update</button>&nbsp;&nbsp;
-                <button mat-raised-button color="accent" (click)="openDialog()">Change Password</button>
+                <button aria-label="Click to update profile" mat-raised-button color="accent" [disabled]="setDisabledVal()" (click)="updateUserProfile()">Update</button>&nbsp;&nbsp;
+                <button aria-label="Click to change password" mat-raised-button color="accent" (click)="openDialog()">Change Password</button>
 
             </div>
 
