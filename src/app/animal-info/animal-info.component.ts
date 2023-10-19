@@ -7,6 +7,7 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { Location } from '@angular/common';
 import { PagerService } from '../services/pager.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { CONFIRMDELETE } from '../shared/messages';
 //import { OAuthService } from 'angular-oauth2-oidc';
 //mport { SharedModule } from '../shared/shared.module';
 
@@ -77,7 +78,7 @@ export class AnimalInfoComponent implements OnInit {
         this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelAnimal.componentInstance.confirmMessage = "Are you sure you want to delete?"
+        this.dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE;
 
 
 

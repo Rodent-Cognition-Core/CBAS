@@ -5,6 +5,7 @@ import { NgModel } from '@angular/forms';
 //import { Request } from '../models/request';
 import { PubScreenService } from '../services/pubScreen.service';
 import { SharedModule } from '../shared/shared.module';
+import { FIELDISREQUIRED } from '../shared/messages';
 
 
 
@@ -53,13 +54,13 @@ export class AuthorDialogeComponent implements OnInit {
     getErrorMessageName()
     {
 
-        return this.authorName.hasError('required') ? 'You must enter a value' :
+        return this.authorName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageLastName() {
 
-        return this.authorLastName.hasError('required') ? 'You must enter a value' :
+        return this.authorLastName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 

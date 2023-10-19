@@ -6,6 +6,7 @@ import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { SharedModule } from '../shared/shared.module';
+import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
@@ -73,14 +74,14 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
     getErrorMessage()
     {
 
-        return this.name.hasError('required') ? 'You must enter a value' :
+        return this.name.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageEmail()
     {
 
-        return this.email.hasError('required') ? 'You must enter a value' :
+        return this.email.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -88,24 +89,24 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
     getErrorMessageEmailValid()
     {
 
-        return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
+        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
             '';
     }
 
     getErrorMessageMethod() {
 
-        return this.method.hasError('required') ? 'You must select a value' :
+        return this.method.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
 
     getErrorMessageNewSubMethod() {
-        return this.newSubMethod.hasError('required') ? 'You must enter a value' :
+        return this.newSubMethod.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageDOI() {
-        return this.doi.hasError('required') ? 'You must enter a value' :
+        return this.doi.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 

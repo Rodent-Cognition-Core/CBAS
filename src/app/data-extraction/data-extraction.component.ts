@@ -17,6 +17,7 @@ import { Geno } from '../models/geno';
 import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
+import { FIELDISREQUIRED } from '../shared/messages';
 
 declare var $: any;
 
@@ -756,7 +757,7 @@ export class DataExtractionComponent implements OnInit {
     // Task Dropdown
     getErrorMessageTask() {
 
-        return this.task.hasError('required') ? 'You must enter a value' :
+        return this.task.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -765,7 +766,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageExp() {
 
 
-        return this.exp.hasError('required') ? 'You must enter a value' :
+        return this.exp.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -774,7 +775,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSubTask() {
 
 
-        return this.subtask.hasError('required') ? 'You must enter a value' :
+        return this.subtask.hasError('required') ? FIELDISREQUIRED:
             '';
 
     }
@@ -783,7 +784,7 @@ export class DataExtractionComponent implements OnInit {
     getErrorMessageSessionInfo() {
 
 
-        return this.sessioninfo.hasError('required') ? 'You must enter a value' :
+        return this.sessioninfo.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -791,7 +792,7 @@ export class DataExtractionComponent implements OnInit {
     // MarkerInfo Dropdown
     getErrorMessageMarkerInfo() {
 
-        return this.markerinfo.hasError('required') ? 'You must enter a value' :
+        return this.markerinfo.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
@@ -799,7 +800,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageAggregation() {
 
-        return this.aggFunc.hasError('required') ? 'You must enter a value' :
+        return this.aggFunc.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
@@ -807,7 +808,7 @@ export class DataExtractionComponent implements OnInit {
     // Aggregation Function DropDown
     getErrorMessageSpecies() {
 
-        return this.species.hasError('required') ? 'You must enter a value' :
+        return this.species.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 

@@ -17,6 +17,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { INVALIDYEAR } from '../shared/messages';
 
 
 @Component({
@@ -324,7 +325,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     getErrorMessageYearTo() {
         //return this.yearTo.getError('Year To should be greater than Year From');
-        return 'Year To should be greater than Year From'
+        return INVALIDYEAR;
     }
 
 

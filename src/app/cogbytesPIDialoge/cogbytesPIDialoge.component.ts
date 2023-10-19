@@ -5,6 +5,8 @@ import { NgModel } from '@angular/forms';
 //import { Request } from '../models/request';
 import { CogbytesService } from '../services/cogbytes.service';
 import { SharedModule } from '../shared/shared.module';
+import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
+import { INVALID } from '@angular/forms/src/model';
 
 
 
@@ -53,10 +55,10 @@ export class CogbytesPIDialogeComponent implements OnInit {
         // Submiting the request to server
         this.cogbytesService.addPI(this.reqPINameModel, this.reqInsNameModel, this.reqPIEmailModel).subscribe(result => {
             if (result == 0) {
-                alert("PI already in database!");
+                alert(PIALRADYEXISTS);
             }
             else {
-                alert("PI successfully added!");
+                alert(PISUCCESSFULLYADDED);
             }
             this.thisDialogRef.close()
         }); 
@@ -65,25 +67,25 @@ export class CogbytesPIDialogeComponent implements OnInit {
 
 
     getErrorMessagePIName() {
-        return this.piName.hasError('required') ? 'You must enter a value' :
+        return this.piName.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessageIns() {
-        return this.institution.hasError('required') ? 'You must enter a value' :
+        return this.institution.hasError('required') ? FIELDISREQUIRED :
             '';
     }
 
     getErrorMessagePIEmail() {
 
-        return this.emailPI.hasError('required') ? 'You must enter a value' :
+        return this.emailPI.hasError('required') ? FIELDISREQUIRED :
             '';
 
     }
 
     getErrorMessagePIEmailValid() {
 
-        return this.emailPI.hasError('pattern') ? 'Enter Valid Email Address' :
+        return this.emailPI.hasError('pattern') ? INVALIDEMAILADDRESS :
             '';
     }
 
