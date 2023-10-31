@@ -41,6 +41,7 @@ const routes: Routes = [
     { path: 'comp', loadChildren: './cogbytes/cogbytes.module#CogbytesModule' },
     { path: 'comp-search', loadChildren: './cogbytesSearch/cogbytesSearch.module#CogbytesSearchModule' },
     { path: 'pubScreen-queue', loadChildren: './pubScreenQueue/pubScreenQueue.module#PubScreenQueueModule' },
+    { path: 'pubScreen-edit', loadChildren: './pubScreenEdit/pubScreenEdit.module#PubScreenEditModule' },
     { path: 'comp-edit', loadChildren: './cogbytesEdit/cogbytesEdit.module#CogbytesEditModule' },
 
 ];
