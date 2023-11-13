@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input aria-label="Enter your full name" matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input aria-label="Enter your email address" matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter animal's age in month (i.e. age at the beginning of the experiment)" [formControl]="age" [(ngModel)]="reqAgeModel" required>
+            <input aria-label="Enter animal's age in month (i.e. age at the beginning of the experiment)" matInput placeholder="Enter animal's age in month (i.e. age at the beginning of the experiment)" [formControl]="age" [(ngModel)]="reqAgeModel" required>
             <mat-error *ngIf="age.invalid">{{getErrorMessageAge()}}</mat-error>
 
         </mat-form-field>
@@ -30,8 +30,8 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
-        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+        <button aria-label="Submit new age to system" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="Cancel" mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 
 </div>

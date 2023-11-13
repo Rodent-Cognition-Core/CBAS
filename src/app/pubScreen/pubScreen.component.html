@@ -38,7 +38,7 @@
                         <div>
                             <div style="padding-bottom:10px" *ngIf="(isAdmin || isUser); else other_content">
                                 <label>Adding Publication: </label>
-                                <button mat-icon-button matTooltip="Add new publication" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
+                                <button aria-label="Click to add new publication" mat-icon-button matTooltip="Add new publication" (click)="openDialogAddPublication()"><mat-icon>add</mat-icon></button>
                                 <hr />
                             </div>
 
@@ -51,7 +51,7 @@
                             <label style="color:#566573">Author Information:</label><br />
 
                             <mat-form-field>
-                                <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
+                                <mat-select aria-label="Select author" placeholder="Select Author" [(ngModel)]="authorModel" multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -70,7 +70,7 @@
                             <!--Paper Title-->
                             <mat-form-field style="width:30%">
 
-                                <textarea matInput placeholder="Paper's Title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+                                <textarea aria-label="Enter paper's title" matInput placeholder="Paper's Title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     
                                         </textarea>
 
@@ -80,7 +80,7 @@
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year From" [(ngModel)]="yearFromSearchModel">
+                                <mat-select aria-label="Enter the year from with format MM/DD/YYYY" placeholder="Year From" [(ngModel)]="yearFromSearchModel">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
                                     </mat-option>
@@ -91,7 +91,7 @@
                             <!--Paper year To-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
+                                <mat-select aria-label="Enter the year to with format MM/DD/YYYY" placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
                                             (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
@@ -103,7 +103,7 @@
 
                             <!--Paper Type-->
                             <mat-form-field style="width:14%; padding-left:30px">
-                                <mat-select placeholder="Select Type of Paper" [(ngModel)]="paperTypeModel" multiple>
+                                <mat-select aria-label="Select type of paper" placeholder="Select Type of Paper" [(ngModel)]="paperTypeModel" multiple>
                                     <mat-option *ngFor="let type of paperTypeList" [value]="type.id">
                                         {{type.paperType}}
                                     </mat-option>
@@ -114,14 +114,14 @@
                             <!--Paper Keywords-->
                             <mat-form-field style="width:30%;">
 
-                                <input matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel">
+                                <input aria-label="Enter paper's keywords" matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel">
 
                             </mat-form-field>
 
                             <!--Paper DOI-->
                             <mat-form-field style="width:30%; padding-left:35px">
 
-                                <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel">
+                                <input aria-label="Enter paper's D O I" matInput placeholder="Paper's DOI" [(ngModel)]="doiModel">
 
                             </mat-form-field><br /><br />
 
@@ -130,7 +130,7 @@
 
                             <!--Cognitive Task or Task Category-->
                             <mat-form-field style="width:15%;">
-                                <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
+                                <mat-select aria-label="Select task category" placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
                                     <mat-option *ngFor="let task of taskList" [value]="task.id">
                                         <span matTooltip="{{task.task}}">{{task.task}}</span>
                                     </mat-option>
@@ -149,9 +149,9 @@
                             </mat-form-field>-->
                             <!--SubTask-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
+                                <mat-select aria-label="Select cognitive tasks" placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="search for cognitive tasks" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let subTask of filteredSubTaskList | async" [value]="subTask.id">
                                         <span matTooltip="{{subTask.subTask}}">{{subTask.subTask}}</span>
@@ -161,7 +161,7 @@
 
                             <!--Species-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
+                                <mat-select aria-label="Select species" placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                         <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
@@ -171,9 +171,9 @@
 
                             <!--Strain-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
+                                <mat-select aria-label="Select strain" placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="search strain" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
                                         <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
@@ -183,7 +183,7 @@
 
                             <!--Sex-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                                <mat-select aria-label="Select sex" placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
                                         <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                                     </mat-option>
@@ -194,9 +194,9 @@
 
                             <!--DiseaseModel-->
                             <mat-form-field style="width:15%">
-                                <mat-select placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
+                                <mat-select aria-label="Select rodent models" placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="Search rodent models" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let disease of filteredDiseaseList | async" [value]="disease.id">
                                         <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
@@ -207,9 +207,9 @@
                             <!--SubModel-->
                             <span [hidden]="subSubModelList == null || subSubModelList == 'undefined' || subSubModelList.length == 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
-                                    <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                                    <mat-select aria-label="Select sub-rodent models" placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search aria-label="Search sub-rodent models" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
                                             <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
@@ -219,9 +219,9 @@
                             </span>
                             <!--Region-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                                <mat-select aria-label="Select anatomical regions" placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="search aniatomical regions" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let region of filteredRegionList | async" [value]="region.id">
                                         <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
@@ -232,9 +232,9 @@
                             <!--SubRegion-->
                             <span [hidden]="subSubRegionList == null || subSubRegionList == 'undefined' || subSubRegionList.length == 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
-                                    <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
+                                    <mat-select aria-label="Select sub-anatomical regions" placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search aria-label="search sub-anatomical regions" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
                                             <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
@@ -245,9 +245,9 @@
 
                             <!--CellType-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
+                                <mat-select aria-label="Select cell types" placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="Search for cell types" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let cell of filteredCellTypeList | async" [value]="cell.id">
                                         <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
@@ -259,9 +259,9 @@
 
                             <!--Method-->
                             <mat-form-field style="width:15%">
-                                <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
+                                <mat-select aria-label="Select methods" placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="search methods" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let method of filteredMethodList | async" [value]="method.id">
                                         <span matTooltip="{{method.method}}">{{method.method}}</span>
@@ -272,9 +272,9 @@
                             <!--SubMethod-->
                             <span [hidden]="subSubMethodList == null || subSubMethodList == 'undefined' || subSubMethodList.length == 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
-                                    <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                                    <mat-select aria-label="Select sub-methods" placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search aria-label="Search sub-methods" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
                                             <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
@@ -284,9 +284,9 @@
                             </span>
                             <!--NeuroTransmitter Systems-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
+                                <mat-select aria-label="Select neurochemicals" placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="Search for neurochemicals" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let neuro of filteredNeurotransmitterList | async" [value]="neuro.id">
                                         <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
@@ -314,7 +314,7 @@
     </div>-->
     <div *ngIf="searchResultList?.length == 0">
         <table class="docs-markdown-table">
-            <tr><td style="text-align:center;"><button mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
+            <tr><td style="text-align:center;"><button aria-label="Click if you are having trouble finding what you are looking for" mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
             <tr><td style="text-align:center;"><span style="color:red; font-size:large">No results found for search criteria!</span></td></tr>
         </table>
     </div>
@@ -328,13 +328,13 @@
                 </tr>
             </thead>
             <tbody class="docs-markdown-tbody">
-                <tr style="border-bottom:1pt solid #8D8E90"><td style="text-align:center;"><button mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
+                <tr style="border-bottom:1pt solid #8D8E90"><td style="text-align:center;"><button aria-label="Click if you are having trouble finding what you are looking for"  mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
                 <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of searchResultList">
                     <td>
                         <label style="color:#8D8E90"><b>Paper Information:</b></label>
-                        <span *ngIf="isAdmin || isUser" style="float:right;"><button mat-icon-button matTooltip="Edit Publication" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                        <span style="float:right;"><button mat-icon-button matTooltip="Get Paper Link" (click)="getLink(row.paperLinkGuid)"><mat-icon>link</mat-icon></button></span>&nbsp;
-                        <span *ngIf="isAdmin" style="float:right;"><button mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
+                        <span *ngIf="isAdmin || isUser" style="float:right;"><button aria-label="Click to edit publication" mat-icon-button matTooltip="Edit Publication" (click)="openDialogEditPublication(row)"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                        <span style="float:right;"><button aria-label="Click to get paper link" mat-icon-button matTooltip="Get Paper Link" (click)="getLink(row.paperLinkGuid)"><mat-icon>link</mat-icon></button></span>&nbsp;
+                        <span *ngIf="isAdmin" style="float:right;"><button aria-label="Click to delete publication" mat-icon-button matTooltip="Delete Publication" (click)="delPub(row)" color="warn"><mat-icon>delete</mat-icon></button></span>&nbsp;
                         <div style="clear:both"></div>
                         <br />
 
@@ -371,7 +371,7 @@
                                     <span style="color: #A569BD;">MouseBytes datasets associated to this publicaton:</span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
-                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a aria-label="Click here to extract data" href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
                             <table>
                                 <tr *ngFor="let exp of row.experiment">
                                     <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>

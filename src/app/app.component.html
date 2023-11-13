@@ -3,6 +3,8 @@
 <mat-sidenav-container class="all-wrap" fullscreen>
 
     <mat-sidenav #sidenav style="background-color: #EDEDEE; ">
+
+        
         <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; "></a></div>
 
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
@@ -81,7 +83,7 @@
                 </ul>
             </li>
         </ul>
-
+        
     </mat-sidenav>
 
     <div class="page-wrap">
@@ -92,7 +94,8 @@
                         <button type="button"
                                 mat-icon-button
                                 (click)="sidenav.open()"
-                                title="Open sidenav">
+                                title="Open sidenav"
+                                aria-label="Open Menu">
                             <mat-icon>menu</mat-icon>
                         </button>
                     </div>
@@ -105,6 +108,9 @@
                 </mat-toolbar-row>
                 <mat-toolbar-row style="height: 100px; background-color: #EDEDEE; white-space: normal;">
                     <!--xs menu-->
+                    
+
+                    
                     <div fxLayout="row" fxHide.gt-xs="true" fxShow.xs="true" style="width: 100%;">
                         <ul class="top-nav-ul" style="width: 100%; text-align: center;">
                             <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; vertical-align:middle"></a></span>
@@ -263,6 +269,7 @@
 
                         </ul>
                     </div>
+                    
                 </mat-toolbar-row>
 
             </mat-toolbar>

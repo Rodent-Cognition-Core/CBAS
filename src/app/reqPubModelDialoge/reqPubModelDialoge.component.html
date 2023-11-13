@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input aria-label="Enter your full name" matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input aria-label="Enter your email address" matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
+            <input aria-label="Enter D O I of paper in question" matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
             <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
         </mat-form-field>
@@ -28,7 +28,7 @@
 
         <!--Rodent Model or Task Category-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select Rodent Model" [formControl]="rodentModel" [(ngModel)]="reqRodentModel" required>
+            <mat-select aria-label="Select rodent model" placeholder="Select Rodent Model" [formControl]="rodentModel" [(ngModel)]="reqRodentModel" required>
                 <mat-option *ngFor="let model of modelList" [value]="model.diseaseModel">
                     <span matTooltip="{{model.diseaseModel}}">{{model.diseaseModel}}</span>
                 </mat-option>
@@ -40,7 +40,7 @@
         <br />
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="New Sub-rodent Model" [formControl]="newSubModel" [(ngModel)]="reqNewSubModel" required>
+            <input aria-label="Enter new sub-rodent model" matInput placeholder="New Sub-rodent Model" [formControl]="newSubModel" [(ngModel)]="reqNewSubModel" required>
             <mat-error *ngIf="newSubModel.invalid">{{getErrorMessageNewSubModel()}}</mat-error>
 
         </mat-form-field>
@@ -56,8 +56,8 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
-        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+        <button aria-label="Add new pubscreen sub-rodent model" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="Cancel" mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 
 </div>

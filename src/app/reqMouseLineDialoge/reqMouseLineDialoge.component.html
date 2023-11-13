@@ -7,26 +7,26 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input aria-label="Enter your full name" matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input aria-label="Enter your email address" matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter strain name" [formControl]="strain" [(ngModel)]="reqStrainModel" required>
+            <input aria-label="Enter strain name" matInput placeholder="Enter strain name" [formControl]="strain" [(ngModel)]="reqStrainModel" required>
             <mat-error *ngIf="strain.invalid">{{getErrorMessageStrain()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <mat-select [formControl]="geneticModi" placeholder="Select genetic modification type" [(ngModel)]="geneticModificationModel" required>
+            <mat-select aria-label="Select genetic modification type" [formControl]="geneticModi" placeholder="Select genetic modification type" [(ngModel)]="geneticModificationModel" required>
                 <mat-option *ngFor="let gm of geneticModification" [value]="gm.name">
                     {{gm.name}}
                 </mat-option>
@@ -35,17 +35,17 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter genotype" [(ngModel)]="reqGenoModel">
+            <input aria-label="Enter genotype" matInput placeholder="Enter genotype" [(ngModel)]="reqGenoModel">
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter Strain Reference (e.g. DOI of strain publication or supplier website (e.g. JAX link))" [(ngModel)]="refModel" type="url">
+            <input aria-label="Enter Strain Reference (e.g. DOI of strain publication or supplier website (e.g. JAX link))" matInput placeholder="Enter Strain Reference (e.g. DOI of strain publication or supplier website (e.g. JAX link))" [(ngModel)]="refModel" type="url">
 
         </mat-form-field>
 
         <mat-form-field class="full-width" *ngIf="geneticModificationModel==='Transgenic' || geneticModificationModel === 'KnockIn' || geneticModificationModel === 'KnockOut'">
-            <textarea matInput placeholder="Enter all the possible control suggestions for the strain separated by comma:" [(ngModel)]="controlModel" matTextareaAutosize matAutosizeMinRows="2"
+            <textarea aria-label="Enter all the possible control suggestions for the strain separated by comma:" matInput placeholder="Enter all the possible control suggestions for the strain separated by comma:" [(ngModel)]="controlModel" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
 
             </textarea>
@@ -58,8 +58,8 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
-        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+        <button aria-label="Submit to add new mouse line" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="Cancel" mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 
 </div>

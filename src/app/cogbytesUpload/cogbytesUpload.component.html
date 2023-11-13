@@ -11,7 +11,7 @@
 
             <!--File Type-->
             <mat-form-field style="width: 30%; padding-left:0px">
-                <mat-select matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" [disabled]="isEditMode" required>
+                <mat-select aria-label="Select file type" matInput placeholder="File Type" [formControl]="fileType" [(ngModel)]="fileTypeModel" [disabled]="isEditMode" required>
                     <mat-option *ngFor="let type of fileTypeList" [value]="type.id">
                         {{type.fileType}}
                     </mat-option>
@@ -24,7 +24,7 @@
             <!--Paper Title-->
             <mat-form-field style="width: 60%; padding-left: 25px">
 
-                <textarea matInput placeholder="Upload Name" [formControl]="name" [(ngModel)]="nameModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+                <textarea aria-label="Enter upload's name" matInput placeholder="Upload Name" [formControl]="name" [(ngModel)]="nameModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
                             <!--<textarea matInput placeholder="Title" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>-->
                 </textarea>
                 <mat-error *ngIf="name.invalid">{{getErrorMessageName()}}</mat-error>
@@ -34,7 +34,7 @@
             <!--Description-->
             <mat-form-field style="width:44%">
 
-                <textarea matInput placeholder="Description" [(ngModel)]="descriptionModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+                <textarea aria-label="Enter upload's description" matInput placeholder="Description" [(ngModel)]="descriptionModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
     
             </textarea>
             </mat-form-field>
@@ -42,7 +42,7 @@
             <!--Additional Notes-->
             <mat-form-field style="width:44%; padding-left:25px">
 
-                <textarea matInput placeholder="Additional Notes" [(ngModel)]="additionalNotesModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
+                <textarea aria-label="Enter additional notes" matInput placeholder="Additional Notes" [(ngModel)]="additionalNotesModel" matTextareaAutosize matAutosizeMinRows="4" matAutosizeMaxRows="40">
     
             </textarea>
             </mat-form-field>
@@ -60,7 +60,7 @@
             <!--Adding Key Features ********************************************-->
 
             <mat-form-field style="width:20%; ">
-                <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
+                <mat-select aria-label="Select cognitive tasks" placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" [(ngModel)]="cognitiveTaskModel" required multiple>
                     <mat-option *ngFor="let task of taskList" [value]="task.id">
                         <span matTooltip="{{task.task}}">{{task.task}}</span>
                     </mat-option>
@@ -70,7 +70,7 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjectsModel=null" multiple>
+                <mat-select aria-label="Select Species" placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjectsModel=null" multiple>
                     <mat-option *ngFor="let species of speciesList" [value]="species.id">
                         <span matTooltip="{{species.species}}">{{species.species}}</span>
                     </mat-option>
@@ -79,12 +79,12 @@
 
             <!--Number of Subjects-->
             <mat-form-field *ngIf="speciesModel!=null&&speciesModel.length>0" style="width:10%; padding-left:30px">
-                <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects" [(ngModel)]="numSubjectsModel">
+                <input aria-label="Number of subjects" matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects" [(ngModel)]="numSubjectsModel">
                 <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                <mat-select aria-label="Select sex" placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
                         <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                     </mat-option>
@@ -92,7 +92,7 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                <mat-select aria-label="Select Strains" placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                     <mat-option *ngFor="let strain of strainList" [value]="strain.id">
                         <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                     </mat-option>
@@ -102,7 +102,7 @@
             <br />
 
             <mat-form-field style="width:20%; padding-left:0px">
-                <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
+                <mat-select aria-label="Select Genotypes" placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
                     <mat-option *ngFor="let geno of genosList" [value]="geno.id">
                         <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
                     </mat-option>
@@ -110,7 +110,7 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                <mat-select aria-label="Select age" placeholder="Select Age" [(ngModel)]="ageModel" multiple>
                     <mat-option *ngFor="let age of ageList" [value]="age.id">
                         {{age.ageInMonth}}
                     </mat-option>
@@ -118,12 +118,12 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <textarea matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
+                <textarea aria-label="Enter housing info" matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
+                <textarea aria-label="Enter light cycle info" matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
             <br />
@@ -131,7 +131,7 @@
             <br /><br />
 
             <span style="font-size:small">-  Please indicate if the experiment has intervention?</span>
-            <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
+            <mat-radio-group aria-label="Please indicate if the experiment has intervention" [formControl]="intervention" [(ngModel)]="interventionModel" required>
                 <!--<mat-radio-group required>-->
                 <mat-radio-button value="false">No</mat-radio-button>
                 <mat-radio-button value="true">Yes</mat-radio-button>
@@ -142,7 +142,7 @@
 
             <mat-form-field class="full-width" *ngIf="interventionModel=='true'">
                 <!--<mat-form-field class="full-width">-->
-                <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
+                <textarea aria-label="Enter intervention description" matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>
             </mat-form-field>
 
@@ -180,7 +180,7 @@
             <div>
                 <mat-form-field class="full-width">
 
-                    <textarea matInput placeholder="Task Battery" [(ngModel)]="taskBatteryModel"
+                    <textarea aria-label="Enter task battery" matInput placeholder="Task Battery" [(ngModel)]="taskBatteryModel"
                               matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
            
                     </textarea>
@@ -195,11 +195,11 @@
     <br />
 
     <div>
-        <button *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width"
+        <button aria-label="Save Features" *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width"
                 [disabled]="setDisabledVal()" (click)="AddUpload()">
             Save Features
         </button>
-        <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
+        <button aria-label="Save Changes" *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
                 [disabled]="setDisabledVal()" (click)="EditUpload()">
             Save Changes
         </button>
@@ -230,10 +230,10 @@
                     <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
                     <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
                     <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                        <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                        <button aria-label="Download File" mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
                     </td>
                     <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                        <button mat-icon-button matTooltip="Delete File" (click)="deleteFile(file)"><mat-icon>delete</mat-icon></button>
+                        <button aria-label="Delete File" mat-icon-button matTooltip="Delete File" (click)="deleteFile(file)"><mat-icon>delete</mat-icon></button>
                     </td>
                 </tr>
             </tbody>
@@ -246,7 +246,7 @@
 
     <div *ngIf="isEditMode">
         <!--<button mat-raised-button>Upload File</button>-->
-        <button mat-raised-button color="warn" class="full-width" (click)="DeleteUpload()">Delete Upload</button>
+        <button aria-label="Delete Upload" mat-raised-button color="warn" class="full-width" (click)="DeleteUpload()">Delete Upload</button>
     </div>
 
     <br />

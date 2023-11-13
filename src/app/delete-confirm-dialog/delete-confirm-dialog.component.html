@@ -2,7 +2,7 @@
 <!--<div mat-dialog-content>{{confirmMessage}}</div>-->
 <div mat-dialog-content [innerHTML]="confirmMessage"></div>
 <div mat-dialog-actions>
-    <button mat-button style="color: #fff;background-color: #153961;" (click)="dialogRef.close(true)">Confirm</button>
-    <button mat-button (click)="dialogRef.close(false)">Cancel</button>
+    <button aria-label="Click to confirm delete" mat-button style="color: #fff;background-color: #153961;" (click)="dialogRef.close(true)">Confirm</button>
+    <button aria-label="Click to cancel delete" mat-button (click)="dialogRef.close(false)">Cancel</button>
 </div>
 

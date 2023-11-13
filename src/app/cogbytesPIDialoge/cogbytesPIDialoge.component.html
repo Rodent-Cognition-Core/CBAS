@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI's Full Name" [formControl]="piName" [(ngModel)]="reqPINameModel" required>
+            <input aria-label="Enter principal investigator's full name" matInput placeholder="Enter PI's Full Name" [formControl]="piName" [(ngModel)]="reqPINameModel" required>
             <mat-error *ngIf="piName.invalid">{{getErrorMessagePIName()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI email address:" [formControl]="emailPI" [(ngModel)]="reqPIEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input aria-label="Enter principal investigator's email address" matInput placeholder="Enter PI email address:" [formControl]="emailPI" [(ngModel)]="reqPIEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="emailPI.invalid">{{getErrorMessagePIEmail()}}</mat-error>
             <mat-error *ngIf="emailPI.invalid">{{getErrorMessagePIEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI's Institution(s)" [formControl]="institution" [(ngModel)]="reqInsNameModel" required>
+            <input aria-label="Enter principal investigator's institution" matInput placeholder="Enter PI's Institution(s)" [formControl]="institution" [(ngModel)]="reqInsNameModel" required>
             <mat-error *ngIf="institution.invalid">{{getErrorMessageIns()}}</mat-error>
 
         </mat-form-field>
@@ -31,8 +31,8 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
-        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+        <button aria-label="Submit" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="Cancel" mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 
 </div>

@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input aria-label="Enter your full name" matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input aria-label="Enter your email address" matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
+            <input aria-label="Enter D O I of paper in question" matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
             <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
         </mat-form-field>
@@ -28,7 +28,7 @@
 
         <!--Cognitive Task or Task Category-->
         <mat-form-field style="width:48%;">
-            <mat-select placeholder="Select Task Category" [formControl]="taskCategory" [(ngModel)]="reqTaskCategoryModel" required>
+            <mat-select aria-label="Select task category" placeholder="Select Task Category" [formControl]="taskCategory" [(ngModel)]="reqTaskCategoryModel" required>
                 <mat-option *ngFor="let task of taskCategoryList" [value]="task.task">
                     <span matTooltip="{{task.task}}">{{task.task}}</span>
                 </mat-option>
@@ -38,13 +38,13 @@
         </mat-form-field>&nbsp;&nbsp;&nbsp;
 
         <mat-form-field *ngIf="reqTaskCategoryModel=='None'" style="width:48%;">
-            <input matInput placeholder="New Task Category" [formControl]="newCategory" [(ngModel)]="reqNewCategoryModel" required>
+            <input aria-label="Enter new task category" matInput placeholder="New Task Category" [formControl]="newCategory" [(ngModel)]="reqNewCategoryModel" required>
             <mat-error *ngIf="newCategory.invalid">{{getErrorMessageNewCategory()}}</mat-error>
         </mat-form-field>
         <br />
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="New Task Name" [formControl]="newTask" [(ngModel)]="reqNewTaskModel" required>
+            <input aria-label="Enter new task name" matInput placeholder="New Task Name" [formControl]="newTask" [(ngModel)]="reqNewTaskModel" required>
             <mat-error *ngIf="newTask.invalid">{{getErrorMessageNewTask()}}</mat-error>
 
         </mat-form-field>
@@ -60,8 +60,8 @@
     <br />
 
     <mat-dialog-actions>
-        <button mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
-        <button mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
+        <button aria-label="Submit new pubscreen task" mat-raised-button (click)="onCloseSubmit()" [disabled]="setDisabledVal()">SUBMIT</button>
+        <button aria-label="Cancel" mat-raised-button mat-dialog-close (click)="onCloseCancel()">CANCEL</button>
     </mat-dialog-actions>
 
 </div>

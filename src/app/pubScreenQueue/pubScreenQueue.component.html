@@ -10,7 +10,7 @@
         <p style="padding-left:50px">
             All papers here were recently added from Pubmed search, to be accepted or rejected into PubScreen.
             <br /><br />
-            <button mat-raised-button (click)="addCSVPapers()">Remove Repeated Apostrophes</button>
+            <button aria-label="Click to remove repeated apostrophes" mat-raised-button (click)="addCSVPapers()">Remove Repeated Apostrophes</button>
         </p>
 
     </div>
@@ -19,10 +19,10 @@
         <p style="padding-left:50px">
             Please enter paper DOI and hit the button to get its link: <br /><br />
             <mat-form-field style="width:30%">
-                <input matInput placeholder="Enter Paper DOI" [(ngModel)]="linkModel" required>
+                <input aria-label="Please enter paper DOI and hit the button to get it's link" matInput placeholder="Enter Paper DOI" [(ngModel)]="linkModel" required>
 
             </mat-form-field> &nbsp; &nbsp;
-            <button mat-raised-button (click)="getLink(linkModel)">Get Link</button>
+            <button aria-label="Click to get link" mat-raised-button (click)="getLink(linkModel)">Get Link</button>
         </p>
 
     </div>
@@ -57,10 +57,10 @@
                     <label>{{row.queueDate.substring(0,10)}}</label>
                 </td>
                 <td style='text-align:center;'>
-                    <button mat-raised-button (click)="acceptPub(row)">Accept</button>
+                    <button aria-label="Accept Paper" mat-raised-button (click)="acceptPub(row)">Accept</button>
                 </td>
                 <td style='text-align:center;'>
-                    <button mat-raised-button (click)="rejectPub(row)">Reject</button>
+                    <button aria-label="Reject paper" mat-raised-button (click)="rejectPub(row)">Reject</button>
                 </td>
             </tr>
         </tbody>

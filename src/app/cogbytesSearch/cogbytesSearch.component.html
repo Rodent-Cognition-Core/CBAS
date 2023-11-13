@@ -36,9 +36,9 @@
                             <label style="color:#566573">Author Information:</label><br />
 
                             <mat-form-field>
-                                <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
+                                <mat-select aria-label="Select Author" placeholder="Select Author" [(ngModel)]="authorModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="Search based on last name" placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
@@ -50,9 +50,9 @@
 
                             <!--PI-->
                             <mat-form-field style="padding-left: 25px">
-                                <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>
+                                <mat-select aria-label="Select principal investigators" placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search aria-label="Search based on last name" placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
                                         {{pi.piFullName}}
@@ -80,8 +80,8 @@
                             <!--Paper Title-->
                             <!--Repository List-->
                             <mat-form-field style="width: 35%; padding-left:0px">
-                                <mat-select matInput placeholder="Repository List" [(ngModel)]="titleModel" multiple>
-                                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+                                <mat-select aria-label="Select repository" matInput placeholder="Repository List" [(ngModel)]="titleModel" multiple>
+                                    <ngx-mat-select-search aria-label="Search based on title" placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.id">
                                         <span matTooltip="{{rep.title}}">{{rep.title}}</span>
@@ -99,7 +99,7 @@
                             <!--Paper year From-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year From" [(ngModel)]="yearFromSearchModel">
+                                <mat-select aria-label="Select year from" placeholder="Year From" [(ngModel)]="yearFromSearchModel">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
                                     </mat-option>
@@ -110,7 +110,7 @@
                             <!--Paper year To-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
+                                <mat-select aria-label="Select year to" placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
                                             (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
@@ -125,14 +125,14 @@
                             <!--Keywords-->
                             <mat-form-field style="width:30%;">
 
-                                <input matInput placeholder="Keywords" [(ngModel)]="keywordsModel">
+                                <input aria-label="Enter keyword" matInput placeholder="Keywords" [(ngModel)]="keywordsModel">
 
                             </mat-form-field>
 
                             <!--DOI-->
                             <mat-form-field style="width:30%; padding-left:35px">
 
-                                <input matInput placeholder="DOI" [(ngModel)]="doiModel">
+                                <input matInput aria-label="enter D O I" placeholder="DOI" [(ngModel)]="doiModel">
 
                             </mat-form-field>
 
@@ -140,7 +140,7 @@
 
                             <!--File Type-->
                             <mat-form-field style="width: 45%; padding-left:0px">
-                                <mat-select matInput placeholder="File Type" [(ngModel)]="fileTypeModel" multiple>
+                                <mat-select matInput aria-label="Select file types" placeholder="File Type" [(ngModel)]="fileTypeModel" multiple>
                                     <mat-option *ngFor="let type of fileTypeList" [value]="type.id">
                                         {{type.fileType}}
                                     </mat-option>
@@ -164,7 +164,7 @@
 
                             <!--Cognitive Task-->
                             <mat-form-field style="width:15%; ">
-                                <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" multiple>
+                                <mat-select aria-label="Select Cognitive task" placeholder="Select Cognitive Task(s)" [(ngModel)]="cognitiveTaskModel" multiple>
                                     <mat-option *ngFor="let task of taskList" [value]="task.id">
                                         <span matTooltip="{{task.task}}">{{task.task}}</span>
                                     </mat-option>
@@ -174,7 +174,7 @@
 
                             <!--Species-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
+                                <mat-select aria-label="Select Species" placeholder="Select Specie(s)" [(ngModel)]="specieModel" multiple>
                                     <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                         <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
@@ -184,7 +184,7 @@
 
                             <!--Sex-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                                <mat-select aria-label="Select Sex" placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
                                     <mat-option *ngFor="let sex of sexList" [value]="sex.id">
                                         <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
                                     </mat-option>
@@ -196,7 +196,7 @@
 
                             <!--Strain-->
                             <mat-form-field style="width:15%; padding-left:0px">
-                                <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                                <mat-select aria-label="Select Strains" placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
                                     <mat-option *ngFor="let strain of strainList" [value]="strain.id">
                                         <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                                     </mat-option>
@@ -206,7 +206,7 @@
 
                             <!--Genotype-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genoModel" multiple>
+                                <mat-select aria-label="Select Genotypes" placeholder="Select Genotype(s)" [(ngModel)]="genoModel" multiple>
                                     <mat-option *ngFor="let geno of genoList" [value]="geno.id">
                                         <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
                                     </mat-option>
@@ -216,7 +216,7 @@
 
                             <!--Age-->
                             <mat-form-field style="width:15%; padding-left:30px">
-                                <mat-select placeholder="Select Age(s)" [(ngModel)]="ageModel" multiple>
+                                <mat-select aria-label="Select Age" placeholder="Select Age(s)" [(ngModel)]="ageModel" multiple>
                                     <mat-option *ngFor="let age of ageList" [value]="age.id">
                                         {{age.ageInMonth}}
                                     </mat-option>

@@ -6,11 +6,11 @@
     <!--Search-->
     <div style="float: left; margin-left: 10%; width: 80%;">
         <mat-input-container class="md-icon-float full-width">
-            <input matInput [(ngModel)]="expfilter" placeholder="search experiment" (keyup.enter)="search()">
+            <input aria-label="Enter to search for experiment" matInput [(ngModel)]="expfilter" placeholder="search experiment" (keyup.enter)="search()">
         </mat-input-container>
     </div>
     <div style="float: left">
-        <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
+        <button aria-label="Click to search for experiment" mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
     </div>
     <div style="clear: both;"></div>
     <br />
