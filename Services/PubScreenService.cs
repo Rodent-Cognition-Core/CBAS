@@ -19,7 +19,7 @@ using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
 using System.Reflection;
-
+using System.Net;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -28,9 +28,17 @@ namespace AngularSPAWebAPI.Services
     {
         const int MOUSEID = 2;
         const int RATID = 1;
-
+        private static readonly HttpClient httpClient;
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
+        static PubScreenService(){
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy("prxy name", 8080),
+                UseProxy = true
+            };
+            httpClient = new HttpClient(handler);
+        }
 
         public async Task<PubScreen> GetPaperInfoByDoi(string doi)
         {
@@ -40,7 +48,7 @@ namespace AngularSPAWebAPI.Services
                 doi = doi.Replace("https://doi.org/", "", StringComparison.OrdinalIgnoreCase);
             }
 
-            HttpClient httpClient = new HttpClient();
+            // httpClient = new HttpClient();
 
             StringContent content = new System.Net.Http.StringContent(String.Empty);
 
@@ -96,7 +104,7 @@ namespace AngularSPAWebAPI.Services
         public async Task<PubScreen> GetPaperInfoByPubMedKey(string pubMedKey)
         {
             // if IskeyPumbed is true then get doi and add it to object
-            HttpClient httpClient = new HttpClient();
+            // HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
             var incomingXml = new XElement("newXML");
@@ -269,7 +277,7 @@ namespace AngularSPAWebAPI.Services
         {
             // Submiy doi to get the pubmedkey
 
-            HttpClient httpClient = new HttpClient();
+            // HttpClient httpClient = new HttpClient();
 
             StringContent content = new System.Net.Http.StringContent(String.Empty);
 
@@ -322,7 +330,7 @@ namespace AngularSPAWebAPI.Services
         public async Task<PubScreen> GetPaperInfoByDOICrossref(string doi)
         {
             // if IskeyPumbed is true then get doi and add it to object
-            HttpClient httpClient = new HttpClient();
+            // HttpClient httpClient = new HttpClient();
 
             var content = new StringContent(String.Empty, Encoding.UTF8, "application/xml");
             var incomingXml = new XElement("newXML");
