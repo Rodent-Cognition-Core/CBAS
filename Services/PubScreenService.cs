@@ -1617,6 +1617,12 @@ namespace AngularSPAWebAPI.Services
 
             string sql = "Select * From SearchPub Where ";
 
+            if (!string.IsNullOrEmpty(pubScreen.search))
+            {
+                sql += $@"(SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
+                           SearchPub.Keywords like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
+                           SearchPub.Author like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%') AND ";
+            }
             // Title
             if (!string.IsNullOrEmpty(pubScreen.Title))
             {

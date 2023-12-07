@@ -44,6 +44,7 @@ namespace AngularSPAWebAPI.Models
         public string CelltypeOther { get; set; }
         public string MethodOther { get; set; }
         public string NeurotransOther { get; set; }
+        public string search { get; set; }
 
 
         public System.Collections.Generic.List<PubScreenAuthor> Author { get; set; }

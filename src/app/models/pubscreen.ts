@@ -40,6 +40,7 @@ export class Pubscreen {
     public celltypeOther: string;
     public methodOther: string;
     public neurotransOther: string;
+    public search: string;
 
                  
 
