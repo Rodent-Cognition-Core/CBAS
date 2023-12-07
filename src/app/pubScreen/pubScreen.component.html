@@ -43,6 +43,16 @@
                             </div>
 
                             <ng-template #other_content><span style="color:red">You should be logged into the sytem in order to add a publication!</span> <hr /></ng-template>
+                            <!--General Search-->
+
+                            <mat-form-field style="width:100%;">
+
+                                <textarea matInput placeholder="Search" [(ngModel)]="searchModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+    
+                                        </textarea>
+
+                            </mat-form-field>
+                            <br/>
 
                             <label>You can search and extract publications based on the following search criteria:</label><br /><br />
                             <hr /><br />

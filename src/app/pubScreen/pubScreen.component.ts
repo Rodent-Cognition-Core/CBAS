@@ -66,9 +66,8 @@ export class PubScreenComponent implements OnInit {
     yearFromSearchModel: any;
     yearToSearchModel: any;
     subTaskModel: any;
-
     panelOpenState = false;
-
+    searchModel: any;
     // Definiing List Variables 
     paperTypeList: any;
     taskList: any;
@@ -95,6 +94,7 @@ export class PubScreenComponent implements OnInit {
     subSubMethodList: any;
     paperInfoFromDoiList: any;
     checkYear: boolean;
+
 
     isAdmin: boolean;
     isUser: boolean;
@@ -735,6 +735,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
         this._pubSCreenSearch.yearTo = this.yearToSearchModel;
         this._pubSCreenSearch.subTaskID = this.subTaskModel;
+        this._pubSCreenSearch.search = this.searchModel;
 
         console.log(this._pubSCreenSearch);
 
