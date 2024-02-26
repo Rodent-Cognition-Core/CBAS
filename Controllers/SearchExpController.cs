@@ -109,6 +109,7 @@ namespace AngularSPAWebAPI.Controllers
                 {".bak", "application/bak"},
                 {".c", "text/plain" },
                 {".zip", "application/x-zip-compressed" },
+                {".7z", "application/x-7z-compressed" },
                 {".tex", "application/x-tex" },
                 {".tar", "application/x-tar" },
                 {".rar", "application/octet-stream" },
