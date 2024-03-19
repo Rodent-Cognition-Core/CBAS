@@ -1,7 +1,9 @@
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CBAS.Helpers
@@ -325,9 +327,16 @@ namespace CBAS.Helpers
             return lstGenoID;
         }
 
-
-
-
+        public static string ConvertListToString(IEnumerable<string> source)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (string str in source)
+            {
+                stringBuilder.Append(str);
+                stringBuilder.Append(" ");
+            }
+            return stringBuilder.ToString().TrimEnd(' ');
+        }
 
     }
 }
