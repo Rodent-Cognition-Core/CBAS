@@ -9,6 +9,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Nest;
 
 
 
@@ -25,10 +26,11 @@ namespace AngularSPAWebAPI.Controllers
         private readonly PubScreenService _pubScreenService;
 
         private readonly UserManager<ApplicationUser> _manager;
-
-        public PubScreenController(UserManager<ApplicationUser> manager)
+        private readonly IElasticClient _elasticClient;
+        public PubScreenController(UserManager<ApplicationUser> manager, IElasticClient client)
         {
-            _pubScreenService = new PubScreenService();
+            _elasticClient = client;
+            _pubScreenService = new PubScreenService(_elasticClient);
             _manager = manager;
         }
 

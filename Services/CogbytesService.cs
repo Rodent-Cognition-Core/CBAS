@@ -18,6 +18,8 @@ using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
 using Microsoft.AspNetCore.Http;
+using Nest;
+using CBAS.Models;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -26,7 +28,7 @@ namespace AngularSPAWebAPI.Services
     {
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
-
+        private readonly IElasticClient _elasticClient;
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
@@ -311,7 +313,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenSearch publication = GetPubScreenPaper(doi);
+                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
 
                     RepList.Add(new Cogbytes
                     {
@@ -1169,7 +1171,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenSearch publication = GetPubScreenPaper(doi);
+                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
                     RepList.Add(new Cogbytes
                     {
                         ID = repID,
@@ -1223,14 +1225,14 @@ namespace AngularSPAWebAPI.Services
             return lstExperiment;
         }
 
-        public PubScreenSearch GetPubScreenPaper(string doi)
+        public PubScreenElasticSearchModel GetPubScreenPaper(string doi)
         {
             if (string.IsNullOrEmpty(doi))
             {
                 return null;
             }
 
-            var pubscreenService = new PubScreenService();
+            var pubscreenService = new PubScreenService(_elasticClient);
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())
@@ -1261,7 +1263,7 @@ namespace AngularSPAWebAPI.Services
                     };
 
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenSearch publication = GetPubScreenPaper(doi);
+                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
 
                     // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
                     List<FileUploadResult> FileList = new List<FileUploadResult>();

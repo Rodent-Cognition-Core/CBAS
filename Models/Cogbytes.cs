@@ -1,3 +1,4 @@
+using CBAS.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 namespace AngularSPAWebAPI.Models
@@ -20,7 +21,7 @@ namespace AngularSPAWebAPI.Models
         public string AdditionalNotes { get; set; }
         public string DateRepositoryCreated { get; set; }
         public System.Collections.Generic.List<Experiment> Experiment { get; set; }
-        public PubScreenSearch Paper { get; set; }
+        public PubScreenElasticSearchModel Paper { get; set; }
         public string DataCiteURL { get; set; }
     }
 }
