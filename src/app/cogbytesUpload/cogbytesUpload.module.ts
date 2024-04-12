@@ -36,7 +36,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
             useValue: {
                 // Change this to your upload POST address:
                 url: 'http://localhost:5000/api/cogbytes/AddFiles',
-                maxFilesize: 10000,
+                // maxFilesize: 50,
                 //acceptedFiles: '.*',
                 // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
                 parallelUploads: 10000,
