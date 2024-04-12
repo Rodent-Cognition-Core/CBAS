@@ -356,3 +356,5 @@ Thumbs.db
 /yarn.lock
 /package - backup mar 29 2023.json
 /.npmignore
+/Data/Dal.cs
+/src/app/shared/scroll.service.ts
