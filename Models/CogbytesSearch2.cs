@@ -40,7 +40,7 @@ namespace AngularSPAWebAPI.Models
         public string Age { get; set; }
         public int? NumSubjects { get; set; }
         public System.Collections.Generic.List<Experiment> Experiment { get; set; }
-        public PubScreenElasticSearchModel Paper { get; set; }
+        public PubScreenSearch Paper { get; set; }
 
         public System.Collections.Generic.List<FileUploadResult> UploadFileList { get; set; }
 

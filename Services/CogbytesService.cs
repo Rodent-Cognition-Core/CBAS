@@ -313,7 +313,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
 
                     RepList.Add(new Cogbytes
                     {
@@ -1171,7 +1171,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     int repID = Int32.Parse(dr["RepID"].ToString());
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
                     RepList.Add(new Cogbytes
                     {
                         ID = repID,
@@ -1225,7 +1225,7 @@ namespace AngularSPAWebAPI.Services
             return lstExperiment;
         }
 
-        public PubScreenElasticSearchModel GetPubScreenPaper(string doi)
+        public PubScreenSearch GetPubScreenPaper(string doi)
         {
             if (string.IsNullOrEmpty(doi))
             {
@@ -1263,7 +1263,7 @@ namespace AngularSPAWebAPI.Services
                     };
 
                     string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenElasticSearchModel publication = GetPubScreenPaper(doi);
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
 
                     // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
