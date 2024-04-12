@@ -213,7 +213,7 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult SearchPublication([FromBody] PubScreen publication)
         {
-            return new JsonResult(_pubScreenService.SearchPublications(publication));
+            return new JsonResult(_pubScreenService.ElasticSearchPublications(publication));
         }
 
         // Getting list of all years from Database
