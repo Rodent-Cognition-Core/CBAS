@@ -92,6 +92,7 @@ export class CogbytesUploadComponent implements OnInit {
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
+        maxFilesize: 10000,
         autoReset: null,
         errorReset: null,
         cancelReset: null,
