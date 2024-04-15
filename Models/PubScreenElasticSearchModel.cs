@@ -13,11 +13,13 @@ namespace CBAS.Models
         public string Keywords { get; set; }
         public string DOI { get; set; }
         public int Year { get; set; }
+        public int? YearFrom { get; set; }
+        public int? YearTo { get; set; }
         public string[] Author { get; set; }
         public string PaperType { get; set; }
         public string Task { get; set; }
         public string search { get; set; } 
-        public string SubTask { get; set; }
+        public string[]  SubTask { get; set; }
         public string Species { get; set; }
         public string Sex { get; set; }
         public string Strain { get; set; }

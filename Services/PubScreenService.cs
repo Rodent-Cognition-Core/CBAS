@@ -23,6 +23,8 @@ using System.Net;
 using Nest;
 using IdentityServer4.Models;
 using CBAS.Models;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
+using Elasticsearch.Net;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -2148,7 +2150,7 @@ namespace AngularSPAWebAPI.Services
 
                     using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}"))
                     {
-                        listOfPaperType.Add(dt.Rows[0].ToString().ToLower());
+                        listOfPaperType.Add(dt.Rows[0]["PaperType"].ToString().ToLower());
                     }
                 }
                 else
@@ -2157,7 +2159,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}"))
                         {
-                            listOfPaperType.Add(dt.Rows[0].ToString().ToLower());
+                            listOfPaperType.Add(dt.Rows[0]["PaperType"].ToString().ToLower());
                         }
                     }
                 }
@@ -2174,7 +2176,7 @@ namespace AngularSPAWebAPI.Services
 
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}"))
                     {
-                        listOfSpecies.Add(dt.Rows[0].ToString().ToLower());
+                        listOfSpecies.Add(dt.Rows[0]["Species"].ToString().ToLower());
                     }
                 }
                 else
@@ -2183,7 +2185,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}"))
                         {
-                            listOfSpecies.Add(dt.Rows[0].ToString().ToLower());
+                            listOfSpecies.Add(dt.Rows[0]["Species"].ToString().ToLower());
                         }
                     }
                 }
@@ -2202,7 +2204,7 @@ namespace AngularSPAWebAPI.Services
 
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}"))
                     {
-                        listOfTask.Add(dt.Rows[0].ToString().ToLower());
+                        listOfTask.Add(dt.Rows[0]["Task"].ToString().ToLower());
                     }
                 }
                 else
@@ -2211,7 +2213,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}"))
                         {
-                            listOfTask.Add(dt.Rows[i].ToString().ToLower());
+                            listOfTask.Add(dt.Rows[0]["Task"].ToString().ToLower());
                         }
                     }
                 }
@@ -2226,21 +2228,21 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}"))
                     {
-                        listOfSubTask.Add(dt.Rows[1].ToString().ToLower());
+                        listOfSubTask.Add(dt.Rows[1]["SubTask"].ToString().ToLower());
                     }
                 }
                 else
                 {
                     for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
                     {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}"))
+                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[i]}"))
                         {
-                            listOfSubTask.Add(dt.Rows[i].ToString().ToLower());
+                            listOfSubTask.Add(dt.Rows[0]["SubTask"].ToString().ToLower());
                         }
                     }
                 }
 
-                pubScreenForElasticSearch.SubTask = HelperService.ConvertListToString(listOfSubTask);
+                pubScreenForElasticSearch.SubTask = listOfSubTask.ToArray();
 
             }
 
@@ -2252,7 +2254,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}"))
                     {
-                        listOfSex.Add(dt.Rows[1].ToString().ToLower());
+                        listOfSex.Add(dt.Rows[0]["Sex"].ToString().ToLower());
                     }
                 }
                 else
@@ -2260,9 +2262,9 @@ namespace AngularSPAWebAPI.Services
 
                     for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
                     {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.sexID[0]}"))
+                        using (DataTable dt = Dal.GetDataTablePub($@"Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}"))
                         {
-                            listOfSex.Add(dt.Rows[i].ToString().ToLower());
+                            listOfSex.Add(dt.Rows[0]["Sex"].ToString().ToLower());
                         }
                     }
                 }
@@ -2278,16 +2280,16 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}"))
                     {
-                        listOfStrain.Add(dt.Rows[1].ToString().ToLower());
+                        listOfStrain.Add(dt.Rows[0]["Strain"].ToString().ToLower());
                     }
                 }
                 else
                 {
                     for (int i = 0; i < pubScreen.StrainID.Length; i++)
                     {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}"))
+                        using (DataTable dt = Dal.GetDataTablePub($@"Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}"))
                         {
-                            listOfStrain.Add(dt.Rows[i].ToString().ToLower());
+                            listOfStrain.Add(dt.Rows[0]["Strain"].ToString().ToLower());
                         }
                     }
                 }
@@ -2302,16 +2304,16 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}"))
                     {
-                        listOfDisease.Add(dt.Rows[1].ToString().ToLower());
+                        listOfDisease.Add(dt.Rows[0]["DiseaseModel"].ToString().ToLower());
                     }
                 }
                 else
                 {
                     for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
                     {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}"))
+                        using (DataTable dt = Dal.GetDataTablePub($@"Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}"))
                         {
-                            listOfDisease.Add(dt.Rows[i].ToString().ToLower());
+                            listOfDisease.Add(dt.Rows[0]["DiseaseModel"].ToString().ToLower());
                         }
                     }
                  
@@ -2327,7 +2329,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[0]}"))
                     {
-                        listOfSubModel.Add(dt.Rows[1].ToString().ToLower());
+                        listOfSubModel.Add(dt.Rows[0]["SubModel"].ToString().ToLower());
                     }
                 }
                 else
@@ -2336,7 +2338,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[i]}"))
                         {
-                            listOfSubModel.Add(dt.Rows[1].ToString().ToLower());
+                            listOfSubModel.Add(dt.Rows[0]["SubModel"].ToString().ToLower());
                         }
 
                     }
@@ -2354,7 +2356,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}"))
                     {
-                        listOfRegion.Add(dt.Rows[1].ToString().ToLower());
+                        listOfRegion.Add(dt.Rows[0]["BrainRegion"].ToString().ToLower());
                     }
                 }
                 else
@@ -2363,7 +2365,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}"))
                         {
-                            listOfRegion.Add(dt.Rows[1].ToString().ToLower());
+                            listOfRegion.Add(dt.Rows[0]["BrainRegion"].ToString().ToLower());
                         }
                     }
                 }
@@ -2377,18 +2379,18 @@ namespace AngularSPAWebAPI.Services
                 List<string> listOfSubRegion = new List<string>(); 
                 if (pubScreen.SubRegionID.Length == 1)
                 {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.SubRegionID[0]}"))
+                    using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}"))
                     {
-                        listOfSubRegion.Add(dt.Rows[1].ToString().ToLower());
+                        listOfSubRegion.Add(dt.Rows[0]["SubRegion"].ToString().ToLower());
                     }
                 }
                 else
                 {
                     for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
                     {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.SubRegionID[i]}"))
+                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}"))
                         {
-                            listOfSubRegion.Add(dt.Rows[1].ToString().ToLower());
+                            listOfSubRegion.Add(dt.Rows[0]["SubRegion"].ToString().ToLower());
                         }
                     }
                 }
@@ -2403,7 +2405,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}"))
                     {
-                        listOfCellType.Add(dt.Rows[1].ToString().ToLower());
+                        listOfCellType.Add(dt.Rows[0]["CellType"].ToString().ToLower());
                     }
                 }
                 else
@@ -2412,7 +2414,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[1]}"))
                         {
-                            listOfCellType.Add(dt.Rows[1].ToString().ToLower());
+                            listOfCellType.Add(dt.Rows[0]["CellType"].ToString().ToLower());
                         }
                     }
                 }
@@ -2427,7 +2429,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}"))
                     {
-                        listOfMethod.Add(dt.Rows[1].ToString().ToLower());
+                        listOfMethod.Add(dt.Rows[0]["Method"].ToString().ToLower());
                     }
                 }
                 else
@@ -2436,7 +2438,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}"))
                         {
-                            listOfMethod.Add(dt.Rows[1].ToString().ToLower());
+                            listOfMethod.Add(dt.Rows[0]["Method"].ToString().ToLower());
                         }
                     }
                 }
@@ -2451,7 +2453,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[0]}"))
                     {
-                        listOfSubMethod.Add(dt.Rows[1].ToString().ToLower());
+                        listOfSubMethod.Add(dt.Rows[0]["SubMethod"].ToString().ToLower());
                     }
 
                 }
@@ -2461,7 +2463,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[i]}"))
                         {
-                            listOfSubMethod.Add(dt.Rows[1].ToString().ToLower());
+                            listOfSubMethod.Add(dt.Rows[0]["SubMethod"].ToString().ToLower());
                         }
 
                     }
@@ -2478,7 +2480,7 @@ namespace AngularSPAWebAPI.Services
 
                     using (DataTable dt = Dal.GetDataTablePub($@"Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}"))
                     {
-                        listOfTransmitter.Add(dt.Rows[1].ToString().ToLower());
+                        listOfTransmitter.Add(dt.Rows[0]["Neurotransmitter"].ToString().ToLower());
                     }
                 }
                 else
@@ -2487,14 +2489,22 @@ namespace AngularSPAWebAPI.Services
                     {
                         using (DataTable dt = Dal.GetDataTablePub($@"Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}"))
                         {
-                            listOfTransmitter.Add(dt.Rows[1].ToString().ToLower());
+                            listOfTransmitter.Add(dt.Rows[0]["Neurotransmitter"].ToString().ToLower());
                         }
                     }
                 }
                 pubScreenForElasticSearch.NeuroTransmitter = HelperService.ConvertListToString(listOfTransmitter);
             }
 
-            
+            if(pubScreen.YearFrom != null)
+            {
+                pubScreenForElasticSearch.YearFrom = pubScreen.YearFrom;
+            }
+
+            if(pubScreen.YearTo != null)
+            {
+                pubScreenForElasticSearch.YearTo = pubScreen.YearTo ;
+            }
             return Search(pubScreenForElasticSearch);
 
 
@@ -2504,6 +2514,9 @@ namespace AngularSPAWebAPI.Services
             var results = new List<PubScreenElasticSearchModel>();
             try
             {
+                var queryContainer = new QueryContainerDescriptor<PubScreenElasticSearchModel>();
+                var query = ApplyQuery(pubScreen, queryContainer);
+                var json = _elasticClient.RequestResponseSerializer.SerializeToString(query);
                 var searchResult = _elasticClient.Search<PubScreenElasticSearchModel>(s => s.Index("pubscreen")
                     .Size(SEARCHRESULTSIZE)
                     .Query(q => ApplyQuery(pubScreen, q)
@@ -3040,7 +3053,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         filterQuery.Add(fq => fq
                         .Range(range => range
-                            .Field(new Nest.Field("year"))
+                            .Field(f => f.Year)
                         .GreaterThanOrEquals(yearFrom))
                         );
                     }
@@ -3058,7 +3071,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         filterQuery.Add(fq => fq
                         .Range(range => range
-                            .Field(new Nest.Field("year"))
+                            .Field(f => f.Year)
                             .LessThanOrEquals(yearTo))
                         );
                     }
@@ -3074,29 +3087,115 @@ namespace AngularSPAWebAPI.Services
                                     .Must(boolSHould => boolSHould
                                         .Term(t => t
                                             .Field(feild => feild.DOI.Suffix("keyword"))
-                                             .Value(value))
-                                            ))
-                                
-                            );
+                                             .Value(value)))));
+                }
+                else if (pi.Name == "PaperType")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.PaperType)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if(pi.Name == "SubTask")
+                {
+                    //var fullSubTask = value.ToString().ToLower();
+                    //var subTaskList = fullSubTask.Split(",").ToList().ToArray();
+                    foreach(var subtask in listOfValue)
+                    {
+                        filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Should(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.SubTask)
+                                    .Query(subtask.ToString().ToLower())))));
+                    }
+                    
+                }
+                else if (pi.Name == "DiseaseModel")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.DiseaseModel)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "SubModel")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.SubModel)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "BrainRegion")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.BrainRegion)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "SubRegion")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.SubRegion)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "CellType")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.CellType)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "SubMethod")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.SubMethod)
+                                    .Query(value.ToString().ToLower())))));
+                }
+                else if (pi.Name == "NeuroTransmitter")
+                {
+                    filterQuery.Add(fq => fq
+                                .Bool(f => f
+                                    .Must(boolShould => boolShould
+                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Field(feild => feild.NeuroTransmitter)
+                                    .Query(value.ToString().ToLower())))));
                 }
                 else if (pi.PropertyType == typeof(string))
                 {
                     filterQuery.Add(fq => fq
                             .Bool(dxqm => dxqm
-                                .Must(boolShould => boolShould
-                                .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-                                .Field(new Nest.Field(pi.Name.ToLower()))
-                                .Query(value.ToLower())))));
+                                 .Must(boolShould => boolShould
+                               .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                               .Field(new Nest.Field(pi.Name).ToString().ToLower())
+                               .Query(value.ToString().ToLower())))));
                 }
+                
                 else if(pi.PropertyType == typeof(string[]))
                 {
                     foreach (var term in listOfValue)
                     {
+
                         filterQuery.Add(fq => fq
                            .Bool(dxqm => dxqm
                                .Must(boolShould => boolShould
                                .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-                               .Field(new Nest.Field(pi.Name.ToLower()))
+                               .Field(new Nest.Field(pi.Name).ToString().ToLower())
                                .Query(term.ToString().ToLower())))));
                     }
                    
@@ -3140,7 +3239,7 @@ namespace AngularSPAWebAPI.Services
             return query
                         .Match(dxqm => dxqm
                             .Field(queryField)
-                            .Query(searchingFor.ToString())
+                            .Query(searchingFor.ToString().ToLower())
                             .Fuzziness(Nest.Fuzziness.EditDistance(0))
                     );
         }
@@ -3151,7 +3250,7 @@ namespace AngularSPAWebAPI.Services
                         .Should(boolShould => boolShould
                             .Wildcard(dxqm => dxqm
                             .Field(new Nest.Field(fieldName))
-                            .Value(searchingFor.ToString() + "*"))
+                            .Value(searchingFor.ToString().ToLower() + "*"))
                         )
         );
     }
