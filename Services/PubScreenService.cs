@@ -3107,7 +3107,7 @@ namespace AngularSPAWebAPI.Services
                         filterQuery.Add(fq => fq
                                 .Bool(f => f
                                     .Should(boolShould => boolShould
-                                    .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                                    .Match(matchPhrasePrefix => matchPhrasePrefix
                                     .Field(feild => feild.SubTask)
                                     .Query(subtask.ToString().ToLower())))));
                     }
