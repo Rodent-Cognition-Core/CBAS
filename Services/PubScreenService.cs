@@ -25,6 +25,8 @@ using IdentityServer4.Models;
 using CBAS.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Elasticsearch.Net;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -2228,7 +2230,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}"))
                     {
-                        listOfSubTask.Add(dt.Rows[1]["SubTask"].ToString().ToLower());
+                        listOfSubTask.Add(dt.Rows[0]["SubTask"].ToString().ToLower());
                     }
                 }
                 else
@@ -2996,7 +2998,7 @@ namespace AngularSPAWebAPI.Services
         }
         private QueryContainer ApplyQuery(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
         {
-            return query.Bool(boolQ => boolQ.Must(boolQM => boolQM
+            return query.Bool(boolQ => boolQ.Should(boolQM => boolQM
                                                 .DisMax(dxq => dxq
                                                 .Queries(JoinAllQuries(pubscreen, query).ToArray())))
                                             .Filter(AddFilter(pubscreen).ToArray()));
@@ -3030,7 +3032,7 @@ namespace AngularSPAWebAPI.Services
 
                 string value = "";
                 
-                Array listOfValue = null;
+                Array listOfValue =  null;
 
                 if(pi.PropertyType == typeof(string[]))
                 {
@@ -3102,16 +3104,18 @@ namespace AngularSPAWebAPI.Services
                 {
                     //var fullSubTask = value.ToString().ToLower();
                     //var subTaskList = fullSubTask.Split(",").ToList().ToArray();
-                    foreach(var subtask in listOfValue)
+
+                    var listOfSubTask = new List<string>();
+
+                    foreach( var item in listOfValue)
                     {
-                        filterQuery.Add(fq => fq
-                                .Bool(f => f
-                                    .Should(boolShould => boolShould
-                                    .Match(matchPhrasePrefix => matchPhrasePrefix
-                                    .Field(feild => feild.SubTask)
-                                    .Query(subtask.ToString().ToLower())))));
+                        listOfSubTask.Add(item.ToString().ToLower());
                     }
-                    
+
+                    filterQuery.Add(fq => fq
+                        .Bool(f => f
+                        .Should(listOfSubTask.Select(t => ApplyORQuery(fq, pi.Name, t)).ToArray())));
+
                 }
                 else if (pi.Name == "DiseaseModel")
                 {
@@ -3206,6 +3210,17 @@ namespace AngularSPAWebAPI.Services
                 }
             }
             return filterQuery;
+        }
+
+        private QueryContainer ApplyORQuery(QueryContainerDescriptor<PubScreenElasticSearchModel> query, string field, string value)
+        {
+            if (field == "SubTask")
+            {
+                return +query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                .Field(f => f.SubTask)
+                .Query(value));
+            }
+            return query;
         }
         public List<QueryContainer> MultiMatchSearchField(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query) =>
             string.IsNullOrEmpty(pubscreen.search) ? new List<QueryContainer>() : ApplyMatchQuery(pubscreen.search, query);
