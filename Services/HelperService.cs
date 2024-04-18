@@ -338,5 +338,15 @@ namespace CBAS.Helpers
             return stringBuilder.ToString().TrimEnd(' ');
         }
 
+        public static List<string> ConvertArrayToStringList(System.Array source)
+        {
+            var listOfItme = new List<string>();
+            foreach(var item in source)
+            {
+                listOfItme.Add(item.ToString().ToLower());
+            }
+            return listOfItme;
+        }
+
     }
 }
