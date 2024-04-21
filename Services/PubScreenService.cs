@@ -868,6 +868,7 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication Where id = { pubId};";
 
             Dal.ExecuteNonQueryPub(sql);
+            DeleteFromElasticSearch(pubId);
         }
 
         //************************************************************************************Adding Publication*********************************
@@ -3246,6 +3247,15 @@ namespace AngularSPAWebAPI.Services
                             .Value(searchingFor.ToString().ToLower() + "*"))
                         )
         );
+
+        private DeleteResponse DeleteFromElasticSearch(int id)
+        {
+            
+                var pubScreenId = id.ToString();
+                var response = _elasticClient.Delete<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
+
+            return response; 
+        }
     }
 
 }
