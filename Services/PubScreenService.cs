@@ -1197,6 +1197,7 @@ namespace AngularSPAWebAPI.Services
 
             }
 
+            AddPublicationsToElasticSearch(publication);
             return PublicationID;
 
         }
@@ -1605,6 +1606,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
+            UpdatePublicationToElasticSearch(newPub.ID);
             // Log edit to database
             if (!string.IsNullOrEmpty(changeLog))
             {
@@ -2671,8 +2673,13 @@ namespace AngularSPAWebAPI.Services
             return filterQuery;
         }
 
-
         public List<PubScreenElasticSearchModel> ElasticSearchPublications(PubScreen pubScreen)
+        {
+            PubScreenElasticSearchModel pubScreenForElasticSearch = ConvertToElasticSearchModel(pubScreen);
+            return Search(pubScreenForElasticSearch);
+        }
+
+        public PubScreenElasticSearchModel ConvertToElasticSearchModel(PubScreen pubScreen)
         {
             List<PubScreenElasticSearchModel> lstPubScreen = new List<PubScreenElasticSearchModel>();
             PubScreenElasticSearchModel pubScreenForElasticSearch = new PubScreenElasticSearchModel();
@@ -3094,7 +3101,7 @@ namespace AngularSPAWebAPI.Services
             {
                 pubScreenForElasticSearch.YearTo = pubScreen.YearTo;
             }
-            return Search(pubScreenForElasticSearch);
+            return pubScreenForElasticSearch;
 
         }
         public List<PubScreenElasticSearchModel> Search(PubScreenElasticSearchModel pubScreen)
@@ -3255,6 +3262,18 @@ namespace AngularSPAWebAPI.Services
                 var response = _elasticClient.Delete<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
 
             return response; 
+        }
+        private IndexResponse AddPublicationsToElasticSearch(PubScreen publication)
+        {
+            var pubScreen = ConvertToElasticSearchModel(publication);
+            var response = _elasticClient.Index(pubScreen, p => p.Index("pubscreen"));
+            return response;
+        }
+
+        private UpdateResponse<PubScreenElasticSearchModel> UpdatePublicationToElasticSearch(int Id)
+        {
+            var rsponse = _elasticClient.Update<PubScreenElasticSearchModel>(Id, f => f.Index("pubscreen"));
+            return rsponse;
         }
     }
 
