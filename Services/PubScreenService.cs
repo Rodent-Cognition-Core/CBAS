@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Elasticsearch.Net;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
+using System.Data.SqlTypes;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -1196,7 +1197,7 @@ namespace AngularSPAWebAPI.Services
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
 
             }
-
+            publication.ID = PublicationID;
             AddPublicationsToElasticSearch(publication);
             return PublicationID;
 
@@ -2676,6 +2677,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenElasticSearchModel> ElasticSearchPublications(PubScreen pubScreen)
         {
             PubScreenElasticSearchModel pubScreenForElasticSearch = ConvertToElasticSearchModel(pubScreen);
+
             return Search(pubScreenForElasticSearch);
         }
 
@@ -2684,6 +2686,10 @@ namespace AngularSPAWebAPI.Services
             List<PubScreenElasticSearchModel> lstPubScreen = new List<PubScreenElasticSearchModel>();
             PubScreenElasticSearchModel pubScreenForElasticSearch = new PubScreenElasticSearchModel();
 
+            if (pubScreen.ID != null)
+            {
+                pubScreenForElasticSearch.ID = (int)pubScreen.ID;
+            }
             if (!string.IsNullOrEmpty(pubScreen.search))
             {
                 pubScreenForElasticSearch.search = (HelperService.EscapeSql(pubScreen.search)).Trim().ToLower();
@@ -2732,6 +2738,11 @@ namespace AngularSPAWebAPI.Services
 
                 pubScreenForElasticSearch.Author = authorName.ToArray();
 
+            }
+
+            else if(!string.IsNullOrEmpty(pubScreen.AuthorString) && pubScreen.AuthorString.Length != 0)
+            {
+                pubScreenForElasticSearch.Author = pubScreen.AuthorString.Split(",").ToArray();
             }
 
             // search query for Paper type
@@ -3115,10 +3126,79 @@ namespace AngularSPAWebAPI.Services
                 var searchResult = _elasticClient.Search<PubScreenElasticSearchModel>(s => s.Index("pubscreen")
                     .Size(SEARCHRESULTSIZE)
                     .Query(q => ApplyQuery(pubScreen, q)
+
                         )
+                    .Fields(f => f.Fields("*"))
                     );
 
                 results = searchResult.Hits.Select(hit => hit.Source).ToList();
+
+                var lstExperiment = new List<Experiment>();
+                var lstRepo = new List<Cogbytes>();
+                string sqlMB = string.Empty;
+                string sqlCog = string.Empty;
+                foreach (var paper in results)
+                {
+                    if (!String.IsNullOrEmpty(paper.DOI))
+                    {
+                        sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                                   Inner join Task on Task.ID = Experiment.TaskID
+                                   Where DOI = '{paper.DOI}'";
+
+                        // empty lstExperiment list
+                        lstExperiment.Clear();
+                        using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                        {
+                            foreach (DataRow drExp in dtExp.Rows)
+                            {
+
+                                lstExperiment.Add(new Experiment
+                                {
+                                    ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                                    ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                                    StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                                    TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                                    DOI = Convert.ToString(drExp["DOI"].ToString()),
+                                    Status = Convert.ToBoolean(drExp["Status"]),
+                                    TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                                });
+                            }
+
+                        }
+
+                        sqlCog = $"Select * From UserRepository Where DOI = '{paper.DOI}'";
+                        lstRepo.Clear();
+                        using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
+                        {
+                            foreach (DataRow drCog in dtCog.Rows)
+                            {
+                                var cogbytesService = new CogbytesService();
+                                int repID = Int32.Parse(drCog["RepID"].ToString());
+                                lstRepo.Add(new Cogbytes
+                                {
+                                    ID = repID,
+                                    RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                                    Title = Convert.ToString(drCog["Title"].ToString()),
+                                    Date = Convert.ToString(drCog["Date"].ToString()),
+                                    Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                                    DOI = Convert.ToString(drCog["DOI"].ToString()),
+                                    Link = Convert.ToString(drCog["Link"].ToString()),
+                                    PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                                    Description = Convert.ToString(drCog["Description"].ToString()),
+                                    AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                                    AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                                    PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                                });
+                            }
+
+                        }
+
+                    }
+                    paper.Experiment = lstExperiment;
+                    paper.Repo = lstRepo;
+                }
+
             }
             catch (Exception ex)
             {
@@ -3266,6 +3346,7 @@ namespace AngularSPAWebAPI.Services
         private IndexResponse AddPublicationsToElasticSearch(PubScreen publication)
         {
             var pubScreen = ConvertToElasticSearchModel(publication);
+            
             var response = _elasticClient.Index(pubScreen, p => p.Index("pubscreen"));
             return response;
         }
