@@ -37,7 +37,7 @@ namespace AngularSPAWebAPI.Services
         const int MOUSEID = 2;
         const int RATID = 1;
         private readonly HttpClient httpClient;
-        private static string[] MULTISEARCHFIELDS = { "title", "keywords", "author" };
+        private static string[] MULTISEARCHFIELDS = { "title", "keywords", "author", "abstract" };
         private static HashSet<string> MULTISELCETFIELD = new HashSet<string> {"Author", "Task", "SubTask", "PaperType", "Species", "Sex", "Strain", "DiseaseModel", "SubModel", "BrainRegion", "SubRegion", "CellType", "Method", "SubMethod", "NeuroTransmitter", };
         private const int SEARCHRESULTSIZE = 10000;
         private readonly IElasticClient _elasticClient;
@@ -1607,7 +1607,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            UpdatePublicationToElasticSearch(newPub.ID);
+            UpdatePublicationToElasticSearch(newPub.ID, publication);
             // Log edit to database
             if (!string.IsNullOrEmpty(changeLog))
             {
@@ -2710,7 +2710,7 @@ namespace AngularSPAWebAPI.Services
             // DOI
             if (!string.IsNullOrEmpty(pubScreen.DOI))
             {
-                pubScreenForElasticSearch.DOI = (HelperService.EscapeSql(pubScreen.DOI)).Trim().ToLower();
+                pubScreenForElasticSearch.DOI = (HelperService.EscapeSql(pubScreen.DOI)).Trim();
             }
 
             // search query for Author
@@ -2743,6 +2743,11 @@ namespace AngularSPAWebAPI.Services
             else if(!string.IsNullOrEmpty(pubScreen.AuthorString) && pubScreen.AuthorString.Length != 0)
             {
                 pubScreenForElasticSearch.Author = pubScreen.AuthorString.Split(",").ToArray();
+            }
+
+            if (!string.IsNullOrEmpty(pubScreen.Abstract))
+            {
+                pubScreenForElasticSearch.Abstract = (HelperService.EscapeSql(pubScreen.Abstract)).Trim().ToLower();
             }
 
             // search query for Paper type
@@ -3112,6 +3117,10 @@ namespace AngularSPAWebAPI.Services
             {
                 pubScreenForElasticSearch.YearTo = pubScreen.YearTo;
             }
+            if(pubScreen.Year != null)
+            {
+                pubScreenForElasticSearch.Year = Int32.Parse(pubScreen.Year);
+            }
             return pubScreenForElasticSearch;
 
         }
@@ -3121,8 +3130,8 @@ namespace AngularSPAWebAPI.Services
             try
             {
                 var queryContainer = new QueryContainerDescriptor<PubScreenElasticSearchModel>();
-                var query = ApplyQuery(pubScreen, queryContainer);
-                var json = _elasticClient.RequestResponseSerializer.SerializeToString(query);
+                //var query = ApplyQuery(pubScreen, queryContainer);
+                //var json = _elasticClient.RequestResponseSerializer.SerializeToString(query);
                 var searchResult = _elasticClient.Search<PubScreenElasticSearchModel>(s => s.Index("pubscreen")
                     .Size(SEARCHRESULTSIZE)
                     .Query(q => ApplyQuery(pubScreen, q)
@@ -3331,7 +3340,7 @@ namespace AngularSPAWebAPI.Services
                         .Should(boolShould => boolShould
                             .Wildcard(dxqm => dxqm
                             .Field(new Nest.Field(fieldName))
-                            .Value(searchingFor.ToString().ToLower() + "*"))
+                            .Value("*" + searchingFor.ToString().ToLower() + "*"))
                         )
         );
 
@@ -3351,9 +3360,14 @@ namespace AngularSPAWebAPI.Services
             return response;
         }
 
-        private UpdateResponse<PubScreenElasticSearchModel> UpdatePublicationToElasticSearch(int Id)
+        private UpdateResponse<PubScreenElasticSearchModel> UpdatePublicationToElasticSearch(int Id, PubScreen publication)
         {
-            var rsponse = _elasticClient.Update<PubScreenElasticSearchModel>(Id, f => f.Index("pubscreen"));
+            var pubScreen = ConvertToElasticSearchModel(publication);
+            var rsponse = _elasticClient.Update<PubScreenElasticSearchModel>(Id,
+                    f => f
+                        .Index("pubscreen")
+                        .Doc(pubScreen)
+                        .Refresh(Refresh.True));
             return rsponse;
         }
     }
