@@ -2805,8 +2805,6 @@ namespace AngularSPAWebAPI.Services
                 pubScreenForElasticSearch.Species = listOfSpecies.ToArray();
             }
 
-
-
             // search query for Task
             if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
             {
@@ -2883,7 +2881,6 @@ namespace AngularSPAWebAPI.Services
                 pubScreenForElasticSearch.Sex = listOfSex.ToArray();
             }
 
-
             // search query for Strain
             if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
             {
@@ -2959,7 +2956,6 @@ namespace AngularSPAWebAPI.Services
                 pubScreenForElasticSearch.SubModel = listOfSubModel.ToArray();
             }
 
-
             // search query for BrainRegion
             if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
             {
@@ -2983,7 +2979,6 @@ namespace AngularSPAWebAPI.Services
                 }
                 pubScreenForElasticSearch.BrainRegion = listOfRegion.ToArray();
             }
-
 
             // search query for SubRegion
             if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
@@ -3130,15 +3125,10 @@ namespace AngularSPAWebAPI.Services
             try
             {
                 var queryContainer = new QueryContainerDescriptor<PubScreenElasticSearchModel>();
-                //var query = ApplyQuery(pubScreen, queryContainer);
-                //var json = _elasticClient.RequestResponseSerializer.SerializeToString(query);
                 var searchResult = _elasticClient.Search<PubScreenElasticSearchModel>(s => s.Index("pubscreen")
                     .Size(SEARCHRESULTSIZE)
-                    .Query(q => ApplyQuery(pubScreen, q)
-
-                        )
-                    .Fields(f => f.Fields("*"))
-                    );
+                    .Query(q => ApplyQuery(pubScreen, q))
+                    .Fields(f => f.Fields("*")));
 
                 results = searchResult.Hits.Select(hit => hit.Source).ToList();
 
@@ -3300,7 +3290,6 @@ namespace AngularSPAWebAPI.Services
         public List<QueryContainer> MultiMatchSearchField(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query) =>
             string.IsNullOrEmpty(pubscreen.search) ? new List<QueryContainer>() : ApplyMatchQuery(pubscreen.search, query);
 
-
         private List<QueryContainer> ApplyMatchQuery(string searchingFor, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
         {
             var queryContainer = new List<QueryContainer>();
@@ -3330,8 +3319,7 @@ namespace AngularSPAWebAPI.Services
                         .Match(dxqm => dxqm
                             .Field(queryField)
                             .Query(searchingFor.ToString().ToLower())
-                            .Fuzziness(Nest.Fuzziness.EditDistance(0))
-                    );
+                            .Fuzziness(Nest.Fuzziness.EditDistance(0)));
         }
 
 
@@ -3340,9 +3328,7 @@ namespace AngularSPAWebAPI.Services
                         .Should(boolShould => boolShould
                             .Wildcard(dxqm => dxqm
                             .Field(new Nest.Field(fieldName))
-                            .Value("*" + searchingFor.ToString().ToLower() + "*"))
-                        )
-        );
+                            .Value("*" + searchingFor.ToString().ToLower() + "*"))));
 
         private DeleteResponse DeleteFromElasticSearch(int id)
         {
