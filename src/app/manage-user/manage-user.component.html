@@ -41,11 +41,11 @@
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td"> <div [innerHTML]="row.piSiteName"></div></td>
 
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                    <button mat-icon-button (click)="approveUser(row.email, row.givenName, row.familyName)"><mat-icon>check_circle</mat-icon></button>
+                    <button aria-label="Click to approve user" mat-icon-button (click)="approveUser(row.email, row.givenName, row.familyName)"><mat-icon>check_circle</mat-icon></button>
                 </td>
 
                 <td style="text-align: center; color:#909497;" class="docs-markdown-td">
-                    <button mat-icon-button color="warn" (click)="lockUser(row.email)"><mat-icon>block</mat-icon></button>
+                    <button aria-label="Click to block user" mat-icon-button color="warn" (click)="lockUser(row.email)"><mat-icon>block</mat-icon></button>
                 </td>
 
             </tr>

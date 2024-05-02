@@ -7,7 +7,7 @@
                     <br />
                     <br />
                     <mat-form-field class="full-width">
-                        <input type="text" matInput [(ngModel)]="model.username" name="username" #username="ngModel" placeholder="email" (keyup)="clearMessages()" required>
+                        <input type="text" aria-label="Enter your email address" matInput [(ngModel)]="model.username" name="username" #username="ngModel" placeholder="email" (keyup)="clearMessages()" required>
                         <mat-error>
                             Required
                         </mat-error>
@@ -15,7 +15,7 @@
                     <br />
                     <br />
                     <mat-form-field class="full-width">
-                        <input type="password" matInput [(ngModel)]="model.password" name="password" #password="ngModel" placeholder="password" (keyup)="clearMessages()" required>
+                        <input type="password" aria-label="Enter your password " matInput [(ngModel)]="model.password" name="password" #password="ngModel" placeholder="password" (keyup)="clearMessages()" required>
                         <mat-error>
                             Required
                         </mat-error>
@@ -29,7 +29,7 @@
                     <br />
                 </div>
                 <div>
-                    <button mat-raised-button color="accent" type="submit" class="full-width">Sign in</button>
+                    <button mat-raised-button color="accent" type="submit" class="full-width" aria-label="Sign In">Sign in</button>
                 </div>
                 <br />
                 <a routerLink="/account/forgot">Forgot password?</a>

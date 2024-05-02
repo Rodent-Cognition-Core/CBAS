@@ -18,7 +18,7 @@
                     <label style="color:#566573">Paper Information:</label><br /><br />
                     <div [hidden]="isEditMode">
                         <!--Source-->
-                        <mat-radio-group [formControl]="sourceOption" [(ngModel)]="sourceOptionModel" required>
+                        <mat-radio-group aria-label="Please indicate which of the following sources you want to use for adding the paper " [formControl]="sourceOption" [(ngModel)]="sourceOptionModel" required>
                             <span>Please indicate which of the following sources you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">PubMed</mat-radio-button>
                             <mat-radio-button value="2" (change)="resetFormVals()">bioRxiv</mat-radio-button>
@@ -29,7 +29,7 @@
                         <br /> <br />
 
                         <!--Adding Paper option for pubmed-->
-                        <mat-radio-group [formControl]="addingOption" [(ngModel)]="addingOptionModel" required *ngIf="sourceOptionModel == 1">
+                        <mat-radio-group aria-label="Please indicate which of the following options you want to use for adding the paper" [formControl]="addingOption" [(ngModel)]="addingOptionModel" required *ngIf="sourceOptionModel == 1">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-radio-button value="2" (change)="resetFormVals()">PubMedID</mat-radio-button>
@@ -37,14 +37,14 @@
                         </mat-radio-group>
 
                         <!--Adding Paper option for bioRxiv-->
-                        <mat-radio-group [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 2">
+                        <mat-radio-group aria-label="Please indicate which of the following options you want to use for adding the paper" [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 2">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
                         </mat-radio-group>
 
                         <!--Adding Paper option for crossRef-->
-                        <mat-radio-group [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 3">
+                        <mat-radio-group aria-label="Please indicate which of the following options you want to use for adding the paper" [formControl]="bioAddingOption" [(ngModel)]="bioAddingOptionModel" required *ngIf="sourceOptionModel == 3">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
@@ -55,45 +55,45 @@
                         <!--Paper DOI if DOI is available for pubMed-->
                         <mat-form-field *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'">
 
-                            <input matInput placeholder="Paper's DOI" [(ngModel)]="doiKeyModel" [formControl]="doiKey" required>
+                            <input matInput aria-label="Enter paper's D O I" placeholder="Paper's DOI" [(ngModel)]="doiKeyModel" [formControl]="doiKey" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKey()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'" matTooltip="Add DOI to get some information of paper from pubMed" (click)="addDOI(doiKeyModel)" [disabled]="setDisabledAddDOI()">Add DOI</button>
+                        <button aria-label="Add D O I to get some information of paper from pubMed" mat-raised-button *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'" matTooltip="Add DOI to get some information of paper from pubMed" (click)="addDOI(doiKeyModel)" [disabled]="setDisabledAddDOI()">Add DOI</button>
 
                         <!--Paper's PubMedID if PubmedID is available for pubMed-->
                         <mat-form-field *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'">
 
-                            <input matInput placeholder="Paper's PubMedID" [(ngModel)]="PubMedKeyModel" [formControl]="pubMedKey" required>
+                            <input aria-label="Enter paper's pubmed ID" matInput placeholder="Paper's PubMedID" [(ngModel)]="PubMedKeyModel" [formControl]="pubMedKey" required>
                             <mat-error *ngIf="pubMedKey.invalid">{{getErrorMessagePubMedKey()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'" matTooltip="Add PubMedID to get some information of paper from pubMed" (click)="addPubMedID(PubMedKeyModel)" [disabled]="setDisabledAddPubMedID()">Add PubMedID</button>
+                        <button aria-label="Add pubmed ID to get some information of paper from pubMed" mat-raised-button *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'" matTooltip="Add PubMedID to get some information of paper from pubMed" (click)="addPubMedID(PubMedKeyModel)" [disabled]="setDisabledAddPubMedID()">Add PubMedID</button>
 
                         <!--Paper's PubMedID if PubmedID is available for bioRxiv-->
                         <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'">
 
-                            <input matInput placeholder="Paper's DOI" [(ngModel)]="bioDoiKeyModel" [formControl]="doiKeyBio" required>
+                            <input aria-label="Enter paper's D O I" matInput placeholder="Paper's DOI" [(ngModel)]="bioDoiKeyModel" [formControl]="doiKeyBio" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKeyBio()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
+                        <button aria-label="Add D O I" mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
 
                         <!--Paper's DOI if DOI is available for Crossref-->
                         <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'">
 
-                            <input matInput placeholder="Paper's DOI" [(ngModel)]="bioDoiKeyModel" [formControl]="doiKeyBio" required>
+                            <input aria-label="Enter paper's D O I" matInput placeholder="Paper's DOI" [(ngModel)]="bioDoiKeyModel" [formControl]="doiKeyBio" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKeyBio()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'" matTooltip="Add DOI to get some information of paper from Crossref" (click)="addDOICrossref(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
+                        <button aria-label="Add D O I to get some information of papers from Crossref" mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'" matTooltip="Add DOI to get some information of paper from Crossref" (click)="addDOICrossref(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
                         <br />
                     </div>
 
                     <!--Paper Author if either pubmedI or DOI is not available-->
                     <div *ngIf="sourceOptionModel=='4' || isEditMode">
                         <mat-form-field>
-                            <mat-select [formControl]="author" placeholder="Select Author" [(ngModel)]="authorModel" required multiple>
+                            <mat-select aria-label="Select Authors" [formControl]="author" placeholder="Select Author" [(ngModel)]="authorModel" required multiple>
 
                                 <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -104,7 +104,7 @@
                             <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
                         </mat-form-field>&nbsp;
 
-                        <button mat-icon-button *ngIf="sourceOptionModel=='4'" matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
+                        <button aria-label="Click to add new author" mat-icon-button *ngIf="sourceOptionModel=='4'" matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
 
                         <br /><br />
                     </div>
@@ -112,7 +112,7 @@
                     <!--Paper Author-->
                     <mat-form-field style="width:62%" *ngIf="sourceOptionModel!='4' && !isEditMode">
 
-                        <textarea matInput placeholder="Paper's Author" [(ngModel)]="authorModel2" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+                        <textarea aria-label="Enter paper's author" matInput placeholder="Paper's Author" [(ngModel)]="authorModel2" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     
                                         </textarea>
 
@@ -121,7 +121,7 @@
                     <!--paper reference-->
                     <mat-form-field [ngStyle]="{'width': '31%', 'padding-left': (data.publicationObj!=null) ? '0px' : '30px'}" *ngIf="sourceOptionModel!='4'">
 
-                        <textarea matInput placeholder="Paper's Reference" [(ngModel)]="referenceModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
+                        <textarea aria-label="Enter paper's reference" matInput placeholder="Paper's Reference" [(ngModel)]="referenceModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     
                                         </textarea>
 
@@ -131,7 +131,7 @@
                     <!--Paper Title-->
                     <mat-form-field style="width:30%">
 
-                        <textarea matInput placeholder="Paper's Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+                        <textarea aria-label="Enter paper's title" matInput placeholder="Paper's Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
     
                                         </textarea>
                         <mat-error *ngIf="title.invalid">{{getErrorMessageTitle()}}</mat-error>
@@ -141,7 +141,7 @@
                     <!--Paper Abstract-->
                     <mat-form-field style="width:30%; padding-left:35px">
 
-                        <textarea matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                        <textarea aria-label="Enter paper's abstract" matInput placeholder="Paper's Abstract" [(ngModel)]="abstractModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
     
                                         </textarea>
                     </mat-form-field>
@@ -149,7 +149,7 @@
                     <!--Paper year-->
                     <mat-form-field style="width:30%; padding-left:30px">
 
-                        <input matInput placeholder="Paper's Year" [formControl]="year" [(ngModel)]="yearModel" required>
+                        <input aria-label="Enter paper's year" matInput placeholder="Paper's Year" [formControl]="year" [(ngModel)]="yearModel" required>
                         <mat-error *ngIf="year.invalid">{{getErrorMessageYear()}}</mat-error>
                         <mat-error *ngIf="year.invalid">{{getErrorMessageYearVal()}}</mat-error>
 
@@ -158,7 +158,7 @@
                     <!--Paper Keywords-->
                     <mat-form-field style="width:30%;">
 
-                        <textarea matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                        <textarea aria-label="Enter paper's keywords" matInput placeholder="Paper's Keywords" [(ngModel)]="keywordsModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
     
                                         </textarea>
 
@@ -167,14 +167,14 @@
                     <!--Paper DOI-->
                     <mat-form-field style="width:30%; padding-left:35px">
 
-                        <input matInput placeholder="Paper's DOI" [(ngModel)]="doiModel" [formControl]="doi" [readonly]="data.publicationObj!=null" required>
+                        <input aria-label="Enter paper's D O I" matInput placeholder="Paper's DOI" [(ngModel)]="doiModel" [formControl]="doi" [readonly]="data.publicationObj!=null" required>
                         <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
                     </mat-form-field>
 
                     <!--Paper Type-->
                     <mat-form-field style="width:30%; padding-left:30px">
-                        <mat-select placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel" required>
+                        <mat-select aria-label="Select type of paper" placeholder="Select Type of Paper" [formControl]="paperType" [(ngModel)]="paperTypeModel" required>
                             <mat-option *ngFor="let type of paperTypeList" [value]="type.id">
                                 {{type.paperType}}
                             </mat-option>
@@ -193,7 +193,7 @@
                     <span *ngIf="methodModel.includes(23)">If the relevant sub method is not included in the dropdown list, please fill the 'Adding new sub method' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
                     <!--Cognitive Task or Task Category--------------------------------->
                     <mat-form-field style="width:15%;">
-                        <mat-select placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
+                        <mat-select aria-label="Select task categorys" placeholder="Select Task Category" [(ngModel)]="cognitiveTaskModel" (selectionChange)="selectedTaskChange(cognitiveTaskModel)" multiple>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.task}}">{{task.task}}</span>
                             </mat-option>
@@ -202,9 +202,9 @@
 
                     <!--Cognitive Task or subtasks-------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
+                        <mat-select aria-label="Select cognitive tasks" placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search cognitive tasks" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let subTask of filteredSubTaskList | async" [value]="subTask.id">
                                 <span matTooltip="{{subTask.subTask}}">{{subTask.subTask}}</span>
@@ -215,7 +215,7 @@
 
                     <!--Species---------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
+                        <mat-select aria-label="Select species" placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
                             <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                 <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                             </mat-option>
@@ -230,7 +230,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Species" [(ngModel)]="specieOtherModel" required>
+                            <input aria-label="Enter a new value for species" matInput placeholder="Insert a new value for Species" [(ngModel)]="specieOtherModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one specie, separate them by semicolon ( ; )"></fa>
@@ -238,9 +238,9 @@
 
                     <!--Strain----------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
+                        <mat-select aria-label="Select strain" placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search strain" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
                                 <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
@@ -253,7 +253,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="New Mouse Strain" [(ngModel)]="strainOtherMouseModel" required>
+                            <input aria-label="Enter new mouse strain" matInput placeholder="New Mouse Strain" [(ngModel)]="strainOtherMouseModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
@@ -263,7 +263,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="New Rat Strain" [(ngModel)]="strainOtherRatModel" required>
+                            <input aria-label="Enter new rat strain" matInput placeholder="New Rat Strain" [(ngModel)]="strainOtherRatModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
@@ -271,7 +271,7 @@
 
                     <!--Sex---------------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                        <mat-select aria-label="Select sex" placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
 
                             <mat-option *ngFor="let sex of sexList" [value]="sex.id">
 
@@ -284,9 +284,9 @@
 
                     <!--DiseaseModel----------------------------------->
                     <mat-form-field style="width:15%">
-                        <mat-select placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
+                        <mat-select aria-label="Select rodent models" placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search rodent models" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let disease of filteredDiseaseList | async" [value]="disease.id">
                                 <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
@@ -298,7 +298,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Disease Model" [(ngModel)]="diseaseOtherModel" required>
+                            <input aria-label="Enter a new value for disease model" matInput placeholder="Insert a new value for Disease Model" [(ngModel)]="diseaseOtherModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one disease model, separate them by semicolon ( ; )"></fa>
@@ -307,9 +307,9 @@
                     <!--SubRodent Model----------------------------------->
                     <span [hidden]="subSubModelList == null || subSubModelList == 'undefined' || subSubModelList.length == 0">
                         <mat-form-field style="width:15%; padding-left:30px">
-                            <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                            <mat-select aria-label="Select sub-rodent models" placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
 
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search aria-label="Enter sub-roden models to search" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
 
                                 <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
                                     <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
@@ -319,9 +319,9 @@
                     </span>
                     <!--Region-->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                        <mat-select aria-label="Select anatomical regions" placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search anatomical regions" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let region of filteredRegionList | async" [value]="region.id">
                                 <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
@@ -332,9 +332,9 @@
                     <!--SubRegion-->
                     <span [hidden]="subSubRegionList == null || subSubRegionList == 'undefined' || subSubRegionList.length == 0">
                         <mat-form-field style="width:15%; padding-left:30px">
-                            <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
+                            <mat-select aria-label="Select sub-anatomical regions" placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search aria-label="Search sub-anatomical regions" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
                                 <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
                                     <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
@@ -345,9 +345,9 @@
 
                     <!--CellType------------------------------------->
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
+                        <mat-select aria-label="Select cell types" placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Seach cell types" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let cell of filteredCellTypeList | async" [value]="cell.id">
                                 <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
@@ -359,7 +359,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Cell Type" [(ngModel)]="cellOtherModel" required>
+                            <input aria-label="Enter a new value for cell type" matInput placeholder="Insert a new value for Cell Type" [(ngModel)]="cellOtherModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one cell type, separate them by semicolon ( ; )"></fa>
@@ -369,9 +369,9 @@
 
                     <!--Method-->
                     <mat-form-field style="width:15%">
-                        <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
+                        <mat-select aria-label="Select methods" placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search methods" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let method of filteredMethodList | async" [value]="method.id">
                                 <span matTooltip="{{method.method}}">{{method.method}}</span>
@@ -392,9 +392,9 @@
                     <!--SubMethod Model----------------------------------->
                     <span [hidden]="subSubMethodList == null || subSubMethodList == 'undefined' || subSubMethodList.length == 0">
                         <mat-form-field style="width:15%; padding-left:30px">
-                            <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                            <mat-select aria-label="Select sub methods" placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
 
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search aria-label="Search sub methods" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
 
                                 <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
                                     <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
@@ -404,9 +404,9 @@
                     </span>
                     <!--NeuroTransmitter Systems------------------------>
                     <mat-form-field style="width:15%; padding-left:30px">
-                        <mat-select placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
+                        <mat-select aria-label="Select Neurochemicals" placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search aria-label="Search neurochemicals" placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let neuro of filteredNeurotransmitterList | async" [value]="neuro.id">
                                 <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
@@ -418,7 +418,7 @@
                         &nbsp;&nbsp;
                         <mat-form-field style="padding-left:30px">
 
-                            <input matInput placeholder="Insert a new value for Neurotransmitter" [(ngModel)]="neurotransmitterOtherModel" required>
+                            <input aria-label="Enter value for neurotransmitter" matInput placeholder="Insert a new value for Neurotransmitter" [(ngModel)]="neurotransmitterOtherModel" required>
 
                         </mat-form-field>
                         <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one neurotransmitter, separate them by semicolon ( ; )"></fa>
@@ -427,7 +427,7 @@
                 </div>
                 <br />
                 <div>
-                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddEditPublication()">Submit</button>
+                    <button aria-label="Submit" mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddEditPublication()">Submit</button>
                 </div>
 
             </mat-card-content>
