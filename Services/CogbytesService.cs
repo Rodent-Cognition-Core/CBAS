@@ -18,6 +18,8 @@ using MathNet.Numerics;
 using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
 using Microsoft.AspNetCore.Http;
+using Nest;
+using CBAS.Models;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -26,7 +28,7 @@ namespace AngularSPAWebAPI.Services
     {
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
-
+        private readonly IElasticClient _elasticClient;
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
@@ -1230,7 +1232,7 @@ namespace AngularSPAWebAPI.Services
                 return null;
             }
 
-            var pubscreenService = new PubScreenService();
+            var pubscreenService = new PubScreenService(_elasticClient);
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())
