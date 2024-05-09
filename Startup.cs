@@ -3,7 +3,6 @@ using System.Linq;
 using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
-using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

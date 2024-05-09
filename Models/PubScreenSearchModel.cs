@@ -30,7 +30,6 @@ namespace AngularSPAWebAPI.Models
         public string NeuroTransmitter { get; set; }
         public string Reference { get; set; }
 
-        public string Search {  get; set; }
         public System.Collections.Generic.List<Experiment> Experiment { get; set; }
         public System.Collections.Generic.List<Cogbytes> Repo { get; set; }
 

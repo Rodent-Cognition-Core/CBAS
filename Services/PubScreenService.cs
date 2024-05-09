@@ -30,6 +30,7 @@ using Newtonsoft.Json.Linq;
 using System.Data.SqlTypes;
 using Serilog;
 
+
 namespace AngularSPAWebAPI.Services
 {
 
@@ -37,11 +38,7 @@ namespace AngularSPAWebAPI.Services
     {
         const int MOUSEID = 2;
         const int RATID = 1;
-        private readonly HttpClient httpClient;
-        private static string[] MULTISEARCHFIELDS = { "title", "keywords", "author", "abstract" };
-        private static HashSet<string> MULTISELCETFIELD = new HashSet<string> {"Author", "Task", "SubTask", "PaperType", "Species", "Sex", "Strain", "DiseaseModel", "SubModel", "BrainRegion", "SubRegion", "CellType", "Method", "SubMethod", "NeuroTransmitter", };
-        private const int SEARCHRESULTSIZE = 10000;
-        private readonly IElasticClient _elasticClient;
+        private static readonly HttpClient httpClient;
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
         public PubScreenService(IElasticClient client){
@@ -52,7 +49,6 @@ namespace AngularSPAWebAPI.Services
                 //UseProxy = true
             };
             httpClient = new HttpClient(handler);
-            _elasticClient = client;
         }
 
         public async Task<PubScreen> GetPaperInfoByDoi(string doi)
@@ -1441,8 +1437,6 @@ namespace AngularSPAWebAPI.Services
             publication.ID = PublicationID;
             publication.PaperLinkGuid = guid;
             AddPublicationsToElasticSearch(publication);
-            return PublicationID;
-
         }
         //*******************************************************************************************************************************************************************
 
@@ -1849,7 +1843,6 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            UpdatePublicationToElasticSearch(newPub.ID, publication);
             // Log edit to database
             if (!string.IsNullOrEmpty(changeLog))
             {
@@ -1862,6 +1855,8 @@ namespace AngularSPAWebAPI.Services
                     $"The following changes were made:\n\n{changeLog}";
                 HelperService.SendEmail("", "", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
             }
+
+
 
             return true;
         }
@@ -2333,6 +2328,8 @@ namespace AngularSPAWebAPI.Services
             }
 
             return lstPubScreen;
+
+
         }
 
         // Function definition to get all year's values in database

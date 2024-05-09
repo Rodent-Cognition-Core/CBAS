@@ -27,11 +27,10 @@ namespace AngularSPAWebAPI.Controllers
         private readonly PubScreenService _pubScreenService;
 
         private readonly UserManager<ApplicationUser> _manager;
-        private readonly IElasticClient _elasticClient;
-        public PubScreenController(UserManager<ApplicationUser> manager, IElasticClient client)
+
+        public PubScreenController(UserManager<ApplicationUser> manager)
         {
-            _elasticClient = client;
-            _pubScreenService = new PubScreenService(_elasticClient);
+            _pubScreenService = new PubScreenService();
             _manager = manager;
         }
 
@@ -222,7 +221,7 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult SearchPublication([FromBody] PubScreen publication)
         {
-            return new JsonResult(_pubScreenService.ElasticSearchPublications(publication));
+            return new JsonResult(_pubScreenService.SearchPublications(publication));
         }
 
         // Getting list of all years from Database

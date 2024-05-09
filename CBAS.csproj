@@ -56,7 +56,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="tests\" />
     <Folder Include="TempUpload\" />
     <Folder Include="UPLOAD\" />
     <Folder Include="wwwroot\" />

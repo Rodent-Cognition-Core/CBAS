@@ -22,6 +22,7 @@ using Nest;
 using CBAS.Models;
 using Serilog;
 
+
 namespace AngularSPAWebAPI.Services
 {
 
@@ -30,6 +31,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
         private readonly IElasticClient _elasticClient;
+
 
         public List<CogbytesFileType> GetFileTypes()
         {
@@ -1241,7 +1243,7 @@ namespace AngularSPAWebAPI.Services
                 return null;
             }
 
-            var pubscreenService = new PubScreenService(_elasticClient);
+            var pubscreenService = new PubScreenService();
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())
