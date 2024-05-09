@@ -288,9 +288,10 @@ thead {
 .naviMenu ul.top-nav-ul li a {
     /* color: #FFF; */
     color: #354248;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 2px;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
     line-height: 20px;
     display: inline-block;
@@ -299,14 +300,14 @@ thead {
 .naviMenu ul.top-nav-ul li a:hover {
     color: #ff5527;
     border-bottom: 5px solid #ff5527;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 2px;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
     line-height: 20px;
     display: inline-block;
     cursor: pointer;
-    
 }
 
 .naviMenu ul.top-nav-ul > li {
@@ -314,9 +315,10 @@ thead {
     text-align: center;
     position: relative;
     color: #354248;
-    font-size: 12px;
+    font-size: 13px;
+    font-family: "Raleway", sans-serif;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 0px;
     text-transform: uppercase;
     line-height: 20px;
     display: inline-block;
@@ -360,9 +362,10 @@ thead {
 .naviMenu ul.top-nav-ul > li > ul > li > a:hover {
     border-bottom: none;
     color: #ff5527;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 2px;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
     line-height: 20px;
     display: inline-block;
