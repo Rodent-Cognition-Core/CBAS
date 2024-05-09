@@ -24,7 +24,7 @@
               <thead>
 
                   <tr><th colspan="6" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Major Upload Errors for {{experimentName}}</th></tr>
-                  <tr style=" text-align: center; color:#566573;">
+                  <tr style=" text-align: center; color:#465563;">
                       <td class="docs-markdown-td">Sub-Experiment Name, Age</td>
                       <td class="docs-markdown-td">File Name</td>
                       <td class="docs-markdown-td">Upload Date</td>
@@ -38,20 +38,20 @@
 
               <tbody class="docs-markdown-tbody">
                   <tr *ngFor="let row of pagedItems; let i = index">
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.subExpNameAge}}</td>
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userFileName}}</td>
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.dateFileCreated | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.subExpNameAge}}</td>
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userFileName}}</td>
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.dateFileCreated | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userAnimalID}}</td>
                       <td style="text-align: left; color:#CD5C5C;" class="docs-markdown-td">
                           <div [innerHTML]="row.errorMessage"></div>
                           <div style="color: #DC7633;" [innerHTML]="row.warningMessage"></div>
                       </td>
 
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-errorMessage" *ngIf="!row.errorMessage.includes('Missing Animal Information:')">
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td-wide-errorMessage" *ngIf="!row.errorMessage.includes('Missing Animal Information:')">
                           <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button><br />
                           <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button>
                       </td>
-                      <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide-errorMessage" *ngIf="row.errorMessage.includes('Missing Animal Information:')">
+                      <td style="text-align: center; color:#696d70;" class="docs-markdown-td-wide-errorMessage" *ngIf="row.errorMessage.includes('Missing Animal Information:')">
                           <button mat-button (click)="ResolveIssue(row.animalObj, row.uploadID)">Resolve Issue</button><br />
                           <button mat-button (click)="delAnimal(row.animalID, row.expID)">Delete Animal</button><br />
                           <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button><br />
@@ -88,7 +88,7 @@
         <thead>
             <tr><td colspan="4" style="padding: 5px; text-align:right; border: 1px solid rgba(0,0,0,.03);"><button mat-button (click)="ClearUploadErrorLogList(experimentID)">Clear Table</button></td></tr>
             <tr><th colspan="4" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Minor Upload Errors for {{experimentName}}</th></tr>
-            <tr style=" text-align: center; color:#566573;">
+            <tr style=" text-align: center; color:#465563;">
                 <td class="docs-markdown-td">Sub-Experiment Name, Age</td>
                 <td class="docs-markdown-td">File Name</td>
                 <td class="docs-markdown-td">Upload Date</td>
@@ -100,9 +100,9 @@
         <tbody class="docs-markdown-tbody">
 
             <tr *ngFor="let row1 of uploadErrorLogList; let i = index">
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.subExpNameAge}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.userFileName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row1.uploadDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row1.subExpNameAge}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row1.userFileName}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row1.uploadDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
                 <td style="text-align: left; color:#CD5C5C;" class="docs-markdown-td">
                     <div [innerHTML]="row1.errorMessage"></div>
                 </td>

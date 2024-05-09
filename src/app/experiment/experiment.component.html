@@ -20,7 +20,7 @@
         <thead>
 
             <tr><th colspan="9" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{selectedSubExperiment.subExpName}}, {{selectedSubExperiment.ageInMonth}}</th></tr>
-            <tr style=" text-align: center; color:#566573;">
+            <tr style=" text-align: center; color:#465563;">
                 <td class="docs-markdown-td">File Name</td>
                 <td class="docs-markdown-td">Session/Schedule Name</td>
                 <td class="docs-markdown-td">Upload Date</td>
@@ -39,28 +39,28 @@
 
             <tr *ngFor="let row of pagedItemsTblFile">
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userFileName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.sessionName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.dateUpload | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userFileName}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.sessionName}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.dateUpload | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userAnimalID}}</td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isUploaded==true">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded==true">
                     <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isUploaded==false">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded==false">
                     <mat-icon color="warn">clear</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==true">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==true">
                     <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
 
 
             </tr>

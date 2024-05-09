@@ -7,7 +7,7 @@
     <table class="docs-markdown-table">
         <tbody class="docs-markdown-tbody">
             <tr *ngIf="experimentID!=null && subExpID!=null">
-                <td class="docs-markdown-td" style="height:25px; color:#566573">
+                <td class="docs-markdown-td" style="height:25px; color:#465563">
                     Task of selected experiment is <b>{{expTask}}</b>. Please select the session type or schedule name of the xml files you want to upload: &nbsp;
                     <!--<div *ngIf="expTask == 'Image Continuous Performance Task (iCPT)'">
                         <br />
@@ -29,8 +29,8 @@
             </tr>
 
             <tr *ngIf="experimentID!=null && subExpID!=null && sessionNameVal!=null">
-                <td class="docs-markdown-td" style="color:#566573">
-                    <span style="color:#566573">Upload <b>ONLY </b><span style="color: red; font-weight:bold">{{sessionNameVal}}</span> XML files for the selected experiment and sub-experiment: </span><hr /><br />
+                <td class="docs-markdown-td" style="color:#465563">
+                    <span style="color:#465563">Upload <b>ONLY </b><span style="color: red; font-weight:bold">{{sessionNameVal}}</span> XML files for the selected experiment and sub-experiment: </span><hr /><br />
                     <dropzone [config]="config" [message]="'Click or drag your XML files here to upload'" class="dropzone-container"
                               (error)="onUploadError($event)" (success)="onUploadSuccess($event)" (sending)="onSending($event)"
                               (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)"></dropzone>

@@ -19,7 +19,7 @@
         <thead>
 
             <tr><th colspan="7" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">User Information</th></tr>
-            <tr style=" text-align: center; color:#566573;">
+            <tr style=" text-align: center; color:#465563;">
                 <td class="docs-markdown-td">First Name</td>
                 <td class="docs-markdown-td">Last Name</td>
                 <td class="docs-markdown-td">Email</td>
@@ -34,17 +34,17 @@
 
         <tbody class="docs-markdown-tbody">
             <tr *ngFor="let row of pagedItems; let i = index">
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.givenName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.familyName}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.email}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{row.emailConfirmed}}</td>
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td"> <div [innerHTML]="row.piSiteName"></div></td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.givenName}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.familyName}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.email}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.emailConfirmed}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td"> <div [innerHTML]="row.piSiteName"></div></td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                     <button mat-icon-button (click)="approveUser(row.email, row.givenName, row.familyName)"><mat-icon>check_circle</mat-icon></button>
                 </td>
 
-                <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                     <button mat-icon-button color="warn" (click)="lockUser(row.email)"><mat-icon>block</mat-icon></button>
                 </td>
 

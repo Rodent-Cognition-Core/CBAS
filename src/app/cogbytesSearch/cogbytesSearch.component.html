@@ -33,7 +33,7 @@
                             <hr /><br />
 
                             <!--Searching Author information ********************************************-->
-                            <label style="color:#566573">Author Information:</label><br />
+                            <label style="color:#465563">Author Information:</label><br />
 
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
@@ -75,7 +75,7 @@
                             <br /><br />
 
                             <!--Searching Paper information ********************************************-->
-                            <label style="color:#566573">Repository Information:</label><br />
+                            <label style="color:#465563">Repository Information:</label><br />
 
                             <!--Paper Title-->
                             <!--Repository List-->
@@ -160,7 +160,7 @@
                             <br /><br />
 
                             <!--Adding Key Features ********************************************-->
-                            <label style="color:#566573">Key Features (Datasets only):</label><br />
+                            <label style="color:#465563">Key Features (Datasets only):</label><br />
 
                             <!--Cognitive Task-->
                             <mat-form-field style="width:15%; ">
@@ -252,17 +252,17 @@
                     <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="getFilteredSearchList(rep.id).length > 0">
                         <td>
                             <label><b>Repository Information:</b></label><br /><br />
-                            <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Authors:</label> &nbsp; <span style="color:#909497;">{{getRepAuthorString(rep)}}</span>&nbsp; &nbsp; &nbsp;
-                            <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(rep)}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#909497;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
-                            <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
-                            <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
-                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
-                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
+                            <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{getRepAuthorString(rep)}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(rep)}}</span><br /><br />
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
+                            <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
+                            <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
                             <br /><br />
 
                             <label><b>Uploads:</b></label><br /><br />
@@ -278,24 +278,24 @@
                                                 {{getFileType(upload)}}
                                             </mat-panel-description>
                                         </mat-expansion-panel-header>
-                                        <label>Date added:</label> &nbsp; <span style="color:#909497;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
-                                        <label>Description:</label> &nbsp; <span style="color:#909497;">{{( upload.description ==="") ?  "N/A" : upload.description}}</span><br /><br />
-                                        <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( upload.additionalNotes ==="") ?  "N/A" : upload.additionalNotes}}</span><br /><br />
+                                        <label>Date added:</label> &nbsp; <span style="color:#696d70;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
+                                        <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.description ==="") ?  "N/A" : upload.description}}</span><br /><br />
+                                        <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( upload.additionalNotes ==="") ?  "N/A" : upload.additionalNotes}}</span><br /><br />
 
                                         <div *ngIf="upload.fileTypeID<=5">
                                             <label style="font-weight:bold;">Key Features:</label><br /><br />
-                                            <label>Tasks:</label> &nbsp; <span style="color:#909497;">{{getUploadTaskString(upload)}}</span><br />
-                                            <label>Species:</label> &nbsp; <span style="color:#909497;">{{getUploadSpeciesString(upload)}}</span> &nbsp; &nbsp; &nbsp;
-                                            <label>Number of Subjects:</label> &nbsp; <span style="color:#909497;">{{upload.numSubjects}}</span> &nbsp; &nbsp; &nbsp;
-                                            <label>Sex:</label> &nbsp; <span style="color:#909497;">{{getUploadSexString(upload)}}</span> &nbsp; &nbsp; &nbsp;
-                                            <label>Strains:</label> &nbsp; <span style="color:#909497;">{{getUploadStrainString(upload)}}</span><br />
-                                            <label>Genotypes:</label> &nbsp; <span style="color:#909497;">{{getUploadGenoString(upload)}}</span> &nbsp; &nbsp; &nbsp;
-                                            <label>Age (in months):</label> &nbsp; <span style="color:#909497;">{{getUploadAgeString(upload)}}</span><br />
-                                            <label>Intervention?</label> &nbsp; <span style="color:#909497;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
-                                            <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#909497;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
-                                            <label>Housing:</label> &nbsp; <span style="color:#909497;">{{upload.housing}}</span> &nbsp; &nbsp; &nbsp;
-                                            <label>Light Cycle:</label> &nbsp; <span style="color:#909497;">{{upload.lightCycle}}</span><br />
-                                            <label>Task Battery:</label> &nbsp; <span style="color:#909497;">{{upload.taskBattery}}</span><br />
+                                            <label>Tasks:</label> &nbsp; <span style="color:#696d70;">{{getUploadTaskString(upload)}}</span><br />
+                                            <label>Species:</label> &nbsp; <span style="color:#696d70;">{{getUploadSpeciesString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Number of Subjects:</label> &nbsp; <span style="color:#696d70;">{{upload.numSubjects}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Sex:</label> &nbsp; <span style="color:#696d70;">{{getUploadSexString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Strains:</label> &nbsp; <span style="color:#696d70;">{{getUploadStrainString(upload)}}</span><br />
+                                            <label>Genotypes:</label> &nbsp; <span style="color:#696d70;">{{getUploadGenoString(upload)}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Age (in months):</label> &nbsp; <span style="color:#696d70;">{{getUploadAgeString(upload)}}</span><br />
+                                            <label>Intervention?</label> &nbsp; <span style="color:#696d70;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
+                                            <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
+                                            <label>Housing:</label> &nbsp; <span style="color:#696d70;">{{upload.housing}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Light Cycle:</label> &nbsp; <span style="color:#696d70;">{{upload.lightCycle}}</span><br />
+                                            <label>Task Battery:</label> &nbsp; <span style="color:#696d70;">{{upload.taskBattery}}</span><br />
                                         </div>
 
                                         <br />
@@ -307,7 +307,7 @@
 
                                                 <thead>
                                                     <tr><th colspan="5" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{upload.name}}</th></tr>
-                                                    <tr style=" text-align: center; color:#566573;">
+                                                    <tr style=" text-align: center; color:#465563;">
                                                         <td class="docs-markdown-td">File Name</td>
                                                         <td class="docs-markdown-td">Upload Date</td>
                                                         <td class="docs-markdown-td">Download</td>
@@ -316,9 +316,9 @@
 
                                                 <tbody>
                                                     <tr *ngFor="let file of upload.uploadFileList">
-                                                        <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
-                                                        <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
-                                                        <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                                                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.userFileName}}</td>
+                                                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                                                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                                                             <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
                                                         </td>
                                                     </tr>
@@ -340,9 +340,9 @@
                                 <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
                                 <table>
                                     <tr *ngFor="let exp of rep.experiment">
-                                        <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
-                                        <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
-                                        <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                        <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
+                                        <td>Task Name: &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span></td>
+                                        <td>Status:&nbsp; <span style="color:#696d70;">{{exp.status ? "Public" : "Private"}}</span></td>
                                     </tr>
                                 </table>
 
@@ -354,10 +354,10 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <table>
-                                    <tr><td><span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + rep.paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
-                                    <tr><td>Title:&nbsp; <span style="color:#909497;">{{rep.paper.title}}</span></td></tr>
-                                    <tr><td>Author(s): &nbsp; <span style="color:#909497;">{{rep.paper.author}}</span></td></tr>
-                                    <tr><td>Year:&nbsp; <span style="color:#909497;">{{rep.paper.year}}</span></td></tr>
+                                    <tr><td><span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + rep.paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
+                                    <tr><td>Title:&nbsp; <span style="color:#696d70;">{{rep.paper.title}}</span></td></tr>
+                                    <tr><td>Author(s): &nbsp; <span style="color:#696d70;">{{rep.paper.author}}</span></td></tr>
+                                    <tr><td>Year:&nbsp; <span style="color:#696d70;">{{rep.paper.year}}</span></td></tr>
                                 </table>
 
                             </mat-expansion-panel>
@@ -385,18 +385,18 @@
                     <tr style="border-bottom:1pt solid #8D8E90;">
                         <td>
                             <label><b>Repository Information:</b></label><br /><br />
-                            <label>Title:</label> &nbsp; <span style="color:#909497;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Authors:</label> &nbsp; <span style="color:#909497;">{{rep.authorString}}</span>&nbsp; &nbsp; &nbsp;
-                            <label>PIs:</label> &nbsp; <span style="color:#909497;">{{rep.piString}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#909497;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Link:</label> &nbsp; <span style="color:#909497;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
-                            <label>Description:</label> &nbsp; <span style="color:#909497;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
-                            <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
-                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
-                            <!--<span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>-->
-                            <span *ngIf="rep.dataCiteURL.trim() != ''"><label>Repository Link:</label>&nbsp; <a href="{{rep.dataCiteURL}}" style="color:#909497;" target="_blank">{{rep.dataCiteURL}}</a></span>
+                            <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{rep.authorString}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{rep.piString}}</span><br /><br />
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
+                            <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
+                            <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <!--<span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>-->
+                            <span *ngIf="rep.dataCiteURL.trim() != ''"><label>Repository Link:</label>&nbsp; <a href="{{rep.dataCiteURL}}" style="color:#696d70;" target="_blank">{{rep.dataCiteURL}}</a></span>
                             <br /><br />
 
 
