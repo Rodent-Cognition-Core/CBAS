@@ -3,7 +3,6 @@ using System.Linq;
 using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
-using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nest;
 
 namespace AngularSPAWebAPI
 {
@@ -75,9 +73,6 @@ namespace AngularSPAWebAPI
 
             // Adds application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            //services.Add(ServiceDescriptor.Transient<IElasticClient, EmailSender>());
-            services.AddElasticSearch(Configuration);
-
 
             // Uncomment this line for publuishing
             //services.AddIdentityServer(options =>

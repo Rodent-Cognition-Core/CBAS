@@ -20,14 +20,6 @@ using System.Data.SqlClient;
 using Remotion.Linq.Clauses;
 using System.Reflection;
 using System.Net;
-using Nest;
-using IdentityServer4.Models;
-using CBAS.Models;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
-using Elasticsearch.Net;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json.Linq;
-using System.Data.SqlTypes;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -36,21 +28,16 @@ namespace AngularSPAWebAPI.Services
     {
         const int MOUSEID = 2;
         const int RATID = 1;
-        private readonly HttpClient httpClient;
-        private static string[] MULTISEARCHFIELDS = { "title", "keywords", "author", "abstract" };
-        private static HashSet<string> MULTISELCETFIELD = new HashSet<string> {"Author", "Task", "SubTask", "PaperType", "Species", "Sex", "Strain", "DiseaseModel", "SubModel", "BrainRegion", "SubRegion", "CellType", "Method", "SubMethod", "NeuroTransmitter", };
-        private const int SEARCHRESULTSIZE = 10000;
-        private readonly IElasticClient _elasticClient;
+        private static readonly HttpClient httpClient;
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
-        public PubScreenService(IElasticClient client){
+        static PubScreenService(){
             HttpClientHandler handler = new HttpClientHandler()
             {
-                //Proxy = new WebProxy("prxy name", 8080),
-                //UseProxy = true
+                Proxy = new WebProxy("prxy name", 8080),
+                UseProxy = true
             };
             httpClient = new HttpClient(handler);
-            _elasticClient = client;
         }
 
         public async Task<PubScreen> GetPaperInfoByDoi(string doi)
@@ -869,7 +856,6 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication Where id = { pubId};";
 
             Dal.ExecuteNonQueryPub(sql);
-            DeleteFromElasticSearch(pubId);
         }
 
         //************************************************************************************Adding Publication*********************************
@@ -1197,8 +1183,7 @@ namespace AngularSPAWebAPI.Services
                 if (sqlTransmitter != "") { Dal.ExecuteNonQueryPub(sqlTransmitter); };
 
             }
-            publication.ID = PublicationID;
-            AddPublicationsToElasticSearch(publication);
+
             return PublicationID;
 
         }
@@ -1607,7 +1592,6 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            UpdatePublicationToElasticSearch(newPub.ID, publication);
             // Log edit to database
             if (!string.IsNullOrEmpty(changeLog))
             {
@@ -1620,6 +1604,8 @@ namespace AngularSPAWebAPI.Services
                     $"The following changes were made:\n\n{changeLog}";
                 HelperService.SendEmail("", "", "PUBSCREEN: Edit made", emailMsg.Replace("\n", "<br \\>"));
             }
+
+
 
             return true;
         }
@@ -2053,41 +2039,43 @@ namespace AngularSPAWebAPI.Services
                     }
 
                     lstPubScreen.Add(new PubScreenSearch
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
-                        Year = Convert.ToString(dr["Year"].ToString()),
-                        Author = Convert.ToString(dr["Author"].ToString()),
-                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
-                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
-                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-                        SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
-                        CellType = Convert.ToString(dr["CellType"].ToString()),
-                        Method = Convert.ToString(dr["Method"].ToString()),
-                        SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-                        Reference = Convert.ToString(dr["Reference"].ToString()),
-                        Experiment = new List<Experiment>(lstExperiment),
-                        Repo = new List<Cogbytes>(lstRepo)
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
+                            Title = Convert.ToString(dr["Title"].ToString()),
+                            Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                            DOI = Convert.ToString(dr["DOI"].ToString()),
+                            Year = Convert.ToString(dr["Year"].ToString()),
+                            Author = Convert.ToString(dr["Author"].ToString()),
+                            PaperType = Convert.ToString(dr["PaperType"].ToString()),
+                            Task = Convert.ToString(dr["Task"].ToString()),
+                            SubTask = Convert.ToString(dr["SubTask"].ToString()),
+                            Species = Convert.ToString(dr["Species"].ToString()),
+                            Sex = Convert.ToString(dr["Sex"].ToString()),
+                            Strain = Convert.ToString(dr["Strain"].ToString()),
+                            DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
+                            SubModel = Convert.ToString(dr["SubModel"].ToString()),
+                            BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
+                            SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
+                            CellType = Convert.ToString(dr["CellType"].ToString()),
+                            Method = Convert.ToString(dr["Method"].ToString()),
+                            SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
+                            NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
+                            Reference = Convert.ToString(dr["Reference"].ToString()),
+                            Experiment = new List<Experiment>(lstExperiment),
+                            Repo = new List<Cogbytes>(lstRepo)
 
-                    });
-                    //lstExperiment.Clear();
+                        });
+                        //lstExperiment.Clear();
+                    }
                 }
-            }
 
             // search MouseBytes database to see if the dataset exists********************************************
 
 
             return lstPubScreen;
+
+
         }
 
         // Function definition to get all year's values in database
@@ -2552,809 +2540,6 @@ namespace AngularSPAWebAPI.Services
             }
 
             return pubScreenPublication;
-        }
-        private QueryContainer ApplyQuery(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
-        {
-            return query.Bool(boolQ => boolQ.Should(boolQM => boolQM
-                                                .DisMax(dxq => dxq
-                                                .Queries(JoinAllQuries(pubscreen, query).ToArray())))
-                                            .Filter(AddFilter(pubscreen).ToArray()));
-        }
-        private List<QueryContainer> JoinAllQuries(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
-        {
-            var container = new List<QueryContainer>();
-
-
-            var multiMatchQuery = MultiMatchSearchField(pubscreen, query);
-            if (multiMatchQuery.Count > 0)
-            {
-                foreach (var multiQuery in multiMatchQuery)
-                {
-                    container.Add(multiQuery);
-                }
-            }
-            return container;
-        }
-
-        private List<Func<QueryContainerDescriptor<PubScreenElasticSearchModel>, QueryContainer>> AddFilter(PubScreenElasticSearchModel pubscreen)
-        {
-            var filterQuery = new List<Func<QueryContainerDescriptor<PubScreenElasticSearchModel>, QueryContainer>>();
-            foreach (PropertyInfo pi in pubscreen.GetType().GetProperties())
-            {
-                if (pi.Name.Equals("search") || pi.Name.Equals("ID") || pi.Name.Equals("PaperLinkGuid"))
-                {
-                    continue;
-                }
-
-
-                string value = "";
-
-                Array listOfValue = null;
-
-                if (pi.PropertyType == typeof(string[]))
-                {
-                    listOfValue = (Array)pi.GetValue(pubscreen);
-                }
-                else
-                {
-                    value = Convert.ToString(pi.GetValue(pubscreen, null));
-                }
-
-                if ((string.IsNullOrEmpty(value) || value.Equals("0")) && listOfValue == null)
-                {
-                    continue;
-                }
-
-                if (pi.Name == "YearFrom")
-                {
-                    double yearFrom = 0;
-                    if (double.TryParse(value, out yearFrom))
-                    {
-                        filterQuery.Add(fq => fq
-                        .Range(range => range
-                            .Field(f => f.Year)
-                        .GreaterThanOrEquals(yearFrom))
-                        );
-                    }
-                    else
-                    {
-                        Console.WriteLine("Unable to parse Year From '{0}'", value);
-                    }
-
-                }
-
-                else if (pi.Name == "YearTo")
-                {
-                    double yearTo = 0;
-                    if (double.TryParse(value, out yearTo))
-                    {
-                        filterQuery.Add(fq => fq
-                        .Range(range => range
-                            .Field(f => f.Year)
-                            .LessThanOrEquals(yearTo))
-                        );
-                    }
-                    else
-                    {
-                        Console.WriteLine("Unable to parse Year To '{0}", value);
-                    }
-                }
-                else if (pi.Name == "DOI")
-                {
-                    filterQuery.Add(fq => fq
-                                .Bool(f => f
-                                    .Must(boolSHould => boolSHould
-                                        .Term(t => t
-                                            .Field(feild => feild.DOI.Suffix("keyword"))
-                                             .Value(value)))));
-                }
-
-                else if (MULTISELCETFIELD.Contains(pi.Name))
-                {
-                    var listOfItem = HelperService.ConvertArrayToStringList(listOfValue);
-                    filterQuery.Add(fq => fq
-                        .Bool(f => f
-                        .Should(listOfItem.Select(item => ApplyORQuery(fq, pi.Name, item)).ToArray())));
-                }
-
-                else if (pi.PropertyType == typeof(string))
-                {
-                    filterQuery.Add(fq => fq
-                            .Bool(dxqm => dxqm
-                                 .Must(boolShould => boolShould
-                               .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-                               .Field(new Nest.Field(pi.Name).ToString().ToLower())
-                               .Query(value.ToString().ToLower())))));
-                }
-                else
-                {
-                    filterQuery.Add(fq => fq.Terms(t => t.Field(new Nest.Field(pi.Name)).Terms(value)));
-                }
-            }
-            return filterQuery;
-        }
-
-        public List<PubScreenElasticSearchModel> ElasticSearchPublications(PubScreen pubScreen)
-        {
-            PubScreenElasticSearchModel pubScreenForElasticSearch = ConvertToElasticSearchModel(pubScreen);
-
-            return Search(pubScreenForElasticSearch);
-        }
-
-        public PubScreenElasticSearchModel ConvertToElasticSearchModel(PubScreen pubScreen)
-        {
-            List<PubScreenElasticSearchModel> lstPubScreen = new List<PubScreenElasticSearchModel>();
-            PubScreenElasticSearchModel pubScreenForElasticSearch = new PubScreenElasticSearchModel();
-
-            if (pubScreen.ID != null)
-            {
-                pubScreenForElasticSearch.ID = (int)pubScreen.ID;
-            }
-            if (!string.IsNullOrEmpty(pubScreen.search))
-            {
-                pubScreenForElasticSearch.search = (HelperService.EscapeSql(pubScreen.search)).Trim().ToLower();
-            }
-
-            // Title
-            if (!string.IsNullOrEmpty(pubScreen.Title))
-            {
-                pubScreenForElasticSearch.Title = (HelperService.EscapeSql(pubScreen.Title)).Trim().ToLower();
-            }
-
-            //Keywords
-            if (!string.IsNullOrEmpty(pubScreen.Keywords))
-            {
-                pubScreenForElasticSearch.Keywords = (HelperService.EscapeSql(pubScreen.Keywords)).Trim().ToLower();
-            }
-
-            // DOI
-            if (!string.IsNullOrEmpty(pubScreen.DOI))
-            {
-                pubScreenForElasticSearch.DOI = (HelperService.EscapeSql(pubScreen.DOI)).Trim();
-            }
-
-            // search query for Author
-            if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
-            {
-                List<string> authorName = new List<string>();
-                if (pubScreen.AuthourID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select CONCAT(Author.FirstName, '-', Author.LastName) as Name From Author Where Author.ID = {pubScreen.AuthourID[0]}"))
-                    {
-                        authorName.Add(dt.Rows[0]["name"].ToString().ToLower());
-                    }
-
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.AuthourID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select CONCAT(Author.FirstName, '-', Author.LastName) as Name From Author Where Author.ID = {pubScreen.AuthourID[i]}"))
-                        {
-                            authorName.Add(dt.Rows[0]["name"].ToString().ToLower());
-                        }
-                    }
-                }
-
-                pubScreenForElasticSearch.Author = authorName.ToArray();
-
-            }
-
-            else if(!string.IsNullOrEmpty(pubScreen.AuthorString) && pubScreen.AuthorString.Length != 0)
-            {
-                pubScreenForElasticSearch.Author = pubScreen.AuthorString.Split(",").ToArray();
-            }
-
-            if (!string.IsNullOrEmpty(pubScreen.Abstract))
-            {
-                pubScreenForElasticSearch.Abstract = (HelperService.EscapeSql(pubScreen.Abstract)).Trim().ToLower();
-            }
-
-            // search query for Paper type
-            if (pubScreen.PaperTypeIdSearch != null && pubScreen.PaperTypeIdSearch.Length != 0)
-            {
-
-                List<string> listOfPaperType = new List<string>();
-
-
-                if (pubScreen.PaperTypeIdSearch.Length == 1)
-                {
-
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}"))
-                    {
-                        listOfPaperType.Add(dt.Rows[0]["PaperType"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.PaperTypeIdSearch.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}"))
-                        {
-                            listOfPaperType.Add(dt.Rows[0]["PaperType"].ToString().ToLower());
-                        }
-                    }
-                }
-
-                pubScreenForElasticSearch.PaperType = listOfPaperType.ToArray();
-            }
-
-            // search query for Species
-            if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
-            {
-                List<string> listOfSpecies = new List<string>();
-                if (pubScreen.SpecieID.Length == 1)
-                {
-
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}"))
-                    {
-                        listOfSpecies.Add(dt.Rows[0]["Species"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.SpecieID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}"))
-                        {
-                            listOfSpecies.Add(dt.Rows[0]["Species"].ToString().ToLower());
-                        }
-                    }
-                }
-
-                pubScreenForElasticSearch.Species = listOfSpecies.ToArray();
-            }
-
-            // search query for Task
-            if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
-            {
-                List<string> listOfTask = new List<string>();
-                if (pubScreen.TaskID.Length == 1)
-                {
-
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}"))
-                    {
-                        listOfTask.Add(dt.Rows[0]["Task"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.TaskID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}"))
-                        {
-                            listOfTask.Add(dt.Rows[0]["Task"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.Task = listOfTask.ToArray();
-            }
-
-            // search query for SubTask
-            if (pubScreen.SubTaskID != null && pubScreen.SubTaskID.Length != 0)
-            {
-                List<string> listOfSubTask = new List<string>();
-                if (pubScreen.SubTaskID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}"))
-                    {
-                        listOfSubTask.Add(dt.Rows[0]["SubTask"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[i]}"))
-                        {
-                            listOfSubTask.Add(dt.Rows[0]["SubTask"].ToString().ToLower());
-                        }
-                    }
-                }
-
-                pubScreenForElasticSearch.SubTask = listOfSubTask.ToArray();
-
-            }
-
-            // search query for Sex
-            if (pubScreen.sexID != null && pubScreen.sexID.Length != 0)
-            {
-                List<string> listOfSex = new List<string>();
-                if (pubScreen.sexID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}"))
-                    {
-                        listOfSex.Add(dt.Rows[0]["Sex"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-
-                    for (int i = 0; i < pubScreen.sexID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}"))
-                        {
-                            listOfSex.Add(dt.Rows[0]["Sex"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.Sex = listOfSex.ToArray();
-            }
-
-            // search query for Strain
-            if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
-            {
-                List<string> listOfStrain = new List<string>();
-                if (pubScreen.StrainID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}"))
-                    {
-                        listOfStrain.Add(dt.Rows[0]["Strain"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.StrainID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}"))
-                        {
-                            listOfStrain.Add(dt.Rows[0]["Strain"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.Strain = listOfStrain.ToArray();
-            }
-
-            // search query for Disease
-            if (pubScreen.DiseaseID != null && pubScreen.DiseaseID.Length != 0)
-            {
-                List<string> listOfDisease = new List<string>();
-                if (pubScreen.DiseaseID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}"))
-                    {
-                        listOfDisease.Add(dt.Rows[0]["DiseaseModel"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}"))
-                        {
-                            listOfDisease.Add(dt.Rows[0]["DiseaseModel"].ToString().ToLower());
-                        }
-                    }
-
-                }
-                pubScreenForElasticSearch.DiseaseModel = listOfDisease.ToArray();
-            }
-
-            // search query for Sub Model
-            if (pubScreen.SubModelID != null && pubScreen.SubModelID.Length != 0)
-            {
-                List<string> listOfSubModel = new List<string>();
-                if (pubScreen.SubModelID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[0]}"))
-                    {
-                        listOfSubModel.Add(dt.Rows[0]["SubModel"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.SubModelID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[i]}"))
-                        {
-                            listOfSubModel.Add(dt.Rows[0]["SubModel"].ToString().ToLower());
-                        }
-
-                    }
-                }
-
-                pubScreenForElasticSearch.SubModel = listOfSubModel.ToArray();
-            }
-
-            // search query for BrainRegion
-            if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
-            {
-                List<string> listOfRegion = new List<string>();
-                if (pubScreen.RegionID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}"))
-                    {
-                        listOfRegion.Add(dt.Rows[0]["BrainRegion"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.RegionID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}"))
-                        {
-                            listOfRegion.Add(dt.Rows[0]["BrainRegion"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.BrainRegion = listOfRegion.ToArray();
-            }
-
-            // search query for SubRegion
-            if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
-            {
-                List<string> listOfSubRegion = new List<string>();
-                if (pubScreen.SubRegionID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}"))
-                    {
-                        listOfSubRegion.Add(dt.Rows[0]["SubRegion"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}"))
-                        {
-                            listOfSubRegion.Add(dt.Rows[0]["SubRegion"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.SubRegion = listOfSubRegion.ToArray();
-            }
-
-            // search query for CellType
-            if (pubScreen.CellTypeID != null && pubScreen.CellTypeID.Length != 0)
-            {
-                List<string> listOfCellType = new List<string>();
-                if (pubScreen.CellTypeID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}"))
-                    {
-                        listOfCellType.Add(dt.Rows[0]["CellType"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}"))
-                        {
-                            listOfCellType.Add(dt.Rows[0]["CellType"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.CellType = listOfCellType.ToArray();
-            }
-
-            // search query for Method
-            if (pubScreen.MethodID != null && pubScreen.MethodID.Length != 0)
-            {
-                List<string> listOfMethod = new List<string>();
-                if (pubScreen.MethodID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}"))
-                    {
-                        listOfMethod.Add(dt.Rows[0]["Method"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.MethodID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}"))
-                        {
-                            listOfMethod.Add(dt.Rows[0]["Method"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.Method = listOfMethod.ToArray();
-            }
-
-            // search query for Sub Method
-            if (pubScreen.SubMethodID != null && pubScreen.SubMethodID.Length != 0)
-            {
-                List<string> listOfSubMethod = new List<string>();
-                if (pubScreen.SubMethodID.Length == 1)
-                {
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[0]}"))
-                    {
-                        listOfSubMethod.Add(dt.Rows[0]["SubMethod"].ToString().ToLower());
-                    }
-
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.SubMethodID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[i]}"))
-                        {
-                            listOfSubMethod.Add(dt.Rows[0]["SubMethod"].ToString().ToLower());
-                        }
-
-                    }
-                }
-                pubScreenForElasticSearch.SubMethod = listOfSubMethod.ToArray();
-            }
-
-            // search query for Neuro Transmitter
-            if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
-            {
-                List<string> listOfTransmitter = new List<string>();
-                if (pubScreen.TransmitterID.Length == 1)
-                {
-
-                    using (DataTable dt = Dal.GetDataTablePub($@"Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}"))
-                    {
-                        listOfTransmitter.Add(dt.Rows[0]["Neurotransmitter"].ToString().ToLower());
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
-                    {
-                        using (DataTable dt = Dal.GetDataTablePub($@"Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}"))
-                        {
-                            listOfTransmitter.Add(dt.Rows[0]["Neurotransmitter"].ToString().ToLower());
-                        }
-                    }
-                }
-                pubScreenForElasticSearch.NeuroTransmitter = listOfTransmitter.ToArray();
-            }
-
-            if (pubScreen.YearFrom != null)
-            {
-                pubScreenForElasticSearch.YearFrom = pubScreen.YearFrom;
-            }
-
-            if (pubScreen.YearTo != null)
-            {
-                pubScreenForElasticSearch.YearTo = pubScreen.YearTo;
-            }
-            if(pubScreen.Year != null)
-            {
-                pubScreenForElasticSearch.Year = Int32.Parse(pubScreen.Year);
-            }
-            return pubScreenForElasticSearch;
-
-        }
-        public List<PubScreenElasticSearchModel> Search(PubScreenElasticSearchModel pubScreen)
-        {
-            var results = new List<PubScreenElasticSearchModel>();
-            try
-            {
-                var queryContainer = new QueryContainerDescriptor<PubScreenElasticSearchModel>();
-                var searchResult = _elasticClient.Search<PubScreenElasticSearchModel>(s => s.Index("pubscreen")
-                    .Size(SEARCHRESULTSIZE)
-                    .Query(q => ApplyQuery(pubScreen, q))
-                    .Fields(f => f.Fields("*")));
-
-                results = searchResult.Hits.Select(hit => hit.Source).ToList();
-
-                var lstExperiment = new List<Experiment>();
-                var lstRepo = new List<Cogbytes>();
-                string sqlMB = string.Empty;
-                string sqlCog = string.Empty;
-                foreach (var paper in results)
-                {
-                    if (!String.IsNullOrEmpty(paper.DOI))
-                    {
-                        sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                                   Inner join Task on Task.ID = Experiment.TaskID
-                                   Where DOI = '{paper.DOI}'";
-
-                        // empty lstExperiment list
-                        lstExperiment.Clear();
-                        using (DataTable dtExp = Dal.GetDataTable(sqlMB))
-                        {
-                            foreach (DataRow drExp in dtExp.Rows)
-                            {
-
-                                lstExperiment.Add(new Experiment
-                                {
-                                    ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                                    ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                                    StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                                    TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                                    DOI = Convert.ToString(drExp["DOI"].ToString()),
-                                    Status = Convert.ToBoolean(drExp["Status"]),
-                                    TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
-
-                                });
-                            }
-
-                        }
-
-                        sqlCog = $"Select * From UserRepository Where DOI = '{paper.DOI}'";
-                        lstRepo.Clear();
-                        using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
-                        {
-                            foreach (DataRow drCog in dtCog.Rows)
-                            {
-                                var cogbytesService = new CogbytesService();
-                                int repID = Int32.Parse(drCog["RepID"].ToString());
-                                lstRepo.Add(new Cogbytes
-                                {
-                                    ID = repID,
-                                    RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
-                                    Title = Convert.ToString(drCog["Title"].ToString()),
-                                    Date = Convert.ToString(drCog["Date"].ToString()),
-                                    Keywords = Convert.ToString(drCog["Keywords"].ToString()),
-                                    DOI = Convert.ToString(drCog["DOI"].ToString()),
-                                    Link = Convert.ToString(drCog["Link"].ToString()),
-                                    PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
-                                    Description = Convert.ToString(drCog["Description"].ToString()),
-                                    AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
-                                    AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                                    PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                                });
-                            }
-
-                        }
-
-                    }
-                    paper.Experiment = lstExperiment;
-                    paper.Repo = lstRepo;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            return results;
-        }
-
-        private QueryContainer ApplyORQuery(QueryContainerDescriptor<PubScreenElasticSearchModel> query, string field, string value)
-        {
-            switch (field)
-            {
-                case ("Author"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Author)
-               .Query(value));
-
-                case ("Task"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Task)
-               .Query(value));
-
-                case ("SubTask"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-                .Field(f => f.SubTask)
-                .Query(value));
-
-                case ("PaperType"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-                .Field(f => f.PaperType)
-                .Query(value));
-
-                case ("Species"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Species)
-               .Query(value));
-
-                case ("Sex"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Sex)
-               .Query(value));
-
-                case ("Strain"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Strain)
-               .Query(value));
-
-                case ("DiseaseModel"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.DiseaseModel)
-               .Query(value));
-
-                case ("SubModel"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.SubMethod)
-               .Query(value));
-                case ("BrainRegion"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.BrainRegion)
-               .Query(value));
-
-                case ("SubRegion"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.SubRegion)
-               .Query(value));
-
-                case ("CellType"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.CellType)
-               .Query(value));
-
-                case ("Method"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.Method)
-               .Query(value));
-
-                case ("SubMethod"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.SubMethod)
-               .Query(value));
-
-                case ("NeuroTransmitter"):
-                    return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.NeuroTransmitter)
-               .Query(value));
-            }
-
-            return query;
-        }
-        public List<QueryContainer> MultiMatchSearchField(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query) =>
-            string.IsNullOrEmpty(pubscreen.search) ? new List<QueryContainer>() : ApplyMatchQuery(pubscreen.search, query);
-
-        private List<QueryContainer> ApplyMatchQuery(string searchingFor, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
-        {
-            var queryContainer = new List<QueryContainer>();
-            foreach (var field in MULTISEARCHFIELDS)
-            {
-                var listOfSearchQuery = MatchRelevance(searchingFor, query, field);
-                foreach (var searchQuery in listOfSearchQuery)
-                {
-                    queryContainer.Add(searchQuery);
-                }
-            }
-            return queryContainer;
-        }
-
-        private List<QueryContainer> MatchRelevance(object searchingFor, QueryContainerDescriptor<PubScreenElasticSearchModel> query, string fieldName)
-        {
-            var queryContainer = new List<QueryContainer>();
-            queryContainer.Add(MatchWithFuzziness(searchingFor, query, fieldName));
-            queryContainer.Add(MatchWithWildCard(searchingFor, query, fieldName));
-            return queryContainer;
-        }
-
-        private QueryContainer MatchWithFuzziness(object searchingFor, QueryContainerDescriptor<PubScreenElasticSearchModel> query, string fieldName)
-        {
-            var queryField = new Nest.Field(fieldName);
-            return query
-                        .Match(dxqm => dxqm
-                            .Field(queryField)
-                            .Query(searchingFor.ToString().ToLower())
-                            .Fuzziness(Nest.Fuzziness.EditDistance(0)));
-        }
-
-
-        private QueryContainer MatchWithWildCard(object searchingFor, QueryContainerDescriptor<PubScreenElasticSearchModel> query, string fieldName) => query
-        .Bool(boolq => boolq
-                        .Should(boolShould => boolShould
-                            .Wildcard(dxqm => dxqm
-                            .Field(new Nest.Field(fieldName))
-                            .Value("*" + searchingFor.ToString().ToLower() + "*"))));
-
-        private DeleteResponse DeleteFromElasticSearch(int id)
-        {
-            
-                var pubScreenId = id.ToString();
-                var response = _elasticClient.Delete<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
-
-            return response; 
-        }
-        private IndexResponse AddPublicationsToElasticSearch(PubScreen publication)
-        {
-            var pubScreen = ConvertToElasticSearchModel(publication);
-            
-            var response = _elasticClient.Index(pubScreen, p => p.Index("pubscreen"));
-            return response;
-        }
-
-        private UpdateResponse<PubScreenElasticSearchModel> UpdatePublicationToElasticSearch(int Id, PubScreen publication)
-        {
-            var pubScreen = ConvertToElasticSearchModel(publication);
-            var rsponse = _elasticClient.Update<PubScreenElasticSearchModel>(Id,
-                    f => f
-                        .Index("pubscreen")
-                        .Doc(pubScreen)
-                        .Refresh(Refresh.True));
-            return rsponse;
         }
     }
 

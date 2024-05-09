@@ -11,9 +11,9 @@ namespace AngularSPAWebAPI.Services
     {
         // Local server
 
-        private static string _cnnString = "Server=.\\sqlexpres;Database=MouseBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
-        private static string _cnnString_PubScreen = "Server=.\\sqlexpres;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
-        private static string _cnnString_Cogbytes = "Server=.\\sqlexpres;Database=CogBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString = "Server=.\\sqlexpress;Database=MouseBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString_PubScreen = "Server=.\\sqlexpress;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
+        private static string _cnnString_Cogbytes = "Server=.\\sqlexpress;Database=CogBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
 
 
 
