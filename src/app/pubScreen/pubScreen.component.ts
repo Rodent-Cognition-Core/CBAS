@@ -741,7 +741,6 @@ export class PubScreenComponent implements OnInit {
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
 
             this.searchResultList = data;
-            console.log(this.searchResultList);
         });
 
     }

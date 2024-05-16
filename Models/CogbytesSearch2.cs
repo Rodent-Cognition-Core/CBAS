@@ -1,3 +1,4 @@
+using CBAS.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 

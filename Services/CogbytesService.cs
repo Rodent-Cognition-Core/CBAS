@@ -1243,7 +1243,7 @@ namespace AngularSPAWebAPI.Services
                 return null;
             }
 
-            var pubscreenService = new PubScreenService();
+            var pubscreenService = new PubScreenService(_elasticClient);
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())

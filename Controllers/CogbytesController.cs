@@ -171,7 +171,8 @@ namespace AngularSPAWebAPI.Controllers
 
         // The main Upload function for uploading multiple files
         [HttpPost("AddFiles")]
-        [RequestSizeLimit(900_000_000)]
+        //[RequestSizeLimit(Int64.MaxValue)]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> AddFiles()
         {
             var files = HttpContext.Request.Form.Files;
