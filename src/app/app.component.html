@@ -3,7 +3,7 @@
 <mat-sidenav-container class="all-wrap" fullscreen>
 
     <mat-sidenav #sidenav style="background-color: #EDEDEE; ">
-        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; "></a></div>
+        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; "></a></div>
 
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
 
@@ -87,7 +87,7 @@
     <div class="page-wrap">
         <header role="banner">
             <mat-toolbar style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
-                <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color:  #4F2683; color: white; padding-right: 30px;">
+                <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color: #8F55E0; color: white; padding-right: 30px; ">
                     <div fxHide fxShow.xs="true">
                         <button type="button"
                                 mat-icon-button
@@ -107,20 +107,20 @@
                     <!--xs menu-->
                     <div fxLayout="row" fxHide.gt-xs="true" fxShow.xs="true" style="width: 100%;">
                         <ul class="top-nav-ul" style="width: 100%; text-align: center;">
-                            <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; vertical-align:middle"></a></span>
+                            <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 200px; vertical-align:middle"></a></span>
                         </ul>
                     </div>
                     <!--sm menu-->
-                    <div class="naviMenu" fxLayout="row" fxHide.gt-sm="true" fxHide.lt-sm="true" fxShow.sm="true" fxShow.md="true">
-                        <ul class="top-nav-ul">
-                            <span style="padding:0 10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png"  alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; vertical-align:left;"></a></span>
+                    <div class="naviMenu" fxLayout="row" fxHide.gt-sm="true" fxHide.lt-sm="true" fxShow.sm="true" fxShow.md="true" style="display: flex; align-items: center;">
+                        <ul class="top-nav-ul-sm" style="float: left; padding: 0 0 0 0;">
+                            <span style="padding:0 0 0 0;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png"  alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 120px; vertical-align:middle;"></a></span>
                         </ul>
 
-                        <ul class="top-nav-ul" style="float: left;">
+                        <ul class="top-nav-ul-sm" style="float: left;">
 
-                            <li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+                            <li><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #8F55E0;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
-                            <li style="letter-spacing: 1px; margin: 0 0 0 10px;">
+                            <li>
                                 Touchscreen Data
                                 <ul>
                                     <li *ngFor="let navItem of navItems">
@@ -153,15 +153,11 @@
                                     <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
                                 </ul>
                             </li>
+                            <li><a style="letter-spacing: 1px; margin: 0 0 0 0px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
 
-                            <!--<li style="margin: 0"><span id="homeImage2" class="fa fa-home" style="visibility:hidden; color: #ff5527;"></span><a style="letter-spacing: 1px;" (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>-->
-
-                            <li class="liright"><a style="letter-spacing: 1px; margin: 0 0 0 20px;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-
-
-                            <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
-                            <li class="liright">
+                            <li><a routerLink="/mb-dashboard">Dashboard</a></li>
+                            <li>
                                 TUTORIALS
                                 <ul>
                                     <li *ngFor="let navItem of navItemsTutorials">
@@ -171,7 +167,7 @@
                                 </ul>
                             </li>
 
-                            <li class="liright">
+                            <li>
                                 RESOURCES
                                 <ul>
                                     <li *ngFor="let navItem of navItemsResources">
@@ -185,9 +181,12 @@
                     </div>
 
                     <!--other sizes menu-->
-                    <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true">
+                    <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true" style="display: flex; align-items: center;">
+                        <ul class="top-nav-ul" style="float: left;">
+                            <span style="padding:0 0px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 180px; vertical-align:middle"></a></span>
+                        </ul>
                         <ul class="top-nav-ul" style="float: left;" fxLayout="row">
-                            <li><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
+                            <li><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #8F55E0; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>
 
                             <li>
                                 Touchscreen Data
@@ -222,26 +221,11 @@
                                 </ul>
                             </li>
 
-                            <!--<li>
-        DATA INTEGRATION
-        <ul>
-            <li *ngFor="let item of navItemsIntegration">
-                <a [routerLink]="[item.route]">{{ item.name}}</a>
-            </li>
-        </ul>
-    </li>-->
+                            <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
 
+                            <li><a routerLink="/mb-dashboard">Dashboard</a></li>
 
-                        </ul>
-                        <span style="padding:0 20px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/logo-pre.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; vertical-align:middle"></a></span>
-                        <ul class="top-nav-ul" style="float: right;" fxLayout="row">
-                            <!--<li class="liright"><span id="homeImage" class="fa fa-home" style="visibility:hidden; color: #ff5527; "></span><a (mouseenter)="mouseEnter('homelink') " (mouseleave)="mouseLeave('homelink')" routerLink="/home">Home</a></li>-->
-
-                            <li class="liright"><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-
-                            <li class="liright"><a routerLink="/mb-dashboard">Dashboard</a></li>
-
-                            <li class="liright">
+                            <li>
                                 TUTORIALS
                                 <ul>
                                     <li *ngFor="let navItem of navItemsTutorials">
@@ -251,7 +235,7 @@
                                 </ul>
                             </li>
 
-                            <li class="liright">
+                            <li>
                                 RESOURCES
                                 <ul>
                                     <li *ngFor="let navItem of navItemsResources">

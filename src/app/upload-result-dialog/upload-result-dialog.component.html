@@ -7,7 +7,7 @@
                 <thead>
 
                     <tr><th colspan="4" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th-wide">{{expName}}</th></tr>
-                    <tr style=" text-align: center; color:#566573;">
+                    <tr style=" text-align: center; color:#465563;">
                         <th class="docs-markdown-td">Sub-Experiment Name, Age</th>
                         <th class="docs-markdown-td">File Name</th>
                         <th class="docs-markdown-td">Animal ID</th>
@@ -20,18 +20,18 @@
 
                 <tbody class="docs-markdown-tbody">
                     <tr *ngFor="let row of uploadResultList; let i = index">
-                        <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{uploadResultList[i].subExpNameAge}}</td>
-                        <td style="text-align: center; color:#909497;" class="docs-markdown-td-wide">{{uploadResultList[i].userFileName}}</td>
-                        <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{uploadResultList[i].userAnimalID}}</td>
+                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{uploadResultList[i].subExpNameAge}}</td>
+                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td-wide">{{uploadResultList[i].userFileName}}</td>
+                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{uploadResultList[i].userAnimalID}}</td>
                         <td style="text-align: left; color:#CD5C5C;" class="docs-markdown-td">
                             <div [innerHTML]="uploadResultList[i].errorMessage"></div><br />
                             <div style="color: #DC7633;" [innerHTML]="uploadResultList[i].warningMessage"></div>
                         </td>
 
-                        <!--<td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="!uploadResultList[i].errorMessage.includes('Missing Animal Information:')">
+                        <!--<td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="!uploadResultList[i].errorMessage.includes('Missing Animal Information:')">
                             <button mat-icon-button (click)="downloadFile()"><mat-icon>get_app</mat-icon></button>
                         </td>
-                        <td style="text-align: center; color:#909497;" class="docs-markdown-td" *ngIf="uploadResultList[i].errorMessage.includes('Missing Animal Information:')">
+                        <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="uploadResultList[i].errorMessage.includes('Missing Animal Information:')">
                             <button mat-button (click)="ResolveIssue()">Resolve Issue</button>
                         </td>-->
                     </tr>

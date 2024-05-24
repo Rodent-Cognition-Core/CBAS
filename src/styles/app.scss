@@ -110,17 +110,13 @@ body {
     display: inline-block;
     vertical-align: middle;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.025em
 }
 
 .top-nav-ul li {
     display: block;
     margin: 0 15px 0 0;
-}
-
-.top-nav-ul .liright {
-    margin: 0 0 0 15px;
 }
 
 .mat-button.mat-small {
@@ -271,7 +267,7 @@ thead {
 }
 
 .pagination-custom a.active {
-    background-color: #566573;
+    background-color: #465563;
     color: white;
 }
 
@@ -288,25 +284,24 @@ thead {
 .naviMenu ul.top-nav-ul li a {
     /* color: #FFF; */
     color: #354248;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
-    line-height: 20px;
     display: inline-block;
 }
 
 .naviMenu ul.top-nav-ul li a:hover {
-    color: #ff5527;
-    border-bottom: 5px solid #ff5527;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
+    color: #8F55E0;
+    border-bottom: 5px solid #354248;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
-    line-height: 20px;
     display: inline-block;
     cursor: pointer;
-    
 }
 
 .naviMenu ul.top-nav-ul > li {
@@ -314,11 +309,11 @@ thead {
     text-align: center;
     position: relative;
     color: #354248;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
+    font-size: 18px;
+    font-family: "Raleway", sans-serif;
+    font-weight: bold;
+    letter-spacing: 0px;
     text-transform: uppercase;
-    line-height: 20px;
     display: inline-block;
 }
 
@@ -333,10 +328,10 @@ thead {
     -webkit-transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
     transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
     display: block;
-    background-color: transparentize($color: #000000, $amount: 0.5);
-    padding-left: 20px;
+    background-color: transparentize($color: #000000, $amount: 0.1);
+    padding-left: 0px;
     width: 100%;
-    min-width: 200px;
+    min-width: 300px;
 }
 
 .naviMenu ul.top-nav-ul > li:hover > ul {
@@ -347,30 +342,118 @@ thead {
 .naviMenu ul.top-nav-ul > li > ul > li {
     text-align: left;
     white-space: nowrap;
-    padding: 0 .5em;
+    padding: 0 .2em;
 }
 
 .naviMenu ul.top-nav-ul > li > ul > li > a {
     color: white;
     display: block;
-    padding: 10px 0;
-    font-size: x-small;
+    padding: 0px 0;
+    font-size: small;
 }
 
 .naviMenu ul.top-nav-ul > li > ul > li > a:hover {
     border-bottom: none;
-    color: #ff5527;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
+    color: #8F55E0;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
     text-transform: uppercase;
-    line-height: 20px;
     display: inline-block;
-    padding: 10px 0;
+    padding: 0px 0;
     cursor: pointer;
 }
 
 .naviMenu ul.top-nav-ul > li > ul li {
+    border-bottom: 1px solid #bcbcbc
+}
+
+.naviMenu ul.top-nav-ul-sm li a {
+    /* color: #FFF; */
+    color: #354248;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.naviMenu ul.top-nav-ul-sm li a:hover {
+    color: #8F55E0;
+    border-bottom: 5px solid #8F55E0;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.naviMenu ul.top-nav-ul-sm > li {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    color: #354248;
+    font-size: 12px;
+    font-family: "Raleway", sans-serif;
+    font-weight: bold;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.naviMenu ul.top-nav-ul-sm > li > ul {
+    z-index: 1000;
+    position: absolute;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    top: 100%;
+    left: 0;
+    -webkit-transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    display: block;
+    background-color: transparentize($color: #000000, $amount: 0.1);
+    padding-left: 0px;
+    width: 100%;
+    min-width: 200px;
+}
+
+.naviMenu ul.top-nav-ul-sm > li:hover > ul {
+    max-height: 60vh;
+    opacity: 1;
+}
+
+.naviMenu ul.top-nav-ul-sm > li > ul > li {
+    text-align: left;
+    white-space: nowrap;
+    padding: 0 .2em;
+}
+
+.naviMenu ul.top-nav-ul-sm > li > ul > li > a {
+    color: white;
+    display: block;
+    padding: 0px 0;
+    font-size: x-small;
+}
+
+.naviMenu ul.top-nav-ul-sm > li > ul > li > a:hover {
+    border-bottom: none;
+    color: #8F55E0;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 0px 0;
+    cursor: pointer;
+}
+
+.naviMenu ul.top-nav-ul-sm > li > ul li {
     border-bottom: 1px solid #bcbcbc
 }
 
@@ -454,7 +537,7 @@ section {
 .menuDiv {
     text-align: center;
     width: 100%;
-    padding: 0 15%;
+    padding: 0 1%;
 }
 
 .menuDivNoPadding {
@@ -466,10 +549,10 @@ section {
 .menuDivLessPadding {
     text-align: center;
     width: 100%;
-    padding: 0 90px;
+    padding: 0 10px;
 }
 
 .logoLessPadding{
-    padding: 0 20px !important;
+    padding: 0 10px !important;
 }
 

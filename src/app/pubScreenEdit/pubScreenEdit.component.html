@@ -30,29 +30,29 @@
                         <div style="clear:both"></div>
                         <br /><br />
 
-                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( paperInfo?.title ==="") ?  "N/A" : paperInfo?.title}}</span><br /><br />
-                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.author =="") ?  "N/A" : paperInfo.author}}</span><br /><br />
-                        <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( paperInfo.keywords =="") ?  "N/A" : paperInfo.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                        <!--<label>DOI:</label>&nbsp; <span style="color:#909497;">{{( paperInfo.doi =="") ?  "N/A" : paperInfo.doi}}</span>&nbsp; &nbsp; &nbsp;-->
-                        <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( paperInfo.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + paperInfo.doi + " target=_blank>" + paperInfo.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                        <label>Year:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.year =="") ?  "N/A" : paperInfo.year}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>Paper Type:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.paperType =="") ?  "N/A" : paperInfo.paperType}}</span><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo?.title ==="") ?  "N/A" : paperInfo?.title}}</span><br /><br />
+                        <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.author =="") ?  "N/A" : paperInfo.author}}</span><br /><br />
+                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( paperInfo.keywords =="") ?  "N/A" : paperInfo.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <!--<label>DOI:</label>&nbsp; <span style="color:#696d70;">{{( paperInfo.doi =="") ?  "N/A" : paperInfo.doi}}</span>&nbsp; &nbsp; &nbsp;-->
+                        <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( paperInfo.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + paperInfo.doi + " target=_blank>" + paperInfo.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                        <label>Year:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.year =="") ?  "N/A" : paperInfo.year}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Paper Type:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.paperType =="") ?  "N/A" : paperInfo.paperType}}</span><br /><br />
 
                         <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
-                        <label>Task Category:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.task =="") ?  "N/A" : paperInfo.task}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Task(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subTask =="") ?  "N/A" : paperInfo.subTask}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Specie(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.species =="") ?  "N/A" : paperInfo.species}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Sex:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.sex =="") ?  "N/A" : paperInfo.sex}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Strain(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.strain =="") ?  "N/A" : paperInfo.strain}}</span><br /><br />
-                        <label>Rodent Model(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.diseaseModel =="") ?  "N/A" : paperInfo.diseaseModel}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Sub-Rodent Model(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subModel =="") ?  "N/A" : paperInfo.subModel}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Task Category:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.task =="") ?  "N/A" : paperInfo.task}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Task(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.subTask =="") ?  "N/A" : paperInfo.subTask}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Specie(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.species =="") ?  "N/A" : paperInfo.species}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Sex:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.sex =="") ?  "N/A" : paperInfo.sex}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Strain(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.strain =="") ?  "N/A" : paperInfo.strain}}</span><br /><br />
+                        <label>Rodent Model(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.diseaseModel =="") ?  "N/A" : paperInfo.diseaseModel}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Sub-Rodent Model(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.subModel =="") ?  "N/A" : paperInfo.subModel}}</span>&nbsp; &nbsp; &nbsp;
 
-                        <label>Anatomical Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.brainRegion =="") ?  "N/A" : paperInfo.brainRegion}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Sub-Anatomical Region(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subRegion =="") ?  "N/A" : paperInfo.subRegion}}</span><br /><br />
-                        <label>Cell Type(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.cellType =="") ?  "N/A" : paperInfo.cellType}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Method(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.method =="") ?  "N/A" : paperInfo.method}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Sub-Method(s):</label> &nbsp; <span style="color:#909497;">{{( paperInfo.subMethod =="") ?  "N/A" : paperInfo.subMethod}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Neurochemical:</label> &nbsp; <span style="color:#909497;">{{( paperInfo.neuroTransmitter =="") ?  "N/A" : paperInfo.neuroTransmitter}}</span><br /><br />
+                        <label>Anatomical Region(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.brainRegion =="") ?  "N/A" : paperInfo.brainRegion}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Sub-Anatomical Region(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.subRegion =="") ?  "N/A" : paperInfo.subRegion}}</span><br /><br />
+                        <label>Cell Type(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.cellType =="") ?  "N/A" : paperInfo.cellType}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Method(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.method =="") ?  "N/A" : paperInfo.method}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Sub-Method(s):</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.subMethod =="") ?  "N/A" : paperInfo.subMethod}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Neurochemical:</label> &nbsp; <span style="color:#696d70;">{{( paperInfo.neuroTransmitter =="") ?  "N/A" : paperInfo.neuroTransmitter}}</span><br /><br />
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="paperInfo.experiment.length>0">
                             <mat-expansion-panel-header>
@@ -63,9 +63,9 @@
                             <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
                             <table>
                                 <tr *ngFor="let exp of paperInfo.experiment">
-                                    <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
-                                    <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
-                                    <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                    <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
+                                    <td>Task Name: &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#696d70;">{{exp.status ? "Public" : "Private"}}</span></td>
                                 </tr>
                             </table>
 
@@ -78,10 +78,10 @@
                             </mat-expansion-panel-header>
                             <table>
                                 <tr *ngFor="let rep of paperInfo.repo">
-                                    <td>Repository Name:&nbsp; <span style="color:#909497;">{{rep.title}}</span></td>
-                                    <td>Status:&nbsp; <span style="color:#909497;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
+                                    <td>Repository Name:&nbsp; <span style="color:#696d70;">{{rep.title}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#696d70;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">
-                                        <span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
+                                        <span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
                                     </td>
                                 </tr>
                             </table>

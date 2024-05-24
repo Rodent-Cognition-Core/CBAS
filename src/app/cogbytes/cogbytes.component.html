@@ -57,7 +57,7 @@
                     <td class="docs-markdown-td" style="vertical-align:top;">
                         <div *ngIf="repModel != null">
                             <div style="float:left; padding-top:10px;">
-                                <label style="color:#566573;">
+                                <label style="color:#465563;">
                                     {{getRep().title}} Information
                                 </label>
                             </div>
@@ -67,16 +67,16 @@
                             </span>
                             <div style="clear:both"></div>
                             <hr /><br />
-                            <label>Repository Link:</label>&nbsp; <span style="color:#909497;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
-                            <label>Authors:</label> <span style="color:#909497;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>PIs:</label> &nbsp; <span style="color:#909497;">{{getRepPIString(getRep())}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( getRep().keywords =="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( getRep().doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#909497;">{{( getRep().date.slice(0, -12) =="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Link:</label> &nbsp; <span style="color:#909497;">{{( getRep().link ==="") ?  "N/A" : getRep().link}}</span>&nbsp; &nbsp; &nbsp;
-                            <label>Status:</label> &nbsp; <span style="color:#909497;">{{getRep().privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
-                            <label>Description:</label> &nbsp; <span style="color:#909497;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
-                            <label>Additional Notes:</label> &nbsp; <span style="color:#909497;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
+                            <label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
+                            <label>Authors:</label> <span style="color:#696d70;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(getRep())}}</span><br /><br />
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( getRep().keywords =="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( getRep().doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( getRep().date.slice(0, -12) =="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( getRep().link ==="") ?  "N/A" : getRep().link}}</span>&nbsp; &nbsp; &nbsp;
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{getRep().privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
+                            <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
+                            <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
                             <mat-expansion-panel *ngIf="getRep().experiment.length>0">
                                 <mat-expansion-panel-header>
@@ -87,9 +87,9 @@
                                 <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
                                 <table>
                                     <tr *ngFor="let exp of getRep().experiment">
-                                        <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
-                                        <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
-                                        <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                        <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
+                                        <td>Task Name: &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span></td>
+                                        <td>Status:&nbsp; <span style="color:#696d70;">{{exp.status ? "Public" : "Private"}}</span></td>
                                     </tr>
                                 </table>
 
@@ -101,10 +101,10 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <table>
-                                        <tr><td><span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + getRep().paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
-                                        <tr><td>Title:&nbsp; <span style="color:#909497;">{{getRep().paper.title}}</span></td></tr>
-                                        <tr><td>Author(s): &nbsp; <span style="color:#909497;">{{getRep().paper.author}}</span></td></tr>
-                                        <tr><td>Year:&nbsp; <span style="color:#909497;">{{getRep().paper.year}}</span></td></tr>
+                                        <tr><td><span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + getRep().paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
+                                        <tr><td>Title:&nbsp; <span style="color:#696d70;">{{getRep().paper.title}}</span></td></tr>
+                                        <tr><td>Author(s): &nbsp; <span style="color:#696d70;">{{getRep().paper.author}}</span></td></tr>
+                                        <tr><td>Year:&nbsp; <span style="color:#696d70;">{{getRep().paper.year}}</span></td></tr>
                                 </table>
 
                             </mat-expansion-panel>
