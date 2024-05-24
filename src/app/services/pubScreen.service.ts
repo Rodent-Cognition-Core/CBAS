@@ -309,10 +309,10 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Reject paper from pubscreen and remove from queue
-    public rejectQueuePaper(pubmedID: number): any {
+    public rejectQueuePaper(pubmedID: number, doi: string): any {
 
         return this.http
-            .delete("/api/pubScreen/RejectQueuePaper?pubmedID=" + pubmedID, {
+            .delete("/api/pubScreen/RejectQueuePaper?pubmedID=" + pubmedID + "&doi=" + doi, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
 
