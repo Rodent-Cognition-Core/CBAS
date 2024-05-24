@@ -2286,9 +2286,17 @@ namespace AngularSPAWebAPI.Services
             return PubID;
         }
 
-        public void ProcessQueuePaper(int pubmedID)
+        public void ProcessQueuePaper(int pubmedID, string doi = null)
         {
-            Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+            if(pubmedID == -1)
+            {
+                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where DOI = '{doi}'");
+            }
+            else
+            {
+                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+
+            }
         }
 
         public (int, int) GetPubCount()
