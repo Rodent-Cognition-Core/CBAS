@@ -278,9 +278,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpDelete("RejectQueuePaper")]
-        public IActionResult RejectQueuePaper(int pubmedID)
+        public IActionResult RejectQueuePaper(int pubmedID, string doi)
         {
-            _pubScreenService.ProcessQueuePaper(pubmedID);
+
+            _pubScreenService.ProcessQueuePaper(pubmedID, doi);
             return new JsonResult("Done!");
         }
 
