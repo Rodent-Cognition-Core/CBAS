@@ -217,7 +217,7 @@
 
             <thead>
                 <tr><th colspan="6" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Files in {{uploadObj.name}}</th></tr>
-                <tr style=" text-align: center; color:#566573;">
+                <tr style=" text-align: center; color:#465563;">
                     <td class="docs-markdown-td">File Name</td>
                     <td class="docs-markdown-td">Upload Date</td>
                     <td class="docs-markdown-td">Download</td>
@@ -227,12 +227,12 @@
 
             <tbody>
                 <tr *ngFor="let file of uploadFileList">
-                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.userFileName}}</td>
-                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
-                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                    <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.userFileName}}</td>
+                    <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
+                    <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                         <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
                     </td>
-                    <td style="text-align: center; color:#909497;" class="docs-markdown-td">
+                    <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                         <button mat-icon-button matTooltip="Delete File" (click)="deleteFile(file)"><mat-icon>delete</mat-icon></button>
                     </td>
                 </tr>

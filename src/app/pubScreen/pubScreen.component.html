@@ -58,7 +58,7 @@
                             <hr /><br />
 
                             <!--Searching Author information ********************************************-->
-                            <label style="color:#566573">Author Information:</label><br />
+                            <label style="color:#465563">Author Information:</label><br />
 
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
@@ -75,7 +75,7 @@
                             <br /><br />
 
                             <!--Searching Paper information ********************************************-->
-                            <label style="color:#566573">Paper Information:</label><br />
+                            <label style="color:#465563">Paper Information:</label><br />
 
                             <!--Paper Title-->
                             <mat-form-field style="width:30%">
@@ -136,7 +136,7 @@
                             </mat-form-field><br /><br />
 
                             <!--Adding Key Features ********************************************-->
-                            <label style="color:#566573">Key Features:</label><br />
+                            <label style="color:#465563">Key Features:</label><br />
 
                             <!--Cognitive Task or Task Category-->
                             <mat-form-field style="width:15%;">
@@ -348,32 +348,32 @@
                         <div style="clear:both"></div>
                         <br />
 
-                        <label>Title:</label> &nbsp; <span style="color:#909497;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
-                        <label>Authors:</label> &nbsp; <span style="color:#909497;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
-                        <label>Keywords:</label>&nbsp; <span style="color:#909497;">{{( row.keywords =="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                        <!--<label>DOI:</label>&nbsp; <span style="color:#909497;">{{( row.doi =="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;-->
-                        <label>DOI:</label>&nbsp; <span style="color:#909497;" [innerHTML]='( row.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                        <label>Year:</label> &nbsp; <span style="color:#909497;">{{( row.year =="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>Paper Type:</label> &nbsp; <span style="color:#909497;">{{( row.paperType =="") ?  "N/A" : row.paperType}}</span><br /><br />
+                        <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
+                        <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
+                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( row.keywords =="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <!--<label>DOI:</label>&nbsp; <span style="color:#696d70;">{{( row.doi =="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;-->
+                        <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( row.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + row.doi + " target=_blank>" + row.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                        <label>Year:</label> &nbsp; <span style="color:#696d70;">{{( row.year =="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Paper Type:</label> &nbsp; <span style="color:#696d70;">{{( row.paperType =="") ?  "N/A" : row.paperType}}</span><br /><br />
 
                         <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
 
-                        <label>Task Category:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Task(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subTask =="") ?  "N/A" : (_pubSCreenSearch.subTaskID==Null || _pubSCreenSearch.subTaskID.lenght == 0 || _pubSCreenSearch.subTaskID == "") ? row.subTask  : "<b>" + row.subTask + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Specie(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sex:</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task Category:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subTask =="") ?  "N/A" : (_pubSCreenSearch.subTaskID==Null || _pubSCreenSearch.subTaskID.lenght == 0 || _pubSCreenSearch.subTaskID == "") ? row.subTask  : "<b>" + row.subTask + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Specie(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sex:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Strain(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> <br /><br /> <!--&nbsp; &nbsp; &nbsp;-->
-                        <label>Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID==Null || _pubSCreenSearch.subModelID.lenght == 0 || _pubSCreenSearch.subModelID == "") ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Strain(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> <br /><br /> <!--&nbsp; &nbsp; &nbsp;-->
+                        <label>Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID==Null || _pubSCreenSearch.subModelID.lenght == 0 || _pubSCreenSearch.subModelID == "") ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Anatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
+                        <label>Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
 
-                        <label>Cell Type(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Method(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.subMethod =="") ?  "N/A" : (_pubSCreenSearch.subMethodID==Null || _pubSCreenSearch.subMethodID.lenght == 0 || _pubSCreenSearch.subMethodID == "") ? row.subMethod  : "<b>" + row.subMethod + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Neurochemical(s):</label>&nbsp; <span style="color:#909497;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
+                        <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subMethod =="") ?  "N/A" : (_pubSCreenSearch.subMethodID==Null || _pubSCreenSearch.subMethodID.lenght == 0 || _pubSCreenSearch.subMethodID == "") ? row.subMethod  : "<b>" + row.subMethod + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Neurochemical(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">
                             <mat-expansion-panel-header>
@@ -384,9 +384,9 @@
                             <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
                             <table>
                                 <tr *ngFor="let exp of row.experiment">
-                                    <td>Experiment Name:&nbsp; <span style="color:#909497;">{{exp.expName}}</span></td>
-                                    <td>Task Name: &nbsp; <span style="color:#909497;">{{exp.taskName}}</span></td>
-                                    <td>Status:&nbsp; <span style="color:#909497;">{{exp.status ? "Public" : "Private"}}</span></td>
+                                    <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
+                                    <td>Task Name: &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#696d70;">{{exp.status ? "Public" : "Private"}}</span></td>
                                 </tr>
                             </table>
 
@@ -399,10 +399,10 @@
                             </mat-expansion-panel-header>
                             <table>
                                 <tr *ngFor="let rep of row.repo">
-                                    <td>Repository Name:&nbsp; <span style="color:#909497;">{{rep.title}}</span></td>
-                                    <td>Status:&nbsp; <span style="color:#909497;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
+                                    <td>Repository Name:&nbsp; <span style="color:#696d70;">{{rep.title}}</span></td>
+                                    <td>Status:&nbsp; <span style="color:#696d70;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">
-                                        <span style="color:#909497;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
+                                        <span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
                                     </td>
                                 </tr>
                             </table>

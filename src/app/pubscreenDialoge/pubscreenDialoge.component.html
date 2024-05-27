@@ -15,7 +15,7 @@
 
 
                     <!--Adding Paper information ********************************************-->
-                    <label style="color:#566573">Paper Information:</label><br /><br />
+                    <label style="color:#465563">Paper Information:</label><br /><br />
                     <div [hidden]="isEditMode">
                         <!--Source-->
                         <mat-radio-group [formControl]="sourceOption" [(ngModel)]="sourceOptionModel" required>
@@ -186,7 +186,7 @@
                     <br /><br />
 
                     <!--Adding Key Features *********************************************************-->
-                    <label style="color:#566573">Key Features:</label><br />
+                    <label style="color:#465563">Key Features:</label><br />
                     Note: if the relevant task or task category is not included in the dropdown lists, please fill the 'Adding new Pubscreen task' form <a href="http://localhost:4200/forms">here</a>.
                     <br />
                     <span *ngIf="diseaseModel.includes(14) > 0">If the relevant sub-rodent model is not included in the dropdown list, please fill the 'Adding new Pubscreen sub-rodent model' form <a href="http://localhost:4200/forms">here</a>.<br /></span>
