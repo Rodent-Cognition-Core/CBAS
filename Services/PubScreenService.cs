@@ -3260,7 +3260,7 @@ namespace AngularSPAWebAPI.Services
 
                 case ("SubModel"):
                     return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
-               .Field(f => f.SubMethod)
+               .Field(f => f.SubModel)
                .Query(value));
                 case ("BrainRegion"):
                     return query.MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
