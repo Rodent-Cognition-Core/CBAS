@@ -97,8 +97,6 @@ export class CogbytesUploadComponent implements OnInit {
         errorReset: null,
         cancelReset: null,
         timeout: 36000000,
-        chunking: true,
-        parallelChunkUploads: true,
         headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
     };
     
