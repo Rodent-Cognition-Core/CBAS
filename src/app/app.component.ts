@@ -9,6 +9,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 
 declare var $: any;
+declare const gtag: Function;
 
 
 @Component({
@@ -72,6 +73,12 @@ export class AppComponent implements OnInit {
             // Strategy for refresh token through a scheduler.
             this.authenticationService.startupTokenRefresh();
         }
+
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                gtag('config', 'G-D1Q51EVX8L', { 'page_path': event.urlAfterRedirects });
+            }
+        })
 
    }
 
