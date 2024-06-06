@@ -1,6 +1,7 @@
 using AngularSPAWebAPI.Controllers;
 using AngularSPAWebAPI.Models;
 using CBAS.Helpers;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,9 +22,17 @@ namespace AngularSPAWebAPI.Services
                             ('AddTask', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.taskName)}',
                              '{HelperService.EscapeSql(request.ScheduleName)}'); SELECT @@IDENTITY AS 'Identity';";
 
-            Int32.Parse(Dal.ExecScalar(sql).ToString());
+            try
+            {
+                Int32.Parse(Dal.ExecScalar(sql).ToString());
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error($@"ADDNEWTASK: Failed to add task: {request.taskName} in {request.TaskCategory} category to database. Request was sent by {request.Email}");
+            }
 
-            
+
+
         }
 
         public void AddNewPI(Request request)
@@ -33,8 +42,15 @@ namespace AngularSPAWebAPI.Services
             string sql = $@"Insert into Request (Type, FullName, Email, PIFullName, PIEmail, PIInstitution) Values
                             ('AddPI', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.PIFullName)}',
                              '{HelperService.EscapeSql(request.PIEmail)}', '{HelperService.EscapeSql(request.PIInstitution)}'); SELECT @@IDENTITY AS 'Identity';";
+            try
+            {
+                Int32.Parse(Dal.ExecScalar(sql).ToString());
+            }
+            catch(Exception ex)
+            {
+                Log.Logger.Error($@"ADDNEWPI: Failed to add {request.PIFullName} with {request.PIEmail} to database. Request was sent by {request.Email}");
+            }
 
-            Int32.Parse(Dal.ExecScalar(sql).ToString());
             
         }
 
@@ -46,7 +62,14 @@ namespace AngularSPAWebAPI.Services
             string sql = $@"Insert into Request (Type, FullName, Email, Age) Values
                             ('AddAge', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.Age)}'); SELECT @@IDENTITY AS 'Identity';";
 
-            Int32.Parse(Dal.ExecScalar(sql).ToString());
+            try
+            {
+                Int32.Parse(Dal.ExecScalar(sql).ToString());
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error($@"ADDNEWAGE: Failed to add age: {request.Age}  to database. Request was sent by {request.Email}");
+            };
 
         }
 
@@ -60,7 +83,15 @@ namespace AngularSPAWebAPI.Services
                              '{HelperService.EscapeSql(request.GeneticModification)}', '{HelperService.EscapeSql(request.StrainReference)}',
                              '{HelperService.EscapeSql(request.ControlSuggestion)}'); SELECT @@IDENTITY AS 'Identity';";
 
-            Int32.Parse(Dal.ExecScalar(sql).ToString());
+
+            try
+            {
+                Int32.Parse(Dal.ExecScalar(sql).ToString());
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error($@"ADDNEWAGE: Failed to add new mouse line for mouse strain: {request.MouseStrain}, genotype: {request.Genotype}, genetic modification: {request.GeneticModification}, strain reference:{request.StrainReference}, and control suggestions: {request.ControlSuggestion}  to database. Request was sent by {request.Email}");
+            };
 
         }
 
