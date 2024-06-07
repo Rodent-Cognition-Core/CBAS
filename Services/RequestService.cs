@@ -90,7 +90,7 @@ namespace AngularSPAWebAPI.Services
             }
             catch (Exception ex)
             {
-                Log.Logger.Error($@"ADDNEWAGE: Failed to add new mouse line for mouse strain: {request.MouseStrain}, genotype: {request.Genotype}, genetic modification: {request.GeneticModification}, strain reference:{request.StrainReference}, and control suggestions: {request.ControlSuggestion}  to database. Request was sent by {request.Email}");
+                Log.Logger.Error($@"ADDNEWMOUSELINE: Failed to add new mouse line for mouse strain: {request.MouseStrain}, genotype: {request.Genotype}, genetic modification: {request.GeneticModification}, strain reference:{request.StrainReference}, and control suggestions: {request.ControlSuggestion}  to database. Request was sent by {request.Email}");
             };
 
         }
