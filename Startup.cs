@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
+using Serilog;
+using Serilog.Exceptions;
 
 namespace AngularSPAWebAPI
 {
@@ -23,8 +25,11 @@ namespace AngularSPAWebAPI
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+
             Configuration = configuration;
+
             currentEnvironment = env;
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -77,7 +82,18 @@ namespace AngularSPAWebAPI
             services.AddTransient<IEmailSender, EmailSender>();
             //services.Add(ServiceDescriptor.Transient<IElasticClient, EmailSender>());
             services.AddElasticSearch(Configuration);
+            //services.AddLogging(loggingBuilding =>
+            //{
+            //    var _logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
 
+
+            //});
+            services.AddSerilog();
+
+            //services.AddSerilog((service, lc) => lc.ReadFrom.Configuration(Configuration).Enrich.FromLogContext());
+            
+
+            //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
 
             // Uncomment this line for publuishing
             //services.AddIdentityServer(options =>
