@@ -11,6 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tests\**" />
+    <Compile Remove="UnitTest\**" />
+    <Content Remove="tests\**" />
+    <Content Remove="UnitTest\**" />
+    <EmbeddedResource Remove="tests\**" />
+    <EmbeddedResource Remove="UnitTest\**" />
+    <None Remove="tests\**" />
+    <None Remove="UnitTest\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\Mapping_SessionInfoService.cs" />
     <Compile Remove="Services\SessionInfoService.cs" />
     <Compile Remove="Services\SessionInfo_DynamicService.cs" />
@@ -42,8 +53,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="UnitTest\" />
-    <Folder Include="tests\" />
     <Folder Include="TempUpload\" />
     <Folder Include="UPLOAD\" />
     <Folder Include="wwwroot\" />
