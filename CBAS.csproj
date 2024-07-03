@@ -9,18 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="tests\**" />
-    <Compile Remove="UnitTest\**" />
-    <Content Remove="tests\**" />
-    <Content Remove="UnitTest\**" />
-    <EmbeddedResource Remove="tests\**" />
-    <EmbeddedResource Remove="UnitTest\**" />
-    <None Remove="tests\**" />
-    <None Remove="UnitTest\**" />
-  </ItemGroup>
-
+ 
   <ItemGroup>
     <Compile Remove="Services\Mapping_SessionInfoService.cs" />
     <Compile Remove="Services\SessionInfoService.cs" />
@@ -53,6 +42,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
+    <Folder Include="UnitTest\" />
     <Folder Include="TempUpload\" />
     <Folder Include="UPLOAD\" />
     <Folder Include="wwwroot\" />
