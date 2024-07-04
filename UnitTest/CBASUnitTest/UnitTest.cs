@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace UnitTest
+namespace CBASUnitTest
 {
     public class Tests
     {
