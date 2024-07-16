@@ -28,6 +28,7 @@ using Elasticsearch.Net;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
 using System.Data.SqlTypes;
+using Serilog;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -3140,6 +3141,10 @@ namespace AngularSPAWebAPI.Services
                     .Query(q => ApplyQuery(pubScreen, q))
                     .Fields(f => f.Fields("*")));
 
+                if (!searchResult.ApiCall.Success)
+                {
+                    Log.Error($@"Failed to get results using ElasticSearch the following error occured:{searchResult.ServerError}");
+                }
                 results = searchResult.Hits.Select(hit => hit.Source).ToList();
 
                 var lstExperiment = new List<Experiment>();
