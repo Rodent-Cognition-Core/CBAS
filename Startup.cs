@@ -82,18 +82,9 @@ namespace AngularSPAWebAPI
             services.AddTransient<IEmailSender, EmailSender>();
             //services.Add(ServiceDescriptor.Transient<IElasticClient, EmailSender>());
             services.AddElasticSearch(Configuration);
-            //services.AddLogging(loggingBuilding =>
-            //{
-            //    var _logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
 
-
-            //});
+            //Adds serilog to 
             services.AddSerilog();
-
-            //services.AddSerilog((service, lc) => lc.ReadFrom.Configuration(Configuration).Enrich.FromLogContext());
-            
-
-            //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
 
             // Uncomment this line for publuishing
             //services.AddIdentityServer(options =>
