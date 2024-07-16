@@ -3143,7 +3143,7 @@ namespace AngularSPAWebAPI.Services
 
                 if (!searchResult.ApiCall.Success)
                 {
-                    Log.Error($@"Failed to get results using ElasticSearch the following error occured:{searchResult.ServerError}");
+                    Log.Error($@"Failed to get results using ElasticSearch the following error occured:{searchResult.OriginalException.Message}");
                 }
                 results = searchResult.Hits.Select(hit => hit.Source).ToList();
 
