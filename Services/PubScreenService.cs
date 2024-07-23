@@ -2280,7 +2280,15 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
         {
-            PubScreen paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+            PubScreen paper = null;
+            if (pubmedID == -1)
+            {
+                paper = await GetPaperInfoByDOICrossref(doi);
+            }
+            else
+            {
+                paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+            }
             paper.DOI = doi;
             int? PubID = AddPublications(paper, userName);
 
