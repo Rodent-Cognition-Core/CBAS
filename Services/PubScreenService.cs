@@ -882,7 +882,7 @@ namespace AngularSPAWebAPI.Services
             object ID = Dal.ExecScalarPub(sqlDOI);
             if (ID != null)
             {
-                return null;
+                return (int)ID;
             }
 
             var guid = Guid.NewGuid();
@@ -2280,7 +2280,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
         {
-            PubScreen paper = null;
+            PubScreen paper = new PubScreen();
             if (pubmedID == -1)
             {
                 paper = await GetPaperInfoByDOICrossref(doi);
@@ -2289,10 +2289,10 @@ namespace AngularSPAWebAPI.Services
             {
                 paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
             }
+
             paper.DOI = doi;
             int? PubID = AddPublications(paper, userName);
-
-            ProcessQueuePaper(pubmedID);
+            ProcessQueuePaper(pubmedID, doi);
 
             return PubID;
         }
@@ -2797,6 +2797,15 @@ namespace AngularSPAWebAPI.Services
 
                 pubScreenForElasticSearch.PaperType = listOfPaperType.ToArray();
             }
+            else if(pubScreen.PaperTypeID != null)
+            {
+                List<string> listOfPaperType = new List<string>();
+                using (DataTable dt = Dal.GetDataTablePub($@"Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}"))
+                {
+                    listOfPaperType.Add(dt.Rows[0]["PaperType"].ToString());
+                }
+                pubScreenForElasticSearch.PaperType = listOfPaperType.ToArray();
+            }
 
             // search query for Species
             if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
@@ -3226,7 +3235,11 @@ namespace AngularSPAWebAPI.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Log.Error($@"Failed to get results using ElasticSearch the following error occured:{ex.Message}");
+                if(ex.InnerException != null)
+                {
+                    Log.Error($@"The following inner excetipn occured: {ex.InnerException}");
+                }
             }
             return results;
         }
@@ -3373,7 +3386,9 @@ namespace AngularSPAWebAPI.Services
 
         private UpdateResponse<PubScreenElasticSearchModel> UpdatePublicationToElasticSearch(int Id, PubScreen publication)
         {
+            publication.ID = Id;
             var pubScreen = ConvertToElasticSearchModel(publication);
+            
             var rsponse = _elasticClient.Update<PubScreenElasticSearchModel>(Id,
                     f => f
                         .Index("pubscreen")
