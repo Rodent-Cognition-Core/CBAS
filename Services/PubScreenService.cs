@@ -380,6 +380,7 @@ namespace AngularSPAWebAPI.Services
             string articleAbstract = "";
             string articleYear = "";
             string articleName = "";
+            bool isBook = false;
 
             // Determine type of content (conference, journal, or posted content)
             XElement crossrefElement = null;
@@ -410,6 +411,11 @@ namespace AngularSPAWebAPI.Services
                 //{
                 //    articleName = incomingXml.Element("doi_record").Element("crossref").Element("posted_content").Element("group_title").Value;
                 //}
+            }
+            else if (incomingXml.Element("doi_record").Element("crossref").Element("book") != null)
+            {
+                crossrefElement = incomingXml.Element("doi_record").Element("crossref").Element("book").Element("book_series_metadata");
+                isBook = true;
             }
             else
             {
@@ -447,6 +453,11 @@ namespace AngularSPAWebAPI.Services
             List<string> authorListString = new List<string>();
             try
             {
+                var tempCrossRefElement = crossrefElement;
+                if(isBook)
+                {
+                    crossrefElement = incomingXml.Element("doi_record").Element("crossref").Element("book").Element("content_item");
+                }
                 foreach (var authorElement in crossrefElement.Element("contributors").Elements("person_name").Where(id => id.Attribute("contributor_role").Value == "author"))
                 {
                     string givenName = null, surName = null, affiliation = null;
@@ -473,6 +484,7 @@ namespace AngularSPAWebAPI.Services
                         });
                     }
                 }
+                crossrefElement = tempCrossRefElement;
 
             }
             catch (ArgumentNullException)
