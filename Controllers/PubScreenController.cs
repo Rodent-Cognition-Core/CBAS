@@ -289,7 +289,14 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetPubCount()
         {
-            return new JsonResult(_pubScreenService.GetPubCount());
+            var result = _pubScreenService.GetPubCount();
+            //  When the Value property of JsonResult is set to a tuple, it might not be properly serialized into JSON, leading to a null object on the client side.
+            var tempObject = new
+            {
+                pubCount = result.Item1,
+                featureCount = result.Item2,
+            };
+            return new JsonResult(tempObject);
         }
 
         [HttpGet("AddCSVPapers")]
