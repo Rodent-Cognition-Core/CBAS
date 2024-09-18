@@ -156,11 +156,12 @@ export class PubScreenComponent implements OnInit {
     ngOnInit() {
 
         this.pubScreenService.getPubCount().subscribe(data => {
-            this.pubCount = data.item1;
-            this.featureCount = data.item2;
-            //console.log(this.pubCount);
-            //console.log(this.featureCount);
+            this.pubCount = data['pubCount'];
+            this.featureCount = data['featureCount'];
+        }, error => {
+            console.error('Error fetching pub count:', error);
         });
+
         this.GetAuthorList();
         this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
         this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
@@ -181,9 +182,7 @@ export class PubScreenComponent implements OnInit {
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
         this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
-        this.yearList = this.GetYear(1970).sort().reverse();
-
-        
+        this.yearList = this.GetYear(1970).sort().reverse();       
 
     }
 
