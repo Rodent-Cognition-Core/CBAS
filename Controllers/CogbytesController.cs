@@ -30,11 +30,6 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         // Extracting paper type list
         [HttpGet("GetFileTypes")]
         [AllowAnonymous]
@@ -91,16 +86,14 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.GetAges());
         }
 
-        //// Adding new author to database
         [HttpPost("AddAuthor")]
-        public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
+        public async Task<IActionResult> AddAuthor([FromBody] PubScreenAuthor author)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_cogbytesService.AddAuthors(author, userEmail));
         }
 
-        //// Extracting Author list from Database (Cogbytes)
         [HttpGet("GetAuthor")]
         [AllowAnonymous]
         public IActionResult GetAuthor()
@@ -108,58 +101,46 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_cogbytesService.GetAuthors());
         }
 
-        //// Adding new PI to database
         [HttpPost("AddPI")]
-        public IActionResult AddPI([FromBody] Request request)
+        public async Task<IActionResult> AddPI([FromBody] Request request)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_cogbytesService.AddNewPI(request, userEmail));
         }
 
-        //// Extracting PI list from Database (Cogbytes)
         [HttpGet("GetPI")]
         [AllowAnonymous]
         public IActionResult GetPI()
         {
-            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
-            //var b = a;
-
             return new JsonResult(_cogbytesService.GetPIs());
         }
 
-        // Adding new publication to database
         [HttpPost("AddRepository")]
-        //[AllowAnonymous]
-        public IActionResult AddRepository([FromBody] Cogbytes repository)
+        public async Task<IActionResult> AddRepository([FromBody] Cogbytes repository)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_cogbytesService.AddRepository(repository, userEmail));
         }
 
-        //// Extracting Repository list from Database (Cogbytes)
         [HttpGet("GetRepositories")]
-        //[AllowAnonymous]
-        public IActionResult GetRepositories()
+        public async Task<IActionResult> GetRepositories()
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_cogbytesService.GetRepositories(userEmail));
         }
 
-        // Edit an existing publication
         [HttpPost("EditRepository")]
-        public IActionResult EditRepository(int repositoryID, [FromBody] Cogbytes repository)
+        public async Task<IActionResult> EditRepository(int repositoryID, [FromBody] Cogbytes repository)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_cogbytesService.EditRepository(repositoryID, repository, userEmail));
         }
 
-        // Adding new upload to database
         [HttpPost("AddUpload")]
-        //[AllowAnonymous]
         public IActionResult AddUpload([FromBody] CogbytesUpload upload)
         {
             return new JsonResult(_cogbytesService.AddUpload(upload));
