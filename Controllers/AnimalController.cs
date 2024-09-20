@@ -28,17 +28,9 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         [HttpGet("GetAnimalInfoByExpID")]
         public IActionResult GetAnimalInfoByExpID(int expId)
         {
-            var user = GetCurrentUser();
-            var userID = user.Result.Id;
-
             return new JsonResult(_animalService.GetAnimalByExpID(expId));
         }
 
@@ -113,22 +105,18 @@ namespace AngularSPAWebAPI.Controllers
 
 
         [HttpGet("EditUserAnimalID")]
-        public IActionResult EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
+        public async Task<IActionResult> EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
         {
             (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = _animalService.GetAnimalIDByUserAnimalIdAndExpId(EditedUserAnimalId, ExpId);
 
             bool updated = _animalService.ReplaceAnimalId(OldAnimalId, ExistingAnimalIdToUse);
-
             if (isAnimalInfocompleted)
             {
-                var user = GetCurrentUser();
-                var userID = user.Result.Id;
-
+                var user = await _manager.GetUserAsync(HttpContext.User);
+                var userID = user.Id;
                 UploadService uploadService = new UploadService();
                 uploadService.SetAsResolvedForEditedAnimalId(ExistingAnimalIdToUse, userID);
-
             }
-
             if (updated == true)
             {
                 return new JsonResult("Successful");
@@ -137,12 +125,7 @@ namespace AngularSPAWebAPI.Controllers
             {
                 return new JsonResult("Failed");
             }
-
         }
-
-
-
-
 
     }
 }
