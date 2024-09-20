@@ -34,11 +34,6 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         // Extracting paper type list
         [HttpGet("GetPaperType")]
         [AllowAnonymous]
@@ -153,10 +148,10 @@ namespace AngularSPAWebAPI.Controllers
 
         // Adding new author to database
         [HttpPost("AddAuthor")]
-        public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
+        public async Task<IActionResult> AddAuthor([FromBody] PubScreenAuthor author)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
         }
 
@@ -166,28 +161,25 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetAuthor()
         {
-            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
-            //var b = a;
-
             return new JsonResult(_pubScreenService.GetAuthors());
         }
 
         // Adding new publication to database
         [HttpPost("AddPublication")]
         //[AllowAnonymous]
-        public IActionResult AddPublication([FromBody] PubScreen publication)
+        public async Task<IActionResult> AddPublication([FromBody] PubScreen publication)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddPublications(publication, userEmail));
         }
 
         // Edit an existing publication
         [HttpPost("EditPublication")]
-        public IActionResult EditPublication(int publicationId, [FromBody] PubScreen publication)
+        public async Task<IActionResult> EditPublication(int publicationId, [FromBody] PubScreen publication)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, userEmail));
         }
 
@@ -270,10 +262,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
-        public IActionResult AddQueuePaper(int pubmedID, string doi)
+        public async Task<IActionResult> AddQueuePaper(int pubmedID, string doi)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
         }
 
@@ -300,10 +292,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("AddCSVPapers")]
-        public IActionResult AddCSVPapers()
+        public async Task<IActionResult> AddCSVPapers()
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddCSVPapers(userEmail));
         }
 

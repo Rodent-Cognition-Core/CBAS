@@ -37,11 +37,6 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         // The main Upload function for uploading multiple files
         [EnableCors("CorsPolicy")]
         [HttpPost("UploadFiles")]
@@ -54,9 +49,9 @@ namespace AngularSPAWebAPI.Controllers
             string SessionName = HttpContext.Request.Form["sessionName"][0];
             int sessionID = Int16.Parse(HttpContext.Request.Form["sessionID"][0]);
 
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
-            var userID = user.Result.Id;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
 
             string TaskName = _uploadService.GetTaskName(expID);
             int TaskID = _uploadService.GetTaskID(expID);
@@ -84,12 +79,11 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("SetUploadAsResolved")]
-        public IActionResult SetUploadAsResolved(int uploadId)
+        public async Task<IActionResult> SetUploadAsResolved(int uploadId)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
-            var userID = user.Result.Id;
-            // Console.WriteLine("it is here!!!" + DateTime.Now.ToString("hh:mm:ss"));
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
 
             return new JsonResult(_uploadService.SetUploadAsResolved(uploadId, userID));
         }
