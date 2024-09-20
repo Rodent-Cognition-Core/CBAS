@@ -43,7 +43,6 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         // The main Upload function for uploading multiple files
-        [EnableCors("CorsPolicy")]
         [HttpPost("UploadFiles")]
         [RequestSizeLimit(900_000_000)]
         public async Task<IActionResult> UploadFiles()
