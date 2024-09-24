@@ -170,7 +170,6 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         // The main Upload function for uploading multiple files
-        [EnableCors("CorsPolicy")]
         [HttpPost("AddFiles")]
         //[RequestSizeLimit(Int64.MaxValue)]
         [DisableRequestSizeLimit]
