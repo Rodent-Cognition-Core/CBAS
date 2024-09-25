@@ -2105,6 +2105,129 @@ namespace AngularSPAWebAPI.Services
             return lstPubScreen;
         }
 
+        public async Task<List<PubScreenSearch>> SearchPublicationsAsync(PubScreen pubScreen)
+        {
+            List<PubScreenSearch> lstPubScreen = new List<PubScreenSearch>();
+
+            string sql = "Select * From SearchPub Where ";
+
+            if (!string.IsNullOrEmpty(pubScreen.search))
+            {
+                sql += $@"(SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
+                   SearchPub.Keywords like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
+                   SearchPub.Author like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%') AND ";
+            }
+            // Title
+            if (!string.IsNullOrEmpty(pubScreen.Title))
+            {
+                sql += $@"SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.Title)).Trim()}%' AND ";
+            }
+
+            // Keywords
+            if (!string.IsNullOrEmpty(pubScreen.Keywords))
+            {
+                sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
+            }
+
+            // DOI
+            if (!string.IsNullOrEmpty(pubScreen.DOI))
+            {
+                sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
+            }
+
+            // search query for Author
+            if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
+            {
+                if (pubScreen.AuthourID.Length == 1)
+                {
+                    sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.AuthourID.Length; i++)
+                    {
+                        sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+            }
+
+            // search query for Year
+            if (pubScreen.YearFrom != null && pubScreen.YearTo != null)
+            {
+                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
+            }
+
+            if (pubScreen.YearFrom != null && pubScreen.YearTo == null)
+            {
+                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
+            }
+
+            if (pubScreen.YearTo != null && pubScreen.YearFrom == null)
+            {
+                sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
+            }
+
+            // search query for Paper type
+            if (pubScreen.PaperTypeIdSearch != null && pubScreen.PaperTypeIdSearch.Length != 0)
+            {
+                if (pubScreen.PaperTypeIdSearch.Length == 1)
+                {
+                    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}) +  '%' AND ";
+                }
+                else
+                {
+                    sql += "(";
+                    for (int i = 0; i < pubScreen.PaperTypeIdSearch.Length; i++)
+                    {
+                        sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}) +  '%' OR ";
+                    }
+                    sql = sql.Substring(0, sql.Length - 3);
+                    sql += ") AND ";
+                }
+            }
+
+            // Remove the trailing " AND "
+            sql = sql.Substring(0, sql.Length - 4);
+
+            using (DataTable dt = await Dal.GetDataTablePubAsync(sql))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    PubScreenSearch pubScreenSearch = new PubScreenSearch
+                    {
+                        PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
+                        Title = dr["Title"].ToString(),
+                        Abstract = dr["Abstract"].ToString(),
+                        Keywords = dr["Keywords"].ToString(),
+                        DOI = dr["DOI"].ToString(),
+                        Year = dr["Year"].ToString(),
+                        Author = dr["Author"].ToString(),
+                        PaperType = dr["PaperType"].ToString(),
+                        Task = dr["Task"].ToString(),
+                        SubTask = dr["SubTask"].ToString(),
+                        Species = dr["Species"].ToString(),
+                        Sex = dr["Sex"].ToString(),
+                        Strain = dr["Strain"].ToString(),
+                        DiseaseModel = dr["DiseaseModel"].ToString(),
+                        BrainRegion = dr["BrainRegion"].ToString(),
+                        SubRegion = dr["SubRegion"].ToString(),
+                        CellType = dr["CellType"].ToString(),
+                        Method = dr["Method"].ToString(),
+                        SubMethod = dr["SubMethod"].ToString(),
+                        NeuroTransmitter = dr["NeuroTransmitter"].ToString(),
+                        Reference = dr["Reference"].ToString()
+                    };
+                    lstPubScreen.Add(pubScreenSearch);
+                }
+            }
+
+            return lstPubScreen;
+        }
+
+
         // Function definition to get all year's values in database
         public List<PubScreenSearch> GetAllYears()
         {

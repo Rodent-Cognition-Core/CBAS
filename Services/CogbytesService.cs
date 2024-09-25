@@ -1159,8 +1159,6 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-
-        //// Function Definition to extract all repositories 
         public List<Cogbytes> GetAllRepositories()
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
@@ -1190,6 +1188,100 @@ namespace AngularSPAWebAPI.Services
                         Paper = publication
                     });
                 }
+            }
+
+            return RepList;
+        }
+
+        //// Function Definition to extract all repositories 
+        public async Task<List<Cogbytes>> GetAllRepositoriesAsync()
+        {
+            List<Cogbytes> RepList = new List<Cogbytes>();
+            LogHelper.Log("Fetching all repositories from Cogbytes database");
+
+            // Fetch all necessary data in a single query
+            string query = @"
+                            SELECT 
+                                ur.*, 
+                                ra.AuthorID, 
+                                rp.PIID, 
+                                e.ExpID, e.ExpName, e.StartExpDate, t.Name, e.DOI AS ExpDOI, e.Status, e.TaskBattery
+                            FROM 
+                                Cogbytes.dbo.UserRepository ur
+                            LEFT JOIN 
+                                Cogbytes.dbo.RepAuthor ra ON ur.RepID = ra.RepID
+                            LEFT JOIN 
+                                Cogbytes.dbo.RepPI rp ON ur.RepID = rp.RepID
+                            LEFT JOIN 
+                                Mousebytes.dbo.Experiment e ON ur.repoLinkGuid = e.RepoGuid
+                            LEFT JOIN 
+                                Mousebytes.dbo.Task t ON e.TaskID = t.ID
+                            ORDER BY 
+                                ur.DateRepositoryCreated";
+
+            using (DataTable dt = await Dal.GetDataTableCogAsync(CommandType.Text, query))
+            {
+                var repDict = new Dictionary<int, Cogbytes>();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int repID = Int32.Parse(dr["RepID"].ToString());
+                    if (!repDict.TryGetValue(repID, out var cogbytes))
+                    {
+                        string doi = Convert.ToString(dr["DOI"].ToString());
+                        PubScreenSearch publication = await GetPubScreenPaperAsync(doi);
+
+                        cogbytes = new Cogbytes
+                        {
+                            ID = repID,
+                            RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
+                            Title = Convert.ToString(dr["Title"].ToString()),
+                            Date = Convert.ToString(dr["Date"].ToString()),
+                            Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                            DOI = doi,
+                            Link = Convert.ToString(dr["Link"].ToString()),
+                            PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                            Description = Convert.ToString(dr["Description"].ToString()),
+                            AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                            AuthourID = new List<int?>().ToArray(),
+                            PIID = new List<int?>().ToArray(),
+                            Experiment = new List<Experiment>(),
+                            Paper = publication
+                        };
+
+                        repDict[repID] = cogbytes;
+                    }
+
+                    if (dr["AuthorID"] != DBNull.Value)
+                    {
+                        var authorList = cogbytes.AuthourID.ToList();
+                        authorList.Add((int?)dr["AuthorID"]);
+                        cogbytes.AuthourID = authorList.ToArray();
+                    }
+
+                    if (dr["PIID"] != DBNull.Value)
+                    {
+                        var piList = cogbytes.PIID.ToList();
+                        piList.Add((int?)dr["PIID"]);
+                        cogbytes.PIID = piList.ToArray();
+                    }
+
+                    if (dr["ExpID"] != DBNull.Value)
+                    {
+                        cogbytes.Experiment.Add(new Experiment
+                        {
+                            ExpID = Int32.Parse(dr["ExpID"].ToString()),
+                            ExpName = Convert.ToString(dr["ExpName"].ToString()),
+                            StartExpDate = Convert.ToDateTime(dr["StartExpDate"].ToString()),
+                            TaskName = Convert.ToString(dr["Name"].ToString()),
+                            DOI = Convert.ToString(dr["ExpDOI"].ToString()),
+                            Status = Convert.ToBoolean(dr["Status"]),
+                            TaskBattery = Convert.ToString(dr["TaskBattery"].ToString())
+                        });
+                    }
+                }
+
+                RepList = repDict.Values.ToList();
             }
 
             return RepList;
@@ -1235,6 +1327,23 @@ namespace AngularSPAWebAPI.Services
             var pubscreenService = new PubScreenService(_elasticClient);
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
+            if (result != null && result.Any())
+            {
+                return result[0];
+            }
+            return null;
+        }
+
+        public async Task<PubScreenSearch> GetPubScreenPaperAsync(string doi)
+        {
+            if (string.IsNullOrEmpty(doi))
+            {
+                return null;
+            }
+
+            var pubscreenService = new PubScreenService(_elasticClient);
+            var pub = new PubScreen { DOI = doi };
+            var result = await pubscreenService.SearchPublicationsAsync(pub);
             if (result != null && result.Any())
             {
                 return result[0];

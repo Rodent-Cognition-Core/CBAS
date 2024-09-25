@@ -326,9 +326,10 @@ namespace AngularSPAWebAPI.Controllers
         //// Extracting Repository list from Database (Cogbytes)
         [HttpGet("GetAllRepositories")]
         [AllowAnonymous]
-        public IActionResult GetAllRepositories()
+        public async Task<IActionResult> GetAllRepositories()
         {
-            return new JsonResult(_cogbytesService.GetAllRepositories());
+            var res = await _cogbytesService.GetAllRepositoriesAsync();
+            return new JsonResult(res);
         }
 
         // Function Definition to get a repo based on its Guid
