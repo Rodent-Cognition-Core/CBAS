@@ -83,12 +83,11 @@ namespace AngularSPAWebAPI.Services
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
                 }
-                catch
+                catch(Exception ex)
                 {
-                    Console.WriteLine(responseString);
+                    Log.Error($"Exception: {ex.Message} responseString: {responseString}");
                     if (responseString.IndexOf("API rate limit exceeded") == -1)
                     {
-                        Console.WriteLine("Unknown Error in GetPaperInfoByDoi!");
                         throw;
                     }
                     else
@@ -136,12 +135,11 @@ namespace AngularSPAWebAPI.Services
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Console.WriteLine(responseString);
+                    Log.Error($"Exception: {ex.Message} responseString: {responseString}");
                     if (responseString.IndexOf("API rate limit exceeded") == -1)
                     {
-                        Console.WriteLine("Unknown Error in GetPaperInfoByPubMedKey!");
                         throw;
                     }
                     else
@@ -240,9 +238,9 @@ namespace AngularSPAWebAPI.Services
                     doi = incomingXml.Element("PubmedArticle").Element("MedlineCitation").Element("Article").Elements("ELocationID").Where(id => id.Attribute("EIdType").Value == "doi").FirstOrDefault().Value;
                 }
             }
-            catch (ArgumentNullException)
+            catch (Exception ex)
             {
-
+                Log.Error(ex.Message);
             }
 
             try
@@ -256,9 +254,9 @@ namespace AngularSPAWebAPI.Services
 
                 }
             }
-            catch (ArgumentNullException)
+            catch (Exception ex)
             {
-
+                Log.Error(ex.Message);
             }
 
             string authorString = string.Join(", ", authorListString);
@@ -274,16 +272,12 @@ namespace AngularSPAWebAPI.Services
                 //PaperType = articleType,
                 Author = authorList,
                 Reference = articleName,
-                DOI = doi,
-
-
+                DOI = doi
             };
 
             // Actually two outputs should be returned (authorList should be also returned)
 
             return pubscreenObj;
-
-
         }
 
         //Function Definition to get some paper's info based on DOI from BioRxiv
@@ -315,10 +309,8 @@ namespace AngularSPAWebAPI.Services
                 authorList.Add(new PubScreenAuthor
                 {
                     FirstName = name.Split(',')[1].Trim(),
-                    LastName = name.Split(',')[0].Trim(),
-
+                    LastName = name.Split(',')[0].Trim()
                 });
-
             }
 
             string authorString = string.Join(", ", authorListString);
@@ -332,12 +324,10 @@ namespace AngularSPAWebAPI.Services
                 //PaperType = jsonPubscreen.collection[0].@type,
                 Author = authorList,
                 Reference = "bioRxiv",
-                DOI = doi,
-
+                DOI = doi
             };
 
             return pubscreenObj;
-
         }
 
         //Function Definition to get some paper's info based on PubMedKey
@@ -362,12 +352,13 @@ namespace AngularSPAWebAPI.Services
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Console.WriteLine(responseString);
+                    // log responseString and exception message
+                    Log.Error($"responseString: {responseString}, exception message: {ex.Message}");
+
                     if (responseString.IndexOf("API rate limit exceeded") == -1)
                     {
-                        Console.WriteLine("Unknown Error in GetPaperInfoByDOICrossref!");
                         throw;
                     }
                     else
@@ -487,12 +478,10 @@ namespace AngularSPAWebAPI.Services
                 crossrefElement = tempCrossRefElement;
 
             }
-            catch (ArgumentNullException)
+            catch (Exception ex)
             {
-
-            }
-
-            
+                Log.Error(ex.Message);
+            }            
 
             if (crossrefElement.Element("doi_data").Element("doi") != null)
             {
@@ -511,9 +500,7 @@ namespace AngularSPAWebAPI.Services
                 //PaperType = articleType,
                 Author = authorList,
                 Reference = articleName,
-                DOI = doi,
-
-
+                DOI = doi
             };
 
             // Actually two outputs should be returned (authorList should be also returned)
@@ -580,9 +567,7 @@ namespace AngularSPAWebAPI.Services
                         ID = Int32.Parse(dr["ID"].ToString()),
                         TaskID = Int32.Parse(dr["TaskID"].ToString()),
                         Task = Convert.ToString(dr["Task"].ToString()),
-                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
-
-
+                        SubTask = Convert.ToString(dr["SubTask"].ToString())
                     });
                 }
             }
@@ -601,9 +586,7 @@ namespace AngularSPAWebAPI.Services
                     SpecieList.Add(new PubScreenSpecie
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString()),
-
-
+                        Species = Convert.ToString(dr["Species"].ToString())
                     });
                 }
             }
@@ -622,9 +605,7 @@ namespace AngularSPAWebAPI.Services
                     SexList.Add(new PubScreenSex
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString()),
-
-
+                        Sex = Convert.ToString(dr["Sex"].ToString())
                     });
                 }
             }
@@ -646,7 +627,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
-                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
+                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString())
                     });
                 }
             }
@@ -666,9 +647,7 @@ namespace AngularSPAWebAPI.Services
                     DiseaseList.Add(new PubScreenDisease
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-
-
+                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString())
                     });
                 }
             }
@@ -690,7 +669,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
                         SubModel = Convert.ToString(dr["SubModel"].ToString()),
-                        ModelID = Int32.Parse(dr["ModelID"].ToString()),
+                        ModelID = Int32.Parse(dr["ModelID"].ToString())
                     });
                 }
             }
@@ -714,9 +693,7 @@ namespace AngularSPAWebAPI.Services
                         ID = Int32.Parse(dr["ID"].ToString()),
                         RID = Int32.Parse(dr["RID"].ToString()),
                         BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-                        SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
-
-
+                        SubRegion = Convert.ToString(dr["SubRegion"].ToString())
                     });
                 }
             }
@@ -735,8 +712,7 @@ namespace AngularSPAWebAPI.Services
                     RegionList.Add(new PubScreenRegion
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-
+                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString())
                     });
                 }
             }
@@ -755,8 +731,7 @@ namespace AngularSPAWebAPI.Services
                     CelltypeList.Add(new PubScreenCellType
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        CellType = Convert.ToString(dr["CellType"].ToString()),
-
+                        CellType = Convert.ToString(dr["CellType"].ToString())
                     });
                 }
             }
@@ -776,8 +751,7 @@ namespace AngularSPAWebAPI.Services
                     MethodList.Add(new PubScreenMethod
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        Method = Convert.ToString(dr["Method"].ToString()),
-
+                        Method = Convert.ToString(dr["Method"].ToString())
                     });
                 }
             }
@@ -799,7 +773,7 @@ namespace AngularSPAWebAPI.Services
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
                         SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
-                        MethodID = Int32.Parse(dr["MethodID"].ToString()),
+                        MethodID = Int32.Parse(dr["MethodID"].ToString())
                     });
                 }
             }
@@ -818,8 +792,7 @@ namespace AngularSPAWebAPI.Services
                     NeuroTransmitterList.Add(new PubScreenNeuroTransmitter
                     {
                         ID = Int32.Parse(dr["ID"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-
+                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString())
                     });
                 }
             }
@@ -880,9 +853,15 @@ namespace AngularSPAWebAPI.Services
                              Delete From Publication_SubTask Where PublicationID = {pubId};
                              Delete From EditLog Where PubID = {pubId};
                              Delete From Publication Where id = { pubId};";
-
-            Dal.ExecuteNonQueryPub(sql);
-            DeleteFromElasticSearch(pubId);
+            try
+            {
+                Dal.ExecuteNonQueryPub(sql);
+                DeleteFromElasticSearch(pubId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
         }
 
         //************************************************************************************Adding Publication*********************************
@@ -1643,464 +1622,467 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSearch> SearchPublications(PubScreen pubScreen)
         {
             List<PubScreenSearch> lstPubScreen = new List<PubScreenSearch>();
-
-            string sql = "Select * From SearchPub Where ";
-
-            if (!string.IsNullOrEmpty(pubScreen.search))
+            try
             {
-                sql += $@"(SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
+                string sql = "Select * From SearchPub Where ";
+
+                if (!string.IsNullOrEmpty(pubScreen.search))
+                {
+                    sql += $@"(SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
                            SearchPub.Keywords like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%' or
                            SearchPub.Author like '%{(HelperService.EscapeSql(pubScreen.search)).Trim()}%') AND ";
-            }
-            // Title
-            if (!string.IsNullOrEmpty(pubScreen.Title))
-            {
-                sql += $@"SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.Title)).Trim()}%' AND ";
-            }
-
-            //Keywords
-            if (!string.IsNullOrEmpty(pubScreen.Keywords))
-            {
-                sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
-            }
-
-            // DOI
-            if (!string.IsNullOrEmpty(pubScreen.DOI))
-            {
-                sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
-            }
-
-
-
-            // search query for Author
-            if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
-            {
-                if (pubScreen.AuthourID.Length == 1)
-                {
-                    sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
                 }
-                else
+                // Title
+                if (!string.IsNullOrEmpty(pubScreen.Title))
                 {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.AuthourID.Length; i++)
+                    sql += $@"SearchPub.Title like '%{(HelperService.EscapeSql(pubScreen.Title)).Trim()}%' AND ";
+                }
+
+                //Keywords
+                if (!string.IsNullOrEmpty(pubScreen.Keywords))
+                {
+                    sql += $@"SearchPub.Keywords like '%{HelperService.EscapeSql(pubScreen.Keywords)}%' AND ";
+                }
+
+                // DOI
+                if (!string.IsNullOrEmpty(pubScreen.DOI))
+                {
+                    sql += $@"SearchPub.DOI = '{HelperService.EscapeSql(pubScreen.DOI)}' AND ";
+                }
+
+
+
+                // search query for Author
+                if (pubScreen.AuthourID != null && pubScreen.AuthourID.Length != 0)
+                {
+                    if (pubScreen.AuthourID.Length == 1)
                     {
-                        sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
+                        sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[0]}) +  '%' AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-
-            }
-
-            // search query for Year
-            if (pubScreen.YearFrom != null && pubScreen.YearTo != null)
-            {
-                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
-            }
-
-            if (pubScreen.YearFrom != null && pubScreen.YearTo == null)
-            {
-                sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
-            }
-
-            if (pubScreen.YearTo != null && pubScreen.YearFrom == null)
-            {
-                sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
-            }
-
-            // search query for PaperType
-            //if (pubScreen.PaperTypeID != null)
-            //{
-            //    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
-            //}
-
-            // search query for Paper type
-            if (pubScreen.PaperTypeIdSearch != null && pubScreen.PaperTypeIdSearch.Length != 0)
-            {
-
-                if (pubScreen.PaperTypeIdSearch.Length == 1)
-                {
-                    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}) +  '%' AND ";
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.PaperTypeIdSearch.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.AuthourID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Author like '%'  + (Select CONCAT(Author.FirstName, '-', Author.LastName) From Author Where Author.ID = {pubScreen.AuthourID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
+
                 }
 
-            }
-
-            // search query for Task
-            if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
-            {
-
-                if (pubScreen.TaskID.Length == 1)
+                // search query for Year
+                if (pubScreen.YearFrom != null && pubScreen.YearTo != null)
                 {
-                    sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
+                    sql += $@"(SearchPub.Year >= {pubScreen.YearFrom} AND SearchPub.Year <= {pubScreen.YearTo}) AND ";
                 }
-                else
+
+                if (pubScreen.YearFrom != null && pubScreen.YearTo == null)
                 {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.TaskID.Length; i++)
+                    sql += $@"(SearchPub.Year >= {pubScreen.YearFrom}) AND ";
+                }
+
+                if (pubScreen.YearTo != null && pubScreen.YearFrom == null)
+                {
+                    sql += $@"(SearchPub.Year <= {pubScreen.YearTo}) AND ";
+                }
+
+                // search query for PaperType
+                //if (pubScreen.PaperTypeID != null)
+                //{
+                //    sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeID}) +  '%' AND ";
+                //}
+
+                // search query for Paper type
+                if (pubScreen.PaperTypeIdSearch != null && pubScreen.PaperTypeIdSearch.Length != 0)
+                {
+
+                    if (pubScreen.PaperTypeIdSearch.Length == 1)
                     {
-                        sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
+                        sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[0]}) +  '%' AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-
-            }
-
-            // search query for SubTask
-            if (pubScreen.SubTaskID != null && pubScreen.SubTaskID.Length != 0)
-            {
-                if (pubScreen.SubTaskID.Length == 1)
-                {
-                    sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}) +  '%' AND ";
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.PaperTypeIdSearch.Length; i++)
+                        {
+                            sql += $@"SearchPub.PaperType like '%'  + (Select PaperType From PaperType Where PaperType.ID = {pubScreen.PaperTypeIdSearch[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-
-            }
-
-            // search query for Species
-            if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
-            {
-                if (pubScreen.SpecieID.Length == 1)
-                {
-                    sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}) +  '%' AND ";
 
                 }
-                else
+
+                // search query for Task
+                if (pubScreen.TaskID != null && pubScreen.TaskID.Length != 0)
                 {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.SpecieID.Length; i++)
+
+                    if (pubScreen.TaskID.Length == 1)
                     {
-                        sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' OR ";
+                        sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[0]}) +  '%' AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Sex
-            if (pubScreen.sexID != null && pubScreen.sexID.Length != 0)
-            {
-                if (pubScreen.sexID.Length == 1)
-                {
-                    sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}) +  '%' AND ";
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.sexID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.TaskID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Task like '%'  + (Select Task From Task Where Task.ID = {pubScreen.TaskID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
 
-            // search query for Strain
-            if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
-            {
-                if (pubScreen.StrainID.Length == 1)
-                {
-                    sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
                 }
-                else
+
+                // search query for SubTask
+                if (pubScreen.SubTaskID != null && pubScreen.SubTaskID.Length != 0)
                 {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.StrainID.Length; i++)
+                    if (pubScreen.SubTaskID.Length == 1)
                     {
-                        sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' OR ";
+                        sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[0]}) +  '%' AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Disease
-            if (pubScreen.DiseaseID != null && pubScreen.DiseaseID.Length != 0)
-            {
-                if (pubScreen.DiseaseID.Length == 1)
-                {
-                    sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}) +  '%' AND ";
-
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.SubTaskID.Length; i++)
+                        {
+                            sql += $@"SearchPub.SubTask like '%'  + (Select SubTask From SubTask Where SubTask.ID = {pubScreen.SubTaskID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+
+                }
+
+                // search query for Species
+                if (pubScreen.SpecieID != null && pubScreen.SpecieID.Length != 0)
+                {
+                    if (pubScreen.SpecieID.Length == 1)
+                    {
+                        sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[0]}) +  '%' AND ";
 
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Sub Model
-            if (pubScreen.SubModelID != null && pubScreen.SubModelID.Length != 0)
-            {
-                if (pubScreen.SubModelID.Length == 1)
-                {
-                    sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[0]}) +  '%' AND ";
-
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.SubModelID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.SpecieID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Species like '%'  + (Select Species From Species Where Species.ID = {pubScreen.SpecieID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Sex
+                if (pubScreen.sexID != null && pubScreen.sexID.Length != 0)
+                {
+                    if (pubScreen.sexID.Length == 1)
+                    {
+                        sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[0]}) +  '%' AND ";
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.sexID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Sex like '%'  + (Select Sex From Sex Where Sex.ID = {pubScreen.sexID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Strain
+                if (pubScreen.StrainID != null && pubScreen.StrainID.Length != 0)
+                {
+                    if (pubScreen.StrainID.Length == 1)
+                    {
+                        sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[0]}) +  '%' AND ";
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.StrainID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Strain like '%'  + (Select Strain From Strain Where Strain.ID = {pubScreen.StrainID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Disease
+                if (pubScreen.DiseaseID != null && pubScreen.DiseaseID.Length != 0)
+                {
+                    if (pubScreen.DiseaseID.Length == 1)
+                    {
+                        sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[0]}) +  '%' AND ";
 
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for BrainRegion
-            if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
-            {
-                if (pubScreen.RegionID.Length == 1)
-                {
-                    sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}) +  '%' AND ";
-
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.RegionID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.DiseaseID.Length; i++)
+                        {
+                            sql += $@"SearchPub.DiseaseModel like '%'  + (Select DiseaseModel From DiseaseModel Where DiseaseModel.ID = {pubScreen.DiseaseID[i]}) +  '%' OR ";
+
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
                 }
-            }
 
-            // search query for SubRegion
-            if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
-            {
-                if (pubScreen.SubRegionID.Length == 1)
+                // search query for Sub Model
+                if (pubScreen.SubModelID != null && pubScreen.SubModelID.Length != 0)
                 {
-                    sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}) +  '%' AND ";
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
+                    if (pubScreen.SubModelID.Length == 1)
                     {
-                        sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' OR ";
-                    }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-
-            }
-
-            // search query for CellType
-            if (pubScreen.CellTypeID != null && pubScreen.CellTypeID.Length != 0)
-            {
-                if (pubScreen.CellTypeID.Length == 1)
-                {
-                    sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}) +  '%' AND ";
-
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
-                    {
-                        sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' OR ";
-                    }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Method
-            if (pubScreen.MethodID != null && pubScreen.MethodID.Length != 0)
-            {
-                if (pubScreen.MethodID.Length == 1)
-                {
-                    sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}) +  '%' AND ";
-                }
-
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.MethodID.Length; i++)
-                    {
-                        sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' OR ";
-                    }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Sub Method
-            if (pubScreen.SubMethodID != null && pubScreen.SubMethodID.Length != 0)
-            {
-                if (pubScreen.SubMethodID.Length == 1)
-                {
-                    sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[0]}) +  '%' AND ";
-
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.SubMethodID.Length; i++)
-                    {
-                        sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[i]}) +  '%' OR ";
+                        sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[0]}) +  '%' AND ";
 
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
-                }
-            }
-
-            // search query for Neuro Transmitter
-            if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
-            {
-                if (pubScreen.TransmitterID.Length == 1)
-                {
-                    sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}) +  '%' AND ";
-                }
-                else
-                {
-                    sql += "(";
-                    for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
+                    else
                     {
-                        sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' OR ";
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.SubModelID.Length; i++)
+                        {
+                            sql += $@"SearchPub.SubModel like '%'  + (Select SubModel From SubModel Where SubModel.ID = {pubScreen.SubModelID[i]}) +  '%' OR ";
+
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
                     }
-                    sql = sql.Substring(0, sql.Length - 3);
-                    sql += ") AND ";
                 }
 
-            }
-
-            sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
-            //sql += "ORDER BY Year DESC";
-
-            string sqlMB = "";
-            string sqlCog = "";
-            List<Experiment> lstExperiment = new List<Experiment>();
-            List<Cogbytes> lstRepo = new List<Cogbytes>();
-            using (DataTable dt = Dal.GetDataTablePub(sql))
-            {
-
-                foreach (DataRow dr in dt.Rows)
+                // search query for BrainRegion
+                if (pubScreen.RegionID != null && pubScreen.RegionID.Length != 0)
                 {
-                    string doi = Convert.ToString(dr["DOI"].ToString());
-                    if (String.IsNullOrEmpty(doi) == false)
+                    if (pubScreen.RegionID.Length == 1)
                     {
-                        sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                        sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[0]}) +  '%' AND ";
+
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.RegionID.Length; i++)
+                        {
+                            sql += $@"SearchPub.BrainRegion like '%'  + (Select BrainRegion From BrainRegion Where BrainRegion.ID = {pubScreen.RegionID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for SubRegion
+                if (pubScreen.SubRegionID != null && pubScreen.SubRegionID.Length != 0)
+                {
+                    if (pubScreen.SubRegionID.Length == 1)
+                    {
+                        sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[0]}) +  '%' AND ";
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.SubRegionID.Length; i++)
+                        {
+                            sql += $@"SearchPub.SubRegion like '%'  + (Select SubRegion From SubRegion Where SubRegion.ID = {pubScreen.SubRegionID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+
+                }
+
+                // search query for CellType
+                if (pubScreen.CellTypeID != null && pubScreen.CellTypeID.Length != 0)
+                {
+                    if (pubScreen.CellTypeID.Length == 1)
+                    {
+                        sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[0]}) +  '%' AND ";
+
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.CellTypeID.Length; i++)
+                        {
+                            sql += $@"SearchPub.CellType like '%'  + (Select CellType From CellType Where CellType.ID = {pubScreen.CellTypeID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Method
+                if (pubScreen.MethodID != null && pubScreen.MethodID.Length != 0)
+                {
+                    if (pubScreen.MethodID.Length == 1)
+                    {
+                        sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[0]}) +  '%' AND ";
+                    }
+
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.MethodID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Method like '%'  + (Select Method From Method Where Method.ID = {pubScreen.MethodID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Sub Method
+                if (pubScreen.SubMethodID != null && pubScreen.SubMethodID.Length != 0)
+                {
+                    if (pubScreen.SubMethodID.Length == 1)
+                    {
+                        sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[0]}) +  '%' AND ";
+
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.SubMethodID.Length; i++)
+                        {
+                            sql += $@"SearchPub.SubMethod like '%'  + (Select SubMethod From SubMethod Where SubMethod.ID = {pubScreen.SubMethodID[i]}) +  '%' OR ";
+
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+                }
+
+                // search query for Neuro Transmitter
+                if (pubScreen.TransmitterID != null && pubScreen.TransmitterID.Length != 0)
+                {
+                    if (pubScreen.TransmitterID.Length == 1)
+                    {
+                        sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[0]}) +  '%' AND ";
+                    }
+                    else
+                    {
+                        sql += "(";
+                        for (int i = 0; i < pubScreen.TransmitterID.Length; i++)
+                        {
+                            sql += $@"SearchPub.Neurotransmitter like '%'  + (Select Neurotransmitter From Neurotransmitter Where Neurotransmitter.ID = {pubScreen.TransmitterID[i]}) +  '%' OR ";
+                        }
+                        sql = sql.Substring(0, sql.Length - 3);
+                        sql += ") AND ";
+                    }
+
+                }
+
+                sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
+                                                        //sql += "ORDER BY Year DESC";
+
+                string sqlMB = "";
+                string sqlCog = "";
+                List<Experiment> lstExperiment = new List<Experiment>();
+                List<Cogbytes> lstRepo = new List<Cogbytes>();
+                using (DataTable dt = Dal.GetDataTablePub(sql))
+                {
+
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        string doi = Convert.ToString(dr["DOI"].ToString());
+                        if (String.IsNullOrEmpty(doi) == false)
+                        {
+                            sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
                                    Inner join Task on Task.ID = Experiment.TaskID
                                    Where DOI = '{doi}'";
 
-                        // empty lstExperiment list
-                        lstExperiment.Clear();
-                        using (DataTable dtExp = Dal.GetDataTable(sqlMB))
-                        {
-                            foreach (DataRow drExp in dtExp.Rows)
+                            // empty lstExperiment list
+                            lstExperiment.Clear();
+                            using (DataTable dtExp = Dal.GetDataTable(sqlMB))
                             {
-
-                                lstExperiment.Add(new Experiment
+                                foreach (DataRow drExp in dtExp.Rows)
                                 {
-                                    ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                                    ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                                    StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                                    TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                                    DOI = Convert.ToString(drExp["DOI"].ToString()),
-                                    Status = Convert.ToBoolean(drExp["Status"]),
-                                    TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
 
-                                });
+                                    lstExperiment.Add(new Experiment
+                                    {
+                                        ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                                        ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                                        StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                                        TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                                        DOI = Convert.ToString(drExp["DOI"].ToString()),
+                                        Status = Convert.ToBoolean(drExp["Status"]),
+                                        TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+
+                                    });
+                                }
+
                             }
 
-                        }
-
-                        sqlCog = $"Select * From UserRepository Where DOI = '{doi}'";
-                        lstRepo.Clear();
-                        using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
-                        {
-                            foreach (DataRow drCog in dtCog.Rows)
+                            sqlCog = $"Select * From UserRepository Where DOI = '{doi}'";
+                            lstRepo.Clear();
+                            using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
                             {
                                 var cogbytesService = new CogbytesService();
-                                int repID = Int32.Parse(drCog["RepID"].ToString());
-                                lstRepo.Add(new Cogbytes
+                                foreach (DataRow drCog in dtCog.Rows)
                                 {
-                                    ID = repID,
-                                    RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
-                                    Title = Convert.ToString(drCog["Title"].ToString()),
-                                    Date = Convert.ToString(drCog["Date"].ToString()),
-                                    Keywords = Convert.ToString(drCog["Keywords"].ToString()),
-                                    DOI = Convert.ToString(drCog["DOI"].ToString()),
-                                    Link = Convert.ToString(drCog["Link"].ToString()),
-                                    PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
-                                    Description = Convert.ToString(drCog["Description"].ToString()),
-                                    AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
-                                    AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                                    PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                                });
+                                    int repID = Int32.Parse(drCog["RepID"].ToString());
+                                    lstRepo.Add(new Cogbytes
+                                    {
+                                        ID = repID,
+                                        RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                                        Title = Convert.ToString(drCog["Title"].ToString()),
+                                        Date = Convert.ToString(drCog["Date"].ToString()),
+                                        Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                                        DOI = Convert.ToString(drCog["DOI"].ToString()),
+                                        Link = Convert.ToString(drCog["Link"].ToString()),
+                                        PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                                        Description = Convert.ToString(drCog["Description"].ToString()),
+                                        AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                                        AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                                        PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                                    });
+                                }
+
                             }
 
                         }
 
+                        lstPubScreen.Add(new PubScreenSearch
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
+                            Title = Convert.ToString(dr["Title"].ToString()),
+                            Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                            DOI = Convert.ToString(dr["DOI"].ToString()),
+                            Year = Convert.ToString(dr["Year"].ToString()),
+                            Author = Convert.ToString(dr["Author"].ToString()),
+                            PaperType = Convert.ToString(dr["PaperType"].ToString()),
+                            Task = Convert.ToString(dr["Task"].ToString()),
+                            SubTask = Convert.ToString(dr["SubTask"].ToString()),
+                            Species = Convert.ToString(dr["Species"].ToString()),
+                            Sex = Convert.ToString(dr["Sex"].ToString()),
+                            Strain = Convert.ToString(dr["Strain"].ToString()),
+                            DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
+                            SubModel = Convert.ToString(dr["SubModel"].ToString()),
+                            BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
+                            SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
+                            CellType = Convert.ToString(dr["CellType"].ToString()),
+                            Method = Convert.ToString(dr["Method"].ToString()),
+                            SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
+                            NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
+                            Reference = Convert.ToString(dr["Reference"].ToString()),
+                            Experiment = new List<Experiment>(lstExperiment),
+                            Repo = new List<Cogbytes>(lstRepo)
+
+                        });
+                        //lstExperiment.Clear();
                     }
-
-                    lstPubScreen.Add(new PubScreenSearch
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString()),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
-                        Year = Convert.ToString(dr["Year"].ToString()),
-                        Author = Convert.ToString(dr["Author"].ToString()),
-                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
-                        SubTask = Convert.ToString(dr["SubTask"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
-                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString()),
-                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-                        SubRegion = Convert.ToString(dr["SubRegion"].ToString()),
-                        CellType = Convert.ToString(dr["CellType"].ToString()),
-                        Method = Convert.ToString(dr["Method"].ToString()),
-                        SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString()),
-                        Reference = Convert.ToString(dr["Reference"].ToString()),
-                        Experiment = new List<Experiment>(lstExperiment),
-                        Repo = new List<Cogbytes>(lstRepo)
-
-                    });
-                    //lstExperiment.Clear();
                 }
             }
-
-            // search MouseBytes database to see if the dataset exists********************************************
-
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in SearchPublications");
+            }
 
             return lstPubScreen;
         }
