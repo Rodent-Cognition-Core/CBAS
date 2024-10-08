@@ -29,6 +29,7 @@ namespace AngularSPAWebAPI
                         //.Build();
                         .UseStartup<Startup>()
                         .UseKestrel(o => { o.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10); o.Limits.MaxRequestBodySize = null; })
+                        .UseIIS()
                         //.UseHttpSys(options => { options.MaxRequestBodySize = 100_000_000;})
                         //.UseUrls("http://localhost:5000")
                         .Build();
