@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Nest;
+using Microsoft.AspNetCore.Http;
 
 
 
@@ -219,33 +220,37 @@ namespace AngularSPAWebAPI.Controllers
         // Getting some paper information based on Doi from pubMed
         [HttpGet("GetPaperInfoByDOI")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByDOI(string DOI)
+        public async Task<IActionResult> GetPaperInfoByDOI(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
+            var result = await _pubScreenService.GetPaperInfoByDoi(DOI);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on pubMed key 
         [HttpGet("GetPaperInfoByPubKey")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByPubKey(string PubKey)
+        public async Task<IActionResult> GetPaperInfoByPubKey(string PubKey)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByPubMedKey(PubKey));
+            var result = await _pubScreenService.GetPaperInfoByPubMedKey(PubKey);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on Doi from BioRxiv
         [HttpGet("GetPaparInfoFromDOIBio")]
         [AllowAnonymous]
-        public IActionResult GetPaparInfoFromDOIBio(string DOI)
+        public async Task<IActionResult> GetPaparInfoFromDOIBio(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
+            var result = _pubScreenService.GetPaperInfoByDOIBIO(DOI);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on Doi from Crossref
         [HttpGet("GetPaparInfoFromDOICrossref")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByDOICrossref(string DOI)
+        public async Task<IActionResult> GetPaperInfoByDOICrossref(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDOICrossref(DOI));
+            var result = await _pubScreenService.GetPaperInfoByDOICrossref(DOI);
+            return new JsonResult(result);
         }
 
         [HttpGet("GetPaparInfoByID")]
