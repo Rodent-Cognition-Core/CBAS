@@ -1017,58 +1017,44 @@ export class PubscreenDialogeComponent implements OnInit {
 
     // Adding pubmed key to get paper information from pubMed
     addPubMedID(PubMedKey) {
-
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
-
-            //console.log(data);
-            //console.log(data.result);
-
-            if (data.result == null) {
+            let apiResult = 'result' in data ? data.result : data;
+            if (apiResult == null) {
                 alert(PUBMEDKEYNOTVALID);
-
             }
             else {
 
-                this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
-                this.keywordsModel = data.result.keywords;
-                this.doiModel = data.result.doi;
-                this.referenceModel = data.result.reference;
-                this.authorList2 = data.result.author;
-               
+                this.authorModel2 = apiResult.authorString;
+                this.titleModel = apiResult.title;
+                this.abstractModel = apiResult.abstract;
+                this.yearModel = apiResult.year;
+                this.keywordsModel = apiResult.keywords;
+                this.doiModel = apiResult.doi;
+                this.referenceModel = apiResult.reference;
+                this.authorList2 = apiResult.author;               
             }
-
         });
-
     }
 
     addDOIBio(doi) {
-
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
+            let apiResult = 'result' in data ? data.result : data;
 
-            //console.log(data);
-            //console.log(data.result);
-
-            if (data.result == null) {
+            if (apiResult == null) {
                 alert(DOINOTVALID);
-
             }
             else {
 
-                this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
-                this.keywordsModel = data.result.keywords;
-                this.doiModel = data.result.doi;
-                this.referenceModel = data.result.reference;
-                this.authorList2 = data.result.author;
-                
+                this.authorModel2 = apiResult.authorString;
+                this.titleModel = apiResult.title;
+                this.abstractModel = apiResult.abstract;
+                this.yearModel = apiResult.year;
+                this.keywordsModel = apiResult.keywords;
+                this.doiModel = apiResult.doi;
+                this.referenceModel = apiResult.reference;
+                this.authorList2 = apiResult.author;               
 
             }
-
         });
 
     }
@@ -1076,25 +1062,20 @@ export class PubscreenDialogeComponent implements OnInit {
     addDOICrossref(doi) {
 
         this.pubScreenService.getPaparInfoFromDOICrossref(doi).subscribe(data => {
+            let apiResult = 'result' in data ? data.result : data;
 
-            //console.log(data);
-            //console.log(data.result);
-
-            if (data.result == null) {
+            if (apiResult == null) {
                 alert(DOINOTVALID);
-
             }
             else {
 
-                this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
-                this.doiModel = data.result.doi;
-                this.referenceModel = data.result.reference;
-                this.authorList2 = data.result.author;
-
-
+                this.authorModel2 = apiResult.authorString;
+                this.titleModel = apiResult.title;
+                this.abstractModel = apiResult.abstract;
+                this.yearModel = apiResult.year;
+                this.doiModel = apiResult.doi;
+                this.referenceModel = apiResult.reference;
+                this.authorList2 = apiResult.author;
             }
 
         });
