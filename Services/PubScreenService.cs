@@ -45,9 +45,10 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
         public PubScreenService(IElasticClient client){
+            var proxy_host = Environment.GetEnvironmentVariable("PROXY_HOST");
             HttpClientHandler handler = new HttpClientHandler()
             {
-                //Proxy = new WebProxy("prxy name", 8080),
+                //Proxy = new WebProxy(proxy_host, 8080),
                 //UseProxy = true
             };
             httpClient = new HttpClient(handler);
