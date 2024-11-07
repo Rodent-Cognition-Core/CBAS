@@ -57,44 +57,51 @@ namespace AngularSPAWebAPI.Services
         public async Task<PubScreen> GetPaperInfoByDoi(string doi)
         {
             // Submit doi to get the pubmedkey
-            if (doi.ToLower().Contains("https://doi.org/"))
+            if (doi.StartsWith("https://doi.org/", StringComparison.OrdinalIgnoreCase))
             {
-                doi = doi.Replace("https://doi.org/", "", StringComparison.OrdinalIgnoreCase);
+                doi = doi.Substring("https://doi.org/".Length);
             }
 
-            // httpClient = new HttpClient();
-
-            StringContent content = new System.Net.Http.StringContent(String.Empty);
-
+            StringContent content = new StringContent(string.Empty);
             string responseString = "";
             var incomingXml = new XElement("newXML");
             bool isSuccess = false;
-            while (!isSuccess)
+            int retryCount = 0;
+            const int maxRetries = 10;
+            const int delayMilliseconds = 300;
+
+            while (!isSuccess && retryCount < maxRetries)
             {
                 try
                 {
-                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term=" + doi + "&rettype=Id", content);
+                    var response = await httpClient.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term={doi}&rettype=Id", content);
                     responseString = await response.Content.ReadAsStringAsync();
-                    if ((responseString.ToLower().IndexOf("<OutputMessage>No items found.</OutputMessage>".ToLower()) > -1) ||
-                        (responseString.ToLower().IndexOf("<ErrorList>".ToLower()) > -1))
+                    if (responseString.Contains("<OutputMessage>No items found.</OutputMessage>", StringComparison.OrdinalIgnoreCase) ||
+                        responseString.Contains("<ErrorList>", StringComparison.OrdinalIgnoreCase))
                     {
                         return null;
                     }
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error($"Exception: {ex.Message} responseString: {responseString}");
-                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    if (responseString.Contains("API rate limit exceeded", StringComparison.OrdinalIgnoreCase))
                     {
-                        throw;
+                        retryCount++;
+                        await Task.Delay(delayMilliseconds);
                     }
                     else
                     {
-                        Thread.Sleep(300);
+                        throw;
                     }
                 }
+            }
+
+            if (!isSuccess)
+            {
+                throw new Exception("Failed to retrieve data from GetPaperInfoByDoi PubMed API after multiple attempts.");
             }
 
             string pubMedKey = null;
@@ -126,11 +133,14 @@ namespace AngularSPAWebAPI.Services
             // Pubmed API is rate-limited. If the rate limit is exceeded, the response string from the HTTP Post will indicate that.
             // When that is the case, we wait 0.3s and attempt again, until we obtain our desired result or another error occurs
             bool isSuccess = false;
-            while (!isSuccess)
+            int retryCount = 0;
+            const int maxRetries = 10;
+            const int delayMilliseconds = 300;
+            while (!isSuccess && retryCount < maxRetries)
             {
                 try
                 {
-                    var response = await httpClient.PostAsync("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=" + pubMedKey + "&retmode=xml", content);
+                    var response = await httpClient.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubMedKey}&retmode=xml", content);
                     responseString = await response.Content.ReadAsStringAsync();
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
@@ -138,15 +148,21 @@ namespace AngularSPAWebAPI.Services
                 catch (Exception ex)
                 {
                     Log.Error($"Exception: {ex.Message} responseString: {responseString}");
-                    if (responseString.IndexOf("API rate limit exceeded") == -1)
+                    if (responseString.Contains("API rate limit exceeded"))
                     {
-                        throw;
+                        retryCount++;
+                        await Task.Delay(delayMilliseconds);
                     }
                     else
                     {
-                        Thread.Sleep(300);
+                        throw;
                     }
                 }
+            }
+
+            if (!isSuccess)
+            {
+                throw new Exception("Failed to retrieve data from GetPaperInfoByPubMedKey PubMed API after multiple attempts.");
             }
 
             string articleAbstract = "";
@@ -288,46 +304,53 @@ namespace AngularSPAWebAPI.Services
             // HttpClient httpClient = new HttpClient();
 
             StringContent content = new System.Net.Http.StringContent(String.Empty);
-
-            var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
-
-            if (jsonPubscreen.collection == null || jsonPubscreen.collection.Length == 0)
+            try
             {
-                return null;
-            }
+                var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
+                var responseString = await response.Content.ReadAsStringAsync();
 
-            List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
-            List<string> authorListString = new List<string>();
-            List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
-            foreach (var name in authorTempList)
-            {
-                authorListString.Add(name.Split(',')[1].Trim() + '-' + name.Split(',')[0].Trim());
+                JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
 
-                authorList.Add(new PubScreenAuthor
+                if (jsonPubscreen.collection == null || jsonPubscreen.collection.Length == 0)
                 {
-                    FirstName = name.Split(',')[1].Trim(),
-                    LastName = name.Split(',')[0].Trim()
-                });
+                    return null;
+                }
+
+                List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
+                List<string> authorListString = new List<string>();
+                List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
+                foreach (var name in authorTempList)
+                {
+                    authorListString.Add(name.Split(',')[1].Trim() + '-' + name.Split(',')[0].Trim());
+
+                    authorList.Add(new PubScreenAuthor
+                    {
+                        FirstName = name.Split(',')[1].Trim(),
+                        LastName = name.Split(',')[0].Trim()
+                    });
+                }
+
+                string authorString = string.Join(", ", authorListString);
+
+                var pubscreenObj = new PubScreen
+                {
+                    Title = jsonPubscreen.collection[0].title,
+                    Abstract = jsonPubscreen.collection[0].@abstract,
+                    Year = (jsonPubscreen.collection[jsonPubscreen.collection.Count() - 1].date).Split('-')[0],
+                    AuthorString = authorString,
+                    //PaperType = jsonPubscreen.collection[0].@type,
+                    Author = authorList,
+                    Reference = "bioRxiv",
+                    DOI = doi
+                };
+
+                return pubscreenObj;
             }
-
-            string authorString = string.Join(", ", authorListString);
-
-            var pubscreenObj = new PubScreen
+            catch (Exception ex)
             {
-                Title = jsonPubscreen.collection[0].title,
-                Abstract = jsonPubscreen.collection[0].@abstract,
-                Year = (jsonPubscreen.collection[jsonPubscreen.collection.Count() - 1].date).Split('-')[0],
-                AuthorString = authorString,
-                //PaperType = jsonPubscreen.collection[0].@type,
-                Author = authorList,
-                Reference = "bioRxiv",
-                DOI = doi
-            };
-
-            return pubscreenObj;
+                Log.Error(ex, "Error in GetPaperInfoByDOIBIO");
+            }
+            return new PubScreen();
         }
 
         //Function Definition to get some paper's info based on PubMedKey
@@ -2110,71 +2133,77 @@ namespace AngularSPAWebAPI.Services
         public PubScreen GetPaperInfoByID(int id)
         {
             var pubScreen = new PubScreen();
-
-            string sql = $"Select AuthorID From Publication_Author Where PublicationID ={id}";
-            pubScreen.AuthourID = FillPubScreenItemArray(sql, "AuthorID");
-
-            sql = $"Select CelltypeID From Publication_CellType Where PublicationID ={id}";
-            pubScreen.CellTypeID = FillPubScreenItemArray(sql, "CelltypeID");
-
-            sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
-            pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
-
-            sql = $"Select SubModelID From Publication_SubModel Where PublicationID ={id}";
-            pubScreen.SubModelID = FillPubScreenItemArray(sql, "SubModelID");
-
-            sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
-            pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
-
-            sql = $"Select SubMethodID From Publication_SubMethod Where PublicationID ={id}";
-            pubScreen.SubMethodID = FillPubScreenItemArray(sql, "SubMethodID");
-
-            sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
-            pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
-
-            sql = $"Select RegionID From Publication_Region Where PublicationID ={id}";
-            pubScreen.RegionID = FillPubScreenItemArray(sql, "RegionID");
-
-            sql = $"Select SexID From Publication_Sex Where PublicationID ={id}";
-            pubScreen.sexID = FillPubScreenItemArray(sql, "SexID");
-
-            sql = $"Select SpecieID From Publication_Specie Where PublicationID ={id}";
-            pubScreen.SpecieID = FillPubScreenItemArray(sql, "SpecieID");
-
-            sql = $"Select StrainID From Publication_Strain Where PublicationID ={id}";
-            pubScreen.StrainID = FillPubScreenItemArray(sql, "StrainID");
-
-            sql = $"Select SubRegionID From Publication_SubRegion Where PublicationID ={id}";
-            pubScreen.SubRegionID = FillPubScreenItemArray(sql, "SubRegionID");
-
-            sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
-            pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
-
-            sql = $"Select SubTaskID From Publication_SubTask Where PublicationID ={id}";
-            pubScreen.SubTaskID = FillPubScreenItemArray(sql, "SubTaskID");
-
-            sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-            object papertypeID = Dal.ExecScalarPub(sql);
-            if (papertypeID == null)
+            try
             {
-                pubScreen.PaperTypeID = null;
+                string sql = $"Select AuthorID From Publication_Author Where PublicationID ={id}";
+                pubScreen.AuthourID = FillPubScreenItemArray(sql, "AuthorID");
+
+                sql = $"Select CelltypeID From Publication_CellType Where PublicationID ={id}";
+                pubScreen.CellTypeID = FillPubScreenItemArray(sql, "CelltypeID");
+
+                sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
+                pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
+
+                sql = $"Select SubModelID From Publication_SubModel Where PublicationID ={id}";
+                pubScreen.SubModelID = FillPubScreenItemArray(sql, "SubModelID");
+
+                sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
+                pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
+
+                sql = $"Select SubMethodID From Publication_SubMethod Where PublicationID ={id}";
+                pubScreen.SubMethodID = FillPubScreenItemArray(sql, "SubMethodID");
+
+                sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
+                pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
+
+                sql = $"Select RegionID From Publication_Region Where PublicationID ={id}";
+                pubScreen.RegionID = FillPubScreenItemArray(sql, "RegionID");
+
+                sql = $"Select SexID From Publication_Sex Where PublicationID ={id}";
+                pubScreen.sexID = FillPubScreenItemArray(sql, "SexID");
+
+                sql = $"Select SpecieID From Publication_Specie Where PublicationID ={id}";
+                pubScreen.SpecieID = FillPubScreenItemArray(sql, "SpecieID");
+
+                sql = $"Select StrainID From Publication_Strain Where PublicationID ={id}";
+                pubScreen.StrainID = FillPubScreenItemArray(sql, "StrainID");
+
+                sql = $"Select SubRegionID From Publication_SubRegion Where PublicationID ={id}";
+                pubScreen.SubRegionID = FillPubScreenItemArray(sql, "SubRegionID");
+
+                sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
+                pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
+
+                sql = $"Select SubTaskID From Publication_SubTask Where PublicationID ={id}";
+                pubScreen.SubTaskID = FillPubScreenItemArray(sql, "SubTaskID");
+
+                sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
+                object papertypeID = Dal.ExecScalarPub(sql);
+                if (papertypeID == null)
+                {
+                    pubScreen.PaperTypeID = null;
+                }
+                else
+                {
+                    pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
+                }
+
+                sql = $"Select * From Publication Where ID ={id}";
+                using (DataTable dt = Dal.GetDataTablePub(sql))
+                {
+                    pubScreen.PaperLinkGuid = Guid.Parse(dt.Rows[0]["PaperLinkGuid"].ToString());
+                    pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
+                    pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
+                    pubScreen.Title = dt.Rows[0]["Title"].ToString();
+                    pubScreen.Abstract = dt.Rows[0]["Abstract"].ToString();
+                    pubScreen.Year = dt.Rows[0]["Year"].ToString();
+                    pubScreen.Reference = dt.Rows[0]["Reference"].ToString();
+                    pubScreen.Source = dt.Rows[0]["Source"].ToString();
+                }
             }
-            else
+            catch(Exception ex)
             {
-                pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
-            }
-
-            sql = $"Select * From Publication Where ID ={id}";
-            using (DataTable dt = Dal.GetDataTablePub(sql))
-            {
-                pubScreen.PaperLinkGuid = Guid.Parse(dt.Rows[0]["PaperLinkGuid"].ToString());
-                pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
-                pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
-                pubScreen.Title = dt.Rows[0]["Title"].ToString();
-                pubScreen.Abstract = dt.Rows[0]["Abstract"].ToString();
-                pubScreen.Year = dt.Rows[0]["Year"].ToString();
-                pubScreen.Reference = dt.Rows[0]["Reference"].ToString();
-                pubScreen.Source = dt.Rows[0]["Source"].ToString();
+                Log.Error(ex, "Error in GetPaperInfoByID");
             }
 
             return pubScreen;
