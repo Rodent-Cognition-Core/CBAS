@@ -58,12 +58,12 @@ namespace CBAS.Helpers
 
                 if (fromEmailAddress == "")
                 {
-                    fromEmailAddress = "EMAIL_USER";
+                    fromEmailAddress = emailUser;
                 }
 
                 if(toEmailAddress == "")
                 {
-                    toEmailAddress = "EMAIL_USER";
+                    toEmailAddress = emailUser;
                 }
                 
                 mail.From = new MailAddress(fromEmailAddress);
@@ -74,7 +74,7 @@ namespace CBAS.Helpers
 
                 SmtpServer.Port = 587;
 
-                SmtpServer.Credentials = new System.Net.NetworkCredential("EMAIL_USER", password);
+                SmtpServer.Credentials = new System.Net.NetworkCredential(emailUser, password);
 
                 SmtpServer.EnableSsl = true;
 
