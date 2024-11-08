@@ -6,14 +6,15 @@ using System.Collections;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
+
 namespace AngularSPAWebAPI.Services
 {
     public class Dal
     {
         // Local server
-        private static string _cnnString = "Server=.\\sqlexpres;Database=MouseBytes;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;";
-        private static string _cnnString_PubScreen = "Server=.\\sqlexpres;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;";
-        private static string _cnnString_Cogbytes = "Server=.\\sqlexpres;Database=CogBytes;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;";
+        private static string _cnnString = Environment.GetEnvironmentVariable("DEF_CONN");
+        private static string _cnnString_PubScreen = Environment.GetEnvironmentVariable("PUB_CONN");
+        private static string _cnnString_Cogbytes = Environment.GetEnvironmentVariable("COG_CONN");
 
         public Dal()
         {

@@ -51,16 +51,19 @@ namespace CBAS.Helpers
             try
             {
                 MailMessage mail = new MailMessage();
-                SmtpClient SmtpServer = new SmtpClient("smtp.office365.com");
+                var emailHost = Environment.GetEnvironmentVariable("EMAIL_HOST");
+                var password = Environment.GetEnvironmentVariable("EMAIL_PASS");
+                var emailUser = Environment.GetEnvironmentVariable("EMAIL_USER");
+                SmtpClient SmtpServer = new SmtpClient(emailHost);
 
                 if (fromEmailAddress == "")
                 {
-                    fromEmailAddress = "mousebytes@uwo.ca";
+                    fromEmailAddress = emailUser;
                 }
 
                 if(toEmailAddress == "")
                 {
-                    toEmailAddress = "mousebytes@uwo.ca";
+                    toEmailAddress = emailUser;
                 }
                 
                 mail.From = new MailAddress(fromEmailAddress);
@@ -71,7 +74,7 @@ namespace CBAS.Helpers
 
                 SmtpServer.Port = 587;
 
-                SmtpServer.Credentials = new System.Net.NetworkCredential("mousebyt@uwo.ca", "");
+                SmtpServer.Credentials = new System.Net.NetworkCredential(emailUser, password);
 
                 SmtpServer.EnableSsl = true;
 

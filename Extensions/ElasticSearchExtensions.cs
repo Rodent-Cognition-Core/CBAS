@@ -18,9 +18,9 @@ namespace CBAS.Extensions
                 settings = settings.DefaultIndex(defaultIndex);
             }
 
-            var authUser = configuration["ElasticSearch:AuthUser"];
-            var authPassword = configuration["ElasticSearch:AuthPassword"];
-            var certificate = configuration["ElasticSearch:Certificate"];
+            var authUser = Environment.GetEnvironmentVariable("SEARCH_USER");
+            var authPassword = Environment.GetEnvironmentVariable("SEARCH_PASS");
+            var certificate = Environment.GetEnvironmentVariable("SEARCH_CERT");
             settings = settings.BasicAuthentication(authUser, authPassword);
             settings = settings.CertificateFingerprint(certificate);
             IElasticClient _elasticClient = new ElasticClient(settings);
