@@ -308,8 +308,10 @@ namespace AngularSPAWebAPI.Services
             {
                 var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
                 var responseString = await response.Content.ReadAsStringAsync();
+                Log.Information($"responseString: {responseString}");
 
                 JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
+                Log.Information($"jsonPubscreen: {jsonPubscreen}");
 
                 if (jsonPubscreen.collection == null || jsonPubscreen.collection.Length == 0)
                 {

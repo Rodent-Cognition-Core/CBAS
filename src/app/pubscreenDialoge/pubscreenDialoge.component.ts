@@ -988,6 +988,12 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding DOI's paper to get some paper's info from PubMed
     addDOI(doi) {
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
+            if (data.result) {
+                console.log('data.result: ' + data.result);
+            }
+            else {
+                console.log(data);
+            }
             let apiResult = 'result' in data ? data.result : data;
 
 
