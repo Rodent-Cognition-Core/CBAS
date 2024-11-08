@@ -57,12 +57,12 @@ namespace CBAS.Helpers
 
                 if (fromEmailAddress == "")
                 {
-                    fromEmailAddress = "mousebytes@uwo.ca";
+                    fromEmailAddress = "EMAIL_USER";
                 }
 
                 if(toEmailAddress == "")
                 {
-                    toEmailAddress = "mousebytes@uwo.ca";
+                    toEmailAddress = "EMAIL_USER";
                 }
                 
                 mail.From = new MailAddress(fromEmailAddress);
