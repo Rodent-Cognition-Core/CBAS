@@ -310,13 +310,27 @@ namespace AngularSPAWebAPI.Services
                 var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Log.Information($"responseString: {responseString}");
-
                 JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
-                Log.Information($"jsonPubscreen: {jsonPubscreen}");
-
+                string jsonPubscreenString = JsonConvert.SerializeObject(jsonPubscreen, Newtonsoft.Json.Formatting.Indented);
+                Log.Information($"jsonPubscreen: {jsonPubscreenString}");
+                if (jsonPubscreen.messages != null && jsonPubscreen.messages.Length > 0)
+                {
+                    foreach (var message in jsonPubscreen.messages)
+                    {
+                        Log.Warning($"jsonPubscreen message status: {message.status}");
+                    }
+                }
                 if (jsonPubscreen.collection == null || jsonPubscreen.collection.Length == 0)
                 {
+                    Log.Warning($"jsonPubscreen.collection is null");
                     return null;
+                }
+                else
+                {
+                    foreach (var jsonPubscreenFeature in jsonPubscreen.collection)
+                    {
+                        Log.Information($"author_corresponding: {jsonPubscreenFeature.author_corresponding} - authors: {jsonPubscreenFeature.authors} - year: {jsonPubscreenFeature.date}");
+                    }
                 }
 
                 List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
