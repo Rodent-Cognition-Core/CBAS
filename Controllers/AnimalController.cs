@@ -107,7 +107,7 @@ namespace AngularSPAWebAPI.Controllers
         [HttpGet("EditUserAnimalID")]
         public async Task<IActionResult> EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
         {
-            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = _animalService.GetAnimalIDByUserAnimalIdAndExpId(EditedUserAnimalId, ExpId);
+            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = await _animalService.GetAnimalIDByUserAnimalIdAndExpIdAsync(EditedUserAnimalId, ExpId);
 
             bool updated = _animalService.ReplaceAnimalId(OldAnimalId, ExistingAnimalIdToUse);
             if (isAnimalInfocompleted)
