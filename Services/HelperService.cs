@@ -51,8 +51,8 @@ namespace CBAS.Helpers
             try
             {
                 MailMessage mail = new MailMessage();
-                var emailHost = Environment.GetEnvironmentVariable("EMAIL_HOSTNAME");
-                var password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+                var emailHost = Environment.GetEnvironmentVariable("EMAIL_HOST");
+                var password = Environment.GetEnvironmentVariable("EMAIL_PASS");
                 SmtpClient SmtpServer = new SmtpClient(emailHost);
 
                 if (fromEmailAddress == "")

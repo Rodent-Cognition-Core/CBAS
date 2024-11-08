@@ -12,9 +12,9 @@ namespace AngularSPAWebAPI.Services
     public class Dal
     {
         // Local server
-        private static string _cnnString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
-        private static string _cnnString_PubScreen = Environment.GetEnvironmentVariable("PUBSCREEEN_CONNECTION");
-        private static string _cnnString_Cogbytes = Environment.GetEnvironmentVariable("COGBYTES_CONNECTION");
+        private static string _cnnString = Environment.GetEnvironmentVariable("DEF_CONN");
+        private static string _cnnString_PubScreen = Environment.GetEnvironmentVariable("PUB_CONN");
+        private static string _cnnString_Cogbytes = Environment.GetEnvironmentVariable("COG_CONN");
 
         public Dal()
         {
