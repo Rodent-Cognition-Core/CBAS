@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Nest;
+using Microsoft.AspNetCore.Http;
 
 
 
@@ -32,11 +33,6 @@ namespace AngularSPAWebAPI.Controllers
             _elasticClient = client;
             _pubScreenService = new PubScreenService(_elasticClient);
             _manager = manager;
-        }
-
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
         }
 
         // Extracting paper type list
@@ -153,10 +149,10 @@ namespace AngularSPAWebAPI.Controllers
 
         // Adding new author to database
         [HttpPost("AddAuthor")]
-        public IActionResult AddAuthor([FromBody] PubScreenAuthor author)
+        public async Task<IActionResult> AddAuthor([FromBody] PubScreenAuthor author)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
         }
 
@@ -166,28 +162,25 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetAuthor()
         {
-            //var a = _pubScreenService.getArticleFromPubMedByDoiAsync("10.1016/j.jns.2018.02.001").Result;
-            //var b = a;
-
             return new JsonResult(_pubScreenService.GetAuthors());
         }
 
         // Adding new publication to database
         [HttpPost("AddPublication")]
         //[AllowAnonymous]
-        public IActionResult AddPublication([FromBody] PubScreen publication)
+        public async Task<IActionResult> AddPublication([FromBody] PubScreen publication)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddPublications(publication, userEmail));
         }
 
         // Edit an existing publication
         [HttpPost("EditPublication")]
-        public IActionResult EditPublication(int publicationId, [FromBody] PubScreen publication)
+        public async Task<IActionResult> EditPublication(int publicationId, [FromBody] PubScreen publication)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.EditPublication(publicationId, publication, userEmail));
         }
 
@@ -227,33 +220,37 @@ namespace AngularSPAWebAPI.Controllers
         // Getting some paper information based on Doi from pubMed
         [HttpGet("GetPaperInfoByDOI")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByDOI(string DOI)
+        public async Task<IActionResult> GetPaperInfoByDOI(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDoi(DOI));
+            var result = await _pubScreenService.GetPaperInfoByDoi(DOI);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on pubMed key 
         [HttpGet("GetPaperInfoByPubKey")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByPubKey(string PubKey)
+        public async Task<IActionResult> GetPaperInfoByPubKey(string PubKey)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByPubMedKey(PubKey));
+            var result = await _pubScreenService.GetPaperInfoByPubMedKey(PubKey);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on Doi from BioRxiv
         [HttpGet("GetPaparInfoFromDOIBio")]
         [AllowAnonymous]
-        public IActionResult GetPaparInfoFromDOIBio(string DOI)
+        public async Task<IActionResult> GetPaparInfoFromDOIBio(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDOIBIO(DOI));
+            var result = _pubScreenService.GetPaperInfoByDOIBIO(DOI);
+            return new JsonResult(result);
         }
 
         // Getting some paper information based on Doi from Crossref
         [HttpGet("GetPaparInfoFromDOICrossref")]
         [AllowAnonymous]
-        public IActionResult GetPaperInfoByDOICrossref(string DOI)
+        public async Task<IActionResult> GetPaperInfoByDOICrossref(string DOI)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByDOICrossref(DOI));
+            var result = await _pubScreenService.GetPaperInfoByDOICrossref(DOI);
+            return new JsonResult(result);
         }
 
         [HttpGet("GetPaparInfoByID")]
@@ -270,10 +267,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
-        public IActionResult AddQueuePaper(int pubmedID, string doi)
+        public async Task<IActionResult> AddQueuePaper(int pubmedID, string doi)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
         }
 
@@ -289,14 +286,21 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public IActionResult GetPubCount()
         {
-            return new JsonResult(_pubScreenService.GetPubCount());
+            var result = _pubScreenService.GetPubCount();
+            //  When the Value property of JsonResult is set to a tuple, it might not be properly serialized into JSON, leading to a null object on the client side.
+            var tempObject = new
+            {
+                pubCount = result.Item1,
+                featureCount = result.Item2,
+            };
+            return new JsonResult(tempObject);
         }
 
         [HttpGet("AddCSVPapers")]
-        public IActionResult AddCSVPapers()
+        public async Task<IActionResult> AddCSVPapers()
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
             return new JsonResult(_pubScreenService.AddCSVPapers(userEmail));
         }
 

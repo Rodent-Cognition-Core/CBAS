@@ -63,7 +63,6 @@ namespace AngularSPAWebAPI.Controllers
         [HttpPost("UpdateExperiment")]
         public IActionResult UpdateExperiment([FromBody]Experiment experiment)
         {
-
             var user = GetCurrentUser();
             var userEmail = user.Result.UserName;
             var userID = user.Result.Id;
@@ -112,7 +111,6 @@ namespace AngularSPAWebAPI.Controllers
 
             return new JsonResult(_experimentService.GetAllSpeciesList());
         }
-
 
     }
 }

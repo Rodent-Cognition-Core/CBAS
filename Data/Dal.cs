@@ -4,18 +4,17 @@ using System.Xml;
 using System.Data.SqlClient;
 using System.Collections;
 using Microsoft.Extensions.Configuration;
+using Serilog;
+
 
 namespace AngularSPAWebAPI.Services
 {
     public class Dal
     {
         // Local server
-
-        private static string _cnnString = "Server=.\\sqlexpres;Database=MouseBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
-        private static string _cnnString_PubScreen = "Server=.\\sqlexpres;Database=PubScreen;Trusted_Connection=True;MultipleActiveResultSets=true";
-        private static string _cnnString_Cogbytes = "Server=.\\sqlexpres;Database=CogBytes;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-
+        private static string _cnnString = Environment.GetEnvironmentVariable("DEF_CONN");
+        private static string _cnnString_PubScreen = Environment.GetEnvironmentVariable("PUB_CONN");
+        private static string _cnnString_Cogbytes = Environment.GetEnvironmentVariable("COG_CONN");
 
         public Dal()
         {
@@ -30,17 +29,34 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString))
             {
-                cn.Open();
-
-                return ExecuteNonQuery(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecuteNonQuery(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
 
         public static int ExecuteNonQuery(SqlConnection connection, CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
-            //LogHelper.Log(cmdTxt);
-
             int retval = -1;
 
             using (SqlCommand cmd = new SqlCommand())
@@ -61,15 +77,32 @@ namespace AngularSPAWebAPI.Services
 
             using (SqlConnection cn = new SqlConnection(_cnnString))
             {
-                cn.Open();
-
-                using (var bulk = new SqlBulkCopy(cn))
+                try
                 {
-                    bulk.DestinationTableName = destinationTableName;
-                    bulk.WriteToServer(dtToInsert);
+                    cn.Open();
+                    using (var bulk = new SqlBulkCopy(cn))
+                    {
+                        bulk.DestinationTableName = destinationTableName;
+                        bulk.WriteToServer(dtToInsert);
+                    }
                 }
-
-                cn.Close();
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
 
             }
 
@@ -84,16 +117,33 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
             {
-                cn.Open();
-
-                return ExecuteNonQueryPub(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecuteNonQueryPub(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
         public static int ExecuteNonQueryPub(SqlConnection connection, CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
-            //LogHelper.Log(cmdTxt);
-
             int retval = -1;
 
             using (SqlCommand cmd = new SqlCommand())
@@ -118,9 +168,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
             {
-                cn.Open();
-
-                return ExecuteNonQueryCog(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecuteNonQueryCog(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -145,24 +214,12 @@ namespace AngularSPAWebAPI.Services
 
         public static DataSet ExecDS(CommandType cmdType, string cmdTxt, bool logEnabled = true)
         {
-            logEnabled = true;
-            if (logEnabled)
-            {
-                //LogHelper.Log(cmdTxt);
-            }
-
             return ExecDS(cmdType, cmdTxt, (SqlParameter[])null);
         }
 
         //PubScrren
         public static DataSet ExecDSPub(CommandType cmdType, string cmdTxt, bool logEnabled = true)
         {
-            logEnabled = true;
-            if (logEnabled)
-            {
-                //LogHelper.Log(cmdTxt);
-            }
-
             return ExecDSPub(cmdType, cmdTxt, (SqlParameter[])null);
         }
 
@@ -171,20 +228,33 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
             {
-                cn.Open();
-
-                return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
         public static DataSet ExecDSCog(CommandType cmdType, string cmdTxt, bool logEnabled = true)
         {
-            logEnabled = true;
-            if (logEnabled)
-            {
-                //LogHelper.Log(cmdTxt);
-            }
-
             return ExecDSCog(cmdType, cmdTxt, (SqlParameter[])null);
         }
 
@@ -192,9 +262,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
             {
-                cn.Open();
-
-                return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -202,9 +291,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString))
             {
-                cn.Open();
-
-                return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecDS(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -238,7 +346,6 @@ namespace AngularSPAWebAPI.Services
         }
 
 
-
         private static SqlDataReader GetReader(SqlConnection connection, CommandType cmdType, string cmdTxt, SqlParameter[] cmdParams)
         {
             SqlDataReader dr;
@@ -252,7 +359,6 @@ namespace AngularSPAWebAPI.Services
 
                 cmd.Parameters.Clear();
             }
-
             return dr;
         }
 
@@ -286,35 +392,56 @@ namespace AngularSPAWebAPI.Services
         public static SqlDataReader GetReaderCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
             SqlConnection cn = new SqlConnection(_cnnString_Cogbytes);
-            cn.Open();
-
             try
             {
+                cn.Open();
                 return GetReader(cn, cmdType, cmdTxt, cmdParams);
             }
-            catch
+            catch (SqlException ex)
             {
-                cn.Close();
+                Log.Fatal($"SQL Exception: {ex.Message}");
                 throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal($"Exception: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (cn.State == ConnectionState.Open)
+                {
+                    cn.Close();
+                }
             }
         }
 
         public static SqlDataReader GetReader(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
             SqlConnection cn = new SqlConnection(_cnnString);
-            cn.Open();
-
             try
             {
+                cn.Open();
                 return GetReader(cn, cmdType, cmdTxt, cmdParams);
             }
-            catch
+            catch (SqlException ex)
             {
-                cn.Close();
+                Log.Fatal($"SQL Exception: {ex.Message}");
                 throw;
             }
+            catch (Exception ex)
+            {
+                Log.Fatal($"Exception: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (cn.State == ConnectionState.Open)
+                {
+                    cn.Close();
+                }
+            }
         }
-
 
         public static object ExecScalar(string cmdTxt)
         {
@@ -333,8 +460,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
             {
-                cn.Open();
-                return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -347,8 +494,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString_Cogbytes))
             {
-                cn.Open();
-                return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -356,8 +523,28 @@ namespace AngularSPAWebAPI.Services
         {
             using (SqlConnection cn = new SqlConnection(_cnnString))
             {
-                cn.Open();
-                return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                try
+                {
+                    cn.Open();
+                    return ExecScalar(cn, cmdType, cmdTxt, cmdParams);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        cn.Close();
+                    }
+                }
             }
         }
 
@@ -375,9 +562,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             return retval;
-
         }
-
 
         public static DataTable GetDataTable(string cmdTxt, bool logEnabled = true)
         {
@@ -447,9 +632,7 @@ namespace AngularSPAWebAPI.Services
 
                     cmd.Parameters.Add(param);
                 }
-
             }
-
             return;
         }
 
