@@ -307,7 +307,7 @@ namespace AngularSPAWebAPI.Services
             StringContent content = new System.Net.Http.StringContent(String.Empty);
             try
             {
-                var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/json", content);
+                var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/na/json", content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Log.Information($"responseString: {responseString}");
                 JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
