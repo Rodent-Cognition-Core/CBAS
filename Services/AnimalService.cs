@@ -14,197 +14,297 @@ namespace AngularSPAWebAPI.Services
 
     public class AnimalService
     {
-        public List<Animal> GetAnimalByExpID(int expID)
+        public async Task<List<Animal>> GetAnimalByExpIDAsync(int expID)
         {
-            List<Animal> lstAnimal = new List<Animal>();
+            string query = @"SELECT Animal.*, Strain.Strain, Genotype.Genotype 
+                             FROM Animal
+                             LEFT JOIN Genotype ON Genotype.ID = Animal.GID
+                             LEFT JOIN Strain ON Strain.ID = Animal.SID 
+                             WHERE ExpID = @ExpID";
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.*, Strain.Strain, Genotype.Genotype From Animal
-                                                        left join Genotype on Genotype.ID = Animal.GID
-                                                        left join Strain on Strain.ID = Animal.SID 
-                                                        WHERE ExpID = {expID}"))
+            var parameters = new List<SqlParameter>
             {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    lstAnimal.Add(new Animal
-                    {
-                        ExpID = Int32.Parse(dr["ExpID"].ToString()),
-                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
-                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
-                        SID = HelperService.ConvertToNullableInt(dr["SID"].ToString()),
-                        GID = HelperService.ConvertToNullableInt(dr["GID"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString()),
-                        Genotype = Convert.ToString(dr["Genotype"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
+                new SqlParameter("@ExpID", expID)
+            };
 
-                    });
-                }
-
-            }
-
-            return lstAnimal;
-
-        }
-
-        public bool DoesAnimalIDExist(string userAnimalId, int expID)
-        {
-            string sql = $"select count(*) from Animal where ltrim(rtrim(UserAnimalID)) = '{userAnimalId.Trim()}' and  ExpID = {expID}";
-
-            int countResult = Int32.Parse(Dal.ExecScalar(sql).ToString());
-
-            bool flag = (countResult == 0) ? false : true;
-            return flag;
-        }
-
-        // Function definition for inserting animal info
-        public int InsertAnimal(Animal animal)
-        {
-            string sql = $"Insert into Animal " +
-              $"(ExpID, UserAnimalID, SID, GID, Sex) Values " +
-              $"({animal.ExpID}, '{animal.UserAnimalID}', {animal.SID}, {animal.GID}, '{animal.Sex}'); SELECT @@IDENTITY AS 'Identity';";
-
-            return Int32.Parse(Dal.ExecScalar(sql).ToString());
-        }
-
-        //Function Definition for updating Animal info
-        public void UpdateAnimal(Animal animal)
-        {
-            // For Daniel  (UserAnimalID = '{animal.UserAnimalID}' should be removed from the sql query)
-            string sql = $"UPDATE Animal " +
-                 $"SET Sex = '{animal.Sex}'," +
-                 $"GID = '{animal.GID}', SID = '{animal.SID}' WHERE AnimalID = {animal.AnimalID} ;";
-            
-            Dal.ExecuteNonQuery(sql);
-
-        }
-
-        public Int32 GetCountOfAnimals()
-        {
-            string sql = "select count(*) from animal Where SID is not Null and GID is not Null and Sex!=''";
-
-            return Int32.Parse(Dal.ExecScalar(sql).ToString());
-        }
-
-        public void DeleteAnimalByAnimalID(int animalID)
-        {
-            string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where AnimalID = {animalID});
-                            Delete From SessionInfo Where AnimalID = {animalID};
-                            Delete From Upload Where AnimalID = {animalID};
-							Delete From Animal Where AnimalID = {animalID};";
-
-            Dal.ExecuteNonQuery(sql);
-        }
-
-
-        // Function definition to extract list of all strains from strain tbl in DB
-        public List<Strains> GetStrainList()
-        {
-            List<Strains> StrainList = new List<Strains>();
-            using (DataTable dt = Dal.GetDataTable($@"Select * From Strain"))
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                return await Dal.ExecuteQueryAsync(query, reader => new Animal
                 {
-                    StrainList.Add(new Strains
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
-                        Link = Convert.ToString(dr["Link"].ToString()),
-
-                    });
-                }
+                    ExpID = reader.GetInt32(reader.GetOrdinal("ExpID")),
+                    AnimalID = reader.GetInt32(reader.GetOrdinal("AnimalID")),
+                    UserAnimalID = reader.GetString(reader.GetOrdinal("UserAnimalID")),
+                    SID = reader.IsDBNull(reader.GetOrdinal("SID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("SID")),
+                    GID = reader.IsDBNull(reader.GetOrdinal("GID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("GID")),
+                    Sex = reader.GetString(reader.GetOrdinal("Sex")),
+                    Genotype = reader.GetString(reader.GetOrdinal("Genotype")),
+                    Strain = reader.GetString(reader.GetOrdinal("Strain"))
+                }, parameters);
             }
-
-            return StrainList;
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting animals by ExpID: {ExpID}", expID);
+                return new List<Animal>();
+            }
         }
 
-        // Function definition to extract list of all strains from Genotype tbl in DB
-        public List<Geno> GetGenoList(int? strainID)
+        public async Task<bool> DoesAnimalIDExistAsync(string userAnimalId, int expID)
         {
-            List<int> lstGenoID = new List<int>();
+            string sql = "SELECT COUNT(*) FROM Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserAnimalID", userAnimalId.Trim()),
+                new SqlParameter("@ExpID", expID)
+            };
+
+            try
+            {
+                int countResult = Convert.ToInt32(await Dal.ExecScalarAsync(sql, parameters));
+                return countResult > 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error checking if AnimalID exists for UserAnimalID: {UserAnimalID}, ExpID: {ExpID}", userAnimalId, expID);
+                return false;
+            }
+        }
+
+        public async Task<int> InsertAnimalAsync(Animal animal)
+        {
+            string sql = @"INSERT INTO Animal (ExpID, UserAnimalID, SID, GID, Sex) 
+                   VALUES (@ExpID, @UserAnimalID, @SID, @GID, @Sex); 
+                   SELECT CAST(scope_identity() AS int);";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", animal.ExpID),
+                new SqlParameter("@UserAnimalID", animal.UserAnimalID),
+                new SqlParameter("@SID", animal.SID ?? (object)DBNull.Value),
+                new SqlParameter("@GID", animal.GID ?? (object)DBNull.Value),
+                new SqlParameter("@Sex", animal.Sex)
+            };
+
+            try
+            {
+                object result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error inserting animal: {@Animal}", animal);
+                throw;
+            }
+        }
+
+        public async Task UpdateAnimalAsync(Animal animal)
+        {
+            string sql = @"UPDATE Animal 
+                   SET Sex = @Sex, GID = @GID, SID = @SID 
+                   WHERE AnimalID = @AnimalID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@Sex", animal.Sex),
+                new SqlParameter("@GID", animal.GID ?? (object)DBNull.Value),
+                new SqlParameter("@SID", animal.SID ?? (object)DBNull.Value),
+                new SqlParameter("@AnimalID", animal.AnimalID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error updating animal: {@Animal}", animal);
+                throw;
+            }
+        }
+
+        public async Task<int> GetCountOfAnimalsAsync()
+        {
+            string sql = "SELECT COUNT(*) FROM Animal WHERE SID IS NOT NULL AND GID IS NOT NULL AND Sex != ''";
+
+            try
+            {
+                object result = await Dal.ExecScalarAsync(sql);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting count of animals");
+                throw;
+            }
+        }
+
+        public async Task DeleteAnimalByAnimalIDAsync(int animalID)
+        {
+            string sql = @"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
+                   Delete From SessionInfo Where AnimalID = @AnimalID;
+                   Delete From Upload Where AnimalID = @AnimalID;
+                   Delete From Animal Where AnimalID = @AnimalID;";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AnimalID", animalID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting animal with AnimalID: {AnimalID}", animalID);
+                throw;
+            }
+        }
+
+        public async Task<List<Strains>> GetStrainListAsync()
+        {
+            string query = "SELECT * FROM Strain";
+
+            try
+            {
+                return await Dal.ExecuteQueryAsync(query, reader => new Strains
+                {
+                    ID = reader.GetInt32(reader.GetOrdinal("ID")),
+                    Strain = reader.GetString(reader.GetOrdinal("Strain")),
+                    Link = reader.GetString(reader.GetOrdinal("Link"))
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting strain list");
+                return new List<Strains>();
+            }
+        }
+
+        public async Task<List<Geno>> GetGenoListAsync(int? strainID)
+        {
             List<Geno> GenoList = new List<Geno>();
-            string lstGenoIDCsv;
 
             if (strainID == null || strainID == 0)
             {
                 return GenoList;
             }
-            
-            lstGenoID = HelperService.GetGenoID(strainID);
-            lstGenoIDCsv = String.Join(",", lstGenoID.Select(x => x.ToString()).ToArray());
-           
 
-            using (DataTable dt = Dal.GetDataTable($@"Select * From Genotype where ID in ({lstGenoIDCsv})"))
+            List<int> lstGenoID = HelperService.GetGenoID(strainID);
+            string lstGenoIDCsv = String.Join(",", lstGenoID.Select(x => x.ToString()).ToArray());
+
+            string query = $"SELECT * FROM Genotype WHERE ID IN ({lstGenoIDCsv})";
+
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                return await Dal.ExecuteQueryAsync(query, reader => new Geno
                 {
-                    GenoList.Add(new Geno
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Genotype = Convert.ToString(dr["Genotype"].ToString()),
-                        Link = Convert.ToString(dr["Link"].ToString()),
-                        Description = Convert.ToString(dr["Description"].ToString()),
-
-                    });
-                }
+                    ID = reader.GetInt32(reader.GetOrdinal("ID")),
+                    Genotype = reader.GetString(reader.GetOrdinal("Genotype")),
+                    Link = reader.GetString(reader.GetOrdinal("Link")),
+                    Description = reader.GetString(reader.GetOrdinal("Description"))
+                });
             }
-
-            return GenoList;
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting genotype list for strainID: {StrainID}", strainID);
+                return new List<Geno>();
+            }
         }
 
-        public bool IsUserAnimalIDExist(string UserAnimalID, int ExpID)
+        public async Task<bool> IsUserAnimalIDExistAsync(string userAnimalID, int expID)
         {
-            bool flag = false;
-            string sql = $"Select count(*) From Animal Where UserAnimalID= '{UserAnimalID}' and ExpID={ExpID}; ";
-            int count = Int32.Parse(Dal.ExecScalar(sql).ToString());
+            string sql = "SELECT COUNT(*) FROM Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
 
-            if(count>0) { flag = true; }
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserAnimalID", userAnimalID.Trim()),
+                new SqlParameter("@ExpID", expID)
+            };
 
-            return flag;
-            
+            try
+            {
+                int count = Convert.ToInt32(await Dal.ExecScalarAsync(sql, parameters));
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error checking if UserAnimalID exists for UserAnimalID: {UserAnimalID}, ExpID: {ExpID}", userAnimalID, expID);
+                return false;
+            }
         }
 
         public async Task<(int, bool)> GetAnimalIDByUserAnimalIdAndExpIdAsync(string editedUserAnimalId, int expId)
         {
             string sql = @"
-                SELECT AnimalID, 
-                       CASE 
-                           WHEN Sex IS NOT NULL AND gid IS NOT NULL AND sid IS NOT NULL THEN 1 
-                           ELSE 0 
-                       END AS IsInfoCompleted
+                SELECT 
+                    AnimalID, 
+                    CASE 
+                        WHEN Sex IS NOT NULL AND GID IS NOT NULL AND SID IS NOT NULL THEN 1 
+                        ELSE 0 
+                    END AS IsInfoCompleted
                 FROM Animal 
-                WHERE UserAnimalID = @editedUserAnimalId AND ExpId = @expId;
-            ";
+                WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
             {
-                new SqlParameter("@editedUserAnimalId", editedUserAnimalId),
-                new SqlParameter("@expId", expId)
+                new SqlParameter("@UserAnimalID", editedUserAnimalId.Trim()),
+                new SqlParameter("@ExpID", expId)
             };
 
-            return await Dal.ExecuteQueryAsync(sql, parameters.ToArray(), async reader =>
+            try
             {
-                if (await reader.ReadAsync())
+                return await Dal.ExecuteQuerySingleAsync(sql, reader =>
                 {
                     int animalId = reader.GetInt32(reader.GetOrdinal("AnimalID"));
                     bool isInfoCompleted = reader.GetInt32(reader.GetOrdinal("IsInfoCompleted")) == 1;
                     return (animalId, isInfoCompleted);
-                }
-                return (-1, false); // Default return if no data is found
-            });
+                }, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting AnimalID and checking info completeness for UserAnimalID: {UserAnimalID}, ExpID: {ExpID}", editedUserAnimalId, expId);
+                return (0, false);
+            }
         }
 
-        public bool ReplaceAnimalId(int oldAnimalId, int existingAnimalIdToUse)
+        public async Task<bool> ReplaceAnimalIdAsync(int oldAnimalId, int existingAnimalIdToUse)
         {
-            string sql = $"Update Upload Set AnimalId = {existingAnimalIdToUse} Where AnimalId= {oldAnimalId}; ";
-            Dal.ExecuteNonQuery(sql);
+            string sql = @"
+                BEGIN TRANSACTION;
+                UPDATE Upload SET AnimalId = @ExistingAnimalIdToUse WHERE AnimalId = @OldAnimalId;
+                DELETE FROM RBT_TouchScreen_Features WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM rbt_data_cached_avg WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM rbt_data_cached_std WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM rbt_data_cached_cnt WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM rbt_data_cached_sum WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM SessionInfo_Dynamic WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM SessionInfo WHERE AnimalID = @OldAnimalId;
+                DELETE FROM Upload WHERE AnimalID = @OldAnimalId;
+                DELETE FROM Animal WHERE AnimalID = @OldAnimalId;
+                COMMIT TRANSACTION;";
 
-            DeleteAnimalByAnimalID(oldAnimalId); 
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExistingAnimalIdToUse", existingAnimalIdToUse),
+                new SqlParameter("@OldAnimalId", oldAnimalId)
+            };
 
-            return true;
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error replacing AnimalID from {OldAnimalId} to {ExistingAnimalIdToUse}", oldAnimalId, existingAnimalIdToUse);
+                return false;
+            }
         }
 
 
@@ -279,7 +379,7 @@ namespace AngularSPAWebAPI.Services
         //            lstGenoID.Add(23);
         //            lstGenoID.Add(24);
         //            break;
-                    
+
         //    }
 
         //    return lstGenoID;

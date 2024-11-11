@@ -418,6 +418,175 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public static async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<SqlDataReader, T> map, List<SqlParameter> parameters = null)
+        {
+            List<T> result = new List<T>();
+
+            using (SqlConnection conn = new SqlConnection(_cnnString))
+            {
+                try
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters.ToArray());
+                        }
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                result.Add(map(reader));
+                            }
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex, "SQL Exception occurred while executing query: {Query}", query);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Exception occurred while executing query: {Query}", query);
+                    throw;
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        await conn.CloseAsync();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static async Task<T> ExecuteQuerySingleAsync<T>(string sql, Func<SqlDataReader, T> map, List<SqlParameter> parameters)
+        {
+            using (var connection = new SqlConnection(_cnnString))
+            {
+                try
+                {
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        if (parameters != null)
+                        {
+                            command.Parameters.AddRange(parameters.ToArray());
+                        }
+
+                        await connection.OpenAsync();
+
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                return map(reader);
+                            }
+                            else
+                            {
+                                return default;
+                            }
+                        }
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex, "SQL Exception occurred while executing query: {Query}", sql);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Exception occurred while executing query: {Query}", sql);
+                    throw;
+                }
+                finally
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        await connection.CloseAsync();
+                    }
+                }
+            }
+        }
+
+        public static async Task<object> ExecScalarAsync(string query, List<SqlParameter> parameters = null)
+        {
+            using (SqlConnection conn = new SqlConnection(_cnnString))
+            {
+                try
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters.ToArray());
+                        }
+
+                        return await cmd.ExecuteScalarAsync();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex, "SQL Exception occurred while executing scalar query: {Query}", query);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Exception occurred while executing scalar query: {Query}", query);
+                    throw;
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        await conn.CloseAsync();
+                    }
+                }
+            }
+        }
+
+        public static async Task<int> ExecuteNonQueryAsync(string query, List<SqlParameter> parameters = null)
+        {
+            using (SqlConnection conn = new SqlConnection(_cnnString))
+            {
+                try
+                {
+                    await conn.OpenAsync();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters.ToArray());
+                        }
+
+                        return await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex, "SQL Exception occurred while executing non-query: {Query}", query);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Exception occurred while executing non-query: {Query}", query);
+                    throw;
+                }
+                finally
+                {
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        await conn.CloseAsync();
+                    }
+                }
+            }
+        }
+
         public static SqlDataReader GetReader(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
         {
             SqlConnection cn = new SqlConnection(_cnnString);
