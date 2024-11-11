@@ -1,9 +1,11 @@
 using AngularSPAWebAPI.Controllers;
 using AngularSPAWebAPI.Models;
 using CBAS.Helpers;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -165,17 +167,34 @@ namespace AngularSPAWebAPI.Services
             
         }
 
-        public (int, bool) GetAnimalIDByUserAnimalIdAndExpId(string editedUserAnimalId, int expId)
+        public async Task<(int, bool)> GetAnimalIDByUserAnimalIdAndExpIdAsync(string editedUserAnimalId, int expId)
         {
-            string sql = $"Select AnimalID From Animal Where UserAnimalID= '{editedUserAnimalId}' and ExpId={expId}; ";
-            int animalId = Int32.Parse(Dal.ExecScalar(sql).ToString());
+            string sql = @"
+                SELECT AnimalID, 
+                       CASE 
+                           WHEN Sex IS NOT NULL AND gid IS NOT NULL AND sid IS NOT NULL THEN 1 
+                           ELSE 0 
+                       END AS IsInfoCompleted
+                FROM Animal 
+                WHERE UserAnimalID = @editedUserAnimalId AND ExpId = @expId;
+            ";
 
-            string sql2 = $"Select AnimalID From Animal Where AnimalId = '{animalId}' and Sex is not null and gid is not null and sid is not null ; ";
-            int count = Int32.Parse(Dal.ExecScalar(sql2).ToString());
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@editedUserAnimalId", editedUserAnimalId),
+                new SqlParameter("@expId", expId)
+            };
 
-            bool isAnimalInfocompleted = (count > 0) ? true : false;
-
-            return (animalId, isAnimalInfocompleted);
+            return await Dal.ExecuteQueryAsync(sql, parameters.ToArray(), async reader =>
+            {
+                if (await reader.ReadAsync())
+                {
+                    int animalId = reader.GetInt32(reader.GetOrdinal("AnimalID"));
+                    bool isInfoCompleted = reader.GetInt32(reader.GetOrdinal("IsInfoCompleted")) == 1;
+                    return (animalId, isInfoCompleted);
+                }
+                return (-1, false); // Default return if no data is found
+            });
         }
 
         public bool ReplaceAnimalId(int oldAnimalId, int existingAnimalIdToUse)

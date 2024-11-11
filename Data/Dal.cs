@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Collections;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace AngularSPAWebAPI.Services
@@ -562,6 +564,42 @@ namespace AngularSPAWebAPI.Services
             }
 
             return retval;
+        }
+
+        public static async Task<T> ExecuteQueryAsync<T>(string sql, SqlParameter[] parameters, Func<SqlDataReader, Task<T>> readFunc)
+        {
+            SqlConnection connection = null;
+            try
+            {
+                connection = new SqlConnection(_cnnString);
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddRange(parameters);
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        return await readFunc(reader);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Fatal($"SQL Exception: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal($"Exception: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                if (connection != null && connection.State == ConnectionState.Open)
+                {
+                    await connection.CloseAsync();
+                }
+            }
         }
 
         public static DataTable GetDataTable(string cmdTxt, bool logEnabled = true)
