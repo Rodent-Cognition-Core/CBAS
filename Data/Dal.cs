@@ -431,14 +431,17 @@ namespace AngularSPAWebAPI.Services
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.CommandTimeout = 300;
-                        foreach (SqlParameter param in cmdParams)
+                        if (cmdParams != null)
                         {
-                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            foreach (SqlParameter param in cmdParams)
                             {
-                                param.Value = DBNull.Value;
-                            }
+                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                {
+                                    param.Value = DBNull.Value;
+                                }
 
-                            cmd.Parameters.Add(param);
+                                cmd.Parameters.Add(param);
+                            }
                         }
 
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -482,14 +485,17 @@ namespace AngularSPAWebAPI.Services
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.CommandTimeout = 300;
-                        foreach (SqlParameter param in cmdParams)
+                        if (cmdParams != null)
                         {
-                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            foreach (SqlParameter param in cmdParams)
                             {
-                                param.Value = DBNull.Value;
-                            }
+                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                {
+                                    param.Value = DBNull.Value;
+                                }
 
-                            cmd.Parameters.Add(param);
+                                cmd.Parameters.Add(param);
+                            }
                         }
 
                         await connection.OpenAsync();
@@ -538,14 +544,17 @@ namespace AngularSPAWebAPI.Services
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.CommandTimeout = 300;
-                        foreach (SqlParameter param in cmdParams)
+                        if (cmdParams != null)
                         {
-                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            foreach (SqlParameter param in cmdParams)
                             {
-                                param.Value = DBNull.Value;
-                            }
+                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                {
+                                    param.Value = DBNull.Value;
+                                }
 
-                            cmd.Parameters.Add(param);
+                                cmd.Parameters.Add(param);
+                            }
                         }
 
                         return await cmd.ExecuteScalarAsync();
@@ -582,14 +591,17 @@ namespace AngularSPAWebAPI.Services
                     {
                         cmd.CommandType = CommandType.Text;
                         cmd.CommandTimeout = 300;
-                        foreach (SqlParameter param in cmdParams)
+                        if (cmdParams != null)
                         {
-                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            foreach (SqlParameter param in cmdParams)
                             {
-                                param.Value = DBNull.Value;
-                            }
+                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                {
+                                    param.Value = DBNull.Value;
+                                }
 
-                            cmd.Parameters.Add(param);
+                                cmd.Parameters.Add(param);
+                            }
                         }
 
                         return await cmd.ExecuteNonQueryAsync();
