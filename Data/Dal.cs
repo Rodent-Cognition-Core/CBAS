@@ -418,7 +418,7 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public static async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<SqlDataReader, T> map, List<SqlParameter> parameters = null)
+        public static async Task<List<T>> ExecuteQueryAsync<T>(string query, Func<SqlDataReader, T> map, List<SqlParameter> cmdParams = null)
         {
             List<T> result = new List<T>();
 
@@ -429,9 +429,16 @@ namespace AngularSPAWebAPI.Services
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        if (parameters != null)
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandTimeout = 300;
+                        foreach (SqlParameter param in cmdParams)
                         {
-                            cmd.Parameters.AddRange(parameters.ToArray());
+                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            {
+                                param.Value = DBNull.Value;
+                            }
+
+                            cmd.Parameters.Add(param);
                         }
 
                         using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -465,22 +472,29 @@ namespace AngularSPAWebAPI.Services
             return result;
         }
 
-        public static async Task<T> ExecuteQuerySingleAsync<T>(string sql, Func<SqlDataReader, T> map, List<SqlParameter> parameters)
+        public static async Task<T> ExecuteQuerySingleAsync<T>(string sql, Func<SqlDataReader, T> map, List<SqlParameter> cmdParams)
         {
             using (var connection = new SqlConnection(_cnnString))
             {
                 try
                 {
-                    using (var command = new SqlCommand(sql, connection))
+                    using (var cmd = new SqlCommand(sql, connection))
                     {
-                        if (parameters != null)
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandTimeout = 300;
+                        foreach (SqlParameter param in cmdParams)
                         {
-                            command.Parameters.AddRange(parameters.ToArray());
+                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            {
+                                param.Value = DBNull.Value;
+                            }
+
+                            cmd.Parameters.Add(param);
                         }
 
                         await connection.OpenAsync();
 
-                        using (var reader = await command.ExecuteReaderAsync())
+                        using (var reader = await cmd.ExecuteReaderAsync())
                         {
                             if (await reader.ReadAsync())
                             {
@@ -513,7 +527,7 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public static async Task<object> ExecScalarAsync(string query, List<SqlParameter> parameters = null)
+        public static async Task<object> ExecScalarAsync(string query, List<SqlParameter> cmdParams = null)
         {
             using (SqlConnection conn = new SqlConnection(_cnnString))
             {
@@ -522,9 +536,16 @@ namespace AngularSPAWebAPI.Services
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        if (parameters != null)
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandTimeout = 300;
+                        foreach (SqlParameter param in cmdParams)
                         {
-                            cmd.Parameters.AddRange(parameters.ToArray());
+                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            {
+                                param.Value = DBNull.Value;
+                            }
+
+                            cmd.Parameters.Add(param);
                         }
 
                         return await cmd.ExecuteScalarAsync();
@@ -550,7 +571,7 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public static async Task<int> ExecuteNonQueryAsync(string query, List<SqlParameter> parameters = null)
+        public static async Task<int> ExecuteNonQueryAsync(string query, List<SqlParameter> cmdParams = null)
         {
             using (SqlConnection conn = new SqlConnection(_cnnString))
             {
@@ -559,9 +580,16 @@ namespace AngularSPAWebAPI.Services
                     await conn.OpenAsync();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        if (parameters != null)
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandTimeout = 300;
+                        foreach (SqlParameter param in cmdParams)
                         {
-                            cmd.Parameters.AddRange(parameters.ToArray());
+                            if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                            {
+                                param.Value = DBNull.Value;
+                            }
+
+                            cmd.Parameters.Add(param);
                         }
 
                         return await cmd.ExecuteNonQueryAsync();
