@@ -37,8 +37,8 @@ namespace AngularSPAWebAPI.Services
                     SID = reader.IsDBNull(reader.GetOrdinal("SID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("SID")),
                     GID = reader.IsDBNull(reader.GetOrdinal("GID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("GID")),
                     Sex = reader.GetString(reader.GetOrdinal("Sex")),
-                    Genotype = reader.GetString(reader.GetOrdinal("Genotype")),
-                    Strain = reader.GetString(reader.GetOrdinal("Strain"))
+                    Genotype = reader.IsDBNull(reader.GetOrdinal("Genotype")) ? null : reader.GetString(reader.GetOrdinal("Genotype")),
+                    Strain = reader.IsDBNull(reader.GetOrdinal("Strain")) ? null : reader.GetString(reader.GetOrdinal("Strain"))
                 }, parameters);
             }
             catch (Exception ex)
@@ -175,8 +175,8 @@ namespace AngularSPAWebAPI.Services
                 return await Dal.ExecuteQueryAsync(query, reader => new Strains
                 {
                     ID = reader.GetInt32(reader.GetOrdinal("ID")),
-                    Strain = reader.GetString(reader.GetOrdinal("Strain")),
-                    Link = reader.GetString(reader.GetOrdinal("Link"))
+                    Strain = reader.IsDBNull(reader.GetOrdinal("Strain")) ? null : reader.GetString(reader.GetOrdinal("Strain")),
+                    Link = reader.IsDBNull(reader.GetOrdinal("Link")) ? null : reader.GetString(reader.GetOrdinal("Link"))
                 });
             }
             catch (Exception ex)
@@ -205,9 +205,9 @@ namespace AngularSPAWebAPI.Services
                 return await Dal.ExecuteQueryAsync(query, reader => new Geno
                 {
                     ID = reader.GetInt32(reader.GetOrdinal("ID")),
-                    Genotype = reader.GetString(reader.GetOrdinal("Genotype")),
-                    Link = reader.GetString(reader.GetOrdinal("Link")),
-                    Description = reader.GetString(reader.GetOrdinal("Description"))
+                    Genotype = reader.IsDBNull(reader.GetOrdinal("Genotype")) ? null : reader.GetString(reader.GetOrdinal("Genotype")),
+                    Link = reader.IsDBNull(reader.GetOrdinal("Link")) ? null : reader.GetString(reader.GetOrdinal("Link")),
+                    Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? null : reader.GetString(reader.GetOrdinal("Description"))
                 });
             }
             catch (Exception ex)
@@ -262,7 +262,7 @@ namespace AngularSPAWebAPI.Services
                 return await Dal.ExecuteQuerySingleAsync(sql, reader =>
                 {
                     int animalId = reader.GetInt32(reader.GetOrdinal("AnimalID"));
-                    bool isInfoCompleted = reader.GetInt32(reader.GetOrdinal("IsInfoCompleted")) == 1;
+                    bool isInfoCompleted = reader.IsDBNull(reader.GetOrdinal("IsInfoCompleted")) ? false : reader.GetInt32(reader.GetOrdinal("IsInfoCompleted")) == 1;
                     return (animalId, isInfoCompleted);
                 }, parameters);
             }
