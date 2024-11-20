@@ -977,23 +977,72 @@ namespace AngularSPAWebAPI.Services
             return subMethodList;
         }
 
-        // Function Definition to extract list of Neurotransmitter 
-        public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
+        public async Task<List<PubScreenNeuroTransmitter>> GetNeurotransmittersAsync()
         {
-            List<PubScreenNeuroTransmitter> NeuroTransmitterList = new List<PubScreenNeuroTransmitter>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter Order By (Case When NeuroTransmitter not like '%Other%'  and  NeuroTransmitter <> ltrim(rtrim('none'))  Then 1 Else 2 End), NeuroTransmitter"))
+            var neuroTransmitterList = new List<PubScreenNeuroTransmitter>();
+            string query = @"Select * From NeuroTransmitter Order By 
+                     (Case When NeuroTransmitter not like '%Other%' and NeuroTransmitter <> ltrim(rtrim('none')) Then 1 Else 2 End), 
+                     NeuroTransmitter";
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                using (DataTable dt = await Task.Run(() => Dal.GetDataTablePub(query)))
                 {
-                    NeuroTransmitterList.Add(new PubScreenNeuroTransmitter
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString())
-                    });
+                        neuroTransmitterList.Add(new PubScreenNeuroTransmitter
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString())
+                        });
+                    }
                 }
             }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching neurotransmitters.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching neurotransmitters.");
+                throw;
+            }
 
-            return NeuroTransmitterList;
+            return neuroTransmitterList;
+        }
+
+        public async Task<List<PubScreenAuthor>> GetAuthorsAsync()
+        {
+            var authorList = new List<PubScreenAuthor>();
+            string query = "Select * From Author Order By LastName";
+            try
+            {
+                using (DataTable dt = await Task.Run(() => Dal.GetDataTablePub(query)))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        authorList.Add(new PubScreenAuthor
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            FirstName = Convert.ToString(dr["FirstName"].ToString()),
+                            LastName = Convert.ToString(dr["LastName"].ToString()),
+                            Affiliation = Convert.ToString(dr["Affiliation"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching authors.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching authors.");
+                throw;
+            }
+
+            return authorList;
         }
 
         // Function defintion to add a new author to database
@@ -1003,29 +1052,6 @@ namespace AngularSPAWebAPI.Services
                             ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
 
             return Int32.Parse(Dal.ExecScalarPub(sql).ToString());
-        }
-
-
-        // Function Definition to extract list of Authors 
-        public List<PubScreenAuthor> GetAuthors()
-        {
-            List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author Order By LastName"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    AuthorList.Add(new PubScreenAuthor
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        FirstName = Convert.ToString(dr["FirstName"].ToString()),
-                        LastName = Convert.ToString(dr["LastName"].ToString()),
-                        Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
-
-                    });
-                }
-            }
-
-            return AuthorList;
         }
 
         // Delete publication

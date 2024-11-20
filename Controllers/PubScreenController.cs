@@ -155,9 +155,10 @@ namespace AngularSPAWebAPI.Controllers
         // Extracting NeuroTransmitter list
         [HttpGet("GetNeurotransmitter")]
         [AllowAnonymous]
-        public IActionResult GetNeurotransmitter()
+        public async Task<IActionResult> GetNeurotransmitter()
         {
-            return new JsonResult(_pubScreenService.GetNeurotransmitters());
+            var res = await _pubScreenService.GetNeurotransmittersAsync();
+            return new JsonResult(res);
         }
 
         // Adding new author to database
@@ -173,9 +174,10 @@ namespace AngularSPAWebAPI.Controllers
         // Extracting Author list from Database (pubScreen)
         [HttpGet("GetAuthor")]
         [AllowAnonymous]
-        public IActionResult GetAuthor()
+        public async Task<IActionResult> GetAuthor()
         {
-            return new JsonResult(_pubScreenService.GetAuthors());
+            var res = await _pubScreenService.GetAuthorsAsync();
+            return new JsonResult(res);
         }
 
         // Adding new publication to database
