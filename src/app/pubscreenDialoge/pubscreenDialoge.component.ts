@@ -988,6 +988,9 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding DOI's paper to get some paper's info from PubMed
     addDOI(doi) {
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             if (data.result) {
                 console.log('data.result: ' + data.result);
             }
@@ -1018,6 +1021,9 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding pubmed key to get paper information from pubMed
     addPubMedID(PubMedKey) {
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
             if (apiResult == null) {
                 alert(PUBMEDKEYNOTVALID);
@@ -1038,6 +1044,9 @@ export class PubscreenDialogeComponent implements OnInit {
 
     addDOIBio(doi) {
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
 
             if (apiResult == null) {
@@ -1062,6 +1071,9 @@ export class PubscreenDialogeComponent implements OnInit {
     addDOICrossref(doi) {
 
         this.pubScreenService.getPaparInfoFromDOICrossref(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
 
             if (apiResult == null) {
