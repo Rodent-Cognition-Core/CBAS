@@ -240,7 +240,7 @@ namespace AngularSPAWebAPI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetPaparInfoFromDOIBio(string DOI)
         {
-            var result = _pubScreenService.GetPaperInfoByDOIBIO(DOI);
+            var result = await _pubScreenService.GetPaperInfoByDOIBIO(DOI);
             return new JsonResult(result);
         }
 
