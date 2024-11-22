@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 declare var spotfire: any;
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
@@ -20,7 +20,7 @@ export class MBDashboardComponent implements OnInit {
    
     constructor(
         public dialog: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute) {
 

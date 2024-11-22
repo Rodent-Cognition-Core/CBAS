@@ -4,7 +4,7 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component'
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
@@ -104,7 +104,7 @@ export class CogbytesUploadComponent implements OnInit {
     constructor(
         private oAuthService: OAuthService,
         //public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,

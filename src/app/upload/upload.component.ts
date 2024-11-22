@@ -6,7 +6,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from '../services/authentication.service';
 import { AnimalService } from '../services/animal.service';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { UploadService } from '../services/upload.service';
 
@@ -73,7 +73,7 @@ export class UploadComponent implements OnInit {
         private oAuthService: OAuthService,
         private authenticationService: AuthenticationService,
         public dialog: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
 
     ) {
