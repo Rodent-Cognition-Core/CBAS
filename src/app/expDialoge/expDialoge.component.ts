@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
 import { CogbytesService } from '../services/cogbytes.service'
@@ -58,7 +58,7 @@ export class ExpDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, private cogbytesService: CogbytesService) { }
+        private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService) { }
 
     ngOnInit() {
         this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; /*console.log(this.taskList)*/; });

@@ -6,7 +6,7 @@ import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component'
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { Location } from '@angular/common';
 import { PagerService } from '../services/pager.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CONFIRMDELETE } from '../shared/messages';
 //import { OAuthService } from 'angular-oauth2-oidc';
 //mport { SharedModule } from '../shared/shared.module';
@@ -34,7 +34,7 @@ export class AnimalInfoComponent implements OnInit {
         public dialog: MatDialog,
         private location: Location,
         private pagerService: PagerService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
     ) { }
 
     ngOnInit() {
