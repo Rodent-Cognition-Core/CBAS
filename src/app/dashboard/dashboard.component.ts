@@ -6,7 +6,7 @@ import { UploadService } from '../services/upload.service';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { PagerService } from '../services/pager.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AnimalService } from '../services/animal.service';
 import { ExperimentService } from '../services/experiment.service';
 import { CONFIRMDELETE } from '../shared/messages';
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
         private uploadService: UploadService,
         private authenticationService: AuthenticationService, private pagerService: PagerService,
-        private spinnerService: Ng4LoadingSpinnerService, private animalService: AnimalService,
+        private spinnerService: NgxSpinnerService, private animalService: AnimalService,
         public dialog: MatDialog) { }
 
 

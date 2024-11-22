@@ -5,7 +5,7 @@ import { NgModel } from '@angular/forms';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
 import { PubScreenService } from '../services/pubScreen.service';
@@ -160,7 +160,7 @@ export class PubscreenDialogeComponent implements OnInit {
     constructor(
         public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
         // private pagerService: PagerService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,

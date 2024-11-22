@@ -9,7 +9,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'app-pubScreenEdit',
@@ -38,7 +38,7 @@ export class PubScreenEditComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         private route: ActivatedRoute,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialogAuthor: MatDialog) {
 
         this.isLoaded = false;

@@ -14,7 +14,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFIRMACCEPTPAPERTOPUBSCREEN, CONFIRMREJECTPAPER, PAPERREJECTED, SUCCESSFULLYADDEDPUBLICATION  } from '../shared/messages';
 
@@ -43,7 +43,7 @@ export class PubScreenQueueComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService, ) { }
+        private spinnerService: NgxSpinnerService, ) { }
 
     ngOnInit() {
 
