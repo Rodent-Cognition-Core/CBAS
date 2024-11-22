@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Debug PR Author Email Response
+      run: |
+        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user/emails
+
     - name: Check PR Author Email
       id: check_email
       run: |
