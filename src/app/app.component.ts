@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, ElementRef, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';

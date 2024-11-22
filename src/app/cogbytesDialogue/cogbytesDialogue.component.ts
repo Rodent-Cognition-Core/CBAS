@@ -16,8 +16,7 @@ import { Pubscreen } from '../models/pubscreen';
 import { Cogbytes } from '../models/cogbytes'
 import { CogbytesUploadComponent } from '../cogbytesUpload/cogbytesUpload.component'
 import { IdentityService } from '../services/identity.service';
-import { Subject } from 'rxjs/Subject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
 import { take, takeUntil } from 'rxjs/operators';
 import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialoge.component'

@@ -3,8 +3,7 @@ import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 //import { NgModel } from '@angular/forms';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { DataExtraction } from '../models/dataextraction';
