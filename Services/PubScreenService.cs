@@ -367,7 +367,7 @@ namespace AngularSPAWebAPI.Services
             {
                 Log.Error(ex, "Error in GetPaperInfoByDOIBIO");
             }
-            return new PubScreen();
+            return null;
         }
 
         //Function Definition to get some paper's info based on PubMedKey
