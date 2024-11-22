@@ -842,6 +842,98 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
+        public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt, bool logEnabled = true)
+        {
+            DataSet ds = await ExecDSPubAsync(CommandType.Text, cmdTxt, logEnabled);
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        public static async Task<DataSet> ExecDSPubAsync(CommandType cmdType, string cmdTxt, bool logEnabled = true)
+        {
+            using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
+            {
+                try
+                {
+                    await cn.OpenAsync();
+                    return await ExecDSAsync(cn, cmdType, cmdTxt);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        await cn.CloseAsync();
+                    }
+                }
+            }
+        }
+
+        public static async Task<DataSet> ExecDSAsync(SqlConnection connection, CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            DataSet ds = new DataSet();
+
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandTimeout = 300;
+                await ProcCmdAsync(cmd, connection, cmdType, cmdTxt, cmdParams);
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    await Task.Run(() => da.Fill(ds));
+                }
+
+                cmd.Parameters.Clear();
+            }
+
+            return ds;
+        }
+
+        public static async Task<DataTable> GetDataTablePubAsync(string query)
+        {
+            var dataTable = new DataTable();
+            try
+            {
+                using (var connection = new SqlConnection(_cnnString_PubScreen))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            await Task.Run(() => adapter.Fill(dataTable));
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while executing query: {Query}", query);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while executing query: {Query}", query);
+                throw;
+            }
+
+            return dataTable;
+        }
+
+
         public static DataTable GetDataTableCog(string cmdTxt, bool logEnabled = true)
         {
             return GetDataTableCog(CommandType.Text, cmdTxt, logEnabled);
@@ -882,6 +974,45 @@ namespace AngularSPAWebAPI.Services
             }
             return;
         }
+
+        private static async Task ProcCmdAsync(SqlCommand cmd, SqlConnection connection, CommandType cmdType, string cmdTxt, SqlParameter[] cmdParams)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                cmd.Connection = connection;
+                cmd.CommandText = cmdTxt;
+                cmd.CommandType = cmdType;
+
+                if (cmdParams != null)
+                {
+                    foreach (SqlParameter param in cmdParams)
+                    {
+                        if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                        {
+                            param.Value = DBNull.Value;
+                        }
+
+                        cmd.Parameters.Add(param);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Fatal($"SQL Exception: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal($"Exception: {ex.Message}");
+                throw;
+            }
+        }
+
 
     }
 }
