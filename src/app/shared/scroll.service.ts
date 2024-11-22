@@ -2,8 +2,8 @@
 
 import { Injectable, Inject } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
-import { DOCUMENT } from '@angular/platform-browser';
-import { fromEvent } from 'rxjs/observable/fromEvent';
+import { DOCUMENT } from '@angular/common';
+import { fromEvent } from 'rxjs';
 
 export const topMargin = 16;
 /**
@@ -69,8 +69,8 @@ export class ScrollService {
 
                 // If we are very close to the top (<20px), then scroll all the way up.
                 // (This can happen if `element` is at the top of the page, but has a small top-margin.)
-                if (window.pageYOffset < 20) {
-                    window.scrollBy(0, -window.pageYOffset);
+                if (window.scrollY < 20) {
+                    window.scrollBy(0, -window.scrollY);
                 }
             }
         }

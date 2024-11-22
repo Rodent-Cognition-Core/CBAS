@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { interval } from 'rxjs/observable/interval';
-import { timer } from 'rxjs/observable/timer';
+import { Observable ,  BehaviorSubject } from 'rxjs';
+import { interval } from 'rxjs';
+import { timer } from 'rxjs';
 
 import { OAuthService } from 'angular-oauth2-oidc';
 

@@ -11,8 +11,7 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 //import { UploadService } from '../services/upload.service';
 import { SharedModule } from '../shared/shared.module';
 import { CogbytesService } from '../services/cogbytes.service'
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
