@@ -1042,8 +1042,9 @@ export class DataExtractionComponent implements OnInit {
 
             var blob = new Blob([csv], { type: 'text/csv' });
             var filename = 'exported_' + new Date().toLocaleString() + '.csv';
-            if (window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveBlob(blob, filename);
+            const _win = window.navigator as any
+            if (_win.msSaveOrOpenBlob) {
+                _win.msSaveBlob(blob, filename);
             }
             else {
                 var elem = window.document.createElement('a');
