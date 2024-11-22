@@ -13,16 +13,16 @@ jobs:
       id: get_pr_author
       run: |
         PR_AUTHOR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.user.login')
-        echo "::set-output name=pr_author::$PR_AUTHOR"
+        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
+        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
 
     - name: Debug PR Author Username
       run: |
-        echo "PR_AUTHOR: ${{ steps.get_pr_author.outputs.pr_author }}"
+        echo "PR_AUTHOR: ${{ env.PR_AUTHOR }}"
 
     - name: Check PR Author Username
       run: |
-        PR_AUTHOR="${{ steps.get_pr_author.outputs.pr_author }}"
-        if [[ "$PR_AUTHOR" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "$PR_AUTHOR" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
+        if [[ "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
           echo "PR author is not allowed to merge."
           exit 1
         fi
@@ -33,3 +33,4 @@ jobs:
         gh pr merge ${{ github.event.pull_request.number }} --merge
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
