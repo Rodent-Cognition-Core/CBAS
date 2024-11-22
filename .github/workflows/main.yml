@@ -12,7 +12,7 @@ jobs:
     - name: Check PR Author Email
       id: check_email
       run: |
-        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user/emails | jq -r 'map(select(.primary == true)) | .[0].email')
+        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user/emails | jq -r '.[] | select(.primary == true) | .email')
         if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
           echo "PR author email is not allowed to merge."
           exit 1
