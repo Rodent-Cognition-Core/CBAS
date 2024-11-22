@@ -11,18 +11,18 @@ jobs:
     steps:
     - name: Debug PR Author Email Response
       run: |
-        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user/emails
+        curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/emails
 
     - name: Check PR Author Email
       id: check_email
       run: |
-        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user/emails | jq -r '.[] | select(.primary == true) | .email')
+        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/emails | jq -r '.[] | select(.primary == true) | .email')
         if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
           echo "PR author email is not allowed to merge."
           exit 1
         fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
     - name: Merge PR
       if: success()
