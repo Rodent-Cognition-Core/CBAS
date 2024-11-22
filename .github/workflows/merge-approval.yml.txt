@@ -1,4 +1,4 @@
-name: Approve and Merge PR
+name: Approve and Merge PR0
 
 on:
   pull_request:
