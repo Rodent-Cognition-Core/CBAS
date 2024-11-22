@@ -8,7 +8,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { DataExtraction } from '../models/dataextraction';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { PagerService } from '../services/pager.service';
@@ -124,7 +124,7 @@ export class DataExtractionComponent implements OnInit {
     constructor(
         public dialog: MatDialog,
         private dataExtractionService: DataExtractionService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private authenticationService: AuthenticationService,
         private pagerService: PagerService,
         public dialogTerms: MatDialog,

@@ -14,7 +14,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 
@@ -58,7 +58,7 @@ export class CogbytesComponent implements OnInit {
         private authenticationService: AuthenticationService,
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
     )
     {
         this.resetFormVals();

@@ -4,7 +4,7 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
 
 @Component({
@@ -29,7 +29,7 @@ export class AnimalDialogComponent implements OnInit {
 
 
     constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: Ng4LoadingSpinnerService) { }
+        @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: NgxSpinnerService) { }
 
     ngOnInit() {
 
