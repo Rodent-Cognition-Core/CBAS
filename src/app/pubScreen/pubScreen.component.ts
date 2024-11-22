@@ -14,7 +14,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
@@ -149,7 +149,7 @@ export class PubScreenComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialogML: MatDialog,    ) { }
 
     ngOnInit() {

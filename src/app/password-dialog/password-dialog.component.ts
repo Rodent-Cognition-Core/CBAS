@@ -4,7 +4,7 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { IdentityService } from '../services/identity.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { MatSnackBar } from '@angular/material';
 import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
 

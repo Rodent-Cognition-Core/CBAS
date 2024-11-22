@@ -48,7 +48,8 @@ import { NotificationDialogComponent } from './notification-dialog/notification-
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
 
 
-import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+//import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { NgxSpinnerModule } from 'ngx-spinner'
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
 //import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
@@ -56,7 +57,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { OwlModule } from 'ngx-owl-carousel';
 
 import { ScrollService } from './shared/scroll.service';
-import { CountUpModule } from 'countup.js-angular2';
+import { CountUpModule } from 'ngx-countup';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
@@ -117,15 +118,16 @@ const ROUTES: Routes = [
         MatInputModule,
         FormsModule,
         ReactiveFormsModule,
-        Ng4LoadingSpinnerModule.forRoot(),
+        // Ng4LoadingSpinnerModule.forRoot(),
         //MatSelectModule,
+        NgxSpinnerModule,
         MatFormFieldModule,
         //NgxMatSelectSearchModule,
         FlexLayoutModule,
         OwlModule,
         CountUpModule,
         RouterModule.forRoot(ROUTES),
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+        Angulartics2Module.forRoot(),
 
 
     ],

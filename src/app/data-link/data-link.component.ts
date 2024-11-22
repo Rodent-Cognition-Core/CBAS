@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { DataExtractionService } from '../services/dataextraction.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { PagerService } from '../services/pager.service';
 
 declare var $: any;
@@ -24,7 +24,7 @@ export class DataLinkComponent implements OnInit {
 
     constructor(
         private dataExtractionService: DataExtractionService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
         private pagerService: PagerService,
     ) {
