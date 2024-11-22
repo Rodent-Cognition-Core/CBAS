@@ -1,0 +1,28 @@
+name: Approve and Merge PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  approve-and-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check PR Author Email
+      id: check_email
+      run: |
+        PR_AUTHOR_EMAIL=$(curl -s https://api.github.com/users/${{ github.event.pull_request.user.login }} | jq -r '.email')
+        if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
+          echo "PR author email is not allowed to merge."
+          exit 1
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Merge PR
+      if: success()
+      run: |
+        gh pr merge ${{ github.event.pull_request.number }} --merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
