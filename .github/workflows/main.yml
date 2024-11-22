@@ -9,20 +9,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Debug PR Author Email Response
+    - name: Get PR Author Username
+      id: get_pr_author
       run: |
-        curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/emails
+        PR_AUTHOR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.user.login')
+        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
+
+    - name: Debug PR Author Username
+      run: |
+        echo "PR_AUTHOR: ${{ env.PR_AUTHOR }}"
+
+    - name: Get PR Author Email
+      id: get_pr_author_email
+      run: |
+        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" https://api.github.com/users/${{ env.PR_AUTHOR }} | jq -r '.email')
+        echo "PR_AUTHOR_EMAIL=$PR_AUTHOR_EMAIL" >> $GITHUB_ENV
+
+    - name: Debug PR Author Email
+      run: |
+        echo "PR_AUTHOR_EMAIL: ${{ env.PR_AUTHOR_EMAIL }}"
 
     - name: Check PR Author Email
-      id: check_email
       run: |
-        PR_AUTHOR_EMAIL=$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" https://api.github.com/user/emails | jq -r '.[] | select(.primary == true) | .email')
         if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
           echo "PR author email is not allowed to merge."
           exit 1
         fi
       env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        PR_AUTHOR_EMAIL: ${{ env.PR_AUTHOR_EMAIL }}
 
     - name: Merge PR
       if: success()
@@ -30,3 +44,4 @@ jobs:
         gh pr merge ${{ github.event.pull_request.number }} --merge
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
