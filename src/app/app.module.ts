@@ -81,6 +81,12 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
 }
 
+declare global {
+    interface Navigator {
+        msSaveBlob?: (blob: any, defaultName?: string) => boolean
+    }
+}
+
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
     { path: 'guidline', component: GuidelineComponent },

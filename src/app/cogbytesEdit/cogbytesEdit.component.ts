@@ -4,8 +4,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { NgModel } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { ReplaySubject ,  Subject } from 'rxjs';
 import { CogbytesService } from '../services/cogbytes.service'
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
@@ -89,8 +88,9 @@ export class CogbytesEditComponent implements OnInit {
 
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                const _win = window.navigator as any
+                if (_win.msSaveBlob) {
+                    csvURL = _win.msSaveBlob(fileData, file.userFileName);
                 } else {
                     csvURL = window.URL.createObjectURL(fileData);
                 }
