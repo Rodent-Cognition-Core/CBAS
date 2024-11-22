@@ -332,7 +332,6 @@ namespace AngularSPAWebAPI.Services
                         Log.Information($"author_corresponding: {jsonPubscreenFeature.author_corresponding} - authors: {jsonPubscreenFeature.authors} - year: {jsonPubscreenFeature.date}");
                     }
                 }
-
                 List<string> authorTempList = (jsonPubscreen.collection[0].authors).Split(';').ToList<string>();
                 List<string> authorListString = new List<string>();
                 List<PubScreenAuthor> authorList = new List<PubScreenAuthor>();
