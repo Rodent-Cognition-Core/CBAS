@@ -314,6 +314,7 @@ namespace AngularSPAWebAPI.Services
                 string jsonPubscreenString = JsonConvert.SerializeObject(jsonPubscreen, Newtonsoft.Json.Formatting.Indented);
                 Log.Information($"jsonPubscreen: {jsonPubscreenString}");
 
+
                 if (jsonPubscreen.messages != null && jsonPubscreen.messages.Length > 0)
                 {
                     foreach (var message in jsonPubscreen.messages)
