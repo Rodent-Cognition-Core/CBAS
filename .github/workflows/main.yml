@@ -29,13 +29,21 @@ jobs:
       run: |
         echo "PR_AUTHOR_EMAIL: ${{ env.PR_AUTHOR_EMAIL }}"
 
-    - name: Check PR Author Email
+    - name: Check PR Author Email or Username
       run: |
-        if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
-          echo "PR author email is not allowed to merge."
-          exit 1
+        if [[ -z "$PR_AUTHOR_EMAIL" ]]; then
+          if [[ "$PR_AUTHOR" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "$PR_AUTHOR" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
+            echo "PR author is not allowed to merge."
+            exit 1
+          fi
+        else
+          if [[ "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_1 }}" && "$PR_AUTHOR_EMAIL" != "${{ secrets.ALLOWED_EMAIL_2 }}" ]]; then
+            echo "PR author email is not allowed to merge."
+            exit 1
+          fi
         fi
       env:
+        PR_AUTHOR: ${{ env.PR_AUTHOR }}
         PR_AUTHOR_EMAIL: ${{ env.PR_AUTHOR_EMAIL }}
 
     - name: Merge PR
