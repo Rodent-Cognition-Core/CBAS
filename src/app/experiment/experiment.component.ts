@@ -9,7 +9,7 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { Location } from '@angular/common';
 import { Experiment } from '../models/experiment';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
 
@@ -37,7 +37,7 @@ export class ExperimentComponent implements OnInit {
     constructor(private experimentService: ExperimentService, public dialog: MatDialog,
         private authenticationService: AuthenticationService, private location: Location,
         private uploadService: UploadService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private pagerService: PagerService
     ) { }
 

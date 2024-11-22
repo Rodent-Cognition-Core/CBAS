@@ -14,7 +14,7 @@ import { CogbytesService } from '../services/cogbytes.service'
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
@@ -105,7 +105,7 @@ export class CogbytesSearchComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute, ) {
         this.route.queryParams.subscribe(params => {
             this.showAll = false;

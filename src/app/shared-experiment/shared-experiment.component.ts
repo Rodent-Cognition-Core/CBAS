@@ -11,7 +11,7 @@ import { PostProcessingQcService } from '../services/postprocessingqc.service';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component'; 
 import { MatSnackBar } from '@angular/material';
 import * as _ from 'underscore';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
 import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
 
@@ -56,7 +56,7 @@ export class SharedExperimentComponent implements OnInit {
         private location: Location,
         private snackBar: MatSnackBar,
         private subexpDialogeService: SubExpDialogeService,
-        private spinnerService: Ng4LoadingSpinnerService,) {
+        private spinnerService: NgxSpinnerService,) {
 
     }
 
