@@ -167,7 +167,8 @@ namespace AngularSPAWebAPI.Controllers
         {
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
-            return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
+            var res = await _pubScreenService.AddAuthorsAsync(author, userEmail);
+            return new JsonResult(res);
         }
 
 
@@ -270,9 +271,10 @@ namespace AngularSPAWebAPI.Controllers
 
         [HttpGet("GetPaparInfoByID")]
         [AllowAnonymous]
-        public IActionResult GetPaparInfoByID(int ID)
+        public async Task<IActionResult> GetPaparInfoByID(int ID)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
+            var res = await _pubScreenService.GetPaperInfoByIDAsync(ID);
+            return new JsonResult(res);
         }
 
         [HttpGet("GetPubmedQueue")]

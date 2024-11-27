@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AngularSPAWebAPI.Models;
 
 
 namespace AngularSPAWebAPI.Services
@@ -535,7 +536,11 @@ namespace AngularSPAWebAPI.Services
 
         public static async Task<object> ExecScalarAsync(string query, List<SqlParameter> cmdParams = null)
         {
-            using (SqlConnection conn = new SqlConnection(_cnnString))
+            return await ExecScalarAsync(_cnnString, query, cmdParams);
+        }
+        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 try
                 {
@@ -665,6 +670,10 @@ namespace AngularSPAWebAPI.Services
         public static object ExecScalarPub(string cmdTxt)
         {
             return ExecScalarPub(CommandType.Text, cmdTxt);
+        }
+        public static async Task<object> ExecScalarPubAsync(string query, List<SqlParameter> cmdParams = null)
+        {
+            return await ExecScalarAsync(_cnnString_PubScreen, query, cmdParams);
         }
 
         public static object ExecScalarPub(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
@@ -1011,6 +1020,109 @@ namespace AngularSPAWebAPI.Services
                 Log.Fatal($"Exception: {ex.Message}");
                 throw;
             }
+        }
+
+        public static async Task<PubScreen> GetPaperInfoByIDAsync(int id)
+        {
+            var pubScreen = new PubScreen();
+            string sql;
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
+                {
+                    await cn.OpenAsync();
+                    using (SqlTransaction transaction = cn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // Define all SQL queries
+                            var queries = new Dictionary<string, string>
+                            {
+                                { "AuthorID", "Select AuthorID From Publication_Author Where PublicationID = @PublicationID" },
+                                { "CellTypeID", "Select CelltypeID From Publication_CellType Where PublicationID = @PublicationID" },
+                                { "DiseaseID", "Select DiseaseID From Publication_Disease Where PublicationID = @PublicationID" },
+                                { "SubModelID", "Select SubModelID From Publication_SubModel Where PublicationID = @PublicationID" },
+                                { "MethodID", "Select MethodID From Publication_Method Where PublicationID = @PublicationID" },
+                                { "SubMethodID", "Select SubMethodID From Publication_SubMethod Where PublicationID = @PublicationID" },
+                                { "TransmitterID", "Select TransmitterID From Publication_NeuroTransmitter Where PublicationID = @PublicationID" },
+                                { "RegionID", "Select RegionID From Publication_Region Where PublicationID = @PublicationID" },
+                                { "SexID", "Select SexID From Publication_Sex Where PublicationID = @PublicationID" },
+                                { "SpecieID", "Select SpecieID From Publication_Specie Where PublicationID = @PublicationID" },
+                                { "StrainID", "Select StrainID From Publication_Strain Where PublicationID = @PublicationID" },
+                                { "SubRegionID", "Select SubRegionID From Publication_SubRegion Where PublicationID = @PublicationID" },
+                                { "TaskID", "Select TaskID From Publication_Task Where PublicationID = @PublicationID" },
+                                { "SubTaskID", "Select SubTaskID From Publication_SubTask Where PublicationID = @PublicationID" },
+                                { "PaperTypeID", "Select PaperTypeID From Publication_PaperType Where PublicationID = @PublicationID" },
+                                { "Publication", "Select * From Publication Where ID = @PublicationID" }
+                            };
+
+                            // Execute all queries
+                            foreach (var query in queries)
+                            {
+                                using (SqlCommand cmd = new SqlCommand(query.Value, cn, transaction))
+                                {
+                                    cmd.Parameters.AddWithValue("@PublicationID", id);
+                                    if (query.Key == "Publication")
+                                    {
+                                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                                        {
+                                            if (await reader.ReadAsync())
+                                            {
+                                                pubScreen.PaperLinkGuid = reader.GetGuid(reader.GetOrdinal("PaperLinkGuid"));
+                                                pubScreen.DOI = reader.GetString(reader.GetOrdinal("DOI"));
+                                                pubScreen.Keywords = reader.GetString(reader.GetOrdinal("Keywords"));
+                                                pubScreen.Title = reader.GetString(reader.GetOrdinal("Title"));
+                                                pubScreen.Abstract = reader.GetString(reader.GetOrdinal("Abstract"));
+                                                pubScreen.Year = reader.GetString(reader.GetOrdinal("Year"));
+                                                pubScreen.Reference = reader.GetString(reader.GetOrdinal("Reference"));
+                                                pubScreen.Source = reader.GetString(reader.GetOrdinal("Source"));
+                                            }
+                                        }
+                                    }
+                                    else if (query.Key == "PaperTypeID")
+                                    {
+                                        var result = await cmd.ExecuteScalarAsync();
+                                        if (result == null)
+                                        {
+                                            pubScreen.PaperTypeID = null;
+                                        }
+                                        else
+                                        {
+                                            pubScreen.PaperTypeID = Int32.Parse(result.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var result = await cmd.ExecuteScalarAsync();
+                                        if (result != null)
+                                        {
+                                            var property = pubScreen.GetType().GetProperty(query.Key);
+                                            property.SetValue(pubScreen, new int?[] { Convert.ToInt32(result) });
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Commit transaction
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rollback transaction if any error occurs
+                            transaction.Rollback();
+                            Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                throw;
+            }
+
+            return pubScreen;
         }
 
 
