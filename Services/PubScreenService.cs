@@ -1045,13 +1045,34 @@ namespace AngularSPAWebAPI.Services
             return authorList;
         }
 
-        // Function defintion to add a new author to database
-        public int AddAuthors(PubScreenAuthor author, string userEmail)
+        public async Task<int> AddAuthorsAsync(PubScreenAuthor author, string userEmail)
         {
-            string sql = $@"Insert into Author (FirstName, LastName, Affiliation, username) Values
-                            ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
+            string sql = @"Insert into Author (FirstName, LastName, Affiliation, username) 
+                   Values (@FirstName, @LastName, @Affiliation, @Username); 
+                   SELECT CAST(scope_identity() AS int);";
+            try
+            {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@FirstName", author.FirstName),
+                    new SqlParameter("@LastName", author.LastName),
+                    new SqlParameter("@Affiliation", author.Affiliation),
+                    new SqlParameter("@Username", userEmail)
+                };
 
-            return Int32.Parse(Dal.ExecScalarPub(sql).ToString());
+                var result = await Dal.ExecScalarPubAsync(sql, parameters);
+                return (int)result;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while adding author: {Author}", author);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while adding author: {Author}", author);
+                throw;
+            }
         }
 
         // Delete publication
@@ -2329,80 +2350,17 @@ namespace AngularSPAWebAPI.Services
             return YearList;
         }
 
-        public PubScreen GetPaperInfoByID(int id)
+        public async Task<PubScreen> GetPaperInfoByIDAsync(int id)
         {
             var pubScreen = new PubScreen();
             try
             {
-                string sql = $"Select AuthorID From Publication_Author Where PublicationID ={id}";
-                pubScreen.AuthourID = FillPubScreenItemArray(sql, "AuthorID");
-
-                sql = $"Select CelltypeID From Publication_CellType Where PublicationID ={id}";
-                pubScreen.CellTypeID = FillPubScreenItemArray(sql, "CelltypeID");
-
-                sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
-                pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
-
-                sql = $"Select SubModelID From Publication_SubModel Where PublicationID ={id}";
-                pubScreen.SubModelID = FillPubScreenItemArray(sql, "SubModelID");
-
-                sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
-                pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
-
-                sql = $"Select SubMethodID From Publication_SubMethod Where PublicationID ={id}";
-                pubScreen.SubMethodID = FillPubScreenItemArray(sql, "SubMethodID");
-
-                sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
-                pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
-
-                sql = $"Select RegionID From Publication_Region Where PublicationID ={id}";
-                pubScreen.RegionID = FillPubScreenItemArray(sql, "RegionID");
-
-                sql = $"Select SexID From Publication_Sex Where PublicationID ={id}";
-                pubScreen.sexID = FillPubScreenItemArray(sql, "SexID");
-
-                sql = $"Select SpecieID From Publication_Specie Where PublicationID ={id}";
-                pubScreen.SpecieID = FillPubScreenItemArray(sql, "SpecieID");
-
-                sql = $"Select StrainID From Publication_Strain Where PublicationID ={id}";
-                pubScreen.StrainID = FillPubScreenItemArray(sql, "StrainID");
-
-                sql = $"Select SubRegionID From Publication_SubRegion Where PublicationID ={id}";
-                pubScreen.SubRegionID = FillPubScreenItemArray(sql, "SubRegionID");
-
-                sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
-                pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
-
-                sql = $"Select SubTaskID From Publication_SubTask Where PublicationID ={id}";
-                pubScreen.SubTaskID = FillPubScreenItemArray(sql, "SubTaskID");
-
-                sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-                object papertypeID = Dal.ExecScalarPub(sql);
-                if (papertypeID == null)
-                {
-                    pubScreen.PaperTypeID = null;
-                }
-                else
-                {
-                    pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
-                }
-
-                sql = $"Select * From Publication Where ID ={id}";
-                using (DataTable dt = Dal.GetDataTablePub(sql))
-                {
-                    pubScreen.PaperLinkGuid = Guid.Parse(dt.Rows[0]["PaperLinkGuid"].ToString());
-                    pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
-                    pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
-                    pubScreen.Title = dt.Rows[0]["Title"].ToString();
-                    pubScreen.Abstract = dt.Rows[0]["Abstract"].ToString();
-                    pubScreen.Year = dt.Rows[0]["Year"].ToString();
-                    pubScreen.Reference = dt.Rows[0]["Reference"].ToString();
-                    pubScreen.Source = dt.Rows[0]["Source"].ToString();
-                }
+                pubScreen = await Dal.GetPaperInfoByIDAsync(id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "Error in GetPaperInfoByID");
+                Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                throw;
             }
 
             return pubScreen;
