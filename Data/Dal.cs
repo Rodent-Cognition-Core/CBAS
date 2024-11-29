@@ -1038,7 +1038,7 @@ namespace AngularSPAWebAPI.Services
                             // Define all SQL queries
                             var queries = new Dictionary<string, string>
                             {
-                                { "AuthorID", "Select AuthorID From Publication_Author Where PublicationID = @PublicationID" },
+                                { "AuthourID", "Select AuthorID From Publication_Author Where PublicationID = @PublicationID" },
                                 { "CellTypeID", "Select CelltypeID From Publication_CellType Where PublicationID = @PublicationID" },
                                 { "DiseaseID", "Select DiseaseID From Publication_Disease Where PublicationID = @PublicationID" },
                                 { "SubModelID", "Select SubModelID From Publication_SubModel Where PublicationID = @PublicationID" },
