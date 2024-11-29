@@ -252,15 +252,15 @@ export class PubscreenDialogeComponent implements OnInit {
                 //    this.selectedTaskChange(this.cognitiveTaskModel)
                 //    this.subTaskModel = this.paperInfo.subTaskID;
                 //});
-                this.subSubTaskList = this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID));
+                this.subSubTaskList = this.cognitiveTaskModel ? this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID)) : [];
                 this.filteredSubTaskList.next(this.subSubTaskList.slice());
-                this.subStrainList = this.strainList.filter(x => this.specieModel.includes(x.speciesID));
+                this.subStrainList = this.specieModel ? this.strainList.filter(x => this.specieModel.includes(x.speciesID)) : [];
                 this.filteredStrainList.next(this.subStrainList.slice());
-                this.subSubModelList = this.subModelList.filter(x => this.diseaseModel.includes(x.modelID));
+                this.subSubModelList = this.diseaseModel ? this.subModelList.filter(x => this.diseaseModel.includes(x.modelID)) : [];
                 this.filteredSubModelList.next(this.subSubModelList.slice());
-                this.subSubMethodList = this.subMethodList.filter(x => this.methodModel.includes(x.methodID));
+                this.subSubMethodList = this.methodModel ? this.subMethodList.filter(x => this.methodModel.includes(x.methodID)) : [];
                 this.filteredSubMethodList.next(this.subSubMethodList.slice());
-                this.subSubRegionList = this.subRegionList.filter(x => this.regionModel.includes(x.rid));
+                this.subSubRegionList = this.regionModel ? this.subRegionList.filter(x => this.regionModel.includes(x.rid)) : [];
                 this.filteredSubRegionList.next(this.subSubRegionList.slice());
 
                 this.neurotransmitterModel = this.paperInfo.transmitterID;
