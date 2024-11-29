@@ -2460,21 +2460,35 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
         {
-            PubScreen paper = new PubScreen();
-            if (pubmedID == -1)
+            try
             {
-                paper = await GetPaperInfoByDOICrossref(doi);
+                PubScreen paper;
+                if (pubmedID == -1)
+                {
+                    paper = await GetPaperInfoByDOICrossref(doi);
+                }
+                else
+                {
+                    paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+                }
+
+                if (paper == null)
+                {
+                    Log.Warning("No paper found for PubMed ID: {PubMedID} or DOI: {DOI}", pubmedID, doi);
+                    return null;
+                }
+
+                paper.DOI = doi;
+                int? pubID = AddPublications(paper, userName);
+                ProcessQueuePaper(pubmedID, doi);
+
+                return pubID;
             }
-            else
+            catch (Exception ex)
             {
-                paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+                Log.Error(ex, "Error in AddQueuePaper for PubMed ID: {PubMedID} or DOI: {DOI}", pubmedID, doi);
+                throw;
             }
-
-            paper.DOI = doi;
-            int? PubID = AddPublications(paper, userName);
-            ProcessQueuePaper(pubmedID, doi);
-
-            return PubID;
         }
 
         public void ProcessQueuePaper(int pubmedID, string doi = null)
