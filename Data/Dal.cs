@@ -1046,7 +1046,7 @@ namespace AngularSPAWebAPI.Services
                                 { "SubMethodID", "Select SubMethodID From Publication_SubMethod Where PublicationID = @PublicationID" },
                                 { "TransmitterID", "Select TransmitterID From Publication_NeuroTransmitter Where PublicationID = @PublicationID" },
                                 { "RegionID", "Select RegionID From Publication_Region Where PublicationID = @PublicationID" },
-                                { "SexID", "Select SexID From Publication_Sex Where PublicationID = @PublicationID" },
+                                { "sexID", "Select SexID From Publication_Sex Where PublicationID = @PublicationID" },
                                 { "SpecieID", "Select SpecieID From Publication_Specie Where PublicationID = @PublicationID" },
                                 { "StrainID", "Select StrainID From Publication_Strain Where PublicationID = @PublicationID" },
                                 { "SubRegionID", "Select SubRegionID From Publication_SubRegion Where PublicationID = @PublicationID" },
