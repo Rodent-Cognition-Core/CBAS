@@ -288,7 +288,8 @@ namespace AngularSPAWebAPI.Controllers
         {
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
-            return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
+            var result = await _pubScreenService.AddQueuePaper(pubmedID, doi, userEmail);
+            return new JsonResult(result);
         }
 
         [HttpDelete("RejectQueuePaper")]
