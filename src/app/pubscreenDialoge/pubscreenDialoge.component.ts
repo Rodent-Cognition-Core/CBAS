@@ -228,26 +228,26 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = this.paperInfo.year;
                 this.referenceModel = this.paperInfo.reference;
 
-                this.authorModel = this.paperInfo.authourID;
-                this.cellTypeModel = this.paperInfo.cellTypeID;
-                this.diseaseModel = this.paperInfo.diseaseID;
-                this.subModel = this.paperInfo.subModelID;
-                this.methodModel = this.paperInfo.methodID;
-                this.subMethodModel = this.paperInfo.subMethodID;
-                this.paperTypeModel = this.paperInfo.paperTypeID;
-                this.regionModel = this.paperInfo.regionID;
-                this.sexModel = this.paperInfo.sexID;
-                this.specieModel = this.paperInfo.specieID;
-                this.strainModel = this.paperInfo.strainID;
+                this.authorModel = this.paperInfo.authourID ? this.paperInfo.authourID : [];
+                this.cellTypeModel = this.paperInfo.cellTypeID ? this.paperInfo.cellTypeID : [];
+                this.diseaseModel = this.paperInfo.diseaseID ? this.paperInfo.diseaseID : [];
+                this.subModel = this.paperInfo.subModelID ? this.paperInfo.subModelID : [];
+                this.methodModel = this.paperInfo.methodID ? this.paperInfo.methodID : [];
+                this.subMethodModel = this.paperInfo.subMethodID ? this.paperInfo.subMethodID : [];
+                this.paperTypeModel = this.paperInfo.paperTypeID ? this.paperInfo.paperTypeID : [];
+                this.regionModel = this.paperInfo.regionID ? this.paperInfo.regionID : [];
+                this.sexModel = this.paperInfo.sexID ? this.paperInfo.sexID : [];
+                this.specieModel = this.paperInfo.specieID ? this.paperInfo.specieID : [];
+                this.strainModel = this.paperInfo.strainID ? this.paperInfo.strainID : [];
 
-                this.subRegionModel = this.paperInfo.subRegionID;
+                this.subRegionModel = this.paperInfo.subRegionID ? this.paperInfo.subRegionID : [];
                 //this.pubScreenService.getRegionSubRegion().subscribe(dataSubRegion => {
                 //    this.selectedRegionChange(this.regionModel)
                 //    this.subRegionModel = this.paperInfo.subRegionID;
                 //});
 
-                this.cognitiveTaskModel = this.paperInfo.taskID;
-                this.subTaskModel = this.paperInfo.subTaskID;
+                this.cognitiveTaskModel = this.paperInfo.taskID ? this.paperInfo.taskID : [];
+                this.subTaskModel = this.paperInfo.subTaskID ? this.paperInfo.subTaskID : [];
                 //this.pubScreenService.getTaskSubTask().subscribe(dataSubTask => {
                 //    this.selectedTaskChange(this.cognitiveTaskModel)
                 //    this.subTaskModel = this.paperInfo.subTaskID;
@@ -263,7 +263,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.subSubRegionList = this.regionModel ? this.subRegionList.filter(x => this.regionModel.includes(x.rid)) : [];
                 this.filteredSubRegionList.next(this.subSubRegionList.slice());
 
-                this.neurotransmitterModel = this.paperInfo.transmitterID;
+                this.neurotransmitterModel = this.paperInfo.transmitterID ? this.paperInfo.transmitterID : [];
 
                 this.sourceOptionModel = 3;
 
