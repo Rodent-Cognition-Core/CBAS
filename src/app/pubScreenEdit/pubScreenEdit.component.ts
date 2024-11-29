@@ -71,8 +71,10 @@ export class PubScreenEditComponent implements OnInit {
 
 
         });
+        if (this.isLoaded) {
+            this.spinnerService.hide();
+        }
 
-        this.spinnerService.hide();
 
     }
 
