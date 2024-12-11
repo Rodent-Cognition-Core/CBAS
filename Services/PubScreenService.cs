@@ -1075,35 +1075,40 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        // Delete publication
-        public void DeletePublicationById(int pubId)
+        public async Task DeletePublicationByIdAsync(int pubId)
         {
-            string sql = $@" 
-                             Delete From Publication_Author Where PublicationID = {pubId};
-                             Delete From Publication_CellType Where PublicationID = {pubId};
-                             Delete From Publication_Disease Where PublicationID = {pubId};
-                             Delete From Publication_SubModel Where PublicationID = {pubId};
-                             Delete From Publication_Method Where PublicationID = {pubId};
-                             Delete From Publication_SubMethod Where PublicationID = {pubId};
-                             Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
-                             Delete From Publication_PaperType Where PublicationID = {pubId};
-                             Delete From Publication_Region Where PublicationID = {pubId};
-                             Delete From Publication_Sex Where PublicationID = {pubId};
-                             Delete From Publication_Specie Where PublicationID = {pubId};
-                             Delete From Publication_Strain Where PublicationID = {pubId};
-                             Delete From Publication_SubRegion Where PublicationID = {pubId};
-                             Delete From Publication_Task Where PublicationID = {pubId};
-                             Delete From Publication_SubTask Where PublicationID = {pubId};
-                             Delete From EditLog Where PubID = {pubId};
-                             Delete From Publication Where id = { pubId};";
+            string sql = @"
+                DELETE FROM Publication_Author WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_CellType WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Disease WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubModel WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Method WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubMethod WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_NeuroTransmitter WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_PaperType WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Region WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Sex WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Specie WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Strain WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubRegion WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Task WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubTask WHERE PublicationID = @PublicationID;
+                DELETE FROM EditLog WHERE PubID = @PublicationID;
+                DELETE FROM Publication WHERE id = @PublicationID;";
+
             try
             {
-                Dal.ExecuteNonQueryPub(sql);
-                DeleteFromElasticSearch(pubId);
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@PublicationID", pubId)
+                };
+
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+                await DeleteFromElasticSearchAsync(pubId);
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
+                Log.Error(ex, "Error deleting publication with ID {PublicationID}", pubId);
             }
         }
 
@@ -2435,27 +2440,35 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public List<PubmedPaper> GetPubmedQueue()
+        public async Task<List<PubmedPaper>> GetPubmedQueueAsync()
         {
-            List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+            var pubmedQueue = new List<PubmedPaper>();
+            const string query = "SELECT * FROM PubmedQueue WHERE IsProcessed = 0 ORDER BY QueueDate, PubDate";
 
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                using (var dt = await Dal.GetDataTablePubAsync(query))
                 {
-                    PubmedQueue.Add(new PubmedPaper
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
-                        PubDate = Convert.ToString(dr["PubDate"].ToString()),
-                        QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
-                    });
+                        pubmedQueue.Add(new PubmedPaper
+                        {
+                            Title = dr["Title"].ToString(),
+                            PubmedID = int.Parse(dr["PubmedID"].ToString()),
+                            PubDate = dr["PubDate"].ToString(),
+                            QueueDate = dr["QueueDate"].ToString(),
+                            DOI = dr["DOI"].ToString(),
+                        });
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPubmedQueue");
+                throw;
+            }
 
-            return PubmedQueue;
+            return pubmedQueue;
         }
 
         public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
@@ -2480,7 +2493,7 @@ namespace AngularSPAWebAPI.Services
 
                 paper.DOI = doi;
                 int? pubID = AddPublications(paper, userName);
-                ProcessQueuePaper(pubmedID, doi);
+                await ProcessQueuePaperAsync(pubmedID, doi);
 
                 return pubID;
             }
@@ -2491,20 +2504,40 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public void ProcessQueuePaper(int pubmedID, string doi = null)
+        public async Task ProcessQueuePaperAsync(int pubmedID, string doi = null)
         {
-            if(pubmedID == -1)
+            try
             {
-                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where DOI = '{doi}'");
-            }
-            else
-            {
-                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+                string query;
+                SqlParameter[] parameters;
 
+                if (pubmedID == -1)
+                {
+                    query = "UPDATE PubmedQueue SET IsProcessed = 1 WHERE DOI = @doi";
+                    parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@doi", SqlDbType.NVarChar) { Value = doi }
+                    };
+                }
+                else
+                {
+                    query = "UPDATE PubmedQueue SET IsProcessed = 1 WHERE PubmedID = @pubmedID";
+                    parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@pubmedID", SqlDbType.Int) { Value = pubmedID }
+                    };
+                }
+
+                await Dal.ExecuteNonQueryPubAsync(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in ProcessQueuePaperAsync");
+                throw;
             }
         }
 
-        public (int, int) GetPubCount()
+        public async Task<(int, int)> GetPubCountAsync()
         {
             const string pubCountQuery = "SELECT COUNT(ID) FROM SearchPub";
             const string featureCountQuery = @"
@@ -2520,12 +2553,18 @@ namespace AngularSPAWebAPI.Services
                    OR Neurotransmitter IS NOT NULL 
                    OR task IS NOT NULL";
 
-            Task<int> pubCountTask = Task.Run(() => (int)Dal.ExecScalarPub(pubCountQuery));
-            Task<int> featureCountTask = Task.Run(() => (int)Dal.ExecScalarPub(featureCountQuery));
+            try
+            {
+                var pubCountTask = await Dal.ExecScalarPubAsync(pubCountQuery, null);
+                var featureCountTask = await Dal.ExecScalarPubAsync(featureCountQuery, null);
 
-            Task.WaitAll(pubCountTask, featureCountTask);
-
-            return (pubCountTask.Result, featureCountTask.Result);
+                return ((int)pubCountTask, (int)featureCountTask);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPubCountAsync");
+                throw;
+            }
         }
 
         //public async Task<List<string>> AddCSVPapers(string userName)
@@ -3578,13 +3617,22 @@ namespace AngularSPAWebAPI.Services
                             .Field(new Nest.Field(fieldName))
                             .Value("*" + searchingFor.ToString().ToLower() + "*"))));
 
-        private DeleteResponse DeleteFromElasticSearch(int id)
-        {
-            
-                var pubScreenId = id.ToString();
-                var response = _elasticClient.Delete<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
 
-            return response; 
+        private async Task DeleteFromElasticSearchAsync(int pubId)
+        {
+            try
+            {
+                var pubScreenId = pubId.ToString();
+                var response = await _elasticClient.DeleteAsync<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
+                if (!response.IsValid)
+                {
+                    Log.Error("Failed to delete publication from Elasticsearch with ID {PublicationID}: {Error}", pubScreenId, response.OriginalException.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting publication from Elasticsearch with ID {PublicationID}", pubId);
+            }
         }
         private IndexResponse AddPublicationsToElasticSearch(PubScreen publication)
         {
