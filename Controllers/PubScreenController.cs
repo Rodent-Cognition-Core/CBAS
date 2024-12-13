@@ -210,9 +210,9 @@ namespace AngularSPAWebAPI.Controllers
 
         // Deleting publication
         [HttpDelete("DeletePublicationById")]
-        public IActionResult DeletePublicationById(int pubId)
+        public async Task<IActionResult> DeletePublicationById(int pubId)
         {
-            _pubScreenService.DeletePublicationById(pubId);
+            await _pubScreenService.DeletePublicationByIdAsync(pubId);
             return new JsonResult("Done!");
         }
 
@@ -278,9 +278,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("GetPubmedQueue")]
-        public IActionResult GetPubmedQueue()
+        public async Task<IActionResult> GetPubmedQueue()
         {
-            return new JsonResult(_pubScreenService.GetPubmedQueue());
+            var res = await _pubScreenService.GetPubmedQueueAsync();
+            return new JsonResult(res);
         }
 
         [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
@@ -293,18 +294,18 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpDelete("RejectQueuePaper")]
-        public IActionResult RejectQueuePaper(int pubmedID, string doi)
+        public async Task<IActionResult> RejectQueuePaper(int pubmedID, string doi)
         {
 
-            _pubScreenService.ProcessQueuePaper(pubmedID, doi);
+            await _pubScreenService.ProcessQueuePaperAsync(pubmedID, doi);
             return new JsonResult("Done!");
         }
 
         [HttpGet("GetPubCount")]
         [AllowAnonymous]
-        public IActionResult GetPubCount()
+        public async Task<IActionResult> GetPubCount()
         {
-            var result = _pubScreenService.GetPubCount();
+            var result = await _pubScreenService.GetPubCountAsync();
             //  When the Value property of JsonResult is set to a tuple, it might not be properly serialized into JSON, leading to a null object on the client side.
             var tempObject = new
             {
