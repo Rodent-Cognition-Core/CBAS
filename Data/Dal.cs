@@ -1100,6 +1100,7 @@ namespace AngularSPAWebAPI.Services
                             {
                                 using (SqlCommand cmd = new SqlCommand(query.Value, cn, transaction))
                                 {
+                                    cmd.CommandTimeout = 300;
                                     cmd.Parameters.AddWithValue("@PublicationID", id);
                                     if (query.Key == "Publication")
                                     {
