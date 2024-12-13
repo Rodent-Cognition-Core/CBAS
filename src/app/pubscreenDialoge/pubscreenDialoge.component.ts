@@ -252,7 +252,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 //    this.selectedTaskChange(this.cognitiveTaskModel)
                 //    this.subTaskModel = this.paperInfo.subTaskID;
                 //});
-                this.subSubTaskList = this.cognitiveTaskModel ? this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID)) : [];
+                this.subSubTaskList = this.cognitiveTaskModel && this.subTaskList ? this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID)) : [];
                 this.filteredSubTaskList.next(this.subSubTaskList.slice());
                 this.subStrainList = this.specieModel ? this.strainList.filter(x => this.specieModel.includes(x.speciesID)) : [];
                 this.filteredStrainList.next(this.subStrainList.slice());
