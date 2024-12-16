@@ -577,7 +577,7 @@ namespace AngularSPAWebAPI.Services
         {
             return await ExecScalarAsync(_cnnString, query, cmdParams);
         }
-        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)
+        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)//ehsan
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -890,9 +890,9 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
-        public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt, bool logEnabled = true)
+        public static async Task<DataTable> GetDataTableAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
         {
-            DataSet ds = await ExecDSPubAsync(CommandType.Text, cmdTxt, logEnabled);
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt, cmdParams);
             if (ds != null && ds.Tables.Count > 0)
             {
                 return ds.Tables[0];
@@ -901,14 +901,25 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
-        public static async Task<DataSet> ExecDSPubAsync(CommandType cmdType, string cmdTxt, bool logEnabled = true)
+        public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
         {
-            using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString_PubScreen, cmdTxt, cmdParams);
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt, List<SqlParameter> cmdParams = null)
+        {
+            using (SqlConnection cn = new SqlConnection(connectionString))
             {
                 try
                 {
                     await cn.OpenAsync();
-                    return await ExecDSAsync(cn, cmdType, cmdTxt);
+                    return await ExecDSAsync(cn, cmdType, cmdTxt, cmdParams.ToArray());
                 }
                 catch (SqlException ex)
                 {
