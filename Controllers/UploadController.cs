@@ -52,9 +52,9 @@ namespace AngularSPAWebAPI.Controllers
             var userEmail = user.UserName;
             var userID = user.Id;
 
-            string TaskName = _uploadService.GetTaskName(expID);
-            int TaskID = _uploadService.GetTaskID(expID);
-            string ExpName = _uploadService.GetExpName(expID);
+            string TaskName = await _uploadService.GetTaskNameAsync(expID);
+            int TaskID = await _uploadService.GetTaskIDAsync(expID);
+            string ExpName = await _uploadService.GetExpNameAsync(expID);
 
             List<FileUploadResult> result = await _uploadService.UploadFiles(files, TaskName, expID, subExpId, ExpName, userEmail, userID, SessionName, TaskID, sessionID);
 
@@ -83,8 +83,9 @@ namespace AngularSPAWebAPI.Controllers
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
             var userID = user.Id;
+            var res = await _uploadService.SetUploadAsResolvedAsync(uploadId, userID);
 
-            return new JsonResult(_uploadService.SetUploadAsResolved(uploadId, userID));
+            return new JsonResult(res);
         }
 
         //Uploadinfo for Experiment page
@@ -99,7 +100,7 @@ namespace AngularSPAWebAPI.Controllers
         public async Task<IActionResult> DownloadFile(int uploadId)
         {
 
-            var fur = _uploadService.GetUploadByUploadID(uploadId);
+            var fur = await _uploadService.GetUploadByUploadIDAsync(uploadId);
             var path = fur.PermanentFilePath + "\\" + fur.SysFileName;
 
             var memory = new MemoryStream();

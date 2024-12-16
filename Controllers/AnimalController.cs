@@ -117,7 +117,7 @@ namespace AngularSPAWebAPI.Controllers
                 var user = await _manager.GetUserAsync(HttpContext.User);
                 var userID = user.Id;
                 UploadService uploadService = new UploadService();
-                uploadService.SetAsResolvedForEditedAnimalId(ExistingAnimalIdToUse, userID);
+                await uploadService.SetAsResolvedForEditedAnimalIdAsync(ExistingAnimalIdToUse, userID);
             }
             if (updated == true)
             {
