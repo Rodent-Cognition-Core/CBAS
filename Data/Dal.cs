@@ -577,7 +577,7 @@ namespace AngularSPAWebAPI.Services
         {
             return await ExecScalarAsync(_cnnString, query, cmdParams);
         }
-        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)//ehsan
+        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
