@@ -130,7 +130,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in parameters)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -475,7 +475,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -529,7 +529,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -592,7 +592,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -639,7 +639,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -1051,7 +1051,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     foreach (SqlParameter param in cmdParams)
                     {
-                        if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                        if (param.Value == null)
                         {
                             param.Value = DBNull.Value;
                         }
