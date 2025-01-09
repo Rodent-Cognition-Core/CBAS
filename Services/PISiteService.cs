@@ -1,9 +1,11 @@
 using AngularSPAWebAPI.Controllers;
 using AngularSPAWebAPI.Models;
 using CBAS.Helpers;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,41 +42,70 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        // Function Definition: Insert the PI and institution that user selected in "sign up" to tbl PIUSERSite  
-        internal void InsertPiSiteIds(string userId, List<int> selectedPiSiteIds)
+        // Function Definition: Insert the PI and institution that user selected in "sign up" to tbl PIUSERSite
+        internal async Task InsertPiSiteIdsAsync(string userId, List<int> selectedPiSiteIds)
         {
-            // add selectedPiSiteIds to this user
-            foreach(var PiSiteID in selectedPiSiteIds)
+            try
             {
-                string sql = $@"Insert into PIUserSite (PSID, UserID) Values ({PiSiteID}, '{userId}'); ";
+                foreach (var piSiteID in selectedPiSiteIds)
+                {
+                    const string sql = "INSERT INTO PIUserSite (PSID, UserID) VALUES (@PSID, @UserID)";
+                    var parameters = new List<SqlParameter>
+                    {
+                        new("@PSID", piSiteID),
+                        new("@UserID", userId)
+                    };
 
-                Dal.ExecuteNonQuery(sql);
+                    await Dal.ExecuteNonQueryAsync(sql, parameters.ToArray());
+                }
             }
-
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error inserting PI Site IDs for user {UserId}", userId);
+                throw;
+            }
         }
 
         // Function Defintion: Extracting list of PI & Institutions for the login User (for exp creation)
-        public List<PISite> GetPISitebyUserID(string UserID)
+        public async Task<List<PISite>> GetPISitebyUserIDAsync(string userId)
         {
-            List<PISite> lstPISite = new List<PISite>();
-            using (DataTable dt = Dal.GetDataTable($@"Select PUSID, PIUserSite.PSID, tt.PISiteName  From PIUserSite
-                                                        inner join 
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID
-                                                        Where PIUserSite.UserID = '{UserID}'"))
+            var lstPISite = new List<PISite>();
+
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                const string sql = @"
+                    SELECT PUSID, PIUserSite.PSID, tt.PISiteName
+                    FROM PIUserSite
+                    INNER JOIN (
+                        SELECT PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) AS PISiteName
+                        FROM PISite
+                        INNER JOIN PI ON PI.PID = PISite.PID
+                        INNER JOIN Site ON Site.SiteID = PISite.SiteID
+                    ) AS tt ON tt.PSID = PIUserSite.PSID
+                    WHERE PIUserSite.UserID = @UserID";
+
+                var parameters = new List<SqlParameter>
                 {
-                    lstPISite.Add(new PISite
+                    new("@UserID", userId)
+                };
+
+                using (var dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        PUSID = Int32.Parse(dr["PUSID"].ToString()),
-                        PSID = Int32.Parse(dr["PSID"].ToString()),
-                        PISiteName = Convert.ToString(dr["PISiteName"].ToString()),
-
-                    });
+                        lstPISite.Add(new PISite
+                        {
+                            PUSID = Convert.ToInt32(dr["PUSID"]),
+                            PSID = Convert.ToInt32(dr["PSID"]),
+                            PISiteName = Convert.ToString(dr["PISiteName"])
+                        });
+                    }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving PI Sites for user {UserId}", userId);
+                throw;
             }
 
             return lstPISite;
