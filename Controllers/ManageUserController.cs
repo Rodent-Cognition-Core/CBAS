@@ -31,27 +31,27 @@ namespace AngularSPAWebAPI.Controllers
         // Function definition to check if the Email of USer approved by Admin
         [AllowAnonymous]
         [HttpGet("IsEmailApproved")]
-        public IActionResult IsEmailApproved(string username)
+        public async Task<IActionResult> IsEmailApproved(string username)
         {
-            
-            return new JsonResult(_manageUserService.IsUserEmailApproved(username));
+            var result = await _manageUserService.IsUserEmailApprovedAsync(username);
+            return new JsonResult(result);
 
         }
                 
 
         [HttpGet("GetUserList")]
-        public IActionResult GetUserList()
+        public async Task<IActionResult> GetUserList()
         {
-
-            return new JsonResult(_manageUserService.GetAllUserList());
+            var res = _manageUserService.GetAllUserListAsync();
+            return new JsonResult(res);
 
         }
 
         [HttpPost("ApproveUser")]
-        public IActionResult ApproveUser([FromBody] Users user)
+        public async Task<IActionResult> ApproveUser([FromBody] Users user)
         {
 
-            _manageUserService.ApproveSelectedUser(user.Email);
+            await _manageUserService.ApproveSelectedUserAsync(user.Email);
             // here should be a good place to send email.
             var strBody = $@"Hi {user.GivenName.ToUpper()} {user.FamilyName.ToUpper()}, <br /><br />
                                 Thanks for registering with MouseBytes! <br /><br />
@@ -68,10 +68,10 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("LockUser")]
-        public IActionResult LockUser(string email)
+        public async Task<IActionResult> LockUser(string email)
         {
 
-            _manageUserService.LockSelectedUser(email);
+            await _manageUserService.LockSelectedUserAsync(email);
             return new JsonResult("Done!");
 
         }
