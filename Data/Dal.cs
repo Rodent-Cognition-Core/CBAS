@@ -111,15 +111,23 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public static async Task ExecuteNonQueryAsync(string query, SqlParameter[] parameters)
+        {
+            await ExecuteNonQueryAsync(query, _cnnString, parameters);
+        }
         public static async Task ExecuteNonQueryPubAsync(string query, SqlParameter[] parameters)
         {
-            await ExecuteNonQueryAsync(query, parameters);
+            await ExecuteNonQueryAsync(query, _cnnString_PubScreen, parameters);
         }
-        public static async Task ExecuteNonQueryAsync(string query, SqlParameter[] parameters)
+        public static async Task ExecuteNonQueryCogAsync(string query, SqlParameter[] parameters)
+        {
+            await ExecuteNonQueryAsync(query, _cnnString_Cogbytes, parameters);
+        }
+        public static async Task ExecuteNonQueryAsync(string query, string connectionString, SqlParameter[] parameters)
         {
             try
             {
-                using (var connection = new SqlConnection(_cnnString_PubScreen))
+                using (var connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
                     using (var command = new SqlCommand(query, connection))
