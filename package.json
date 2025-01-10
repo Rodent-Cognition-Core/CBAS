@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "7.2.16",
     "@angular/router": "7.2.16",
     "@ngrx/store": "^7.4.0",
-    "@schematics/angular": "^19.0.1",
+    "@schematics/angular": "^7.3.9",
     "@swimlane/ngx-datatable": "^14.0.0",
     "angular-font-awesome": "^3.1.2",
     "angular-material-fileupload": "^2.0.0",
