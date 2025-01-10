@@ -91,10 +91,12 @@ export class PubScreenQueueComponent implements OnInit {
                         data => {
                             this.pubmedQueue = data;
                             //console.log(this.pubmedQueue);
-                            this.spinnerService.hide();
+                            
                         }
                     );
                 });
+                this.spinnerService.hide();
+
             }
             this.dialogRef = null;
         });

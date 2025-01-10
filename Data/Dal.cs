@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AngularSPAWebAPI.Models;
 
 
 namespace AngularSPAWebAPI.Services
@@ -108,6 +109,53 @@ namespace AngularSPAWebAPI.Services
 
             }
 
+        }
+
+        public static async Task ExecuteNonQueryAsync(string query, SqlParameter[] parameters)
+        {
+            await ExecuteNonQueryAsync(query, _cnnString, parameters);
+        }
+        public static async Task ExecuteNonQueryPubAsync(string query, SqlParameter[] parameters)
+        {
+            await ExecuteNonQueryAsync(query, _cnnString_PubScreen, parameters);
+        }
+        public static async Task ExecuteNonQueryCogAsync(string query, SqlParameter[] parameters)
+        {
+            await ExecuteNonQueryAsync(query, _cnnString_Cogbytes, parameters);
+        }
+        public static async Task ExecuteNonQueryAsync(string query, string connectionString, SqlParameter[] parameters)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.CommandType = CommandType.Text;
+                        command.CommandTimeout = 300;
+                        if (parameters != null)
+                        {
+                            foreach (SqlParameter param in parameters)
+                            {
+                                if (param.Value == null)
+                                {
+                                    param.Value = DBNull.Value;
+                                }
+
+                                command.Parameters.Add(param);
+                            }
+
+                        }
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                throw;
+            }
         }
 
         public static int ExecuteNonQueryPub(string cmdTxt)
@@ -435,7 +483,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -489,7 +537,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -535,7 +583,11 @@ namespace AngularSPAWebAPI.Services
 
         public static async Task<object> ExecScalarAsync(string query, List<SqlParameter> cmdParams = null)
         {
-            using (SqlConnection conn = new SqlConnection(_cnnString))
+            return await ExecScalarAsync(_cnnString, query, cmdParams);
+        }
+        public static async Task<object> ExecScalarAsync(string connectionString, string query, List<SqlParameter> cmdParams = null)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 try
                 {
@@ -548,7 +600,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -595,7 +647,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             foreach (SqlParameter param in cmdParams)
                             {
-                                if ((param.Direction == ParameterDirection.InputOutput) && (param.Value == null))
+                                if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
@@ -665,6 +717,10 @@ namespace AngularSPAWebAPI.Services
         public static object ExecScalarPub(string cmdTxt)
         {
             return ExecScalarPub(CommandType.Text, cmdTxt);
+        }
+        public static async Task<object> ExecScalarPubAsync(string query, List<SqlParameter> cmdParams = null)
+        {
+            return await ExecScalarAsync(_cnnString_PubScreen, query, cmdParams);
         }
 
         public static object ExecScalarPub(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
@@ -842,6 +898,109 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
+        public static async Task<DataTable> GetDataTableAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
+        {
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt, cmdParams);
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
+        {
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString_PubScreen, cmdTxt, cmdParams);
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                return ds.Tables[0];
+            }
+
+            return null;
+        }
+
+        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt, List<SqlParameter> cmdParams = null)
+        {
+            using (SqlConnection cn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await cn.OpenAsync();
+                    return await ExecDSAsync(cn, cmdType, cmdTxt, cmdParams.ToArray());
+                }
+                catch (SqlException ex)
+                {
+                    Log.Fatal($"SQL Exception: {ex.Message}");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Log.Fatal($"Exception: {ex.Message}");
+                    throw;
+                }
+                finally
+                {
+                    if (cn.State == ConnectionState.Open)
+                    {
+                        await cn.CloseAsync();
+                    }
+                }
+            }
+        }
+
+        public static async Task<DataSet> ExecDSAsync(SqlConnection connection, CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
+        {
+            DataSet ds = new DataSet();
+
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandTimeout = 300;
+                await ProcCmdAsync(cmd, connection, cmdType, cmdTxt, cmdParams);
+
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    await Task.Run(() => da.Fill(ds));
+                }
+
+                cmd.Parameters.Clear();
+            }
+
+            return ds;
+        }
+
+        public static async Task<DataTable> GetDataTablePubAsync(string query)
+        {
+            var dataTable = new DataTable();
+            try
+            {
+                using (var connection = new SqlConnection(_cnnString_PubScreen))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        using (var adapter = new SqlDataAdapter(command))
+                        {
+                            await Task.Run(() => adapter.Fill(dataTable));
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while executing query: {Query}", query);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while executing query: {Query}", query);
+                throw;
+            }
+
+            return dataTable;
+        }
+
+
         public static DataTable GetDataTableCog(string cmdTxt, bool logEnabled = true)
         {
             return GetDataTableCog(CommandType.Text, cmdTxt, logEnabled);
@@ -882,6 +1041,149 @@ namespace AngularSPAWebAPI.Services
             }
             return;
         }
+
+        private static async Task ProcCmdAsync(SqlCommand cmd, SqlConnection connection, CommandType cmdType, string cmdTxt, SqlParameter[] cmdParams)
+        {
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+
+                cmd.Connection = connection;
+                cmd.CommandText = cmdTxt;
+                cmd.CommandType = cmdType;
+
+                if (cmdParams != null)
+                {
+                    foreach (SqlParameter param in cmdParams)
+                    {
+                        if (param.Value == null)
+                        {
+                            param.Value = DBNull.Value;
+                        }
+
+                        cmd.Parameters.Add(param);
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Fatal($"SQL Exception: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal($"Exception: {ex.Message}");
+                throw;
+            }
+        }
+
+        public static async Task<PubScreen> GetPaperInfoByIDAsync(int id)
+        {
+            var pubScreen = new PubScreen();
+            string sql;
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
+                {
+                    await cn.OpenAsync();
+                    using (SqlTransaction transaction = cn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // Define all SQL queries
+                            var queries = new Dictionary<string, string>
+                            {
+                                { "AuthourID", "Select AuthorID From Publication_Author Where PublicationID = @PublicationID" },
+                                { "CellTypeID", "Select CelltypeID From Publication_CellType Where PublicationID = @PublicationID" },
+                                { "DiseaseID", "Select DiseaseID From Publication_Disease Where PublicationID = @PublicationID" },
+                                { "SubModelID", "Select SubModelID From Publication_SubModel Where PublicationID = @PublicationID" },
+                                { "MethodID", "Select MethodID From Publication_Method Where PublicationID = @PublicationID" },
+                                { "SubMethodID", "Select SubMethodID From Publication_SubMethod Where PublicationID = @PublicationID" },
+                                { "TransmitterID", "Select TransmitterID From Publication_NeuroTransmitter Where PublicationID = @PublicationID" },
+                                { "RegionID", "Select RegionID From Publication_Region Where PublicationID = @PublicationID" },
+                                { "sexID", "Select SexID From Publication_Sex Where PublicationID = @PublicationID" },
+                                { "SpecieID", "Select SpecieID From Publication_Specie Where PublicationID = @PublicationID" },
+                                { "StrainID", "Select StrainID From Publication_Strain Where PublicationID = @PublicationID" },
+                                { "SubRegionID", "Select SubRegionID From Publication_SubRegion Where PublicationID = @PublicationID" },
+                                { "TaskID", "Select TaskID From Publication_Task Where PublicationID = @PublicationID" },
+                                { "SubTaskID", "Select SubTaskID From Publication_SubTask Where PublicationID = @PublicationID" },
+                                { "PaperTypeID", "Select PaperTypeID From Publication_PaperType Where PublicationID = @PublicationID" },
+                                { "Publication", "Select * From Publication Where ID = @PublicationID" }
+                            };
+
+                            // Execute all queries
+                            foreach (var query in queries)
+                            {
+                                using (SqlCommand cmd = new SqlCommand(query.Value, cn, transaction))
+                                {
+                                    cmd.CommandTimeout = 300;
+                                    cmd.Parameters.AddWithValue("@PublicationID", id);
+                                    if (query.Key == "Publication")
+                                    {
+                                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                                        {
+                                            if (await reader.ReadAsync())
+                                            {
+                                                pubScreen.PaperLinkGuid = reader.GetGuid(reader.GetOrdinal("PaperLinkGuid"));
+                                                pubScreen.DOI = reader.GetString(reader.GetOrdinal("DOI"));
+                                                pubScreen.Keywords = reader.GetString(reader.GetOrdinal("Keywords"));
+                                                pubScreen.Title = reader.GetString(reader.GetOrdinal("Title"));
+                                                pubScreen.Abstract = reader.GetString(reader.GetOrdinal("Abstract"));
+                                                pubScreen.Year = reader.GetString(reader.GetOrdinal("Year"));
+                                                pubScreen.Reference = reader.GetString(reader.GetOrdinal("Reference"));
+                                                pubScreen.Source = reader.GetString(reader.GetOrdinal("Source"));
+                                            }
+                                        }
+                                    }
+                                    else if (query.Key == "PaperTypeID")
+                                    {
+                                        var result = await cmd.ExecuteScalarAsync();
+                                        if (result == null)
+                                        {
+                                            pubScreen.PaperTypeID = null;
+                                        }
+                                        else
+                                        {
+                                            pubScreen.PaperTypeID = Int32.Parse(result.ToString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var result = await cmd.ExecuteScalarAsync();
+                                        if (result != null)
+                                        {
+                                            var property = pubScreen.GetType().GetProperty(query.Key);
+                                            property.SetValue(pubScreen, new int?[] { Convert.ToInt32(result) });
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Commit transaction
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Rollback transaction if any error occurs
+                            transaction.Rollback();
+                            Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                throw;
+            }
+
+            return pubScreen;
+        }
+
 
     }
 }

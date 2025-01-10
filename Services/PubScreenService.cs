@@ -367,7 +367,7 @@ namespace AngularSPAWebAPI.Services
             {
                 Log.Error(ex, "Error in GetPaperInfoByDOIBIO");
             }
-            return new PubScreen();
+            return null;
         }
 
         //Function Definition to get some paper's info based on PubMedKey
@@ -549,358 +549,566 @@ namespace AngularSPAWebAPI.Services
 
 
         }
-        // Function Definition to extract list of all Paper Types
-        public List<PubScreenPaperType> GetPaperTypes()
+
+        public async Task<List<PubScreenPaperType>> GetPaperTypesAsync()
         {
-            List<PubScreenPaperType> PaperTypeList = new List<PubScreenPaperType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From PaperType"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    PaperTypeList.Add(new PubScreenPaperType
-                    {
-                        PaperType = Convert.ToString(dr["PaperType"].ToString()),
-                        ID = Int32.Parse(dr["ID"].ToString()),
+            var paperTypeList = new List<PubScreenPaperType>();
+            string query = "SELECT * FROM PaperType";
 
-                    });
-                }
-            }
-
-            return PaperTypeList;
-        }
-
-
-        // Function Definition to extract list of all Cognitive Tasks
-        public List<PubScreenTask> GetTasks()
-        {
-            List<PubScreenTask> TaskList = new List<PubScreenTask>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Task Order By (Case When Task not like '%None%' Then 1 Else 2 End), Task"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    TaskList.Add(new PubScreenTask
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
-
-
-                    });
-                }
-            }
-
-            return TaskList;
-        }
-
-        // Function Definition to extract list of all Task & Sub-Tasks
-        public List<PubScreenTask> GetAllTasks()
-        {
-            List<PubScreenTask> TaskList = new List<PubScreenTask>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select SubTask.ID, SubTask.TaskID, Task.Task, SubTask.SubTask 
-                                                             From SubTask
-                                                             Inner join Task on Task.ID = SubTask.TaskID
-                                                             Order By (Case When SubTask not like '%None%' Then 1 Else 2 End), Task, SubTask"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    TaskList.Add(new PubScreenTask
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        TaskID = Int32.Parse(dr["TaskID"].ToString()),
-                        Task = Convert.ToString(dr["Task"].ToString()),
-                        SubTask = Convert.ToString(dr["SubTask"].ToString())
-                    });
-                }
-            }
-
-            return TaskList;
-        }
-
-        // Function Definition to extract list of all Species
-        public List<PubScreenSpecie> GetSpecies()
-        {
-            List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Species Order By (Case When Species not like '%Other%'  and  Species  <> ltrim(rtrim('none')) Then 1 Else 2 End), Species"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    SpecieList.Add(new PubScreenSpecie
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString())
-                    });
-                }
-            }
-
-            return SpecieList;
-        }
-
-        // Function Definition to extract list of all Sex
-        public List<PubScreenSex> GetSex()
-        {
-            List<PubScreenSex> SexList = new List<PubScreenSex>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Sex Order By Sex"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    SexList.Add(new PubScreenSex
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Sex = Convert.ToString(dr["Sex"].ToString())
-                    });
-                }
-            }
-
-            return SexList;
-        }
-
-        // Function Definition to extract list of all Strains
-        public List<PubScreenStrain> GetStrains()
-        {
-            List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select Strain.ID, Strain, SpeciesID
-                                                            From Strain Inner Join Species On Strain.SpeciesID = Species.ID
-                                                            Order By (Case When Strain not like '%Other%'  and  Strain  <> ltrim(rtrim('none')) Then 1 Else 2 End), Species, Strain"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    StrainList.Add(new PubScreenStrain
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Strain = Convert.ToString(dr["Strain"].ToString()),
-                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString())
-                    });
-                }
-            }
-
-            return StrainList;
-        }
-
-
-        // Function Definition to extract list of all Disease Models
-        public List<PubScreenDisease> GetDisease()
-        {
-            List<PubScreenDisease> DiseaseList = new List<PubScreenDisease>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From DiseaseModel Order By (Case When DiseaseModel not like '%Other%'  and  DiseaseModel  <> ltrim(rtrim('none')) Then 1 Else 2 End), DiseaseModel"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    DiseaseList.Add(new PubScreenDisease
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString())
-                    });
-                }
-            }
-
-            return DiseaseList;
-        }
-
-        // Function Definition to extract list of all Submodels
-        public List<PubScreenSubModel> GetSubModels()
-        {
-            List<PubScreenSubModel> SubModelList = new List<PubScreenSubModel>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select SubModel.ID, SubModel, ModelID
-                                                            From SubModel Inner Join DiseaseModel On SubModel.ModelID = DiseaseModel.ID
-                                                            Order By (Case When SubModel not like '%Other%'  and  SubModel  <> ltrim(rtrim('none'))  Then 1 Else 2 End), DiseaseModel, SubModel"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    SubModelList.Add(new PubScreenSubModel
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        SubModel = Convert.ToString(dr["SubModel"].ToString()),
-                        ModelID = Int32.Parse(dr["ModelID"].ToString())
-                    });
-                }
-            }
-
-            return SubModelList;
-        }
-
-        // Function Definition to extract list of all Regions & Sub-regions
-        public List<PubScreenRegion> GetAllRegions()
-        {
-            List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select SubRegion.ID, SubRegion.RID, BrainRegion.BrainRegion, SubRegion.SubRegion 
-                                                             From SubRegion
-                                                             Inner join BrainRegion on BrainRegion.ID = SubRegion.RID
-                                                             Order By (Case When SubRegion not like '%Other%'  and  SubRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), RID, SubRegion"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    RegionList.Add(new PubScreenRegion
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        RID = Int32.Parse(dr["RID"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
-                        SubRegion = Convert.ToString(dr["SubRegion"].ToString())
-                    });
-                }
-            }
-
-            return RegionList;
-        }
-
-        // Function Definition to extract list of all Regions only
-        public List<PubScreenRegion> GetRegions()
-        {
-            List<PubScreenRegion> RegionList = new List<PubScreenRegion>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From BrainRegion Order By (Case When BrainRegion not like '%Other%'  and  BrainRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), BrainRegion"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    RegionList.Add(new PubScreenRegion
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        BrainRegion = Convert.ToString(dr["BrainRegion"].ToString())
-                    });
-                }
-            }
-
-            return RegionList;
-        }
-
-        // Function Definition to extract list of Celltypes 
-        public List<PubScreenCellType> GetCellTypes()
-        {
-            List<PubScreenCellType> CelltypeList = new List<PubScreenCellType>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From CellType Order By (Case When CellType not like '%Other%'  and  CellType <> ltrim(rtrim('none'))  Then 1 Else 2 End), CellType"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    CelltypeList.Add(new PubScreenCellType
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        CellType = Convert.ToString(dr["CellType"].ToString())
-                    });
-                }
-            }
-
-            return CelltypeList;
-        }
-
-
-        // Function Definition to extract list of Methods 
-        public List<PubScreenMethod> GetMethods()
-        {
-            List<PubScreenMethod> MethodList = new List<PubScreenMethod>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Method Order By (Case When Method not like '%Other%'   and  Method <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    MethodList.Add(new PubScreenMethod
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        Method = Convert.ToString(dr["Method"].ToString())
-                    });
-                }
-            }
-
-            return MethodList;
-        }
-
-        // Function Definition to extract list of all SubMethods
-        public List<PubScreenSubMethod> GetSubMethods()
-        {
-            List<PubScreenSubMethod> SubMethodList = new List<PubScreenSubMethod>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select SubMethod.ID, SubMethod, MethodID
-                                                            From SubMethod Inner Join Method On SubMethod.MethodID = Method.ID
-                                                            Order By (Case When SubMethod not like '%Other%'  and  SubMethod <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method, SubMethod"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    SubMethodList.Add(new PubScreenSubMethod
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
-                        MethodID = Int32.Parse(dr["MethodID"].ToString())
-                    });
-                }
-            }
-
-            return SubMethodList;
-        }
-
-        // Function Definition to extract list of Neurotransmitter 
-        public List<PubScreenNeuroTransmitter> GetNeurotransmitters()
-        {
-            List<PubScreenNeuroTransmitter> NeuroTransmitterList = new List<PubScreenNeuroTransmitter>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From NeuroTransmitter Order By (Case When NeuroTransmitter not like '%Other%'  and  NeuroTransmitter <> ltrim(rtrim('none'))  Then 1 Else 2 End), NeuroTransmitter"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    NeuroTransmitterList.Add(new PubScreenNeuroTransmitter
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString())
-                    });
-                }
-            }
-
-            return NeuroTransmitterList;
-        }
-
-        // Function defintion to add a new author to database
-        public int AddAuthors(PubScreenAuthor author, string userEmail)
-        {
-            string sql = $@"Insert into Author (FirstName, LastName, Affiliation, username) Values
-                            ('{author.FirstName}', '{author.LastName}', '{author.Affiliation}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
-
-            return Int32.Parse(Dal.ExecScalarPub(sql).ToString());
-        }
-
-
-        // Function Definition to extract list of Authors 
-        public List<PubScreenAuthor> GetAuthors()
-        {
-            List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * From Author Order By LastName"))
-            {
-                foreach (DataRow dr in dt.Rows)
-                {
-                    AuthorList.Add(new PubScreenAuthor
-                    {
-                        ID = Int32.Parse(dr["ID"].ToString()),
-                        FirstName = Convert.ToString(dr["FirstName"].ToString()),
-                        LastName = Convert.ToString(dr["LastName"].ToString()),
-                        Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
-
-                    });
-                }
-            }
-
-            return AuthorList;
-        }
-
-        // Delete publication
-        public void DeletePublicationById(int pubId)
-        {
-            string sql = $@" 
-                             Delete From Publication_Author Where PublicationID = {pubId};
-                             Delete From Publication_CellType Where PublicationID = {pubId};
-                             Delete From Publication_Disease Where PublicationID = {pubId};
-                             Delete From Publication_SubModel Where PublicationID = {pubId};
-                             Delete From Publication_Method Where PublicationID = {pubId};
-                             Delete From Publication_SubMethod Where PublicationID = {pubId};
-                             Delete From Publication_NeuroTransmitter Where PublicationID = {pubId};
-                             Delete From Publication_PaperType Where PublicationID = {pubId};
-                             Delete From Publication_Region Where PublicationID = {pubId};
-                             Delete From Publication_Sex Where PublicationID = {pubId};
-                             Delete From Publication_Specie Where PublicationID = {pubId};
-                             Delete From Publication_Strain Where PublicationID = {pubId};
-                             Delete From Publication_SubRegion Where PublicationID = {pubId};
-                             Delete From Publication_Task Where PublicationID = {pubId};
-                             Delete From Publication_SubTask Where PublicationID = {pubId};
-                             Delete From EditLog Where PubID = {pubId};
-                             Delete From Publication Where id = { pubId};";
             try
             {
-                Dal.ExecuteNonQueryPub(sql);
-                DeleteFromElasticSearch(pubId);
+                using (var dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        paperTypeList.Add(new PubScreenPaperType
+                        {
+                            PaperType = dr["PaperType"].ToString(),
+                            ID = int.Parse(dr["ID"].ToString())
+                        });
+                    }
+                }
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
+                Log.Error(ex, "Error getting paper types");
+            }
+
+            return paperTypeList;
+        }
+
+        public async Task<List<PubScreenTask>> GetTasksAsync()
+        {
+            var taskList = new List<PubScreenTask>();
+            string query = @"SELECT * FROM Task ORDER BY (CASE WHEN Task NOT LIKE '%None%' THEN 1 ELSE 2 END), Task";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        taskList.Add(new PubScreenTask
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            Task = dr["Task"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting tasks.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting tasks.");
+            }
+
+            return taskList;
+        }
+
+        public async Task<List<PubScreenTask>> GetAllTasksAsync()
+        {
+            var taskList = new List<PubScreenTask>();
+            string query = @"SELECT SubTask.ID, SubTask.TaskID, Task.Task, SubTask.SubTask 
+                     FROM SubTask
+                     INNER JOIN Task ON Task.ID = SubTask.TaskID
+                     ORDER BY (CASE WHEN SubTask NOT LIKE '%None%' THEN 1 ELSE 2 END), Task, SubTask";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        taskList.Add(new PubScreenTask
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            TaskID = int.Parse(dr["TaskID"].ToString()),
+                            Task = dr["Task"].ToString(),
+                            SubTask = dr["SubTask"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting all tasks.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting all tasks.");
+            }
+
+            return taskList;
+        }
+
+        public async Task<List<PubScreenSpecie>> GetSpeciesAsync()
+        {
+            var specieList = new List<PubScreenSpecie>();
+            string query = @"SELECT * FROM Species 
+                     ORDER BY (CASE WHEN Species NOT LIKE '%Other%' AND Species <> LTRIM(RTRIM('none')) THEN 1 ELSE 2 END), Species";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        specieList.Add(new PubScreenSpecie
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            Species = dr["Species"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting species.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting species.");
+            }
+
+            return specieList;
+        }
+
+        public async Task<List<PubScreenSex>> GetSexAsync()
+        {
+            var sexList = new List<PubScreenSex>();
+            string query = @"SELECT * FROM Sex ORDER BY Sex";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sexList.Add(new PubScreenSex
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            Sex = dr["Sex"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting sex.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting sex.");
+            }
+
+            return sexList;
+        }
+
+        public async Task<List<PubScreenStrain>> GetStrainsAsync()
+        {
+            var strainList = new List<PubScreenStrain>();
+            string query = @"SELECT Strain.ID, Strain, SpeciesID
+                     FROM Strain 
+                     INNER JOIN Species ON Strain.SpeciesID = Species.ID
+                     ORDER BY (CASE WHEN Strain NOT LIKE '%Other%' AND Strain <> LTRIM(RTRIM('none')) THEN 1 ELSE 2 END), Species, Strain";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        strainList.Add(new PubScreenStrain
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            Strain = dr["Strain"].ToString(),
+                            SpeciesID = int.Parse(dr["SpeciesID"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting strains.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting strains.");
+            }
+
+            return strainList;
+        }
+
+        public async Task<List<PubScreenDisease>> GetDiseaseAsync()
+        {
+            var diseaseList = new List<PubScreenDisease>();
+            string query = @"SELECT * FROM DiseaseModel 
+                     ORDER BY (CASE WHEN DiseaseModel NOT LIKE '%Other%' AND DiseaseModel <> LTRIM(RTRIM('none')) THEN 1 ELSE 2 END), DiseaseModel";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        diseaseList.Add(new PubScreenDisease
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            DiseaseModel = dr["DiseaseModel"].ToString()
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting diseases.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting diseases.");
+            }
+
+            return diseaseList;
+        }
+
+        public async Task<List<PubScreenSubModel>> GetSubModelsAsync()
+        {
+            var subModelList = new List<PubScreenSubModel>();
+            string query = @"SELECT SubModel.ID, SubModel, ModelID
+                     FROM SubModel 
+                     INNER JOIN DiseaseModel ON SubModel.ModelID = DiseaseModel.ID
+                     ORDER BY (CASE WHEN SubModel NOT LIKE '%Other%' AND SubModel <> LTRIM(RTRIM('none')) THEN 1 ELSE 2 END), DiseaseModel, SubModel";
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        subModelList.Add(new PubScreenSubModel
+                        {
+                            ID = int.Parse(dr["ID"].ToString()),
+                            SubModel = dr["SubModel"].ToString(),
+                            ModelID = int.Parse(dr["ModelID"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while getting submodels.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while getting submodels.");
+            }
+
+            return subModelList;
+        }
+
+        public async Task<List<PubScreenRegion>> GetAllRegionsAsync()
+        {
+            var regionList = new List<PubScreenRegion>();
+            var query = $@"Select SubRegion.ID, SubRegion.RID, BrainRegion.BrainRegion, SubRegion.SubRegion 
+                    From SubRegion
+                    Inner join BrainRegion on BrainRegion.ID = SubRegion.RID
+                    Order By (Case When SubRegion not like '%Other%'  and  SubRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), RID, SubRegion";
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        regionList.Add(new PubScreenRegion
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            RID = Int32.Parse(dr["RID"].ToString()),
+                            BrainRegion = Convert.ToString(dr["BrainRegion"].ToString()),
+                            SubRegion = Convert.ToString(dr["SubRegion"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching all regions.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching all regions.");
+                throw;
+            }
+
+            return regionList;
+        }
+
+        public async Task<List<PubScreenRegion>> GetRegionsAsync()
+        {
+            var regionList = new List<PubScreenRegion>();
+            var query = $@"Select * From BrainRegion Order By (Case When BrainRegion not like '%Other%'  and  BrainRegion <> ltrim(rtrim('none'))  Then 1 Else 2 End), BrainRegion";
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        regionList.Add(new PubScreenRegion
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            BrainRegion = Convert.ToString(dr["BrainRegion"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching regions.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching regions.");
+                throw;
+            }
+
+            return regionList;
+        }
+
+        public async Task<List<PubScreenCellType>> GetCellTypesAsync()
+        {
+            var cellTypeList = new List<PubScreenCellType>();
+            string query = @"Select * From CellType Order By (Case When CellType not like '%Other%'  and  CellType <> ltrim(rtrim('none'))  Then 1 Else 2 End), CellType";
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        cellTypeList.Add(new PubScreenCellType
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            CellType = Convert.ToString(dr["CellType"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching cell types.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching cell types.");
+                throw;
+            }
+
+            return cellTypeList;
+        }
+
+        public async Task<List<PubScreenMethod>> GetMethodsAsync()
+        {
+            var methodList = new List<PubScreenMethod>();
+            string query = @"Select * From Method Order By (Case When Method not like '%Other%'   and  Method <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method";
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        methodList.Add(new PubScreenMethod
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            Method = Convert.ToString(dr["Method"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching methods.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching methods.");
+                throw;
+            }
+
+            return methodList;
+        }
+
+        public async Task<List<PubScreenSubMethod>> GetSubMethodsAsync()
+        {
+            var subMethodList = new List<PubScreenSubMethod>();
+            string query = @"Select SubMethod.ID, SubMethod, MethodID
+                     From SubMethod Inner Join Method On SubMethod.MethodID = Method.ID
+                     Order By (Case When SubMethod not like '%Other%'  and  SubMethod <> ltrim(rtrim('none'))  Then 1 Else 2 End), Method, SubMethod";
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTablePubAsync(query))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        subMethodList.Add(new PubScreenSubMethod
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            SubMethod = Convert.ToString(dr["SubMethod"].ToString()),
+                            MethodID = Int32.Parse(dr["MethodID"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching sub-methods.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching sub-methods.");
+                throw;
+            }
+
+            return subMethodList;
+        }
+
+        public async Task<List<PubScreenNeuroTransmitter>> GetNeurotransmittersAsync()
+        {
+            var neuroTransmitterList = new List<PubScreenNeuroTransmitter>();
+            string query = @"Select * From NeuroTransmitter Order By 
+                     (Case When NeuroTransmitter not like '%Other%' and NeuroTransmitter <> ltrim(rtrim('none')) Then 1 Else 2 End), 
+                     NeuroTransmitter";
+            try
+            {
+                using (DataTable dt = await Task.Run(() => Dal.GetDataTablePub(query)))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        neuroTransmitterList.Add(new PubScreenNeuroTransmitter
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching neurotransmitters.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching neurotransmitters.");
+                throw;
+            }
+
+            return neuroTransmitterList;
+        }
+
+        public async Task<List<PubScreenAuthor>> GetAuthorsAsync()
+        {
+            var authorList = new List<PubScreenAuthor>();
+            string query = "Select * From Author Order By LastName";
+            try
+            {
+                using (DataTable dt = await Task.Run(() => Dal.GetDataTablePub(query)))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        authorList.Add(new PubScreenAuthor
+                        {
+                            ID = Int32.Parse(dr["ID"].ToString()),
+                            FirstName = Convert.ToString(dr["FirstName"].ToString()),
+                            LastName = Convert.ToString(dr["LastName"].ToString()),
+                            Affiliation = Convert.ToString(dr["Affiliation"].ToString())
+                        });
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while fetching authors.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while fetching authors.");
+                throw;
+            }
+
+            return authorList;
+        }
+
+        public async Task<int> AddAuthorsAsync(PubScreenAuthor author, string userEmail)
+        {
+            string sql = @"Insert into Author (FirstName, LastName, Affiliation, username) 
+                   Values (@FirstName, @LastName, @Affiliation, @Username); 
+                   SELECT CAST(scope_identity() AS int);";
+            try
+            {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@FirstName", author.FirstName),
+                    new SqlParameter("@LastName", author.LastName),
+                    new SqlParameter("@Affiliation", author.Affiliation),
+                    new SqlParameter("@Username", userEmail)
+                };
+
+                var result = await Dal.ExecScalarPubAsync(sql, parameters);
+                return (int)result;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex, "SQL Exception occurred while adding author: {Author}", author);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An exception occurred while adding author: {Author}", author);
+                throw;
+            }
+        }
+
+        public async Task DeletePublicationByIdAsync(int pubId)
+        {
+            string sql = @"
+                DELETE FROM Publication_Author WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_CellType WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Disease WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubModel WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Method WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubMethod WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_NeuroTransmitter WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_PaperType WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Region WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Sex WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Specie WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Strain WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubRegion WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_Task WHERE PublicationID = @PublicationID;
+                DELETE FROM Publication_SubTask WHERE PublicationID = @PublicationID;
+                DELETE FROM EditLog WHERE PubID = @PublicationID;
+                DELETE FROM Publication WHERE id = @PublicationID;";
+
+            try
+            {
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@PublicationID", pubId)
+                };
+
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+                await DeleteFromElasticSearchAsync(pubId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting publication with ID {PublicationID}", pubId);
             }
         }
 
@@ -2147,80 +2355,17 @@ namespace AngularSPAWebAPI.Services
             return YearList;
         }
 
-        public PubScreen GetPaperInfoByID(int id)
+        public async Task<PubScreen> GetPaperInfoByIDAsync(int id)
         {
             var pubScreen = new PubScreen();
             try
             {
-                string sql = $"Select AuthorID From Publication_Author Where PublicationID ={id}";
-                pubScreen.AuthourID = FillPubScreenItemArray(sql, "AuthorID");
-
-                sql = $"Select CelltypeID From Publication_CellType Where PublicationID ={id}";
-                pubScreen.CellTypeID = FillPubScreenItemArray(sql, "CelltypeID");
-
-                sql = $"Select DiseaseID From Publication_Disease Where PublicationID ={id}";
-                pubScreen.DiseaseID = FillPubScreenItemArray(sql, "DiseaseID");
-
-                sql = $"Select SubModelID From Publication_SubModel Where PublicationID ={id}";
-                pubScreen.SubModelID = FillPubScreenItemArray(sql, "SubModelID");
-
-                sql = $"Select MethodID From Publication_Method Where PublicationID ={id}";
-                pubScreen.MethodID = FillPubScreenItemArray(sql, "MethodID");
-
-                sql = $"Select SubMethodID From Publication_SubMethod Where PublicationID ={id}";
-                pubScreen.SubMethodID = FillPubScreenItemArray(sql, "SubMethodID");
-
-                sql = $"Select TransmitterID From Publication_NeuroTransmitter Where PublicationID ={id}";
-                pubScreen.TransmitterID = FillPubScreenItemArray(sql, "TransmitterID");
-
-                sql = $"Select RegionID From Publication_Region Where PublicationID ={id}";
-                pubScreen.RegionID = FillPubScreenItemArray(sql, "RegionID");
-
-                sql = $"Select SexID From Publication_Sex Where PublicationID ={id}";
-                pubScreen.sexID = FillPubScreenItemArray(sql, "SexID");
-
-                sql = $"Select SpecieID From Publication_Specie Where PublicationID ={id}";
-                pubScreen.SpecieID = FillPubScreenItemArray(sql, "SpecieID");
-
-                sql = $"Select StrainID From Publication_Strain Where PublicationID ={id}";
-                pubScreen.StrainID = FillPubScreenItemArray(sql, "StrainID");
-
-                sql = $"Select SubRegionID From Publication_SubRegion Where PublicationID ={id}";
-                pubScreen.SubRegionID = FillPubScreenItemArray(sql, "SubRegionID");
-
-                sql = $"Select TaskID From Publication_Task Where PublicationID ={id}";
-                pubScreen.TaskID = FillPubScreenItemArray(sql, "TaskID");
-
-                sql = $"Select SubTaskID From Publication_SubTask Where PublicationID ={id}";
-                pubScreen.SubTaskID = FillPubScreenItemArray(sql, "SubTaskID");
-
-                sql = $"Select PaperTypeID From Publication_PaperType Where PublicationID ={id}";
-                object papertypeID = Dal.ExecScalarPub(sql);
-                if (papertypeID == null)
-                {
-                    pubScreen.PaperTypeID = null;
-                }
-                else
-                {
-                    pubScreen.PaperTypeID = Int32.Parse(papertypeID.ToString());
-                }
-
-                sql = $"Select * From Publication Where ID ={id}";
-                using (DataTable dt = Dal.GetDataTablePub(sql))
-                {
-                    pubScreen.PaperLinkGuid = Guid.Parse(dt.Rows[0]["PaperLinkGuid"].ToString());
-                    pubScreen.DOI = dt.Rows[0]["DOI"].ToString();
-                    pubScreen.Keywords = dt.Rows[0]["Keywords"].ToString();
-                    pubScreen.Title = dt.Rows[0]["Title"].ToString();
-                    pubScreen.Abstract = dt.Rows[0]["Abstract"].ToString();
-                    pubScreen.Year = dt.Rows[0]["Year"].ToString();
-                    pubScreen.Reference = dt.Rows[0]["Reference"].ToString();
-                    pubScreen.Source = dt.Rows[0]["Source"].ToString();
-                }
+                pubScreen = await Dal.GetPaperInfoByIDAsync(id);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "Error in GetPaperInfoByID");
+                Log.Error(ex, "Error in GetPaperInfoByIDAsync");
+                throw;
             }
 
             return pubScreen;
@@ -2295,62 +2440,104 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
-        public List<PubmedPaper> GetPubmedQueue()
+        public async Task<List<PubmedPaper>> GetPubmedQueueAsync()
         {
-            List<PubmedPaper> PubmedQueue = new List<PubmedPaper>();
+            var pubmedQueue = new List<PubmedPaper>();
+            const string query = "SELECT * FROM PubmedQueue WHERE IsProcessed = 0 ORDER BY QueueDate, PubDate";
 
-            using (DataTable dt = Dal.GetDataTablePub($@"Select * from PubmedQueue Where IsProcessed = 0 Order By QueueDate, PubDate"))
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                using (var dt = await Dal.GetDataTablePubAsync(query))
                 {
-                    PubmedQueue.Add(new PubmedPaper
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        // Paper = await GetPaperInfoByPubMedKey(Convert.ToString(dr["PubmedID"].ToString())),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        PubmedID = Int32.Parse(dr["PubmedID"].ToString()),
-                        PubDate = Convert.ToString(dr["PubDate"].ToString()),
-                        QueueDate = Convert.ToString(dr["QueueDate"].ToString()),
-                        DOI = Convert.ToString(dr["DOI"].ToString()),
-                    });
+                        pubmedQueue.Add(new PubmedPaper
+                        {
+                            Title = dr["Title"].ToString(),
+                            PubmedID = int.Parse(dr["PubmedID"].ToString()),
+                            PubDate = dr["PubDate"].ToString(),
+                            QueueDate = dr["QueueDate"].ToString(),
+                            DOI = dr["DOI"].ToString(),
+                        });
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPubmedQueue");
+                throw;
+            }
 
-            return PubmedQueue;
+            return pubmedQueue;
         }
 
         public async Task<int?> AddQueuePaper(int pubmedID, string doi, string userName)
         {
-            PubScreen paper = new PubScreen();
-            if (pubmedID == -1)
+            try
             {
-                paper = await GetPaperInfoByDOICrossref(doi);
+                PubScreen paper;
+                if (pubmedID == -1)
+                {
+                    paper = await GetPaperInfoByDOICrossref(doi);
+                }
+                else
+                {
+                    paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+                }
+
+                if (paper == null)
+                {
+                    Log.Warning("No paper found for PubMed ID: {PubMedID} or DOI: {DOI}", pubmedID, doi);
+                    return null;
+                }
+
+                paper.DOI = doi;
+                int? pubID = AddPublications(paper, userName);
+                await ProcessQueuePaperAsync(pubmedID, doi);
+
+                return pubID;
             }
-            else
+            catch (Exception ex)
             {
-                paper = await GetPaperInfoByPubMedKey(pubmedID.ToString());
+                Log.Error(ex, "Error in AddQueuePaper for PubMed ID: {PubMedID} or DOI: {DOI}", pubmedID, doi);
+                throw;
             }
-
-            paper.DOI = doi;
-            int? PubID = AddPublications(paper, userName);
-            ProcessQueuePaper(pubmedID, doi);
-
-            return PubID;
         }
 
-        public void ProcessQueuePaper(int pubmedID, string doi = null)
+        public async Task ProcessQueuePaperAsync(int pubmedID, string doi = null)
         {
-            if(pubmedID == -1)
+            try
             {
-                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where DOI = '{doi}'");
-            }
-            else
-            {
-                Dal.ExecuteNonQueryPub($"Update PubmedQueue Set IsProcessed = 1 Where PubmedID = {pubmedID}");
+                string query;
+                SqlParameter[] parameters;
 
+                if (pubmedID == -1)
+                {
+                    query = "UPDATE PubmedQueue SET IsProcessed = 1 WHERE DOI = @doi";
+                    parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@doi", SqlDbType.NVarChar) { Value = doi }
+                    };
+                }
+                else
+                {
+                    query = "UPDATE PubmedQueue SET IsProcessed = 1 WHERE PubmedID = @pubmedID";
+                    parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@pubmedID", SqlDbType.Int) { Value = pubmedID }
+                    };
+                }
+
+                await Dal.ExecuteNonQueryPubAsync(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in ProcessQueuePaperAsync");
+                throw;
             }
         }
 
-        public (int, int) GetPubCount()
+        public async Task<(int, int)> GetPubCountAsync()
         {
             const string pubCountQuery = "SELECT COUNT(ID) FROM SearchPub";
             const string featureCountQuery = @"
@@ -2366,12 +2553,18 @@ namespace AngularSPAWebAPI.Services
                    OR Neurotransmitter IS NOT NULL 
                    OR task IS NOT NULL";
 
-            Task<int> pubCountTask = Task.Run(() => (int)Dal.ExecScalarPub(pubCountQuery));
-            Task<int> featureCountTask = Task.Run(() => (int)Dal.ExecScalarPub(featureCountQuery));
+            try
+            {
+                var pubCountTask = await Dal.ExecScalarPubAsync(pubCountQuery, null);
+                var featureCountTask = await Dal.ExecScalarPubAsync(featureCountQuery, null);
 
-            Task.WaitAll(pubCountTask, featureCountTask);
-
-            return (pubCountTask.Result, featureCountTask.Result);
+                return ((int)pubCountTask, (int)featureCountTask);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetPubCountAsync");
+                throw;
+            }
         }
 
         //public async Task<List<string>> AddCSVPapers(string userName)
@@ -3424,13 +3617,22 @@ namespace AngularSPAWebAPI.Services
                             .Field(new Nest.Field(fieldName))
                             .Value("*" + searchingFor.ToString().ToLower() + "*"))));
 
-        private DeleteResponse DeleteFromElasticSearch(int id)
-        {
-            
-                var pubScreenId = id.ToString();
-                var response = _elasticClient.Delete<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
 
-            return response; 
+        private async Task DeleteFromElasticSearchAsync(int pubId)
+        {
+            try
+            {
+                var pubScreenId = pubId.ToString();
+                var response = await _elasticClient.DeleteAsync<PubScreenElasticSearchModel>(pubScreenId, delete => delete.Index("pubscreen"));
+                if (!response.IsValid)
+                {
+                    Log.Error("Failed to delete publication from Elasticsearch with ID {PublicationID}: {Error}", pubScreenId, response.OriginalException.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting publication from Elasticsearch with ID {PublicationID}", pubId);
+            }
         }
         private IndexResponse AddPublicationsToElasticSearch(PubScreen publication)
         {

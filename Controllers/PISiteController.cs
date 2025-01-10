@@ -40,8 +40,8 @@ namespace AngularSPAWebAPI.Controllers
         {
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userID = user.Id;
-
-            return new JsonResult(_piSiteService.GetPISitebyUserID(userID));
+            var res = await _piSiteService.GetPISitebyUserIDAsync(userID);
+            return new JsonResult(res);
         }
 
 

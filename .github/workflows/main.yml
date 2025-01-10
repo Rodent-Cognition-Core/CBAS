@@ -1,0 +1,36 @@
+name: Approve and Merge PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  approve-and-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get PR Author Username
+      id: get_pr_author
+      run: |
+        PR_AUTHOR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.user.login')
+        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
+
+    - name: Debug PR Author Username
+      run: |
+        echo "PR_AUTHOR: ${{ env.PR_AUTHOR }}"
+
+    - name: Check PR Author Username
+      env:
+        PR_AUTHOR: ${{ env.PR_AUTHOR }}
+      run: |
+        if [[ "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
+          echo "PR author is not allowed to merge."
+          exit 1
+        fi
+
+    - name: Merge PR
+      if: success()
+      run: |
+        gh pr merge ${{ github.event.pull_request.number }} --merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

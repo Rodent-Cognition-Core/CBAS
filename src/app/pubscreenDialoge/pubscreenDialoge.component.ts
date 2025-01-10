@@ -227,42 +227,42 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.yearModel = this.paperInfo.year;
                 this.referenceModel = this.paperInfo.reference;
 
-                this.authorModel = this.paperInfo.authourID;
-                this.cellTypeModel = this.paperInfo.cellTypeID;
-                this.diseaseModel = this.paperInfo.diseaseID;
-                this.subModel = this.paperInfo.subModelID;
-                this.methodModel = this.paperInfo.methodID;
-                this.subMethodModel = this.paperInfo.subMethodID;
-                this.paperTypeModel = this.paperInfo.paperTypeID;
-                this.regionModel = this.paperInfo.regionID;
-                this.sexModel = this.paperInfo.sexID;
-                this.specieModel = this.paperInfo.specieID;
-                this.strainModel = this.paperInfo.strainID;
+                this.authorModel = this.paperInfo.authourID ? this.paperInfo.authourID : [];
+                this.cellTypeModel = this.paperInfo.cellTypeID ? this.paperInfo.cellTypeID : [];
+                this.diseaseModel = this.paperInfo.diseaseID ? this.paperInfo.diseaseID : [];
+                this.subModel = this.paperInfo.subModelID ? this.paperInfo.subModelID : [];
+                this.methodModel = this.paperInfo.methodID ? this.paperInfo.methodID : [];
+                this.subMethodModel = this.paperInfo.subMethodID ? this.paperInfo.subMethodID : [];
+                this.paperTypeModel = this.paperInfo.paperTypeID ? this.paperInfo.paperTypeID : [];
+                this.regionModel = this.paperInfo.regionID ? this.paperInfo.regionID : [];
+                this.sexModel = this.paperInfo.sexID ? this.paperInfo.sexID : [];
+                this.specieModel = this.paperInfo.specieID ? this.paperInfo.specieID : [];
+                this.strainModel = this.paperInfo.strainID ? this.paperInfo.strainID : [];
 
-                this.subRegionModel = this.paperInfo.subRegionID;
+                this.subRegionModel = this.paperInfo.subRegionID ? this.paperInfo.subRegionID : [];
                 //this.pubScreenService.getRegionSubRegion().subscribe(dataSubRegion => {
                 //    this.selectedRegionChange(this.regionModel)
                 //    this.subRegionModel = this.paperInfo.subRegionID;
                 //});
 
-                this.cognitiveTaskModel = this.paperInfo.taskID;
-                this.subTaskModel = this.paperInfo.subTaskID;
+                this.cognitiveTaskModel = this.paperInfo.taskID ? this.paperInfo.taskID : [];
+                this.subTaskModel = this.paperInfo.subTaskID ? this.paperInfo.subTaskID : [];
                 //this.pubScreenService.getTaskSubTask().subscribe(dataSubTask => {
                 //    this.selectedTaskChange(this.cognitiveTaskModel)
                 //    this.subTaskModel = this.paperInfo.subTaskID;
                 //});
-                this.subSubTaskList = this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID));
+                this.subSubTaskList = this.cognitiveTaskModel && this.subTaskList ? this.subTaskList.filter(x => this.cognitiveTaskModel.includes(x.taskID)) : [];
                 this.filteredSubTaskList.next(this.subSubTaskList.slice());
-                this.subStrainList = this.strainList.filter(x => this.specieModel.includes(x.speciesID));
+                this.subStrainList = this.specieModel ? this.strainList.filter(x => this.specieModel.includes(x.speciesID)) : [];
                 this.filteredStrainList.next(this.subStrainList.slice());
-                this.subSubModelList = this.subModelList.filter(x => this.diseaseModel.includes(x.modelID));
+                this.subSubModelList = this.diseaseModel && this.subModelList ? this.subModelList.filter(x => this.diseaseModel.includes(x.modelID)) : [];
                 this.filteredSubModelList.next(this.subSubModelList.slice());
-                this.subSubMethodList = this.subMethodList.filter(x => this.methodModel.includes(x.methodID));
+                this.subSubMethodList = this.methodModel && this.subMethodList ? this.subMethodList.filter(x => this.methodModel.includes(x.methodID)) : [];
                 this.filteredSubMethodList.next(this.subSubMethodList.slice());
-                this.subSubRegionList = this.subRegionList.filter(x => this.regionModel.includes(x.rid));
+                this.subSubRegionList = this.regionModel && this.subRegionList ? this.subRegionList.filter(x => this.regionModel.includes(x.rid)) : [];
                 this.filteredSubRegionList.next(this.subSubRegionList.slice());
 
-                this.neurotransmitterModel = this.paperInfo.transmitterID;
+                this.neurotransmitterModel = this.paperInfo.transmitterID ? this.paperInfo.transmitterID : [];
 
                 this.sourceOptionModel = 3;
 
@@ -987,6 +987,9 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding DOI's paper to get some paper's info from PubMed
     addDOI(doi) {
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             if (data.result) {
                 console.log('data.result: ' + data.result);
             }
@@ -1017,6 +1020,9 @@ export class PubscreenDialogeComponent implements OnInit {
     // Adding pubmed key to get paper information from pubMed
     addPubMedID(PubMedKey) {
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
             if (apiResult == null) {
                 alert(PUBMEDKEYNOTVALID);
@@ -1037,6 +1043,9 @@ export class PubscreenDialogeComponent implements OnInit {
 
     addDOIBio(doi) {
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
 
             if (apiResult == null) {
@@ -1061,6 +1070,9 @@ export class PubscreenDialogeComponent implements OnInit {
     addDOICrossref(doi) {
 
         this.pubScreenService.getPaparInfoFromDOICrossref(doi).subscribe(data => {
+            if (data == null) {
+                alert(DOINOTVALID);
+            }
             let apiResult = 'result' in data ? data.result : data;
 
             if (apiResult == null) {

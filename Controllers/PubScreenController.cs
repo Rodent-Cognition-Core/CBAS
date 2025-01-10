@@ -38,113 +38,127 @@ namespace AngularSPAWebAPI.Controllers
         // Extracting paper type list
         [HttpGet("GetPaperType")]
         [AllowAnonymous]
-        public IActionResult GetPaperType()
+        public async Task<IActionResult> GetPaperType()
         {
-            return new JsonResult(_pubScreenService.GetPaperTypes());
+            var res = await _pubScreenService.GetPaperTypesAsync();
+            return new JsonResult(res);
         }
 
         // Extracting cognitive task list
         [HttpGet("GetTask")]
         [AllowAnonymous]
-        public IActionResult GetTask()
+        public async Task<IActionResult> GetTask()
         {
-            return new JsonResult(_pubScreenService.GetTasks());
+            var res = await _pubScreenService.GetTasksAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Regions & Sub-Regions list
         [HttpGet("GetTaskSubTask")]
         [AllowAnonymous]
-        public IActionResult GetTaskSubTask()
+        public async Task<IActionResult> GetTaskSubTask()
         {
-            return new JsonResult(_pubScreenService.GetAllTasks());
+            var res = await _pubScreenService.GetAllTasksAsync();
+            return new JsonResult(res);
         }
 
         // Extracting species list
         [HttpGet("GetSpecie")]
         [AllowAnonymous]
-        public IActionResult GetSpecie()
+        public async Task<IActionResult> GetSpecie()
         {
-            return new JsonResult(_pubScreenService.GetSpecies());
+            var res = await _pubScreenService.GetSpeciesAsync();
+            return new JsonResult(res);
         }
 
         // Extracting sex list
         [HttpGet("GetSex")]
         [AllowAnonymous]
-        public IActionResult GetSex()
+        public async Task<IActionResult> GetSex()
         {
-            return new JsonResult(_pubScreenService.GetSex());
+            var res = await _pubScreenService.GetSexAsync();
+            return new JsonResult(res);
         }
 
         // Extracting strain list
         [HttpGet("GetStrain")]
         [AllowAnonymous]
-        public IActionResult GetStrain()
+        public async Task<IActionResult> GetStrain()
         {
-            return new JsonResult(_pubScreenService.GetStrains());
+            var res = await _pubScreenService.GetStrainsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Disease Models list
         [HttpGet("GetDisease")]
         [AllowAnonymous]
-        public IActionResult GetDisease()
+        public async Task<IActionResult> GetDisease()
         {
-            return new JsonResult(_pubScreenService.GetDisease());
+            var res = await _pubScreenService.GetDiseaseAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Disease Models list
         [HttpGet("GetSubModels")]
         [AllowAnonymous]
-        public IActionResult GetSubModels()
+        public async Task<IActionResult> GetSubModels()
         {
-            return new JsonResult(_pubScreenService.GetSubModels());
+            var res = await _pubScreenService.GetSubModelsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Regions  list
         [HttpGet("GetRegion")]
         [AllowAnonymous]
-        public IActionResult GetRegion()
+        public async Task<IActionResult> GetRegion()
         {
-            return new JsonResult(_pubScreenService.GetRegions());
+            var res = await _pubScreenService.GetRegionsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Regions & Sub-Regions list
         [HttpGet("GetRegionSubRegion")]
         [AllowAnonymous]
-        public IActionResult GetRegionSubRegion()
+        public async Task<IActionResult> GetRegionSubRegion()
         {
-            return new JsonResult(_pubScreenService.GetAllRegions());
+            var res = await _pubScreenService.GetAllRegionsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Celltype list
         [HttpGet("GetCellType")]
         [AllowAnonymous]
-        public IActionResult GetCellType()
+        public async Task<IActionResult> GetCellType()
         {
-            return new JsonResult(_pubScreenService.GetCellTypes());
+            var res = await _pubScreenService.GetCellTypesAsync();
+            return new JsonResult(res);
         }
 
         // Extracting Method list
         [HttpGet("GetMethod")]
         [AllowAnonymous]
-        public IActionResult GetMethod()
+        public async Task<IActionResult> GetMethod()
         {
-            return new JsonResult(_pubScreenService.GetMethods());
+            var res = await _pubScreenService.GetMethodsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting SubMethod list
         [HttpGet("GetSubMethod")]
         [AllowAnonymous]
-        public IActionResult GetSubMethod()
+        public async Task<IActionResult> GetSubMethod()
         {
-            return new JsonResult(_pubScreenService.GetSubMethods());
+            var res = await _pubScreenService.GetSubMethodsAsync();
+            return new JsonResult(res);
         }
 
         // Extracting NeuroTransmitter list
         [HttpGet("GetNeurotransmitter")]
         [AllowAnonymous]
-        public IActionResult GetNeurotransmitter()
+        public async Task<IActionResult> GetNeurotransmitter()
         {
-            return new JsonResult(_pubScreenService.GetNeurotransmitters());
+            var res = await _pubScreenService.GetNeurotransmittersAsync();
+            return new JsonResult(res);
         }
 
         // Adding new author to database
@@ -153,16 +167,18 @@ namespace AngularSPAWebAPI.Controllers
         {
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
-            return new JsonResult(_pubScreenService.AddAuthors(author, userEmail));
+            var res = await _pubScreenService.AddAuthorsAsync(author, userEmail);
+            return new JsonResult(res);
         }
 
 
         // Extracting Author list from Database (pubScreen)
         [HttpGet("GetAuthor")]
         [AllowAnonymous]
-        public IActionResult GetAuthor()
+        public async Task<IActionResult> GetAuthor()
         {
-            return new JsonResult(_pubScreenService.GetAuthors());
+            var res = await _pubScreenService.GetAuthorsAsync();
+            return new JsonResult(res);
         }
 
         // Adding new publication to database
@@ -194,9 +210,9 @@ namespace AngularSPAWebAPI.Controllers
 
         // Deleting publication
         [HttpDelete("DeletePublicationById")]
-        public IActionResult DeletePublicationById(int pubId)
+        public async Task<IActionResult> DeletePublicationById(int pubId)
         {
-            _pubScreenService.DeletePublicationById(pubId);
+            await _pubScreenService.DeletePublicationByIdAsync(pubId);
             return new JsonResult("Done!");
         }
 
@@ -255,15 +271,17 @@ namespace AngularSPAWebAPI.Controllers
 
         [HttpGet("GetPaparInfoByID")]
         [AllowAnonymous]
-        public IActionResult GetPaparInfoByID(int ID)
+        public async Task<IActionResult> GetPaparInfoByID(int ID)
         {
-            return new JsonResult(_pubScreenService.GetPaperInfoByID(ID));
+            var res = await _pubScreenService.GetPaperInfoByIDAsync(ID);
+            return new JsonResult(res);
         }
 
         [HttpGet("GetPubmedQueue")]
-        public IActionResult GetPubmedQueue()
+        public async Task<IActionResult> GetPubmedQueue()
         {
-            return new JsonResult(_pubScreenService.GetPubmedQueue());
+            var res = await _pubScreenService.GetPubmedQueueAsync();
+            return new JsonResult(res);
         }
 
         [HttpGet("AddQueuePaper")] //HttpPost results in failed authentication
@@ -271,22 +289,23 @@ namespace AngularSPAWebAPI.Controllers
         {
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
-            return new JsonResult(_pubScreenService.AddQueuePaper(pubmedID, doi, userEmail));
+            var result = await _pubScreenService.AddQueuePaper(pubmedID, doi, userEmail);
+            return new JsonResult(result);
         }
 
         [HttpDelete("RejectQueuePaper")]
-        public IActionResult RejectQueuePaper(int pubmedID, string doi)
+        public async Task<IActionResult> RejectQueuePaper(int pubmedID, string doi)
         {
 
-            _pubScreenService.ProcessQueuePaper(pubmedID, doi);
+            await _pubScreenService.ProcessQueuePaperAsync(pubmedID, doi);
             return new JsonResult("Done!");
         }
 
         [HttpGet("GetPubCount")]
         [AllowAnonymous]
-        public IActionResult GetPubCount()
+        public async Task<IActionResult> GetPubCount()
         {
-            var result = _pubScreenService.GetPubCount();
+            var result = await _pubScreenService.GetPubCountAsync();
             //  When the Value property of JsonResult is set to a tuple, it might not be properly serialized into JSON, leading to a null object on the client side.
             var tempObject = new
             {

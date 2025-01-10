@@ -15,6 +15,8 @@ using System.Xml.XPath;
 using MathNet;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
+using Serilog;
+using System.Data.SqlClient;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -49,12 +51,12 @@ namespace AngularSPAWebAPI.Services
                     }
 
                     // Determining if multiple sessions for an animal in a single day are allowed
-                    bool MultipleSessions = GetMultipleSessions(expID);
+                    bool MultipleSessions = await GetMultipleSessionsAsync(expID);
 
                     // Extracting SubExpName , Age for the selected Subexperiment
-                    string SubExpNameAge1 = GetSubExpNameAge(subExpId);
+                    string SubExpNameAge1 = await GetSubExpNameAgeAsync(subExpId);
                     // Extracting Age of Animal for the selected Subexperiemnt
-                    var AnimalAge = GetAnimalAge(subExpId);
+                    var AnimalAge = await GetAnimalAgeAsync(subExpId);
 
                     // Check QC using the function defined in QualityControlService
                     bool IsUploaded1 = false;
@@ -95,7 +97,6 @@ namespace AngularSPAWebAPI.Services
                         SubExpNameAge = SubExpNameAge1,
                         SessionName = SessionName, // this field is coming from client upload page
 
-
                     };
 
                     // Only objects whose errorMessage & warningMessage is not Null returned to client 
@@ -112,21 +113,21 @@ namespace AngularSPAWebAPI.Services
                         if (info.QC_UploadID == -1)
                         {
                             // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
-                            uploadID = InsertUpload(fur);
+                            uploadID = await InsertUploadAsync(fur);
 
                         }
 
                         // If there is a duplicate, but multiple sessions for an animal in a day are allowed
                         else if (MultipleSessions)
                         {
-                            uploadID = InsertUpload(fur);
-                            UpdateDuplicateSessions(info.QC_FileUniqueID);
+                            uploadID = await InsertUploadAsync(fur);
+                            await UpdateDuplicateSessionsAsync(info.QC_FileUniqueID);
                         }
 
                         else
                         {
                             //Update Upload table and return uploadID
-                            UpdateUpload(fur, info.QC_UploadID);
+                            await UpdateUploadAsync(fur, info.QC_UploadID);
                             uploadID = info.QC_UploadID;
 
                         }
@@ -155,208 +156,447 @@ namespace AngularSPAWebAPI.Services
                             {
                                 fur.IsUploaded = false;
                                 fur.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
-                                UpdateUpload(fur, uploadID);
+                                await UpdateUploadAsync(fur, uploadID);
                                 uploadResult.Add(fur);
                             }
-
                         }
-
-
                     }
-
-
-
                 }
-
-
-
-
             }
 
             return uploadResult;
 
         }
 
-        public string GetTaskName(int ExpID)
+        public async Task<string> GetTaskNameAsync(int ExpID)
         {
-            string sql = "Select ltrim(rtrim(Task.Name)) as TaskName From Task inner join Experiment on task.ID = Experiment.taskID where Experiment.ExpID =" + ExpID;
-            return Dal.ExecScalar(sql).ToString();
+            const string sql = "SELECT LTRIM(RTRIM(Task.Name)) AS TaskName FROM Task INNER JOIN Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetTaskNameAsync");
+                throw;
+            }
         }
 
-        public int GetTaskID(int ExpID)
+        public async Task<int> GetTaskIDAsync(int ExpID)
         {
-            string sql = "Select Task.ID as TaskID From Task inner join Experiment on task.ID = Experiment.taskID where Experiment.ExpID =" + ExpID;
-            return Convert.ToInt32(Dal.ExecScalar(sql).ToString());
+            const string sql = "SELECT Task.ID AS TaskID FROM Task INNER JOIN Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetTaskIDAsync");
+                throw;
+            }
         }
 
-        public string GetExpName(int ExpID)
+        public async Task<string> GetExpNameAsync(int ExpID)
         {
-            string sql = "Select ltrim(rtrim(ExpName)) As ExpName From Experiment where Experiment.ExpID =" + ExpID;
-            return Dal.ExecScalar(sql).ToString();
+            const string sql = "SELECT LTRIM(RTRIM(ExpName)) AS ExpName FROM Experiment WHERE Experiment.ExpID = @ExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetExpNameAsync");
+                throw;
+            }
         }
 
         // function to determine if multiple sessions of an animal in a single day are allowed
-        public bool GetMultipleSessions(int ExpID)
+        public async Task<bool> GetMultipleSessionsAsync(int ExpID)
         {
-            string sql = "Select MultipleSessions From Experiment where Experiment.ExpID =" + ExpID;
-            return Convert.ToBoolean(Dal.ExecScalar(sql).ToString());
+            const string sql = "SELECT MultipleSessions FROM Experiment WHERE Experiment.ExpID = @ExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToBoolean(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetMultipleSessionsAsync");
+                throw;
+            }
         }
 
         // Function to Insert To Upload Table in Database
-        public int InsertUpload(FileUploadResult upload)
+        public async Task<int> InsertUploadAsync(FileUploadResult upload)
         {
-            if (upload.FileUniqueID != null) { upload.FileUniqueID = upload.FileUniqueID.Trim(); }
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
 
-            string sql = $"insert into Upload " +
-              $"(ExpID, AnimalID, SubExpID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath ) Values " +
-              $"({upload.ExpID}, {upload.AnimalID}, {upload.SubExpID}, '{upload.UserFileName}', '{upload.SysFileName}', '{upload.SessionName}', '{upload.ErrorMessage}', '{upload.WarningMessage}', '{upload.IsUploaded}', '{upload.DateFileCreated}', " +
-              $"'{upload.DateUpload}', '{upload.FileSize}', '{upload.FileUniqueID}', '{upload.IsQcPassed}',  '{upload.IsIdentifierPassed}', '{upload.PermanentFilePath}'); SELECT @@IDENTITY AS 'Identity';";
+            const string sql = @"
+                INSERT INTO Upload 
+                (ExpID, AnimalID, SubExpID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath) 
+                VALUES 
+                (@ExpID, @AnimalID, @SubExpID, @UserFileName, @SysFileName, @SessionName, @ErrorMessage, @WarningMessage, @IsUploaded, @DateFileCreated, @DateUpload, @FileSize, @FileUniqueID, @IsQcPassed, @IsIdentifierPassed, @PermanentFilePath); 
+                SELECT SCOPE_IDENTITY();";
 
-            return Int32.Parse(Dal.ExecScalar(sql).ToString());
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", upload.ErrorMessage),
+                new SqlParameter("@WarningMessage", upload.WarningMessage),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@PermanentFilePath", upload.PermanentFilePath)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in InsertUploadAsync");
+                throw;
+            }
         }
 
         //Function to update Upload Table
-        public void UpdateUpload(FileUploadResult upload, int UploadId)
+        public async Task UpdateUploadAsync(FileUploadResult upload, int uploadId)
         {
-            if (upload.FileUniqueID != null) { upload.FileUniqueID = upload.FileUniqueID.Trim(); }
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
 
-            string sql = $"UPDATE Upload " +
-                 $"SET ExpID = {upload.ExpID} , AnimalID = {upload.AnimalID}, SubExpID = {upload.SubExpID} , UserFileName = '{upload.UserFileName}', SysFileName = '{upload.SysFileName}', " +
-                 $"SessionName ='{upload.SessionName}', ErrorMessage = '{HelperService.EscapeSql(upload.ErrorMessage)}'," + $"WarningMessage= '{HelperService.EscapeSql(upload.WarningMessage)}', " +
-                 $"IsUploaded = '{upload.IsUploaded}', DateFileCreated = '{upload.DateFileCreated}', DateUpload = '{upload.DateUpload}', FileSize= '{upload.FileSize}', " +
-                 $"IsQcPassed = '{upload.IsQcPassed}', IsIdentifierPassed = '{upload.IsIdentifierPassed}' WHERE FileUniqueID = '{upload.FileUniqueID}' and UploadID = {UploadId};";
+            const string sql = @"
+                UPDATE Upload 
+                SET ExpID = @ExpID, AnimalID = @AnimalID, SubExpID = @SubExpID, UserFileName = @UserFileName, SysFileName = @SysFileName, 
+                    SessionName = @SessionName, ErrorMessage = @ErrorMessage, WarningMessage = @WarningMessage, 
+                    IsUploaded = @IsUploaded, DateFileCreated = @DateFileCreated, DateUpload = @DateUpload, FileSize = @FileSize, 
+                    IsQcPassed = @IsQcPassed, IsIdentifierPassed = @IsIdentifierPassed 
+                WHERE FileUniqueID = @FileUniqueID AND UploadID = @UploadID";
 
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", HelperService.EscapeSql(upload.ErrorMessage)),
+                new SqlParameter("@WarningMessage", HelperService.EscapeSql(upload.WarningMessage)),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@UploadID", uploadId)
+            };
 
-            Dal.ExecuteNonQuery(sql);
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateUploadAsync");
+                throw;
+            }
         }
+
 
         // Function to flag duplicate fileUniqueIDs in the Upload Table
-        public void UpdateDuplicateSessions(string FileUniqueID)
+        public async Task UpdateDuplicateSessionsAsync(string fileUniqueID)
         {
-            string sql = $"UPDATE Upload " +
-                $"SET IsDuplicateSession = 1 WHERE FileUniqueID = '{FileUniqueID}'";
+            const string sql = @"
+                UPDATE Upload 
+                SET IsDuplicateSession = 1 
+                WHERE FileUniqueID = @FileUniqueID";
 
-            Dal.ExecuteNonQuery(sql);
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@FileUniqueID", fileUniqueID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateDuplicateSessionsAsync");
+                throw;
+            }
         }
 
-        public bool SetUploadAsResolved(int uploadID, string userId)
-        {
-            FileUploadResult fur = GetUploadByUploadID(uploadID);
 
-            var lstFur = GetListUploadsByAnimalIDErrorMessege(fur.AnimalID);
+        public async Task<bool> SetUploadAsResolvedAsync(int uploadID, string userId)
+        {
+            FileUploadResult fur;
+            try
+            {
+                fur = await GetUploadByUploadIDAsync(uploadID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetUploadByUploadIDAsync");
+                return false;
+            }
+
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListUploadsByAnimalIDErrorMessegeAsync(fur.AnimalID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
 
             foreach (var furInstance in lstFur)
             {
-                // Get Upload session ID from "Upload_SessionInfo" Table using its SessionName
-                int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
+                int uploadSessionID;
+                try
+                {
+                    uploadSessionID = await getUploadSessionIDbySessionNameAsync(furInstance.SessionName);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in getUploadSessionIDbySessionNameAsync");
+                    return false;
+                }
 
                 try
                 {
                     InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
-                                   furInstance.SessionName, furInstance.TaskID, UploadSessionID);
+                                              furInstance.SessionName, furInstance.TaskID, uploadSessionID);
                 }
                 catch (InvalidOperationException e)
                 {
                     furInstance.IsUploaded = false;
-                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
-                    UpdateUpload(furInstance, uploadID);
+                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException?.Message}<br />";
+                    await UpdateUploadAsync(furInstance, uploadID);
                     return false;
                 }
 
-                string sql = $"UPDATE Upload " +
-                     $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
-                     $"IsQcPassed = 1, IsIdentifierPassed = 1 WHERE UploadID = {furInstance.UploadID} ;";
+                const string sql = @"
+                    UPDATE Upload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
 
-                Dal.ExecuteNonQuery(sql);
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
 
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
             }
 
             return true;
         }
 
-
-        public bool SetAsResolvedForEditedAnimalId(int animalId, string userId)
+        public async Task<bool> SetAsResolvedForEditedAnimalIdAsync(int animalId, string userId)
         {
-            var lstFur = GetListUploadsByAnimalIDErrorMessege(animalId);
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListUploadsByAnimalIDErrorMessegeAsync(animalId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
 
             foreach (var furInstance in lstFur)
             {
-                int UploadSessionID = getUploadSessionIDbySessionName(furInstance.SessionName);
+                int uploadSessionID;
+                try
+                {
+                    uploadSessionID = await getUploadSessionIDbySessionNameAsync(furInstance.SessionName);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in getUploadSessionIDbySessionNameAsync");
+                    return false;
+                }
 
                 try
                 {
                     InsertFileData(furInstance.SysFileName, furInstance.PermanentFilePath, furInstance.UploadID, furInstance.ExpID, userId, furInstance.AnimalID,
-                               furInstance.SessionName, furInstance.TaskID, UploadSessionID);
+                                              furInstance.SessionName, furInstance.TaskID, uploadSessionID);
                 }
                 catch (InvalidOperationException e)
                 {
                     furInstance.IsUploaded = false;
-                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException.Message}<br />";
-                    UpdateUpload(furInstance, furInstance.UploadID);
+                    furInstance.ErrorMessage = $"{e.Message} <br /><br />{e.InnerException?.Message}<br />";
+                    await UpdateUploadAsync(furInstance, furInstance.UploadID);
                     return false;
                 }
 
-                
+                const string sql = @"
+                    UPDATE Upload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
 
-                string sql = $"UPDATE Upload " +
-                     $"SET ErrorMessage = '', WarningMessage='', IsUploaded = 1, DateUpload = '{DateTime.UtcNow}', " +
-                     $"IsQcPassed = 1, IsIdentifierPassed = 1 WHERE UploadID = {furInstance.UploadID} ;";
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
 
-                Dal.ExecuteNonQuery(sql);
-
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
             }
 
             return true;
         }
 
-        private int getUploadSessionIDbySessionName(string sessionName)
+        private async Task<int> getUploadSessionIDbySessionNameAsync(string sessionName)
         {
-            string sql = $"Select id from Upload_SessionInfo Where SessionName='{sessionName}'";
+            const string sql = "SELECT id FROM Upload_SessionInfo WHERE SessionName = @SessionName";
 
-            return Int32.Parse(Dal.ExecScalar(sql).ToString());
-        }
-
-        public FileUploadResult GetUploadByUploadID(int uploadID)
-        {
-            string sql = $@"select Upload.*, Experiment.TaskID from Upload
-                            Inner join Experiment on Experiment.ExpID = Upload.ExpID
-                            where UploadID ={uploadID} ";
-            FileUploadResult retVal;
-
-            using (DataTable dt = Dal.GetDataTable(sql))
+            var parameters = new List<SqlParameter>
             {
-                if (dt.Rows.Count != 1)
-                {
-                    throw new Exception("UploadID Not Found");
-                }
+                new SqlParameter("@SessionName", sessionName)
+            };
 
-                retVal = ParseUploadRow(dt.Rows[0]);
-
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
             }
-
-            return retVal;
-
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in getUploadSessionIDbySessionNameAsync");
+                throw;
+            }
         }
 
-        public List<FileUploadResult> GetListUploadsByAnimalIDErrorMessege(int animalID)
+        public async Task<FileUploadResult> GetUploadByUploadIDAsync(int uploadID)
         {
-            string sql = $@"select Upload.*, Experiment.TaskID from Upload
-                          Inner join Experiment on Experiment.ExpID = Upload.ExpID
-                          where AnimalID = {animalID} and ErrorMessage like 'Missing Animal Information:%' ";
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskID 
+                FROM Upload
+                INNER JOIN Experiment ON Experiment.ExpID = Upload.ExpID
+                WHERE UploadID = @UploadID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UploadID", uploadID)
+            };
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    if (dt.Rows.Count != 1)
+                    {
+                        throw new Exception("UploadID Not Found");
+                    }
+
+                    return ParseUploadRow(dt.Rows[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetUploadByUploadIDAsync");
+                throw;
+            }
+        }
+
+        public async Task<List<FileUploadResult>> GetListUploadsByAnimalIDErrorMessegeAsync(int animalID)
+        {
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskID 
+                FROM Upload
+                INNER JOIN Experiment ON Experiment.ExpID = Upload.ExpID
+                WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AnimalID", animalID)
+            };
+
             var retVal = new List<FileUploadResult>();
 
-            using (DataTable dt = Dal.GetDataTable(sql))
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
                 {
-                    FileUploadResult uploadResult = ParseUploadRow(dr);
-                    retVal.Add(uploadResult);
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        FileUploadResult uploadResult = ParseUploadRow(dr);
+                        retVal.Add(uploadResult);
+                    }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                throw;
             }
 
             return retVal;
-
         }
 
         private FileUploadResult ParseUploadRow(DataRow dr)
@@ -1313,21 +1553,54 @@ namespace AngularSPAWebAPI.Services
         }
 
         //Function Definition to Extract SubExpNameAge From SubExperiment Table
-        public string GetSubExpNameAge(int subExpID)
+        public async Task<string> GetSubExpNameAgeAsync(int subExpID)
         {
-            string sql = $@"Select CONCAT(SubExpName, ', ' , Age.AgeInMonth, ' Months') as SubExpNameAge From SubExperiment  Inner Join Age On Age.ID = SubExperiment.AgeID  Where SubExpID = {subExpID}";
-            string getValue = Dal.ExecScalar(sql).ToString();
+            const string sql = @"
+                SELECT CONCAT(SubExpName, ', ', Age.AgeInMonth, ' Months') AS SubExpNameAge 
+                FROM SubExperiment  
+                INNER JOIN Age ON Age.ID = SubExperiment.AgeID  
+                WHERE SubExpID = @SubExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@SubExpID", subExpID)
+            };
 
-            return getValue.ToString();
-
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetSubExpNameAgeAsync");
+                throw;
+            }
         }
 
         // Function Definition to Extract Age of Animal From the SubExperiment Table
-        public string GetAnimalAge(int subExpID)
+        public async Task<string> GetAnimalAgeAsync(int subExpID)
         {
-            string sql = $@"Select AgeInMonth From SubExperiment Inner Join Age On Age.ID = SubExperiment.AgeID  Where SubExpID = {subExpID}";
-            var age = Convert.ToString(Dal.ExecScalar(sql));
-            return age;
+            const string sql = @"
+                SELECT AgeInMonth 
+                FROM SubExperiment 
+                INNER JOIN Age ON Age.ID = SubExperiment.AgeID  
+                WHERE SubExpID = @SubExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@SubExpID", subExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetAnimalAgeAsync");
+                throw;
+            }
         }
 
         // Function definition to extract updload_sesssionInfo From DB
