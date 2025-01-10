@@ -59,6 +59,10 @@ import { OwlModule } from 'ngx-owl-carousel';
 import { ScrollService } from './shared/scroll.service';
 import { CountUpModule } from 'ngx-countup';
 
+import { DropzoneModule } from 'ngx-dropzone-wrapper'
+import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper'
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper'
+
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RouterModule, Routes } from '@angular/router'
@@ -82,11 +86,17 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
 }
 
-declare global {
-    interface Navigator {
-        msSaveBlob?: (blob: any, defaultName?: string) => boolean
-    }
-}
+//declare global {
+  //  interface Navigator {
+  //      msSaveBlob?: (blob: any, defaultName?: string) => boolean
+  //  }
+//}
+
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
 
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
@@ -154,10 +164,25 @@ const ROUTES: Routes = [
         SubExpDialogeComponent,
         NotificationDialogComponent,
         CogbytesDialogueComponent,
+        CogbytesUploadComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
-        //CogbytesUploadComponent,
-       
+        CogbytesSearchComponent,
+        GuidelineComponent,
+        GuidelineDataLabComponent,
+        DataExtractionComponent,
+        DataLinkComponent,
+        DataVisualizationComponent,
+        MBDashboardComponent,
+        GenomicsComponent,
+        VideoTutorialComponent,
+        ContactUsComponent,
+        DownloadDsComponent,
+        FormsComponent,
+        TermsComponent,
+        SearchExperimentComponent,
+        PubScreenComponent,
+        //CogbytesUploadComponent,    
 
     ],
     exports: [
