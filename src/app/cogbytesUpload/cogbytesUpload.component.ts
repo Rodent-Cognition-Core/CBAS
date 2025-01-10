@@ -14,6 +14,11 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { OAuthService } from 'angular-oauth2-oidc';
 import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
 
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
 
 @Component({
 
@@ -411,11 +416,12 @@ export class CogbytesUploadComponent implements OnInit {
 
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
-                } else {
-                    csvURL = window.URL.createObjectURL(fileData);
-                }
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                //} else {
+                //    csvURL = window.URL.createObjectURL(fileData);
+                //}
+                csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', file.userFileName);

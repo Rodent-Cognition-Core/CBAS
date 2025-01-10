@@ -13,6 +13,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
 
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
+
 @Component({
     selector: 'app-experiment',
     templateUrl: './experiment.component.html',
@@ -117,11 +123,12 @@ export class ExperimentComponent implements OnInit {
 
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(csvData, userFileName);
-                } else {
-                    csvURL = window.URL.createObjectURL(csvData);
-                }
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(csvData, userFileName);
+                //} else {
+                //    csvURL = window.URL.createObjectURL(csvData);
+                //}
+                csvURL = window.URL.createObjectURL(csvData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', userFileName);
