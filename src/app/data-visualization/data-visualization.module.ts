@@ -22,7 +22,7 @@ import { DataExtractionService } from '../services/dataextraction.service'
     ],
     bootstrap: [DataVisualizationComponent],
     
-
+    exports: [DataVisualizationComponent],
 })
 export class DataVisualizationModule { } 
 
