@@ -26,8 +26,8 @@ import { PagerService } from '../services/pager.service';
         
     ],
     bootstrap: [ContactUsComponent],
-    
 
+    exports: [ContactUsComponent],
 })
 export class ContactUsModule { } 
 
