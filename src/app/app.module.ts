@@ -54,7 +54,9 @@ import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.compon
 //import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { OwlModule } from 'ngx-owl-carousel';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ScrollService } from './shared/scroll.service';
 import { CountUpModule } from 'ngx-countup';
@@ -70,8 +72,8 @@ import { GuidelineComponent } from './guideline/guideline.component';
 import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
 import { DataExtractionComponent } from './data-extraction/data-extraction.component';
 import { DataLinkComponent } from './data-link/data-link.component';
-import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
-import { MBDashboardComponent } from './mb-dashboard/mb-dashboard.component';
+//import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
+//import { MBDashboardComponent } from './mb-dashboard/mb-dashboard.component';
 import { PSDashboardComponent } from './pubScreen-dashboard/pubScreen-dashboard.component';
 import { GenomicsComponent } from './genomics/genomics.component';
 import { VideoTutorialComponent } from './video-tutorial/video-tutorial.component';
@@ -104,8 +106,6 @@ const ROUTES: Routes = [
     { path: 'guidline', component: GuidelineDataLabComponent },
     { path: 'guidline', component: DataExtractionComponent },
     { path: 'guidline', component: DataLinkComponent },
-    { path: 'guidline', component: DataVisualizationComponent },
-    { path: 'guidline', component: MBDashboardComponent },
     { path: 'guidline', component: GenomicsComponent },
     { path: 'guidline', component: VideoTutorialComponent },
     { path: 'guidline', component: ContactUsComponent },
@@ -134,8 +134,10 @@ const ROUTES: Routes = [
         MatFormFieldModule,
         //NgxMatSelectSearchModule,
         FlexLayoutModule,
-        OwlModule,
+        CarouselModule,
         CountUpModule,
+        FontAwesomeModule,
+        DropzoneModule,
         RouterModule.forRoot(ROUTES),
         Angulartics2Module.forRoot(),
 
@@ -172,8 +174,6 @@ const ROUTES: Routes = [
         GuidelineDataLabComponent,
         DataExtractionComponent,
         DataLinkComponent,
-        DataVisualizationComponent,
-        MBDashboardComponent,
         GenomicsComponent,
         VideoTutorialComponent,
         ContactUsComponent,
