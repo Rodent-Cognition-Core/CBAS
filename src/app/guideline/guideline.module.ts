@@ -37,8 +37,8 @@ import { PagerService } from '../services/pager.service';
         
     ],
     bootstrap: [GuidelineComponent],
-    
 
+    exports: [GuidelineComponent],
 })
 export class GuidelineModule { } 
 
