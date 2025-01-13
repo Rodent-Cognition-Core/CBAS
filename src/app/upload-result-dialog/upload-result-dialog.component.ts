@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { NgModel } from '@angular/forms';
-//import { Angular2Csv } from 'angular2-csv/Angular2-csv'; 
 
 @Component({
   selector: 'app-upload-result-dialog',
