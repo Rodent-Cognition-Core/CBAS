@@ -7,9 +7,9 @@
 
 <div *ngIf="selectedSubExperiment!=null">
     <div style="float: left; margin-left: 10%; width: 80%;">
-        <mat-input-container class="md-icon-float full-width">
+        <mat-form-field class="md-icon-float full-width">
             <input matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
-        </mat-input-container>
+        </mat-form-field>
     </div>
     <div style="float: left">
         <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
