@@ -29,7 +29,9 @@
             <textarea matInput placeholder="Enter all the Schedule names separated by comma:" [(ngModel)]="reqScheduleModel" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5"></textarea>
         </mat-form-field>
-        <fa name="question-circle" animation="spin" matTooltip=""></fa>
+        <fa-icon [icon]="faQuestionCircle"
+                 [spin]="true"
+                 matTooltip=""></fa-icon>
 
     </mat-dialog-content>
     <br />
