@@ -40,8 +40,8 @@ import { ExpDialogeService } from '../services/expdialoge.service';
         
     ],
     bootstrap: [DataExtractionComponent],
-    
 
+    exports: [DataExtractionComponent]
 })
 export class DataExtractionModule { } 
 
