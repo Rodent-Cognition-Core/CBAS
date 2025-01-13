@@ -14,6 +14,17 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+const COGUPLOAD_DROPZONE_CONFIG: DropzoneConfigInterface = {
+    // Change this to your upload POST address:
+    url: 'http://localhost:5000/api/cogbytes/AddFiles',
+    maxFilesize: 10000,
+    //acceptedFiles: '.*',
+    // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
+    parallelUploads: 10000,
+    uploadMultiple: true,
+    autoProcessQueue: true
+}
+
 @NgModule({
     imports: [
         CogbytesUploadRoutingModule,
@@ -33,16 +44,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
         },
         {
             provide: DROPZONE_CONFIG,
-            useValue: {
-                // Change this to your upload POST address:
-                url: 'http://localhost:5000/api/cogbytes/AddFiles',
-                maxFilesize: 10000,
-                //acceptedFiles: '.*',
-                // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
-                parallelUploads: 10000,
-                uploadMultiple: true,
-                autoProcessQueue: true
-            }
+            useValue: COGUPLOAD_DROPZONE_CONFIG,
         },
     ],
 
