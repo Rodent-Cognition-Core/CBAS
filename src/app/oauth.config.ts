@@ -26,28 +26,33 @@ export const oAuthProductionConfig: AuthConfig = {
 /**
  * angular-oauth2-oidc configuration.
  */
-@Injectable() export class OAuthConfig {
-
+@Injectable({
+    providedIn: 'root',
+})
+export class OAuthConfig {
     constructor(private oAuthService: OAuthService) { }
 
-    load(): Promise<object> {
-        let url: string
+    load(): Promise<void> {
+        const config = environment.production
+            ? oAuthProductionConfig
+            : oAuthDevelopmentConfig;
 
-        if (environment.production) {
-            // Production environment.
-            this.oAuthService.configure(oAuthProductionConfig);
-            url = 'http://localhost:5000/.well-known/openid-configuration';
-        } else {
-            // Development & Staging environments.
-            this.oAuthService.configure(oAuthDevelopmentConfig);
-            url = 'http://localhost:5000/.well-known/openid-configuration';
-        }
+        // Configure OAuthService
+        this.oAuthService.configure(config);
 
-        // Defines the storage.
+        // Set storage (e.g., localStorage)
         this.oAuthService.setStorage(localStorage);
 
-        // Loads Discovery Document.
-        return this.oAuthService.loadDiscoveryDocument(url);
+        // Load discovery document and try login
+        return this.oAuthService
+            .loadDiscoveryDocumentAndTryLogin()
+            .then(() => {
+                // Additional logic after successful configuration, if needed
+                console.log('OAuth configuration loaded successfully');
+            })
+            .catch((error) => {
+                console.error('Error loading OAuth configuration', error);
+                throw error;
+            });
     }
-
 }
