@@ -23,6 +23,8 @@ import { PagerService } from '../services/pager.service';
     ],
     providers: [
         SearchExperimentService, PagerService,
-    ]
+    ],
+
+    exports: [SearchExperimentComponent]
 })
 export class SearchExperimentModule { }
