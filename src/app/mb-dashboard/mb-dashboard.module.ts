@@ -21,8 +21,8 @@ import { DataExtractionService } from '../services/dataextraction.service'
         
     ],
     bootstrap: [MBDashboardComponent],
-    
 
+    exports: [MBDashboardComponent],
 })
 export class MBDashboardModule { } 
 
