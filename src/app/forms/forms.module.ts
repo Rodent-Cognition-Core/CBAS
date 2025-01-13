@@ -28,8 +28,8 @@ import { MatDialogModule, MatButtonModule } from '@angular/material';
     ],
 
     bootstrap: [FormsComponent],
-    
-    
+
+    exports: [FormsComponent],
 
 })
 export class FormsModule { } 
