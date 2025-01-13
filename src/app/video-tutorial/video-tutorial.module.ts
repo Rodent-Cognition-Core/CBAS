@@ -32,8 +32,8 @@ import { PagerService } from '../services/pager.service';
         
     ],
     bootstrap: [VideoTutorialComponent],
-    
 
+    exports: [VideoTutorialComponent],
 })
 export class VideoTutorialModule { } 
 
