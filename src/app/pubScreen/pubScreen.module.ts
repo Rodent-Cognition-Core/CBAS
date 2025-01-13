@@ -21,5 +21,7 @@ import { CountUpModule } from 'ngx-countup';
     providers: [ManageUserService, PubScreenService, IdentityService,],
 
     bootstrap: [PubScreenComponent],
+
+    exports: [PubScreenComponent],
 })
 export class PubScreenModule { }
