@@ -43,9 +43,7 @@ import {
     MatDialogModule,
     //MatDividerModule,
     MatExpansionModule,
-    MatFormFieldModule,
     MatGridListModule,
-    MatIconModule,
     MatInputModule,
     MatListModule,
     MatMenuModule,
@@ -66,6 +64,9 @@ import {
     MatStepperModule,
 } from '@angular/material';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog } from '@angular/material/dialog'
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { A11yModule } from '@angular/cdk/a11y';

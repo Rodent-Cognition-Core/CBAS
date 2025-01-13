@@ -13,6 +13,8 @@ import { MatSnackBar } from '@angular/material';
 import * as _ from 'underscore';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
 
 @Component({
@@ -25,6 +27,7 @@ export class SharedExperimentComponent implements OnInit {
 
     // @Input() selectedValue: string;
     //ngModel vars
+    faQuestionCircle = faQuestionCircle;
     selectedExpValue: any;
     selectedSubExpValue: any;
     dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
