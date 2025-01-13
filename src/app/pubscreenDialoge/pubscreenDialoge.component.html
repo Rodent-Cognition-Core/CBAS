@@ -233,7 +233,9 @@
                             <input matInput placeholder="Insert a new value for Species" [(ngModel)]="specieOtherModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one specie, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one specie, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                     <!--Strain----------------------------------------->
@@ -256,7 +258,9 @@
                             <input matInput placeholder="New Mouse Strain" [(ngModel)]="strainOtherMouseModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                     <span *ngIf="isOtherStrainRat()">
@@ -266,7 +270,9 @@
                             <input matInput placeholder="New Rat Strain" [(ngModel)]="strainOtherRatModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one strain, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                     <!--Sex---------------------------------------------->
@@ -301,7 +307,9 @@
                             <input matInput placeholder="Insert a new value for Disease Model" [(ngModel)]="diseaseOtherModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one disease model, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one disease model, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                     <!--SubRodent Model----------------------------------->
@@ -362,7 +370,9 @@
                             <input matInput placeholder="Insert a new value for Cell Type" [(ngModel)]="cellOtherModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one cell type, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one cell type, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                     <br />
@@ -421,7 +431,9 @@
                             <input matInput placeholder="Insert a new value for Neurotransmitter" [(ngModel)]="neurotransmitterOtherModel" required>
 
                         </mat-form-field>
-                        <fa name="question-circle" animation="spin" matTooltip="If you need to add more than one neurotransmitter, separate them by semicolon ( ; )"></fa>
+                        <fa-icon [icon]="faQuestionCircle"
+                                 [spin]="true"
+                                 matTooltip="If you need to add more than one neurotransmitter, separate them by semicolon ( ; )"></fa-icon>
                     </span>
 
                 </div>
