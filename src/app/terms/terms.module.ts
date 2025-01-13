@@ -32,7 +32,8 @@ import { PagerService } from '../services/pager.service';
         
     ],
     bootstrap: [TermsComponent],
-    
+
+    exports: [TermsComponent],
 
 })
 export class TermsModule { } 
