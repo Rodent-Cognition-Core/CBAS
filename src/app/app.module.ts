@@ -4,9 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatDialogModule, MatInputModule, MatFormFieldModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-//import { MatDividerModule } from '@angular/material/divider';
-//import { MatFileUploadModule } from 'angular-material-fileupload';
-
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 
@@ -36,10 +33,8 @@ import { ReqPubSubMethodDialogeComponent } from './reqPubSubMethodDialoge/reqPub
 import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
-import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
 import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
 import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
-import { CogbytesSearchComponent } from './cogbytesSearch/cogbytesSearch.component'
 
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
@@ -48,10 +43,8 @@ import { NotificationDialogComponent } from './notification-dialog/notification-
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
 
 
-//import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -68,21 +61,10 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper'
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RouterModule, Routes } from '@angular/router'
-import { GuidelineComponent } from './guideline/guideline.component';
 import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
-import { DataExtractionComponent } from './data-extraction/data-extraction.component';
 import { DataLinkComponent } from './data-link/data-link.component';
-//import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
-//import { MBDashboardComponent } from './mb-dashboard/mb-dashboard.component';
-import { PSDashboardComponent } from './pubScreen-dashboard/pubScreen-dashboard.component';
 import { GenomicsComponent } from './genomics/genomics.component';
-import { VideoTutorialComponent } from './video-tutorial/video-tutorial.component';
-import { ContactUsComponent } from './contact-us/contact-us.component';
 import { DownloadDsComponent } from './download-ds/download-ds.component';
-import { FormsComponent } from './forms/forms.component';
-import { TermsComponent } from './terms/terms.component';
-import { SearchExperimentComponent } from './search-experiment/search-experiment.component';
-import { PubScreenComponent } from './pubScreen/pubScreen.component';
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
@@ -102,18 +84,10 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
 
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'guidline', component: GuidelineComponent },
     { path: 'guidline', component: GuidelineDataLabComponent },
-    { path: 'guidline', component: DataExtractionComponent },
     { path: 'guidline', component: DataLinkComponent },
     { path: 'guidline', component: GenomicsComponent },
-    { path: 'guidline', component: VideoTutorialComponent },
-    { path: 'guidline', component: ContactUsComponent },
     { path: 'guidline', component: DownloadDsComponent },
-    { path: 'guidline', component: FormsComponent },
-    { path: 'guidline', component: TermsComponent },
-    { path: 'guidline', component: SearchExperimentComponent },
-    { path: 'guidline', component: PubScreenComponent },
 ];
 
 @NgModule({
@@ -166,22 +140,12 @@ const ROUTES: Routes = [
         SubExpDialogeComponent,
         NotificationDialogComponent,
         CogbytesDialogueComponent,
-        CogbytesUploadComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
-        CogbytesSearchComponent,
-        GuidelineComponent,
         GuidelineDataLabComponent,
-        DataExtractionComponent,
         DataLinkComponent,
         GenomicsComponent,
-        VideoTutorialComponent,
-        ContactUsComponent,
         DownloadDsComponent,
-        FormsComponent,
-        TermsComponent,
-        SearchExperimentComponent,
-        PubScreenComponent,
         //CogbytesUploadComponent,    
 
     ],
@@ -226,10 +190,8 @@ const ROUTES: Routes = [
         ReqMouseLineDialogeComponent,
         AuthorDialogeComponent,
         CogbytesDialogueComponent,
-        CogbytesUploadComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
-        CogbytesSearchComponent,
     ],
     bootstrap: [AppComponent]
 })
