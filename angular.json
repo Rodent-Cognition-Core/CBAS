@@ -67,7 +67,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-spaweb-api:build"
+            "browserTarget": "angular-spaweb-api:build",
+            "proxyConfig": "proxy.config.js"
           },
           "configurations": {
             "hmr": {
