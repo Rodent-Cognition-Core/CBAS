@@ -14,20 +14,26 @@
         </header>
         <div class="container">
             <div class="row">
-                <owl-carousel [options]="carouselOptions"
-                              [items]="images"
-                              [carouselClasses]="['owl-carousel', 'owl-theme', 'row', 'sliding']">
-                    <div class="item" *ngFor="let image of images;let i = index">
-                        <div class="textcenter" fxLayout="column" style="text-align:center;">
-                            <img style="max-width: 400px; min-width: 200px; width: 25%;" src="{{image.src}}" alt="{{image.alt}}"  />
-                            <span style="margin: auto;">
-                                <a routerLink="{{image.btnLink}}">
-                                    <button mat-raised-button style=" background-color: #795d9c; color: white ;" *ngIf="image.btnVisible">{{image.btnText}}</button>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                </owl-carousel>
+                <owl-carousel-o [options]="carouselOptions" class="owl-carousel owl-theme row sliding">
+                    <ng-container *ngFor="let image of images; let i = index">
+                        <ng-template carouselSlide>
+                            <div class="textcenter" fxLayout="column" style="text-align: center;">
+                                <img style="max-width: 400px; min-width: 200px; width: 25%;"
+                                     [src]="image.src"
+                                     [alt]="image.alt" />
+                                <span style="margin: auto;">
+                                    <a [routerLink]="image.btnLink">
+                                        <button mat-raised-button
+                                                style="background-color: #795d9c; color: white;"
+                                                *ngIf="image.btnVisible">
+                                            {{ image.btnText }}
+                                        </button>
+                                    </a>
+                                </span>
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
             </div>
         </div>
         <div style="padding-top: 30px; color: #dfdede; font-size: 18px;">Please find the list of Mousebytes datasets <a style="color: azure" href="/search-experiment" target="_blank">here</a> and Mousebytes+ datasets <a style="color: azure" href="/comp-search?showall=true" target="_blank">here</a>.</div>
