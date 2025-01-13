@@ -5,6 +5,8 @@ import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { SharedModule } from '../shared/shared.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
@@ -19,6 +21,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 })
 export class ReqTaskDialogeComponent implements OnInit {
 
+    faQuestionCircle = faQuestionCircle;
     // Defining Models Parameters
 
     reqNameModel: string;
