@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -27,6 +27,7 @@ declare var $: any;
     styleUrls: ['./data-extraction.component.scss']
 })
 export class DataExtractionComponent implements OnInit {
+    //private formBuilder = inject(FormBuilder);
 
     taskList: any;
     expList: any;
@@ -44,32 +45,29 @@ export class DataExtractionComponent implements OnInit {
     speciesList: any
 
     // ngModels vars
-    selectedTaskvalue: any;
-    selectedExpvalue: any;
-    selectedSubTaskValue: any;
-    selectedSessionInfoValue: any;
-    selectedMarkerInfoValue: any;
     selectedPiSiteValue: any;
     selectedAgeValue: any;
     selectedSexValue: any;
     selectedGenotypeValue: any;
     selectedStrainValue: any;
-    selectedAggFunction: any;
     termsChecked: boolean;
     isTrialByTrial: any;
-    selectedInterventionValue: any
-    selectedSubSessionValue: any
-    selectedSpeciesvalue: any
+    selectedInterventionValue: any;
+    selectedSubSessionValue: any;
 
     // FormControls vars
-    task = new FormControl('', [Validators.required]);
-    subtask = new FormControl('', [Validators.required]);
-    exp = new FormControl('', [Validators.required]);
-    sessioninfo = new FormControl('', [Validators.required]);
-    markerinfo = new FormControl('', [Validators.required]);
-    PISite = new FormControl('', [Validators.required]);
-    aggFunc = new FormControl('', [Validators.required]);
-    species = new FormControl('', [Validators.required]);
+    //dataextractionForm = new FormGroup({
+    task: FormControl;
+    subtask: FormControl;
+    exp: FormControl;
+    sessioninfo: FormControl;
+    markerinfo: FormControl;
+    PISite: FormControl;
+    aggFunc: FormControl;
+    species: FormControl;
+    //});
+
+    data
 
     _dataExtractionObj = new DataExtraction();
 
@@ -85,6 +83,7 @@ export class DataExtractionComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
 
+    dataextractionForm = FormControl;
 
     // SessionInfo Features' names
     private sessionInfoFeature: any[] = [
@@ -130,32 +129,34 @@ export class DataExtractionComponent implements OnInit {
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
+        private fb: FormBuilder
     ) {
         this.colNames = [];
         this.showGeneratedLink = false;
+        this.task = fb.control('', [Validators.required])
+        this.subtask = fb.control('', [Validators.required])
+        this.exp = fb.control('', [Validators.required])
+        this.sessioninfo = fb.control('', [Validators.required])
+        this.markerinfo = fb.control('', [Validators.required])
+        this.PISite = fb.control('', [Validators.required])
+        this.aggFunc = fb.control('', [Validators.required])
+        this.species = fb.control('', [Validators.required])
         this.resetDdls();
     }
 
     resetDdls() {
-        this.selectedSubTaskValue = '';
-        this.selectedExpvalue = [];
-        this.selectedSessionInfoValue = [];
-        this.selectedMarkerInfoValue = [];
+        this.subtask.setValue('');
+        this.exp.setValue([]);
+        this.sessioninfo.setValue([]);
+        this.markerinfo.setValue([]);
         this.selectedPiSiteValue = [];
-        this.selectedAggFunction = '';
+        this.aggFunc.setValue('');
         this.selectedAgeValue = [];
         this.selectedStrainValue = [];
         this.selectedGenotypeValue = [];
         this.selectedSexValue = [];
         this.isTrialByTrial = false;
         this.selectedSubSessionValue = [];
-
-
-        this.subtask = new FormControl('', [Validators.required]);
-        this.exp = new FormControl('', [Validators.required]);
-        this.sessioninfo = new FormControl('', [Validators.required]);
-        this.markerinfo = new FormControl('', [Validators.required]);
-        this.PISite = new FormControl('', [Validators.required]);
 
     }
 
@@ -185,7 +186,7 @@ export class DataExtractionComponent implements OnInit {
     selectedSpeciesChange() {
 
 
-        this.selectedTaskvalue = '';
+        this.task.setValue('');
         this.resetDdls();
 
     }
@@ -222,14 +223,14 @@ export class DataExtractionComponent implements OnInit {
 
     // Getting SubTask ID and ExpID and pass them for getting MarkerInfolist
     selectedSubTaskChange(selectedSubTaskVal, selectedExpVal) {
-        this.selectedMarkerInfoValue = [];
+        this.markerinfo.setValue([]);
 
         //this.subSessionList = [];
         this.uploadService.getSessionInfo().subscribe(data => {
 
             this.subSessionList = data;
             this.selectedSubSessionValue = [];
-            this.markerinfo = new FormControl('', [Validators.required]);
+            //this.markerinfo = new FormControl('', [Validators.required]);
 
             this.getMarkerInfo(selectedSubTaskVal, selectedExpVal);
             //console.log(selectedSubTaskVal)
@@ -309,9 +310,8 @@ export class DataExtractionComponent implements OnInit {
     }
 
     selectedExpChange(selectedExpVal) {
-        this.selectedSubTaskValue = '';
-        this.subtask = new FormControl('', [Validators.required]);
-        this.selectedSubTaskChange(this.selectedSubTaskValue, selectedExpVal);
+        this.subtask.setValue('');
+        this.selectedSubTaskChange(this.subtask.value, selectedExpVal);
         // call function for extracting intervention list
         this.getInterventionList(selectedExpVal);
     }
@@ -821,12 +821,12 @@ export class DataExtractionComponent implements OnInit {
 
         if (!this.termsChecked ||
             (this.task.hasError('required') ||
-                this.exp.hasError('required') ||
-                this.subtask.hasError('required') ||
-                this.sessioninfo.hasError('required') ||
-                this.markerinfo.hasError('required') ||
-                this.species.hasError('required') ||
-                (this.aggFunc.hasError('required') && this.isTrialByTrial == false)
+            this.exp.hasError('required') ||
+            this.subtask.hasError('required') ||
+            this.sessioninfo.hasError('required') ||
+            this.markerinfo.hasError('required') ||
+            this.species.hasError('required') ||
+            (this.aggFunc.hasError('required') && this.isTrialByTrial == false)
             )
 
 
@@ -899,26 +899,26 @@ export class DataExtractionComponent implements OnInit {
     GetData() {
         this.spinnerService.show();
 
-        var selectedTask = this.getSelectedTask(this.selectedTaskvalue);
-        var selectedSubTask = this.getSelectedSubTask(this.selectedSubTaskValue);
-        var selectedSpeceis = this.getSelectedSpecies(this.selectedSpeciesvalue);
+        var selectedTask = this.getSelectedTask(this.task.value);
+        var selectedSubTask = this.getSelectedSubTask(this.subtask.value);
+        var selectedSpeceis = this.getSelectedSpecies(this.species.value);
 
         // Function Definition 
         this._dataExtractionObj.isTrialByTrials = this.isTrialByTrial;
         if (this.isTrialByTrial) {
-            this.selectedAggFunction = 'COUNT';
+            this.aggFunc.setValue('COUNT');
         }
 
-        this._dataExtractionObj.taskID = this.selectedTaskvalue;
+        this._dataExtractionObj.taskID = this.task.value;
         this._dataExtractionObj.taskName = selectedTask.name;
-        this._dataExtractionObj.speciesID = this.selectedSpeciesvalue;
+        this._dataExtractionObj.speciesID = this.species.value;
         this._dataExtractionObj.species = selectedSpeceis.species
-        this._dataExtractionObj.expIDs = this.selectedExpvalue;
-        this._dataExtractionObj.subtaskID = this.selectedSubTaskValue;
+        this._dataExtractionObj.expIDs = this.exp.value;
+        this._dataExtractionObj.subtaskID = this.subtask.value;
         this._dataExtractionObj.subTaskName = selectedSubTask.originalName;
-        this._dataExtractionObj.sessionInfoNames = this.selectedSessionInfoValue;
-        this._dataExtractionObj.markerInfoNames = this.selectedMarkerInfoValue;
-        this._dataExtractionObj.aggNames = this.selectedAggFunction;
+        this._dataExtractionObj.sessionInfoNames = this.sessioninfo.value;
+        this._dataExtractionObj.markerInfoNames = this.markerinfo.value;
+        this._dataExtractionObj.aggNames = this.aggFunc.value;
         this._dataExtractionObj.pisiteIDs = this.selectedPiSiteValue;
         this._dataExtractionObj.ageVals = this.selectedAgeValue;
         this._dataExtractionObj.sexVals = this.selectedSexValue;
@@ -947,7 +947,7 @@ export class DataExtractionComponent implements OnInit {
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
-                        if (this.selectedTaskvalue == 3 || this.selectedTaskvalue == 4 || this.selectedTaskvalue == 11) {
+                        if (this.task.value == 3 || this.task.value == 4 || this.task.value == 11) {
                             this.colNames.push(key);
                         } // else -> do not push Image col 
                     } else {
@@ -1062,7 +1062,7 @@ export class DataExtractionComponent implements OnInit {
     }
 
     selectAllExperiments() {
-        this.selectedExpvalue = [];
+        this.exp.setValue([]);
 
         //// in future if we want to enable select all with filter follow this:
         //this.filteredExpMulti.subscribe(value => {
@@ -1072,14 +1072,14 @@ export class DataExtractionComponent implements OnInit {
         //})
 
         for (let exp of this.expList) {
-            this.selectedExpvalue.push(exp.expID);
+            this.exp.value.push(exp.expID);
         }
-        this.selectedExpChange(this.selectedExpvalue);
+        this.selectedExpChange(this.exp.value);
     }
 
     deselectAllExperiments() {
-        this.selectedExpvalue = [];
-        this.selectedExpChange(this.selectedExpvalue);
+        this.exp.setValue([]);
+        this.selectedExpChange(this.exp.value);
     }
 
     // Function defintion to add pagination to table 
