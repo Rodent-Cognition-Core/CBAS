@@ -20,24 +20,23 @@ import { INVALID } from '@angular/forms/src/model';
 })
 export class CogbytesPIDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
-
-    reqPINameModel: string;
-    reqPIEmailModel: string;
-    reqInsNameModel: string;
-
            
     //private _request = new Request();
 
     // FormControl Parameters
 
-    emailPI = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    piName = new FormControl('', [Validators.required]);
-    institution = new FormControl('', [Validators.required]);
+    emailPI: FormControl;
+    piName: FormControl;
+    institution: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
          
-        private cogbytesService: CogbytesService, ) { }
+        private cogbytesService: CogbytesService,
+        private fb: FormBuilder) {
+        this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")])
+        this.piName = fb.control('', [Validators.required])
+        this.institution = fb.control('', [Validators.required])
+    }
 
     ngOnInit() {
       
@@ -53,7 +52,7 @@ export class CogbytesPIDialogeComponent implements OnInit {
     onCloseSubmit(): void {      
 
         // Submiting the request to server
-        this.cogbytesService.addPI(this.reqPINameModel, this.reqInsNameModel, this.reqPIEmailModel).subscribe(result => {
+        this.cogbytesService.addPI(this.piName.value, this.institution.value, this.emailPI.value).subscribe(result => {
             if (result == 0) {
                 alert(PIALRADYEXISTS);
             }

@@ -19,17 +19,20 @@ import { SharedModule } from '../shared/shared.module';
 export class CogbytesAuthorDialogueComponent implements OnInit {
 
     // Defining Models Parameters
-    authorNameModel: any;
-    authorLastNameModel: any;
     authorAffiliationModel: any;
 
     // FormControl Parameters
-    authorName = new FormControl('', [Validators.required]);
-    authorLastName = new FormControl('', [Validators.required]);
+    authorName: FormControl;
+    authorLastName: FormControl;
     
     constructor(public thisDialogRef: MatDialogRef<CogbytesAuthorDialogueComponent>,
          
-        private cogbytesService: CogbytesService, ) { }
+        private cogbytesService: CogbytesService,
+        private fb: FormBuilder
+    ) {
+        this.authorName = fb.control('', [Validators.required])
+        this.authorLastName = fb.control('', [Validators.required])
+    }
 
     ngOnInit() {
       
@@ -45,7 +48,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.cogbytesService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe(result => {
+        this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe(result => {
             if (result == 0) {
                 alert("Author already in database!");
             }

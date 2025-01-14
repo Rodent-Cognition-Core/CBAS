@@ -38,7 +38,7 @@
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
@@ -52,7 +52,7 @@
                             <mat-form-field style="padding-left: 25px">
                                 <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
                                         {{pi.piFullName}}
@@ -81,7 +81,7 @@
                             <!--Repository List-->
                             <mat-form-field style="width: 35%; padding-left:0px">
                                 <mat-select matInput placeholder="Repository List" [(ngModel)]="titleModel" multiple>
-                                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.id">
                                         <span matTooltip="{{rep.title}}">{{rep.title}}</span>
@@ -110,7 +110,7 @@
                             <!--Paper year To-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
+                                <mat-select placeholder="Year To" [formControl]="yearTo"
                                             (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
