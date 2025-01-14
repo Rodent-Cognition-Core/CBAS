@@ -45,8 +45,6 @@ export class CogbytesSearchComponent implements OnInit {
     interventionModel: any;
 
     yearFromSearchModel: any;
-    yearToSearchModel: any;
-    authorMultiSelect: any;
 
     fileTypeModel: any;
 
@@ -83,7 +81,7 @@ export class CogbytesSearchComponent implements OnInit {
     filteredSearchList: any;
 
     //yearFrom = new FormControl('', []);
-    yearTo = new FormControl('', []);
+    yearTo: FormControl;
 
     public repMultiFilterCtrl: FormControl = new FormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -91,8 +89,6 @@ export class CogbytesSearchComponent implements OnInit {
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public piMultiFilterCtrl: FormControl = new FormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    piMultiSelect: any;
-    repMultiSelect: any;
 
     showAll: boolean;
 
@@ -106,13 +102,15 @@ export class CogbytesSearchComponent implements OnInit {
         private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
-        private route: ActivatedRoute, ) {
+        private route: ActivatedRoute,
+        private fb: FormBuilder) {
         this.route.queryParams.subscribe(params => {
             this.showAll = false;
             if (params['showall'] != null && params['showall'] == 'true') {
                 this.showAll = true;
             }
             //console.log(this.showAll);
+            this.yearTo = fb.control('', [Validators.required])
         });
     }
 
@@ -351,7 +349,7 @@ export class CogbytesSearchComponent implements OnInit {
         this._cogbytesSearch.ageID = this.ageModel;
 
         this._cogbytesSearch.yearFrom = this.yearFromSearchModel;
-        this._cogbytesSearch.yearTo = this.yearToSearchModel;
+        this._cogbytesSearch.yearTo = this.yearTo.value;
 
         this._cogbytesSearch.intervention = this.interventionModel;
 

@@ -33,18 +33,13 @@ import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialo
 export class CogbytesDialogueComponent implements OnInit {
 
     //Models Variables for adding Publication
-    authorModel: any;
-    titleModel: any;
-    dateModel: any;
     keywordsModel: any;
     doiModel: any;
     authorMultiSelect: any;
     isEditMode: boolean;
-    privacyStatusModel: any;
     descriptionModel: any;
     additionalNotesModel: any;
     linkModel: any;
-    piModel: any;
     piMultiSelect: any;
 
     // Definiing List Variables 
@@ -58,6 +53,13 @@ export class CogbytesDialogueComponent implements OnInit {
     repID: any;
 
     private form: FormGroup;
+
+    //Form Validation Variables for adding publications
+    author: FormControl;
+    pi: FormControl;
+    title: FormControl;
+    date: FormControl;
+    privacyStatus: FormControl;
 
 
 
@@ -80,12 +82,18 @@ export class CogbytesDialogueComponent implements OnInit {
         private cogbytesService: CogbytesService,
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
+        public fb: FormBuilder,
 
         //private resolver: ComponentFactoryResolver,
         
         @Inject(MAT_DIALOG_DATA) public data: any,) {
 
         this.resetFormVals();
+        this.author = fb.control('', [Validators.required])
+        this.pi = fb.control('', [Validators.required])
+        this.title = fb.control('', [Validators.required])
+        this.date = fb.control('', [Validators.required])
+        this.privacyStatus = fb.control('', [Validators.required])
     }
 
     ngOnInit() {
@@ -103,16 +111,16 @@ export class CogbytesDialogueComponent implements OnInit {
 
             this.isEditMode = true;
             this.repID = this.data.repObj.id;
-            this.titleModel = this.data.repObj.title;
-            this.dateModel = new Date(this.data.repObj.date);
+            this.title.setValue(this.data.repObj.title);
+            this.date.setValue(new Date(this.data.repObj.date));
             this.keywordsModel = this.data.repObj.keywords;
             this.doiModel = this.data.repObj.doi;
             this.linkModel = this.data.repObj.link;
-            this.privacyStatusModel = this.data.repObj.privacyStatus ? "true" : "false";
+            this.privacyStatus.setValue(this.data.repObj.privacyStatus ? "true" : "false");
             this.descriptionModel = this.data.repObj.description;
             this.additionalNotesModel = this.data.repObj.additionalNotes;
-            this.authorModel = this.data.repObj.authourID;
-            this.piModel = this.data.repObj.piid;
+            this.author.setValue(this.data.repObj.authourID);
+            this.pi.setValue(this.data.repObj.piid);
         }
 
 
@@ -240,13 +248,6 @@ export class CogbytesDialogueComponent implements OnInit {
         );
     }
 
-    //Form Validation Variables for adding publications
-    author = new FormControl('', [Validators.required]);
-    pi = new FormControl('', [Validators.required]);
-    title = new FormControl('', [Validators.required]);
-    date = new FormControl('', [Validators.required]);
-    privacyStatus = new FormControl('', [Validators.required]);
-
     // Handling Error for the required fields
     getErrorMessageAuthor() {
 
@@ -279,7 +280,7 @@ export class CogbytesDialogueComponent implements OnInit {
             this.pi.hasError('required') ||
             this.privacyStatus.hasError('required') ||
             this.date.hasError('required') ||
-            ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required'))
+            ((this.title.value == null || this.title.value == "") && this.title.hasError('required'))
 
         ) {
 
@@ -298,16 +299,16 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.spinnerService.show();
 
-        this._cogbytes.authourID = this.authorModel;
-        this._cogbytes.title = this.titleModel;
+        this._cogbytes.authourID = this.author.value;
+        this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.piModel;
+        this._cogbytes.piID = this.pi.value;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false; 
+        this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
+        this._cogbytes.date = this.date.value.toISOString().split('T')[0];
 
         let today = new Date();
         this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
@@ -331,16 +332,16 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.spinnerService.show();
 
-        this._cogbytes.authourID = this.authorModel;
-        this._cogbytes.title = this.titleModel;
+        this._cogbytes.authourID = this.author.value;
+        this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.piModel;
+        this._cogbytes.piID = this.pi.value;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false;
+        this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false;
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
+        this._cogbytes.date = this.date.value.toISOString().split('T')[0];
 
         let today = new Date();
         //this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
@@ -361,15 +362,15 @@ export class CogbytesDialogueComponent implements OnInit {
 
     resetFormVals() {
 
-        this.titleModel = '';
+        this.title.setValue('');
         this.keywordsModel = '';
         this.doiModel = '';
-        this.dateModel = '';
-        this.authorModel = [];
+        this.date.setValue('');
+        this.author.setValue([]);
         this.descriptionModel = '';
         this.additionalNotesModel = '';
         this.linkModel = '';
-        this.piModel = [];
+        this.pi.setValue([]);
     }
 
 
