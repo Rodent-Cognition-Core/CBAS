@@ -45,12 +45,9 @@ export class CogbytesUploadComponent implements OnInit {
 
     //public parentRef: CogbytesDialogueComponent;
 
-    public nameModel: any;
     //public dateModel: any;
-    public fileTypeModel: any;
     public descriptionModel: any;
     public additionalNotesModel: any;
-    public cognitiveTaskModel: any;
     public speciesModel: any;
     public sexModel: any;
     public strainModel: any;
@@ -58,11 +55,9 @@ export class CogbytesUploadComponent implements OnInit {
     public ageModel: any;
     public housingModel: any;
     public lightModel: any;
-    public interventionModel: any;
     public intDesModel: any;
     public imgDesModel: any;
     public taskBatteryModel: any;
-    public numSubjectsModel: string;
 
     // Definiing List Variables 
     public fileTypeList: any;
@@ -74,6 +69,14 @@ export class CogbytesUploadComponent implements OnInit {
     public ageList: any;
 
     public uploadFileList: any;
+
+    name: FormControl;
+    //date = new FormControl('', [Validators.required]);
+
+    fileType: FormControl;
+    cognitiveTask: FormControl;
+    intervention: FormControl;
+    numSubjects: FormControl;
 
     _cogbytesUpload = new CogbytesUpload();
 
@@ -115,9 +118,15 @@ export class CogbytesUploadComponent implements OnInit {
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        private fb: FormBuilder
     )
     {
         this.resetFormVals();
+        this.name = fb.control('', [Validators.required])
+        this.fileType = fb.control('', [Validators.required])
+        this.cognitiveTask = fb.control('', [Validators.required])
+        this.intervention = fb.control('', [Validators.required])
+        this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')])
     }
         
     
@@ -136,11 +145,11 @@ export class CogbytesUploadComponent implements OnInit {
             this.isUploadAdded = true;
 
             this.uploadID = this.uploadObj.id;
-            this.nameModel = this.uploadObj.name;
-            this.fileTypeModel = this.uploadObj.fileTypeID;
+            this.name.setValue(this.uploadObj.name);
+            this.fileType.setValue(this.uploadObj.fileTypeID);
             this.descriptionModel = this.uploadObj.description;
             this.additionalNotesModel = this.uploadObj.additionalNotes;
-            this.cognitiveTaskModel = this.uploadObj.taskID;
+            this.cognitiveTask.setValue(this.uploadObj.taskID);
             this.speciesModel = this.uploadObj.specieID;
             this.sexModel = this.uploadObj.sexID;
             this.strainModel = this.uploadObj.strainID;
@@ -148,12 +157,12 @@ export class CogbytesUploadComponent implements OnInit {
             this.ageModel = this.uploadObj.ageID;
             this.housingModel = this.uploadObj.housing;
             this.lightModel = this.uploadObj.lightCycle;
-            this.interventionModel = this.uploadObj.isIntervention ? "true" : "false";
+            this.intervention.setValue(this.uploadObj.isIntervention ? "true" : "false");
             this.intDesModel = this.uploadObj.interventionDescription;
             this.imgDesModel = this.uploadObj.imageDescription;
             this.taskBatteryModel = this.uploadObj.taskBattery;
             if (this.uploadObj.numSubjects != null) {
-                this.numSubjectsModel = this.uploadObj.numSubjects.toString();
+                this.numSubjects.setValue(this.uploadObj.numSubjects.toString());
             }
             this.uploadFileList = this.uploadObj.uploadFileList;
             // this.UpdateFileList();
@@ -171,15 +180,6 @@ export class CogbytesUploadComponent implements OnInit {
             }
         }
     }
-
-
-    name = new FormControl('', [Validators.required]);
-    //date = new FormControl('', [Validators.required]);
-
-    fileType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
-    intervention = new FormControl('', [Validators.required]);
-    numSubjects = new FormControl('', [Validators.pattern('[0-9]*')]);
 
     getErrorMessageFileType() {
         return this.fileType.hasError('required') ? FIELDISREQUIRED : '';
@@ -216,7 +216,7 @@ export class CogbytesUploadComponent implements OnInit {
             return true;
         }
 
-        if (this.fileTypeModel >= 1 && this.fileTypeModel <= 5) {
+        if (this.fileType.value >= 1 && this.fileType.value <= 5) {
             if (this.cognitiveTask.hasError('required') || this.intervention.hasError('required') || this.numSubjects.hasError('pattern')) {
                 return true;
             }
@@ -229,11 +229,11 @@ export class CogbytesUploadComponent implements OnInit {
 
     resetFormVals() {
 
-        this.fileTypeModel = null;
-        this.nameModel = '';
+        this.fileType.setValue(null);
+        this.name.setValue('');
         this.descriptionModel = '';
         this.additionalNotesModel = '';
-        this.cognitiveTaskModel = [];
+        this.cognitiveTask.setValue([]);
         this.speciesModel = [];
         this.sexModel = [];
         this.strainModel = [];
@@ -244,7 +244,7 @@ export class CogbytesUploadComponent implements OnInit {
         this.intDesModel = '';
         this.imgDesModel = '';
         this.taskBatteryModel = '';
-        this.interventionModel = null;
+        this.intervention.setValue(null);
 
         if (!this.isEditMode) this.isUploadAdded = false;
     }
@@ -252,13 +252,13 @@ export class CogbytesUploadComponent implements OnInit {
     AddUpload() {
 
         this._cogbytesUpload.repId = this.repID;
-        this._cogbytesUpload.fileTypeId = this.fileTypeModel;
-        this._cogbytesUpload.name = this.nameModel;
+        this._cogbytesUpload.fileTypeId = this.fileType.value;
+        this._cogbytesUpload.name = this.name.value;
         let today = new Date();
         this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
         this._cogbytesUpload.description = this.descriptionModel;
         this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-        this._cogbytesUpload.isIntervention = this.interventionModel == "true" ? true : false;
+        this._cogbytesUpload.isIntervention = this.intervention.value == "true" ? true : false;
         this._cogbytesUpload.interventionDescription = this.intDesModel;
         // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
         this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -266,14 +266,14 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.lightCycle = this.lightModel;
         this._cogbytesUpload.taskBattery = this.taskBatteryModel;
 
-        this._cogbytesUpload.taskID = this.cognitiveTaskModel;
+        this._cogbytesUpload.taskID = this.cognitiveTask.value;
         this._cogbytesUpload.specieID = this.speciesModel;
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
-        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
         this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
 
@@ -291,13 +291,13 @@ export class CogbytesUploadComponent implements OnInit {
     EditUpload() {
 
         this._cogbytesUpload.repId = this.repID;
-        this._cogbytesUpload.fileTypeId = this.fileTypeModel;
-        this._cogbytesUpload.name = this.nameModel;
+        this._cogbytesUpload.fileTypeId = this.fileType.value;
+        this._cogbytesUpload.name = this.name.value;
         let today = new Date();
         this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
         this._cogbytesUpload.description = this.descriptionModel;
         this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-        this._cogbytesUpload.isIntervention = this.interventionModel == "true" ? true : false;
+        this._cogbytesUpload.isIntervention = this.intervention.value == "true" ? true : false;
         this._cogbytesUpload.interventionDescription = this.intDesModel;
         // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
         this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -305,14 +305,14 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.lightCycle = this.lightModel;
         this._cogbytesUpload.taskBattery = this.taskBatteryModel;
 
-        this._cogbytesUpload.taskID = this.cognitiveTaskModel;
+        this._cogbytesUpload.taskID = this.cognitiveTask.value;
         this._cogbytesUpload.specieID = this.speciesModel;
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
-        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
         this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
 
