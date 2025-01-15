@@ -27,8 +27,6 @@ import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUC
 export class PubscreenDialogeComponent implements OnInit {
 
     //Models Variables for adding Publication
-    authorModel: any;
-    titleModel: any;
     abstractModel: any;
     yearModel: any;
     keywordsModel: any;
@@ -43,7 +41,6 @@ export class PubscreenDialogeComponent implements OnInit {
     regionModel: any;
     subRegionModel: any;
     cellTypeModel: any;
-    addingOptionModel: any;
     methodModel: any;
     subMethodModel: any;
     neurotransmitterModel: any;
@@ -58,15 +55,10 @@ export class PubscreenDialogeComponent implements OnInit {
     methodMultiSelect: any;
     subMethodMultiSelect: any;
     neurotransmitterMultiSelect: any;
-    doiKeyModel: any;
-    PubMedKeyModel: any;
     subTaskModel: any;
     authorModel2: any;
     //paperTypeModel2: any;
     referenceModel: any;
-    sourceOptionModel: any;
-    bioAddingOptionModel: any;
-    bioDoiKeyModel: any;
     taskOtherModel: string;
     specieOtherModel: string;
     strainOtherMouseModel: string;
@@ -121,38 +113,54 @@ export class PubscreenDialogeComponent implements OnInit {
     _pubscreen = new Pubscreen();
     _pubSCreenSearch = new Pubscreen();
 
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: FormControl;
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public strainMultiFilterCtrl: FormControl = new FormControl();
+    public strainMultiFilterCtrl: FormControl;
     public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subTaskMultiFilterCtrl: FormControl = new FormControl();
+    public subTaskMultiFilterCtrl: FormControl;
     public filteredSubTaskList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public diseaseMultiFilterCtrl: FormControl = new FormControl();
+    public diseaseMultiFilterCtrl: FormControl;
     public filteredDiseaseList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subModelMultiFilterCtrl: FormControl = new FormControl();
+    public subModelMultiFilterCtrl: FormControl;
     public filteredSubModelList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public regionMultiFilterCtrl: FormControl = new FormControl();
+    public regionMultiFilterCtrl: FormControl;
     public filteredRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subRegionMultiFilterCtrl: FormControl = new FormControl();
+    public subRegionMultiFilterCtrl: FormControl;
     public filteredSubRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public cellTypeMultiFilterCtrl: FormControl = new FormControl();
+    public cellTypeMultiFilterCtrl: FormControl;
     public filteredCellTypeList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public methodMultiFilterCtrl: FormControl = new FormControl();
+    public methodMultiFilterCtrl: FormControl;
     public filteredMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subMethodMultiFilterCtrl: FormControl = new FormControl();
+    public subMethodMultiFilterCtrl: FormControl;
     public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public neurotransmitterMultiFilterCtrl: FormControl = new FormControl();
+    public neurotransmitterMultiFilterCtrl: FormControl;
     public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    author: FormControl;
+    title: FormControl;
+    doi: FormControl;
+    doiKey: FormControl;
+    paperType: FormControl;
+    cognitiveTask: FormControl;
+    //specie = new FormControl('', [Validators.required]);
+    //sex = new FormControl('', [Validators.required]);
+    addingOption: FormControl;
+    year: FormControl;
+    pubMedKey: FormControl;
+    sourceOption: FormControl;
+    bioAddingOption: FormControl;
+    doiKeyBio: FormControl;
+    subTask: FormControl;
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -164,8 +172,33 @@ export class PubscreenDialogeComponent implements OnInit {
         public dialog: MatDialog,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        @Inject(MAT_DIALOG_DATA) public data: any,) {
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        private fb: FormBuilder) {
 
+        this.authorMultiFilterCtrl = fb.control('');
+        this.strainMultiFilterCtrl = fb.control('');
+        this.subTaskMultiFilterCtrl = fb.control('');
+        this.diseaseMultiFilterCtrl = fb.control('');
+        this.subModelMultiFilterCtrl = fb.control('');
+        this.regionMultiFilterCtrl = fb.control('');
+        this.subRegionMultiFilterCtrl = fb.control('');
+        this.cellTypeMultiFilterCtrl = fb.control('');
+        this.methodMultiFilterCtrl = fb.control('');
+        this.subMethodMultiFilterCtrl = fb.control('');
+        this.neurotransmitterMultiFilterCtrl = fb.control('');
+        this.author = fb.control('', [Validators.required]);
+        this.title = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+        this.doiKey = fb.control('', [Validators.required]);
+        this.paperType = fb.control('', [Validators.required]);
+        this.cognitiveTask = fb.control('', [Validators.required]);
+        this.addingOption = fb.control('', [Validators.required]);
+        this.year = fb.control('', [Validators.required]);
+        this.pubMedKey = fb.control('', [Validators.required]);
+        this.sourceOption = fb.control('', [Validators.required]);
+        this.bioAddingOption = fb.control('', [Validators.required]);
+        this.doiKeyBio = fb.control('', [Validators.required]);
+        this.subTask = fb.control('', [Validators.required]);
         this.resetFormVals();
     }
 
@@ -222,12 +255,12 @@ export class PubscreenDialogeComponent implements OnInit {
                 //console.log(this.paperInfo)
                 this.doiModel = this.paperInfo.doi;
                 this.keywordsModel = this.paperInfo.keywords;
-                this.titleModel = this.paperInfo.title;
+                this.title.setValue(this.paperInfo.title);
                 this.abstractModel = this.paperInfo.abstract;
                 this.yearModel = this.paperInfo.year;
                 this.referenceModel = this.paperInfo.reference;
 
-                this.authorModel = this.paperInfo.authourID ? this.paperInfo.authourID : [];
+                this.author.setValue(this.paperInfo.authourID ? this.paperInfo.authourID : []);
                 this.cellTypeModel = this.paperInfo.cellTypeID ? this.paperInfo.cellTypeID : [];
                 this.diseaseModel = this.paperInfo.diseaseID ? this.paperInfo.diseaseID : [];
                 this.subModel = this.paperInfo.subModelID ? this.paperInfo.subModelID : [];
@@ -264,7 +297,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.neurotransmitterModel = this.paperInfo.transmitterID ? this.paperInfo.transmitterID : [];
 
-                this.sourceOptionModel = 3;
+                this.sourceOption.setValue(3);
 
                 this.setDisabledVal();
 
@@ -824,21 +857,6 @@ export class PubscreenDialogeComponent implements OnInit {
         return false;
     }
     //Form Validation Variables for adding publications
-    author = new FormControl('', [Validators.required]);
-    title = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
-    doiKey = new FormControl('', [Validators.required]);
-    paperType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
-    //specie = new FormControl('', [Validators.required]);
-    //sex = new FormControl('', [Validators.required]);
-    addingOption = new FormControl('', [Validators.required]);
-    year = new FormControl('', [Validators.required]);
-    pubMedKey = new FormControl('', [Validators.required]);
-    sourceOption = new FormControl('', [Validators.required]);
-    bioAddingOption = new FormControl('', [Validators.required]);
-    doiKeyBio = new FormControl('', [Validators.required]);
-    subTask = new FormControl('', [Validators.required]);
 
     // Handling Error for the required fields
     getErrorMessageAuthor() {
@@ -904,7 +922,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     setDisabledVal() {
 
-        if (this.authorModel === null && this.author.hasError('required')) {
+        if (this.author.value === null && this.author.hasError('required')) {
 
             return true;
         }
@@ -913,42 +931,42 @@ export class PubscreenDialogeComponent implements OnInit {
             return true;
         }
 
-        if (this.sourceOptionModel === 1 && this.addingOption.hasError('required') && !this.isEditMode) {
+        if (this.sourceOption.value === 1 && this.addingOption.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.sourceOptionModel === 2 && this.bioAddingOption.hasError('required') && !this.isEditMode) {
+        if (this.sourceOption.value === 2 && this.bioAddingOption.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.sourceOptionModel === 3 && this.author.hasError('required') && !this.isEditMode) {
+        if (this.sourceOption.value === 3 && this.author.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.addingOptionModel === 1 && this.doiKey.hasError('required') && !this.isEditMode) {
+        if (this.addingOption.value === 1 && this.doiKey.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.addingOptionModel === 2 && this.pubMedKey.hasError('required') && !this.isEditMode) {
+        if (this.addingOption.value === 2 && this.pubMedKey.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
-        if (this.bioAddingOptionModel === 1 && this.doiKeyBio.hasError('required') && !this.isEditMode) {
+        if (this.bioAddingOption.value === 1 && this.doiKeyBio.hasError('required') && !this.isEditMode) {
             return true;
 
         }
 
         else if (
             
-            ((this.titleModel === null || this.titleModel === "") && this.title.hasError('required')) ||
+            ((this.title.value === null || this.title.value === "") && this.title.hasError('required')) ||
             ((this.doiModel === null || this.doiModel === "") && this.doi.hasError('required'))||
             ((this.yearModel === null || this.yearModel === "") && this.year.hasError('required')) ||
-            ((this.sourceOptionModel === null || this.sourceOptionModel === "") && this.sourceOption.hasError('required')) ||
+            ((this.sourceOption.value === null || this.sourceOption.value === "") && this.sourceOption.hasError('required')) ||
             (this.paperType.hasError('required'))
 
         ) {
@@ -1006,7 +1024,7 @@ export class PubscreenDialogeComponent implements OnInit {
             else {
 
                 this.authorModel2 = apiResult.authorString;
-                this.titleModel = apiResult.title;
+                this.title.setValue(apiResult.title);
                 this.abstractModel = apiResult.abstract;
                 this.yearModel = apiResult.year;
                 this.keywordsModel = apiResult.keywords;
@@ -1030,7 +1048,7 @@ export class PubscreenDialogeComponent implements OnInit {
             else {
 
                 this.authorModel2 = apiResult.authorString;
-                this.titleModel = apiResult.title;
+                this.title.setValue(apiResult.title);
                 this.abstractModel = apiResult.abstract;
                 this.yearModel = apiResult.year;
                 this.keywordsModel = apiResult.keywords;
@@ -1054,7 +1072,7 @@ export class PubscreenDialogeComponent implements OnInit {
             else {
 
                 this.authorModel2 = apiResult.authorString;
-                this.titleModel = apiResult.title;
+                this.title.setValue(apiResult.title);
                 this.abstractModel = apiResult.abstract;
                 this.yearModel = apiResult.year;
                 this.keywordsModel = apiResult.keywords;
@@ -1081,7 +1099,7 @@ export class PubscreenDialogeComponent implements OnInit {
             else {
 
                 this.authorModel2 = apiResult.authorString;
-                this.titleModel = apiResult.title;
+                this.title.setValue(apiResult.title);
                 this.abstractModel = apiResult.abstract;
                 this.yearModel = apiResult.year;
                 this.doiModel = apiResult.doi;
@@ -1103,8 +1121,8 @@ export class PubscreenDialogeComponent implements OnInit {
             return;
         }
 
-        if (this.authorModel !== null && this.authorModel.length !== 0) {
-            this._pubscreen.authourID = this.authorModel;
+        if (this.author.value !== null && this.author.value.length !== 0) {
+            this._pubscreen.authourID = this.author.value;
             //console.log(this.authorModel)
         }
         else {
@@ -1121,7 +1139,7 @@ export class PubscreenDialogeComponent implements OnInit {
             this._pubscreen.reference = this.referenceModel;
         }
 
-        this._pubscreen.title = this.titleModel;
+        this._pubscreen.title = this.title.value;
         this._pubscreen.abstract = this.abstractModel;
         this._pubscreen.keywords = this.keywordsModel;
         this._pubscreen.doi = this.doiModel;
@@ -1151,7 +1169,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
                     
 
-        switch (this.sourceOptionModel) {
+        switch (this.sourceOption.value) {
 
             case 1: {
                 this._pubscreen.source = 'pubMed';
@@ -1229,13 +1247,13 @@ export class PubscreenDialogeComponent implements OnInit {
 
     resetFormVals() {
 
-        this.titleModel = '';
+        this.title.setValue('');
         this.abstractModel = '';
         this.keywordsModel = '';
         this.doiModel = '';
         this.yearModel = '';
         this.yearSearchModel = [];
-        this.authorModel = [];
+        this.author.setValue([]);
         this.paperTypeModel = '';
         this.cognitiveTaskModel = [];
         this.subTaskModel = [];
@@ -1249,13 +1267,12 @@ export class PubscreenDialogeComponent implements OnInit {
         this.cellTypeModel = [];
         this.methodModel = [];
         this.neurotransmitterModel = [];
-        this.doiKeyModel = '';
+        this.doiKey.setValue('');
         this.authorModel2 = '';
         this.paperTypeModel = '';
         this.referenceModel = '';
-        this.PubMedKeyModel = '';
-        this.bioDoiKeyModel = '';
-
+        this.pubMedKey.setValue('');
+        this.doiKeyBio.setValue('');
         this.taskOtherModel = '';
         this.specieOtherModel = '';
         this.strainOtherMouseModel = '';
