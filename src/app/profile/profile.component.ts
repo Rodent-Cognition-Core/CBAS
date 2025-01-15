@@ -18,8 +18,6 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/mes
 export class ProfileComponent implements OnInit {
 
     //HTML Models Parameters
-    givenNameModel: string;
-    familyNameModel: string;
     email: string;
     
     selectePISiteModel: any
@@ -37,8 +35,8 @@ export class ProfileComponent implements OnInit {
 
 
     // FormControls Definition
-    givenName = new FormControl('', [Validators.required]);
-    familyName = new FormControl('', [Validators.required]);
+    givenName: FormControl;
+    familyName: FormControl;
 
 
     //model Variable
@@ -48,8 +46,11 @@ export class ProfileComponent implements OnInit {
         private identityService: IdentityService,
         private profileService: ProfileService,
         private location: Location,
-        public dialog: MatDialog,) {
-
+        public dialog: MatDialog,
+        private fb: FormBuilder) {
+    
+        this.givenName = fb.control('',[Validators.required])
+        this.familyName = fb.control('',[Validators.required])
     }
 
     ngOnInit() {
@@ -120,8 +121,8 @@ export class ProfileComponent implements OnInit {
             this.userInfo = data;
             console.log(this.userInfo);
 
-            this.givenNameModel = this.userInfo.givenName;
-            this.familyNameModel = this.userInfo.familyName;
+            this.givenName.setValue(this.userInfo.givenName);
+            this.familyName.setValue(this.userInfo.familyName);
             this.email = this.userInfo.email;
 
 
@@ -199,8 +200,8 @@ export class ProfileComponent implements OnInit {
     updateUserProfile(): void {
 
         
-        this._user.givenName = this.givenNameModel;
-        this._user.familyName = this.familyNameModel;
+        this._user.givenName = this.givenName.value;
+        this._user.familyName = this.familyName.value;
         this._user.selectedPiSiteIds = this.selectePISiteModel;
         //console.log(this._user);
         this.profileService.updateProfile(this._user).map(res => {

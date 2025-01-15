@@ -8,14 +8,14 @@
         <!--<p><strong>{{data}}</strong></p>-->
         <!--Experiment Name-->
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Experiment" [formControl]="exp" [(ngModel)]="expNameModel" required>
+            <input matInput placeholder="Enter your Experiment" [formControl]="exp" required>
             <mat-error *ngIf="exp.invalid">{{getErrorMessage()}}</mat-error>
             <mat-error *ngIf="exp.invalid">{{getErrorMessageTaken()}}</mat-error>
         </mat-form-field>
 
         <!--Start Date-->
         <mat-form-field class="full-width">
-            <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [(ngModel)]="sDateModel" [max]="eDateModel" required>
+            <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [max]="eDateModel" required>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="sDate.invalid">{{getErrorMessagesDate()}}</mat-error>
@@ -23,7 +23,7 @@
 
         <!--End Date-->
         <mat-form-field class="full-width">
-            <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [(ngModel)]="eDateModel" [min]="sDateModel" required>
+            <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [min]="sDateModel" required>
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
             <mat-error *ngIf="eDate.invalid">{{getErrorMessageeDate()}}</mat-error>
@@ -31,7 +31,7 @@
 
         <!--Cognitive Task-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the Task" [formControl]="task" required [(ngModel)]="selectedvalue" [disabled]="data.experimentObj!=null">
+            <mat-select placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!=null">
                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                     {{task.name}}
                 </mat-option>
@@ -41,7 +41,7 @@
 
         <!--Species-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the Species" [formControl]="species" required [(ngModel)]="speciesModel">
+            <mat-select placeholder="Select the Species" [formControl]="species" required>
                 <mat-option *ngFor="let species of speciesList" [value]="species.id">
                     {{species.species}}
                 </mat-option>
@@ -51,7 +51,7 @@
 
         <!--PI & Institution-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required [(ngModel)]="selectPISvalue">
+            <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required>
                 <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.pusid">
                     {{PIS.piSiteName}}
                 </mat-option>
@@ -60,7 +60,7 @@
         </mat-form-field>
 
         <!--<mat-form-field class="full-width">-->
-        <mat-radio-group [formControl]="status" [(ngModel)]="statusModel" required>
+        <mat-radio-group [formControl]="status" required>
             <mat-radio-button value="0">Private</mat-radio-button>
             <mat-radio-button value="1">Public</mat-radio-button>
             <mat-error *ngIf="status.invalid">{{getErrorMessageStatus()}}</mat-error>
@@ -69,7 +69,7 @@
         <!--Battery of Task-->
         <mat-form-field class="full-width">
 
-            <textarea matInput placeholder="Please enter battery of Tasks in order:" [(ngModel)]="taskBatteryModel" [formControl]="expBattery" required matTextareaAutosize matAutosizeMinRows="2"
+            <textarea matInput placeholder="Please enter battery of Tasks in order:" [formControl]="expBattery" required matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
            
             </textarea>
@@ -81,7 +81,7 @@
         <!--Experiment Description-->
         <mat-form-field class="full-width">
 
-            <textarea matInput placeholder="Experiment Description" [(ngModel)]="taskDesModel" [formControl]="expDescription" required matTextareaAutosize matAutosizeMinRows="2"
+            <textarea matInput placeholder="Experiment Description" [formControl]="expDescription" required matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
            
             </textarea>
@@ -94,7 +94,7 @@
         </mat-form-field>
 
         <label>Does your experiment include multiple sessions for an animal within a single day?</label><br />
-        <mat-radio-group [formControl]="isMultipleSessions" [(ngModel)]="isMultipleSessionsModel" required>
+        <mat-radio-group [formControl]="isMultipleSessions" required>
             <mat-radio-button value="0">No</mat-radio-button>
             <mat-radio-button value="1">Yes</mat-radio-button>
             <mat-error *ngIf="isMultipleSessions.invalid">{{getErrorMessageMultipleSessions()}}</mat-error>
@@ -115,7 +115,7 @@
             <!--Repository List-->
             <mat-form-field class="full-width">
                 <mat-select matInput placeholder="Repository List" [(ngModel)]="repModel">
-                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [(ngModel)]="repMultiSelect" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
 
                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.repoLinkGuid">
                         <span matTooltip="{{rep.title}}">{{rep.title}}</span>
