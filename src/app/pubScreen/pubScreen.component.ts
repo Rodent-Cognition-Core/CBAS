@@ -30,18 +30,6 @@ export class PubScreenComponent implements OnInit {
     pubCount: number;
     featureCount: number;
 
-    authorMultiSelect: any;
-    strainMultiSelect: any;
-    subTaskMultiSelect: any;
-    diseaseMultiSelect: any;
-    subModelMultiSelect: any;
-    regionMultiSelect: any;
-    subRegionMultiSelect: any;
-    cellTypeMultiSelect: any;
-    methodMultiSelect: any;
-    subMethodMultiSelect: any;
-    neurotransmitterMultiSelect: any;
-
     authorModel: any;
     titleModel: any;
     abstractModel: any;
@@ -63,7 +51,6 @@ export class PubScreenComponent implements OnInit {
     subMethodModel: any;
     neurotransmitterModel: any;
     yearFromSearchModel: any;
-    yearToSearchModel: any;
     subTaskModel: any;
     panelOpenState = false;
     searchModel: any;
@@ -104,37 +91,37 @@ export class PubScreenComponent implements OnInit {
 
     _pubSCreenSearch = new Pubscreen();
 
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: FormControl;
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public strainMultiFilterCtrl: FormControl = new FormControl();
+    public strainMultiFilterCtrl: FormControl;
     public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subTaskMultiFilterCtrl: FormControl = new FormControl();
+    public subTaskMultiFilterCtrl: FormControl;
     public filteredSubTaskList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public diseaseMultiFilterCtrl: FormControl = new FormControl();
+    public diseaseMultiFilterCtrl: FormControl;
     public filteredDiseaseList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subModelMultiFilterCtrl: FormControl = new FormControl();
+    public subModelMultiFilterCtrl: FormControl;
     public filteredSubModelList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public regionMultiFilterCtrl: FormControl = new FormControl();
+    public regionMultiFilterCtrl: FormControl;
     public filteredRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subRegionMultiFilterCtrl: FormControl = new FormControl();
+    public subRegionMultiFilterCtrl: FormControl;
     public filteredSubRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public cellTypeMultiFilterCtrl: FormControl = new FormControl();
+    public cellTypeMultiFilterCtrl: FormControl;
     public filteredCellTypeList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public methodMultiFilterCtrl: FormControl = new FormControl();
+    public methodMultiFilterCtrl: FormControl;
     public filteredMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subMethodMultiFilterCtrl: FormControl = new FormControl();
+    public subMethodMultiFilterCtrl: FormControl;
     public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public neurotransmitterMultiFilterCtrl: FormControl = new FormControl();
+    public neurotransmitterMultiFilterCtrl: FormControl;
     public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     /** Subject that emits when the component has been destroyed. */
@@ -150,7 +137,19 @@ export class PubScreenComponent implements OnInit {
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
-        public dialogML: MatDialog,    ) { }
+        public dialogML: MatDialog,
+        private fb: FormBuilder    ) { 
+
+        this.authorMultiFilterCtrl = fb.control(''),
+        this.strainMultiFilterCtrl = fb.control(''),
+        this.diseaseMultiFilterCtrl = fb.control(''),
+        this.subModelMultiFilterCtrl = fb.control(''),
+        this.regionMultiFilterCtrl = fb.control(''),
+        this.subRegionMultiFilterCtrl = fb.control(''),
+        this.cellTypeMultiFilterCtrl = fb.control(''),
+        this.subMethodMultiFilterCtrl = fb.control(''),
+        this.neurotransmitterMultiFilterCtrl = fb.control('')
+        }
 
     ngOnInit() {
 
@@ -731,7 +730,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.subMethodID = this.subMethodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
-        this._pubSCreenSearch.yearTo = this.yearToSearchModel;
+        this._pubSCreenSearch.yearTo = this.yearTo.value;
         this._pubSCreenSearch.subTaskID = this.subTaskModel;
         this._pubSCreenSearch.search = this.searchModel;
 
