@@ -80,11 +80,8 @@ export class CogbytesUploadComponent implements OnInit {
     _cogbytesUpload: CogbytesUpload;
 
     // DropZone
-
-    //componentRef: DropzoneComponent;
-    //directiveRef: DropzoneDirective;
-    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent
-    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective
+    @ViewChild(DropzoneComponent, {static: false}) componentRef: DropzoneComponent;
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';
