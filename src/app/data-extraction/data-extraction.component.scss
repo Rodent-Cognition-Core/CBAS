@@ -1,4 +1,4 @@
-.filter-option /deep/ .mat-pseudo-checkbox {
+.filter-option :host ::ng-deep .mat-pseudo-checkbox {
     display: none !important;
 }
 
@@ -63,7 +63,7 @@
     background: red;
 }
 
-.tableData /deep/ .my-tooltip {
+.tableData :host ::ng-deep .my-tooltip {
     /*overflow: visible;*/
 }
 
@@ -90,6 +90,6 @@
     visibility: visible;
 }
 
-/deep/ .mat-tooltip {
+:host ::ng-deep .mat-tooltip {
     font-size: 15px !important;
 }
