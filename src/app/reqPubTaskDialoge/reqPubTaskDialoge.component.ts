@@ -19,15 +19,6 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 })
 export class ReqPubTaskDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqTaskCategoryModel: string;
-    reqNewCategoryModel: string;
-    reqDOIModel: string;
-    reqNewTaskModel: string;
    
     taskCategoryList: any;
 
@@ -35,16 +26,25 @@ export class ReqPubTaskDialogeComponent implements OnInit {
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    taskCategory = new FormControl('', [Validators.required]);
-    newCategory = new FormControl('', [Validators.required]);
-    newTask = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    taskCategory: FormControl;
+    newCategory: FormControl;
+    newTask: FormControl;
+    doi: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubTaskDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.taskCategory = fb.control('', [Validators.required]);
+        this.newCategory = fb.control('', [Validators.required]);
+        this.newTask = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
         this.pubScreenService.getTask().subscribe(data => { this.taskCategoryList = data; });
@@ -61,16 +61,16 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.doi = this.reqDOIModel;
-        if (this.reqTaskCategoryModel != 'None') {
-            this._request.taskCategory = this.reqTaskCategoryModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        if (this.taskCategory.value != 'None') {
+            this._request.taskCategory = this.taskCategory.value;
         }
         else {
-            this._request.taskCategory = "NEW: " + this.reqNewCategoryModel;
+            this._request.taskCategory = "NEW: " + this.newCategory.value;
         }
-        this._request.taskName = this.reqNewTaskModel;
+        this._request.taskName = this.newTask.value;
 
         // Submiting the request to server
         this.requestService.addPubTask(this._request).subscribe( this.thisDialogRef.close()); 
@@ -135,7 +135,7 @@ export class ReqPubTaskDialogeComponent implements OnInit {
             this.newTask.hasError('required') ||
             this.doi.hasError('required') ||
             this.taskCategory.hasError('required') ||
-            (this.newCategory.hasError('required') && this.reqTaskCategoryModel == 'None')
+            (this.newCategory.hasError('required') && this.taskCategory.value == 'None')
             
             
         )

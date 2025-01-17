@@ -19,14 +19,6 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 })
 export class ReqPubSubMethodDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameMethod: string;
-    reqEmailMethod: string;
-    reqMethod: string;
-    reqDOIMethod: string;
-    reqNewSubMethod: string;
    
     methodList: any;
 
@@ -34,15 +26,23 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    method = new FormControl('', [Validators.required]);
-    newSubMethod = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    method: FormControl;
+    newSubMethod: FormControl;
+    doi: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubSubMethodDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.method = fb.control('', [Validators.required]);
+        this.newSubMethod = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
         this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
@@ -59,11 +59,11 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameMethod;
-        this._request.email = this.reqEmailMethod;
-        this._request.doi = this.reqDOIMethod;
-        this._request.method = this.reqMethod;
-        this._request.subMethod = this.reqNewSubMethod;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        this._request.method = this.method.value;
+        this._request.subMethod = this.newSubMethod.value;
 
         // Submiting the request to server
         this.requestService.addPubSubMethod(this._request).subscribe( this.thisDialogRef.close()); 
