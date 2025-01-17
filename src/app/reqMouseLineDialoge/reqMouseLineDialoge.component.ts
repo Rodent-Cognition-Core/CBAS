@@ -21,11 +21,7 @@ export class ReqMouseLineDialogeComponent implements OnInit {
 
     // Defining Models Parameters
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqStrainModel: string;
     reqGenoModel: string;
-    geneticModificationModel: string
     refModel: string
     controlModel: string
    
@@ -34,10 +30,10 @@ export class ReqMouseLineDialogeComponent implements OnInit {
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    strain = new FormControl('', [Validators.required]);
-    geneticModi = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    strain: FormControl;
+    geneticModi: FormControl;
     //control = new FormControl('', [Validators.required]);
     
 
@@ -54,7 +50,14 @@ export class ReqMouseLineDialogeComponent implements OnInit {
 
     constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.strain = fb.control('', [Validators.required]);
+        this.geneticModi = fb.control('', [Validators.required])
+    }
 
     ngOnInit() {
       
@@ -70,11 +73,11 @@ export class ReqMouseLineDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.mouseStrain = this.reqStrainModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.mouseStrain = this.strain.value;
         this._request.genotype = this.reqGenoModel;
-        this._request.geneticModification = this.geneticModificationModel;
+        this._request.geneticModification = this.geneticModi.value;
         this._request.strainReference = this.refModel;
         this._request.controlSuggestion = this.controlModel;
 

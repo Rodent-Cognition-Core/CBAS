@@ -21,46 +21,47 @@ export class SubExpDialogeComponent implements OnInit {
     isTakenAgeSubExp: boolean;
     taskID: any;
     
-    // ngModel vars
-    subExpNameModel: any;
-    ageInMonthModel: any;
-    interventionModel: string = "0";
-    isDrugModel: string;
-    drugModel: string;
-    drugQuantityModel: string
-    drugUnitModel: string;
-    intDesModel: string;
-    selectedImageVal: any;
-    imageDesModel: any;
-    housingModel: string;
-    lightCycleModel: string;
-    
     // Lists
     ageList: any;
     imageList: any;
     selectedImageResult: any; 
 
     // formControl vars
-    ageInMonth = new FormControl('', [Validators.required]);
-    subExp = new FormControl('', [Validators.required]);
-    intervention = new FormControl('', [Validators.required]);
-    isDrug = new FormControl('', [Validators.required]);
-    drug = new FormControl('', [Validators.required]);
+    ageInMonth: FormControl;
+    subExp: FormControl;
+    intervention: FormControl;
+    isDrug: FormControl;
+    drug: FormControl;
     //drugQuantity = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    drugQuantity = new FormControl('', [Validators.required, Validators.pattern(/^[-+]?[0-9]*\.?[0-9]+$/)]);
-    drugUnit = new FormControl('', [Validators.required]);
-    intDes = new FormControl('', [Validators.required]);
-    imageInfo = new FormControl('', [Validators.required]);
-    imageDescription = new FormControl('', [Validators.required]);
-    housing = new FormControl('', [Validators.required]);
-    lightCycle = new FormControl('', [Validators.required]);
+    drugQuantity: FormControl;
+    drugUnit: FormControl;
+    intDes: FormControl;
+    imageInfo: FormControl;
+    imageDescription: FormControl;
+    housing: FormControl;
+    lightCycle: FormControl;
     
 
     private _subexperiment = new SubExperiment();
 
 
     constructor(public thisDialogRef: MatDialogRef<SubExpDialogeComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any, private subexpDialogeService: SubExpDialogeService, ) { }
+        @Inject(MAT_DIALOG_DATA) public data: any, private subexpDialogeService: SubExpDialogeService,
+        private fb: FormBuilder) {
+
+        this.ageInMonth = fb.control('', [Validators.required]);
+        this.subExp = fb.control('', [Validators.required]);
+        this.intervention = fb.control('', [Validators.required]);
+        this.isDrug = fb.control('', [Validators.required]);
+        this.drug = fb.control('', [Validators.required]);
+        this.drugQuantity = fb.control('', [Validators.required, Validators.pattern(/^[-+]?[0-9]*\.?[0-9]+$/)]);
+        this.drugUnit = fb.control('', [Validators.required]);
+        this.intDes = fb.control('', [Validators.required]);
+        this.imageInfo = fb.control('', [Validators.required]);
+        this.imageDescription = fb.control('', [Validators.required]);
+        this.housing = fb.control('', [Validators.required]);
+        this.lightCycle = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
 
@@ -73,21 +74,21 @@ export class SubExpDialogeComponent implements OnInit {
 
         //console.log(this.data.subexperimentObj);
         if (this.data.subexperimentObj != null) {
-            this.subExpNameModel = this.data.subexperimentObj.subExpName;
-            this.ageInMonthModel = this.data.subexperimentObj.ageID;
-            this.interventionModel = this.data.subexperimentObj.isIntervention == true ? "1" : "0";
-            this.isDrugModel = this.data.subexperimentObj.isDrug == true ? "1" : "0";
-            this.drugModel = this.data.subexperimentObj.drugName;
-            this.drugQuantityModel = this.data.subexperimentObj.drugQuantity;
-            this.drugUnitModel = this.data.subexperimentObj.drugUnit;
-            this.intDesModel = this.data.subexperimentObj.interventionDescription;
-            this.selectedImageVal = this.data.subexperimentObj.imageIds;
-            this.imageDesModel = this.data.subexperimentObj.imageDescription;
-            this.housingModel = this.data.subexperimentObj.housing;
-            this.lightCycleModel = this.data.subexperimentObj.lightCycle;
+            this.subExp.setValue(this.data.subexperimentObj.subExpName);
+            this.ageInMonth.setValue(this.data.subexperimentObj.ageID);
+            this.intervention.setValue(this.data.subexperimentObj.isIntervention == true ? "1" : "0");
+            this.isDrug.setValue(this.data.subexperimentObj.isDrug == true ? "1" : "0");
+            this.drug.setValue(this.data.subexperimentObj.drugName);
+            this.drugQuantity.setValue(this.data.subexperimentObj.drugQuantity);
+            this.drugUnit.setValue(this.data.subexperimentObj.drugUnit);
+            this.intDes.setValue(this.data.subexperimentObj.interventionDescription);
+            this.imageInfo.setValue(this.data.subexperimentObj.imageIds);
+            this.imageDescription.setValue(this.data.subexperimentObj.imageDescription);
+            this.housing.setValue(this.data.subexperimentObj.housing);
+            this.lightCycle.setValue(this.data.subexperimentObj.lightCycle);
 
             //this.selectedImageResult = this.data.subexperimentObj.imageIds.length;
-            this.getSelectedImage(this.selectedImageVal);
+            this.getSelectedImage(this.imageInfo.value);
             
         }
     }
@@ -210,7 +211,7 @@ export class SubExpDialogeComponent implements OnInit {
             this.housing.hasError('required') ||
             this.lightCycle.hasError('required')
             || ((this.taskID == 3 || this.taskID == 4) && this.imageInfo.hasError('required'))
-            || (((this.taskID == 3 && this.selectedImageVal.length > 2) || (this.taskID == 4 && this.selectedImageVal.length > 3)) && this.imageDescription.hasError('required'))
+            || (((this.taskID == 3 && this.imageInfo.value.length > 2) || (this.taskID == 4 && this.imageInfo.value.length > 3)) && this.imageDescription.hasError('required'))
             
 
         ) {
@@ -242,42 +243,42 @@ export class SubExpDialogeComponent implements OnInit {
 
     onCloseSubmit(): void {
 
-        if (this.isDrugModel == "0") {
+        if (this.isDrug.value == "0") {
 
-            this.drugModel = '';
-            this.drugQuantityModel = '';
-            this.drugUnitModel = '';
+            this.drug.setValue('');
+            this.drugQuantity.setValue('');
+            this.drugUnit.setValue('');
         }
 
-        if (this.isDrugModel == "1" && this.interventionModel == "1") {
+        if (this.isDrug.value == "1" && this.intervention.value == "1") {
 
-            this.intDesModel = '';
-
-        }
-
-        if (this.interventionModel == "0") {
-
-            this.isDrugModel = "0";
-            this.drugModel = '';
-            this.drugQuantityModel = '';
-            this.drugUnitModel = '';
-            this.intDesModel = '';
+            this.intDes.setValue('');
 
         }
 
-        this._subexperiment.SubExpName = this.subExpNameModel;
-        this._subexperiment.AgeID = this.ageInMonthModel;
+        if (this.intervention.value == "0") {
+
+            this.isDrug.setValue("0");
+            this.drug.setValue('');
+            this.drugQuantity.setValue('');
+            this.drugUnit.setValue('');
+            this.intDes.setValue('');
+
+        }
+
+        this._subexperiment.SubExpName = this.subExp.value;
+        this._subexperiment.AgeID = this.ageInMonth.value;
         this._subexperiment.ExpID = this.data.expObj.expID;
-        this._subexperiment.isIntervention = this.interventionModel == "1" ? true : false;
-        this._subexperiment.isDrug = this.isDrugModel == "1" ? true : false;
-        this._subexperiment.drugName = this.drugModel;
-        this._subexperiment.drugQuantity = this.drugQuantityModel;
-        this._subexperiment.drugUnit = this.drugUnitModel;
-        this._subexperiment.interventionDescription = this.intDesModel;
-        this._subexperiment.ImageIds = this.selectedImageVal;
-        this._subexperiment.ImageDescription = this.imageDesModel;
-        this._subexperiment.Housing = this.housingModel;
-        this._subexperiment.LightCycle = this.lightCycleModel;
+        this._subexperiment.isIntervention = this.intervention.value == "1" ? true : false;
+        this._subexperiment.isDrug = this.isDrug.value == "1" ? true : false;
+        this._subexperiment.drugName = this.drug.value;
+        this._subexperiment.drugQuantity = this.drugQuantity.value;
+        this._subexperiment.drugUnit = this.drugUnit.value;
+        this._subexperiment.interventionDescription = this.intDes.value;
+        this._subexperiment.ImageIds = this.imageInfo.value;
+        this._subexperiment.ImageDescription = this.imageDescription.value;
+        this._subexperiment.Housing = this.housing.value;
+        this._subexperiment.LightCycle = this.lightCycle.value;
 
         //console.log(this._subexperiment);
         if (this.data.subexperimentObj == null) {

@@ -27,11 +27,7 @@ import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUC
 export class PubscreenDialogeComponent implements OnInit {
 
     //Models Variables for adding Publication
-    abstractModel: any;
-    yearModel: any;
     keywordsModel: any;
-    doiModel: any;
-    paperTypeModel: any;
     cognitiveTaskModel: any;
     specieModel: any;
     sexModel: any;
@@ -44,17 +40,6 @@ export class PubscreenDialogeComponent implements OnInit {
     methodModel: any;
     subMethodModel: any;
     neurotransmitterModel: any;
-    authorMultiSelect: any;
-    strainMultiSelect: any;
-    subTaskMultiSelect: any;
-    diseaseMultiSelect: any;
-    subModelMultiSelect: any;
-    regionMultiSelect: any;
-    subRegionMultiSelect: any;
-    cellTypeMultiSelect: any;
-    methodMultiSelect: any;
-    subMethodMultiSelect: any;
-    neurotransmitterMultiSelect: any;
     subTaskModel: any;
     authorModel2: any;
     //paperTypeModel2: any;
@@ -148,6 +133,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     author: FormControl;
     title: FormControl;
+    abstract: FormControl;
     doi: FormControl;
     doiKey: FormControl;
     paperType: FormControl;
@@ -188,6 +174,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.neurotransmitterMultiFilterCtrl = fb.control('');
         this.author = fb.control('', [Validators.required]);
         this.title = fb.control('', [Validators.required]);
+        this.abstract = fb.control('', [Validators.required]);
         this.doi = fb.control('', [Validators.required]);
         this.doiKey = fb.control('', [Validators.required]);
         this.paperType = fb.control('', [Validators.required]);
@@ -253,11 +240,11 @@ export class PubscreenDialogeComponent implements OnInit {
             this.pubScreenService.getPaperInfo(this.publicationId).subscribe(data => {
                 this.paperInfo = data;
                 //console.log(this.paperInfo)
-                this.doiModel = this.paperInfo.doi;
+                this.doi.setValue(this.paperInfo.doi);
                 this.keywordsModel = this.paperInfo.keywords;
                 this.title.setValue(this.paperInfo.title);
-                this.abstractModel = this.paperInfo.abstract;
-                this.yearModel = this.paperInfo.year;
+                this.abstract.setValue(this.paperInfo.abstract);
+                this.year.setValue(this.paperInfo.year);
                 this.referenceModel = this.paperInfo.reference;
 
                 this.author.setValue(this.paperInfo.authourID ? this.paperInfo.authourID : []);
@@ -266,7 +253,7 @@ export class PubscreenDialogeComponent implements OnInit {
                 this.subModel = this.paperInfo.subModelID ? this.paperInfo.subModelID : [];
                 this.methodModel = this.paperInfo.methodID ? this.paperInfo.methodID : [];
                 this.subMethodModel = this.paperInfo.subMethodID ? this.paperInfo.subMethodID : [];
-                this.paperTypeModel = this.paperInfo.paperTypeID ? this.paperInfo.paperTypeID : [];
+                this.paperType.setValue(this.paperInfo.paperTypeID ? this.paperInfo.paperTypeID : []);
                 this.regionModel = this.paperInfo.regionID ? this.paperInfo.regionID : [];
                 this.sexModel = this.paperInfo.sexID ? this.paperInfo.sexID : [];
                 this.specieModel = this.paperInfo.specieID ? this.paperInfo.specieID : [];
@@ -927,7 +914,7 @@ export class PubscreenDialogeComponent implements OnInit {
             return true;
         }
 
-        if (this.paperTypeModel === null && this.paperType.hasError('required')) {
+        if (this.paperType.value === null && this.paperType.hasError('required')) {
             return true;
         }
 
@@ -964,8 +951,8 @@ export class PubscreenDialogeComponent implements OnInit {
         else if (
             
             ((this.title.value === null || this.title.value === "") && this.title.hasError('required')) ||
-            ((this.doiModel === null || this.doiModel === "") && this.doi.hasError('required'))||
-            ((this.yearModel === null || this.yearModel === "") && this.year.hasError('required')) ||
+            ((this.doi.value === null || this.doi.value === "") && this.doi.hasError('required'))||
+            ((this.year.value === null || this.year.value === "") && this.year.hasError('required')) ||
             ((this.sourceOption.value === null || this.sourceOption.value === "") && this.sourceOption.hasError('required')) ||
             (this.paperType.hasError('required'))
 
@@ -1025,10 +1012,10 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.authorModel2 = apiResult.authorString;
                 this.title.setValue(apiResult.title);
-                this.abstractModel = apiResult.abstract;
-                this.yearModel = apiResult.year;
+                this.abstract.setValue(apiResult.abstract);
+                this.year.setValue(apiResult.year);
                 this.keywordsModel = apiResult.keywords;
-                this.doiModel = apiResult.doi;
+                this.doi.setValue(apiResult.doi);
                 this.referenceModel = apiResult.reference;
                 this.authorList2 = apiResult.author;
             }
@@ -1049,10 +1036,10 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.authorModel2 = apiResult.authorString;
                 this.title.setValue(apiResult.title);
-                this.abstractModel = apiResult.abstract;
-                this.yearModel = apiResult.year;
+                this.abstract.setValue(apiResult.abstract);
+                this.year.setValue(apiResult.year);
                 this.keywordsModel = apiResult.keywords;
-                this.doiModel = apiResult.doi;
+                this.doi.setValue(apiResult.doi);
                 this.referenceModel = apiResult.reference;
                 this.authorList2 = apiResult.author;               
             }
@@ -1073,10 +1060,10 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.authorModel2 = apiResult.authorString;
                 this.title.setValue(apiResult.title);
-                this.abstractModel = apiResult.abstract;
-                this.yearModel = apiResult.year;
+                this.abstract.setValue(apiResult.abstract);
+                this.year.setValue(apiResult.year);
                 this.keywordsModel = apiResult.keywords;
-                this.doiModel = apiResult.doi;
+                this.doi.setValue(apiResult.doi);
                 this.referenceModel = apiResult.reference;
                 this.authorList2 = apiResult.author;               
 
@@ -1100,9 +1087,9 @@ export class PubscreenDialogeComponent implements OnInit {
 
                 this.authorModel2 = apiResult.authorString;
                 this.title.setValue(apiResult.title);
-                this.abstractModel = apiResult.abstract;
-                this.yearModel = apiResult.year;
-                this.doiModel = apiResult.doi;
+                this.abstract.setValue(apiResult.abstract);
+                this.year.setValue(apiResult.year);
+                this.doi.setValue(apiResult.doi);
                 this.referenceModel = apiResult.reference;
                 this.authorList2 = apiResult.author;
             }
@@ -1116,7 +1103,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
         this.spinnerService.show();
 
-        if (!this.yearModel.match(/^(19|20)\d{2}$/)) {
+        if (!this.year.value.match(/^(19|20)\d{2}$/)) {
             alert(YEARNOTVALID);
             return;
         }
@@ -1140,11 +1127,11 @@ export class PubscreenDialogeComponent implements OnInit {
         }
 
         this._pubscreen.title = this.title.value;
-        this._pubscreen.abstract = this.abstractModel;
+        this._pubscreen.abstract = this.abstract.value;
         this._pubscreen.keywords = this.keywordsModel;
-        this._pubscreen.doi = this.doiModel;
-        this._pubscreen.year = this.yearModel;
-        this._pubscreen.paperTypeID = this.paperTypeModel;
+        this._pubscreen.doi = this.doi.value;
+        this._pubscreen.year = this.year.value;
+        this._pubscreen.paperTypeID = this.paperType.value;
         this._pubscreen.taskID = this.cognitiveTaskModel;
         this._pubscreen.subTaskID = this.subTaskModel;
         this._pubscreen.specieID = this.specieModel;
@@ -1248,13 +1235,13 @@ export class PubscreenDialogeComponent implements OnInit {
     resetFormVals() {
 
         this.title.setValue('');
-        this.abstractModel = '';
+        this.abstract.setValue('');
         this.keywordsModel = '';
-        this.doiModel = '';
-        this.yearModel = '';
+        this.doi.setValue('');
+        this.year.setValue('');
         this.yearSearchModel = [];
         this.author.setValue([]);
-        this.paperTypeModel = '';
+        this.paperType.setValue('');
         this.cognitiveTaskModel = [];
         this.subTaskModel = [];
         this.specieModel = [];
@@ -1269,7 +1256,6 @@ export class PubscreenDialogeComponent implements OnInit {
         this.neurotransmitterModel = [];
         this.doiKey.setValue('');
         this.authorModel2 = '';
-        this.paperTypeModel = '';
         this.referenceModel = '';
         this.pubMedKey.setValue('');
         this.doiKeyBio.setValue('');
