@@ -15,7 +15,7 @@ import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
-//import { SubExperiment } from '../models/subexperiment';
+import { SubExperiment } from '../models/subexperiment';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
 
 @Component({
@@ -49,8 +49,9 @@ export class UploadComponent implements OnInit {
     public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
 
     // DropZone
-    @ViewChild(DropzoneComponent) componentRef!: DropzoneComponent;
-    @ViewChild(DropzoneDirective) directiveRef!: DropzoneDirective;
+
+    @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent;
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';
