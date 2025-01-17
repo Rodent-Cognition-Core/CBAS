@@ -2,7 +2,7 @@ import {
     Component, OnInit, Inject, NgModule,
     ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef
 } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 //import { NgModel } from '@angular/forms';
 //import { Location } from '@angular/common';
