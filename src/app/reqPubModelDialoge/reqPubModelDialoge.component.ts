@@ -18,14 +18,6 @@ import { SharedModule } from '../shared/shared.module';
 
 })
 export class ReqPubModelDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRodentModel: string;
-    reqDOIModel: string;
-    reqNewSubModel: string;
    
     modelList: any;
 
@@ -33,15 +25,23 @@ export class ReqPubModelDialogeComponent implements OnInit {
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    rodentModel = new FormControl('', [Validators.required]);
-    newSubModel = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    rodentModel: FormControl;
+    newSubModel: FormControl;
+    doi: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubModelDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.rodentModel = fb.control('', [Validators.required]);
+        this.newSubModel = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
         this.pubScreenService.getDisease().subscribe(data => { this.modelList = data; });
@@ -58,11 +58,11 @@ export class ReqPubModelDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.doi = this.reqDOIModel;
-        this._request.model = this.reqRodentModel;
-        this._request.subModel = this.reqNewSubModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        this._request.model = this.rodentModel.value;
+        this._request.subModel = this.newSubModel.value;
 
         // Submiting the request to server
         this.requestService.addPubSubModel(this._request).subscribe( this.thisDialogRef.close()); 

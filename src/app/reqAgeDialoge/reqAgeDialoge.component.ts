@@ -18,26 +18,26 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 })
 export class ReqAgeDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqAgeModel: string;
    
            
     private _request = new Request();
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    age = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    age: FormControl;
     
 
     constructor(public thisDialogRef: MatDialogRef<ReqAgeDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.age = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
       
@@ -53,9 +53,9 @@ export class ReqAgeDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.age = this.reqAgeModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.age = this.age.value;
       
         
 
