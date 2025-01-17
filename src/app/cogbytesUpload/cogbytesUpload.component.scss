@@ -33,6 +33,6 @@ label {
     color: #465563;
 }
 
-/deep/ .mat-tooltip {
+:host ::ng-deep .mat-tooltip {
     font-size: 12px !important;
 }
