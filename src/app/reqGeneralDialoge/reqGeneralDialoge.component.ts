@@ -19,26 +19,25 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 })
 export class ReqGeneralDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRequestModel: string;
-   
            
     private _request = new Request();
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    request = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    request: FormControl;
     
 
     constructor(public thisDialogRef: MatDialogRef<ReqGeneralDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.request = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
       
@@ -54,9 +53,9 @@ export class ReqGeneralDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.generalRequest = this.reqRequestModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.generalRequest = this.request.value;
       
         
 

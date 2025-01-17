@@ -19,28 +19,28 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 })
 export class ReqPIDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqPINameModel: string;
-    reqPIEmailModel: string;
-    reqInsNameModel: string;
-
            
     private _request = new Request();
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    emailPI = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    piName = new FormControl('', [Validators.required]);
-    institution = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    emailPI: FormControl;
+    piName: FormControl;
+    institution: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: FormBuilder) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.piName = fb.control('', [Validators.required]);
+        this.institution = fb.control('', [Validators.required]);
+    }
 
     ngOnInit() {
       
@@ -56,11 +56,11 @@ export class ReqPIDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.piFullName = this.reqPINameModel;
-        this._request.piEmail = this.reqPIEmailModel;
-        this._request.piInstitution = this.reqInsNameModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.piFullName = this.piName.value;
+        this._request.piEmail = this.emailPI.value;
+        this._request.piInstitution = this.institution.value;
         
 
         // Submiting the request to server
