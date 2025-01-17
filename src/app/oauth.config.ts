@@ -9,7 +9,8 @@ export const oAuthDevelopmentConfig: AuthConfig = {
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
     issuer: "http://localhost:5000",
-    requireHttps: false
+    requireHttps: false,
+    waitForTokenInMsec: 0
 
 }
 
@@ -19,7 +20,8 @@ export const oAuthProductionConfig: AuthConfig = {
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
     issuer: "http://localhost:5000",
-    requireHttps: false
+    requireHttps: false,
+    waitForTokenInMsec: 0
 
 }
 
