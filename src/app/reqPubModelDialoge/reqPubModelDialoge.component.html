@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input matInput placeholder="Enter your email address:" [formControl]="email" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" [(ngModel)]="reqDOIModel" required>
+            <input matInput placeholder="DOI of Paper in Question" [formControl]="doi" required>
             <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
         </mat-form-field>
@@ -28,7 +28,7 @@
 
         <!--Rodent Model or Task Category-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select Rodent Model" [formControl]="rodentModel" [(ngModel)]="reqRodentModel" required>
+            <mat-select placeholder="Select Rodent Model" [formControl]="rodentModel" required>
                 <mat-option *ngFor="let model of modelList" [value]="model.diseaseModel">
                     <span matTooltip="{{model.diseaseModel}}">{{model.diseaseModel}}</span>
                 </mat-option>
@@ -40,7 +40,7 @@
         <br />
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="New Sub-rodent Model" [formControl]="newSubModel" [(ngModel)]="reqNewSubModel" required>
+            <input matInput placeholder="New Sub-rodent Model" [formControl]="newSubModel" required>
             <mat-error *ngIf="newSubModel.invalid">{{getErrorMessageNewSubModel()}}</mat-error>
 
         </mat-form-field>
