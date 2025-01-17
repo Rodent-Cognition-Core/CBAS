@@ -7,7 +7,8 @@ import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { DataExtraction } from '../models/dataextraction';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
