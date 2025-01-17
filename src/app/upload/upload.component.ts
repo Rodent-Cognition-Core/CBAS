@@ -16,7 +16,6 @@ import {
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
 import { SubExperiment } from '../models/subexperiment';
-import { Services } from '@angular/core/src/view';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
 
 @Component({
@@ -48,8 +47,8 @@ export class UploadComponent implements OnInit {
     uploadConfirmShowed: boolean = false;
 
     // DropZone
-    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent;
-    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective;
+    @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent;
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';

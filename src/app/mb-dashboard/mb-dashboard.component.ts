@@ -4,7 +4,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
     selector: 'app-mb-dashboard',

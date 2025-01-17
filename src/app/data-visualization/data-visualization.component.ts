@@ -6,7 +6,6 @@ import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/user'
-import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
     selector: 'app-data-visualization',
