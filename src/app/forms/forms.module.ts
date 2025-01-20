@@ -3,7 +3,8 @@ import { FormsRoutingModule } from './forms-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { FormsComponent } from './forms.component';
 import { RequestService } from '../services/request.service';
-import { MatDialogModule, MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button'
 
 
 
