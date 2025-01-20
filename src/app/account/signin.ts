@@ -1,3 +1,5 @@
+import { Injectable } from '@angular/core'
+
 import { Router } from '@angular/router';
 
 import { OAuthService } from 'angular-oauth2-oidc';
@@ -11,6 +13,7 @@ import { ManageUserService } from '../services/manageuser.service';
 /**
  * Provides signin method to signin & signup components.
  */
+@Injectable()
 export class Signin {
 
     model: any = {};
