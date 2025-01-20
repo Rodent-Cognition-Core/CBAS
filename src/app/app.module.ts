@@ -161,30 +161,6 @@ const ROUTES: Routes = [
         ScrollService,
 
     ],
-    entryComponents: [
-        ExpDialogeComponent,
-        PubscreenDialogeComponent,
-        AnimalDialogComponent,
-        PasswordDialogComponent,
-        UploadResultDialogComponent,
-        DeleteConfirmDialogComponent,
-        GenericDialogComponent,
-        SubExpDialogeComponent,
-        NotificationDialogComponent,
-        ReqTaskDialogeComponent,
-        ReqPIDialogeComponent,
-        ReqAgeDialogeComponent,
-        ReqGeneralDialogeComponent,
-        ReqPubTaskDialogeComponent,
-        ReqPubModelDialogeComponent,
-        ReqPubSubMethodDialogeComponent,
-        TermsDialogeComponent,
-        ReqMouseLineDialogeComponent,
-        AuthorDialogeComponent,
-        CogbytesDialogueComponent,
-        CogbytesAuthorDialogueComponent,
-        CogbytesPIDialogeComponent,
-    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
