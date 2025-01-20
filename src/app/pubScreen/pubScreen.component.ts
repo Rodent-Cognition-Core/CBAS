@@ -140,15 +140,17 @@ export class PubScreenComponent implements OnInit {
         public dialogML: MatDialog,
         private fb: FormBuilder    ) { 
 
-        this.authorMultiFilterCtrl = fb.control(''),
-        this.strainMultiFilterCtrl = fb.control(''),
-        this.diseaseMultiFilterCtrl = fb.control(''),
-        this.subModelMultiFilterCtrl = fb.control(''),
-        this.regionMultiFilterCtrl = fb.control(''),
-        this.subRegionMultiFilterCtrl = fb.control(''),
-        this.cellTypeMultiFilterCtrl = fb.control(''),
-        this.subMethodMultiFilterCtrl = fb.control(''),
-        this.neurotransmitterMultiFilterCtrl = fb.control('')
+        this.authorMultiFilterCtrl = fb.control([]),
+        this.strainMultiFilterCtrl = fb.control([]),
+        this.subTaskMultiFilterCtrl = fb.control([]),
+        this.diseaseMultiFilterCtrl = fb.control([]),
+        this.subModelMultiFilterCtrl = fb.control([]),
+        this.regionMultiFilterCtrl = fb.control([]),
+        this.subRegionMultiFilterCtrl = fb.control([]),
+        this.cellTypeMultiFilterCtrl = fb.control([]),
+        this.methodMultiFilterCtrl = fb.control([]),
+        this.subMethodMultiFilterCtrl = fb.control([]),
+        this.neurotransmitterMultiFilterCtrl = fb.control([])
         }
 
     ngOnInit() {
