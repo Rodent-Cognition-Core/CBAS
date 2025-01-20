@@ -46,7 +46,7 @@
     "owl.carousel": "^2.3.4",
     "rxjs": "6.5.5",
     "script-loader": "^0.7.2",
-    "typescript": "3.8.3",
+    "typescript": "3.9.10",
     "underscore": "^1.9.1",
     "web-animations-js": "^2.3.2",
     "zone.js": "^0.10.3"
