@@ -7,7 +7,7 @@
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "es5",
+        "target": "es2015",
         "typeRoots": [
             "node_modules/@types"
         ],
@@ -16,9 +16,18 @@
             "dom"
         ],
         "module": "es2015",
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true
     },
     "angularCompilerOptions": {
-        "enableIvy": false
-    }
+        "enableIvy": true
+    },
+    "include": [ "src/**/*.ts" ],
+    "exclude":  ["node_modules", "dist", "test.ts", "**/*.spec.ts"]
 }
