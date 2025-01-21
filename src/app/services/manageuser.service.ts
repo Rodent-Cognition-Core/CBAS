@@ -7,6 +7,13 @@ import { User } from '../models/user';
 
 import { AuthenticationService } from './authentication.service';
 
+//Data Structures
+
+export interface UserStatusResponse {
+    isUserApproved: boolean;
+    isUserLocked: boolean;
+}
+
 @Injectable() export class ManageUserService {
 
     
@@ -16,10 +23,10 @@ import { AuthenticationService } from './authentication.service';
         private authenticationService: AuthenticationService) { }
 
 
-    public GetEmailApprovalAndUserLockedStatus(username: any): any {
-                
+    public GetEmailApprovalAndUserLockedStatus(username: string): Observable<UserStatusResponse> {
+        const url = "/api/manageuser/IsEmailApproved?UserName=${username}";
         return this.http
-            .get("/api/manageuser/IsEmailApproved?UserName=" + username, {
+            .get<UserStatusResponse>(url, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
