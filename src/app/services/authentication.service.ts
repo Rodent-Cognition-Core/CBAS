@@ -44,7 +44,9 @@ import { User } from '../models/user';
     constructor(
         private router: Router,
         private oAuthService: OAuthService
-    ) { }
+    ) {
+        this.redirectUrl = "";
+    }
 
     public init(): void {
         // Tells all the subscribers about the new status & data.
@@ -55,7 +57,7 @@ import { User } from '../models/user';
     public signout(): void {
         this.oAuthService.logOut(true);
 
-        this.redirectUrl = null;
+        this.redirectUrl = "";
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
