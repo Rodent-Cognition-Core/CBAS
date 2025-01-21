@@ -12,7 +12,9 @@ import { AuthenticationService } from './authentication.service';
 
     private signedIn: boolean;
 
-    constructor(private authenticationService: AuthenticationService, private router: Router) { }
+    constructor(private authenticationService: AuthenticationService, private router: Router) {
+        this.signedIn = false;
+    }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
         return this.authenticationService.isSignedIn().pipe(

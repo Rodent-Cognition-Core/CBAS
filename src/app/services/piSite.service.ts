@@ -5,6 +5,10 @@ import { map, catchError } from 'rxjs/operators';
 import { throwError } from "rxjs";
 import { AuthenticationService } from './authentication.service';
 
+export interface getPISiteResponse {
+    PISite: string;
+}
+
 @Injectable() export class PISiteService {
 
     
@@ -14,17 +18,17 @@ import { AuthenticationService } from './authentication.service';
         private authenticationService: AuthenticationService) { }
 
 
-    public getPISite(): any {
-
+    public getPISite(): Observable<getPISiteResponse> {
+        const url = "/api/PISite/GetPISite"
         return this.http
-            .get("/api/PISite/GetPISite", {
+            .get<getPISiteResponse>(url, {
                 //headers: this.authenticationService.getAuthorizationHeader()
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             }).pipe(
-            map((response: Response) => {
+            map((response) => {
                 return response;
             }),
-            catchError((error: any) => {
+            catchError((error) => {
                 return throwError(error);
             }));
     }
