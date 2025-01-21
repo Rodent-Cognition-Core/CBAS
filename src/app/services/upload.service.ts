@@ -42,7 +42,7 @@ import { AuthenticationService } from './authentication.service';
             });
     };
 
-    downloadFile(id): Observable<Blob> {
+    downloadFile(id: number): Observable<Blob> {
 
         return this.http.get("/api/upload/downloadFile?uploadId=" + id,
             { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });

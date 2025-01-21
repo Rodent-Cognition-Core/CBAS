@@ -218,7 +218,7 @@ import { AuthenticationService } from './authentication.service';
     }
 
 
-    downloadFile(path): Observable<Blob> {
+    downloadFile(path: string): Observable<Blob> {
 
         return this.http.get("/api/cogbytes/downloadFile?path=" + path,
             { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: "blob" });

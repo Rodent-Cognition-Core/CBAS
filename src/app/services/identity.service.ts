@@ -39,13 +39,18 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public generatePasswordResetToken(email: string): Observable<{ token: string}> {
-
+    public generatePasswordResetToken(email: string): Observable<{ token: string }> {
         return this.http
-            .get<{ token: string }>("/api/identity/GeneratePasswordResetToken?email=${email}", {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            });
-    }
+            .get<{ token: string }>(`/api/identity/GeneratePasswordResetToken?email=${email}`, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json'),
+            })
+            .pipe(
+                catchError((error) => {
+                    console.error('Error generating password reset token', error);
+                    throw error;
+                })
+            );
+     }
 
     /**
      * Creates a new user.
