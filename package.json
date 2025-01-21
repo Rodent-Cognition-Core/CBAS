@@ -36,6 +36,7 @@
         "core-js": "^3.6.5",
         "dropzone": "6.0.0-beta.2",
         "font-awesome": "^4.7.0",
+        "hammerjs": "^2.0.8",
         "ngx-countup": "^7.3.3",
         "ngx-dropzone-wrapper": "^10.0.0",
         "ngx-mat-select-search": "^3.3.3",
