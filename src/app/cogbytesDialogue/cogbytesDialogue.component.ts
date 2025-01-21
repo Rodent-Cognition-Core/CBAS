@@ -10,12 +10,8 @@ import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 //import { UploadService } from '../services/upload.service';
-import { SharedModule } from '../shared/shared.module';
 import { CogbytesService } from '../services/cogbytes.service';
-import { Pubscreen } from '../models/pubscreen';
 import { Cogbytes } from '../models/cogbytes'
-import { CogbytesUploadComponent } from '../cogbytesUpload/cogbytesUpload.component'
-import { IdentityService } from '../services/identity.service';
 import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
 import { take, takeUntil } from 'rxjs/operators';
