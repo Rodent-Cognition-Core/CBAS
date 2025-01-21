@@ -9,7 +9,6 @@ import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 //import { UploadService } from '../services/upload.service';
-import { SharedModule } from '../shared/shared.module';
 import { CogbytesService } from '../services/cogbytes.service'
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
