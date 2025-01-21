@@ -1,9 +1,8 @@
 import { Component, OnInit, Inject, NgModule, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component'
-import { CogbytesUpload } from '../models/cogbytesUpload'
-import { CogbytesService } from '../services/cogbytes.service'
+import { CogbytesUpload } from '../models/cogbytesUpload';
+import { CogbytesService } from '../services/cogbytes.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import {
     DropzoneComponent, DropzoneDirective,

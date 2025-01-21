@@ -11,6 +11,7 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
+import { SharedModule } from '../shared/shared.module';
 import { Pubscreen } from '../models/pubscreen';
 import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 

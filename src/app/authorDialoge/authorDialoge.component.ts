@@ -5,7 +5,6 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 import { NgModel } from '@angular/forms';
 //import { Request } from '../models/request';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED } from '../shared/messages';
 
 
