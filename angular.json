@@ -20,9 +20,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "src/thirdparties/owl.carousel-modified.css"
+                "src/styles.scss",
+                "node_modules/font-awesome/css/font-awesome.css",
+                "src/thirdparties/owl.carousel-modified.css",
+                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "scripts": [
               "node_modules/owl.carousel/dist/owl.carousel.js"
@@ -99,9 +100,10 @@
               "node_modules/owl.carousel/dist/owl.carousel.js"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "src/thirdparties/owl.carousel-modified.css"
+                "src/styles.scss",
+                "node_modules/font-awesome/css/font-awesome.css",
+                "src/thirdparties/owl.carousel-modified.css",
+                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "assets": [
               "src/assets"
