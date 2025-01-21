@@ -39,10 +39,10 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public generatePasswordResetToken(email): any {
+    public generatePasswordResetToken(email: string): Observable<{ token: string}> {
 
         return this.http
-            .get("/api/identity/GeneratePasswordResetToken?email=" + email, {
+            .get<{ token: string }>("/api/identity/GeneratePasswordResetToken?email=${email}", {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
     }
@@ -56,13 +56,13 @@ import { AuthenticationService } from './authentication.service';
         const body: string = JSON.stringify(model);
 
         // Sends an authenticated request.
-        return this.http.post("/api/identity/Create", body, {
+        return this.http.post<any>("/api/identity/Create", body, {
             headers: new HttpHeaders().set('Content-Type', 'application/json')
         }).pipe(
-            map((response: Response) => {
+            map((response) => {
                 return response;
             }),
-            catchError((error: any) => {
+            catchError((error) => {
                 return throwError(error);
             }));
     }
