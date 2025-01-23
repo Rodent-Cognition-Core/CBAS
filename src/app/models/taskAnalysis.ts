@@ -1,8 +1,8 @@
-export class TaskAnalysis {
+export interface TaskAnalysis {
 
-    public ID: number;
-    public Name: string;
-    public OriginalName: string;
-    public TaskDescription: string;
+     ID: number;
+     Name: string;
+     OriginalName: string;
+     TaskDescription: string;
 
 }

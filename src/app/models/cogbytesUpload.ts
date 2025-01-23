@@ -1,27 +1,27 @@
-export class CogbytesUpload {
+export interface CogbytesUpload {
 
-    public id: number;
-    public repId: number;
-    public fileTypeId: number;
-    public name: string;
-    public dateUpload: string;
-    public description: string;
-    public additionalNotes: string;
-    public isIntervention: boolean;
-    public interventionDescription: string;
-    public imageIds: string;
-    public imageDescription: string;
-    public housing: string;
-    public lightCycle: string;
-    public taskBattery: string;
+     id: number;
+     repId: number;
+     fileTypeId: number;
+     name: string;
+     dateUpload: string;
+     description: string;
+     additionalNotes: string;
+     isIntervention: boolean;
+     interventionDescription: string;
+     imageIds: string;
+     imageDescription: string;
+     housing: string;
+     lightCycle: string;
+     taskBattery: string;
 
-    public taskID: Array<number>;
-    public specieID: Array<number>;
-    public sexID: Array<number>;
-    public strainID: Array<number>;
-    public genoID: Array<number>;
-    public ageID: Array<number>;
+     taskID: Array<number>;
+     specieID: Array<number>;
+     sexID: Array<number>;
+     strainID: Array<number>;
+     genoID: Array<number>;
+     ageID: Array<number>;
 
-    public numSubjects: number;
+     numSubjects: number;
 
 }

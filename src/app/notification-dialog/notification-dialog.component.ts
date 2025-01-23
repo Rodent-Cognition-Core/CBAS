@@ -6,9 +6,11 @@ import { MatDialog, MatDialogRef } from '@angular/material';
     templateUrl: './notification-dialog.component.html',
 })
 export class NotificationDialogComponent {
-    constructor(public dialogRef: MatDialogRef<NotificationDialogComponent>) { }
 
     public message: string;
+    constructor(public dialogRef: MatDialogRef<NotificationDialogComponent>) {
+        this.message = '';
+    }
 
     //copyToClipboard() {
 

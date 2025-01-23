@@ -1,22 +1,16 @@
-export class User {
+export interface User {
 
     /**
      * Profile data as in ApplicationUser.cs.
      */
-    public givenName: string;
-    public familyName: string;
-    public Email: string;
-    public selectedPiSiteIds: Array<number>;
-    public termsConfirmed: boolean;
+    givenName: string;
+    familyName: string;
+    Email: string;
+    selectedPiSiteIds: Array<number>;
+    termsConfirmed: boolean;
+    userName: string;
 
-    /**
-     * From OpenID.
-     */
-    public userName: string;
+    roles: string[];
 
-    /**
-     * Identity resource added in Config.cs.
-     */
-    public roles: string[];
 
 }

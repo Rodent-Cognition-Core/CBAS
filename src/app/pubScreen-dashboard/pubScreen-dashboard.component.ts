@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+//import { MatTableDataSource } from '@angular/material/table'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
     selector: 'app-ps-dashboard',
@@ -13,8 +13,6 @@ import { filterQueryId } from '@angular/core/src/view/util';
 })
 export class PSDashboardComponent implements OnInit {
 
-    
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
 
    
@@ -22,7 +20,8 @@ export class PSDashboardComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) {
 
     }
 
@@ -72,7 +71,7 @@ export class PSDashboardComponent implements OnInit {
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = '';
 
-        var onError = function (errorCode, description) {
+        var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
         var onOpenedfunction = function () {
