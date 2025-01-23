@@ -1,11 +1,6 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button'
-import { MatInputModule } from '@angular/material/input'
-import { MatFormFieldModule } from '@angular/material/form-field'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -87,35 +82,26 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
 
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'guidline', component: GuidelineDataLabComponent },
-    { path: 'guidline', component: DataLinkComponent },
-    { path: 'guidline', component: GenomicsComponent },
-    { path: 'guidline', component: DownloadDsComponent },
+    { path: 'guidline-datalab', component: GuidelineDataLabComponent },
+    { path: 'data-link', component: DataLinkComponent },
+    { path: 'genomics', component: GenomicsComponent },
+    { path: 'download-dataset', component: DownloadDsComponent },
 ];
 
 @NgModule({
     imports: [
         BrowserModule,
         AppRoutingModule,
+        RouterModule.forRoot(ROUTES),
         BrowserAnimationsModule,
         SharedModule,
         OAuthModule.forRoot(),
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        // Ng4LoadingSpinnerModule.forRoot(),
-        //MatSelectModule,
         NgxSpinnerModule,
-        MatFormFieldModule,
-        //NgxMatSelectSearchModule,
         FlexLayoutModule,
         CarouselModule,
         CountUpModule,
         FontAwesomeModule,
         DropzoneModule,
-        RouterModule.forRoot(ROUTES),
         Angulartics2Module.forRoot(),
 
 
@@ -149,7 +135,6 @@ const ROUTES: Routes = [
         DataLinkComponent,
         GenomicsComponent,
         DownloadDsComponent,
-        //CogbytesUploadComponent,    
 
     ],
     exports: [

@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, Inject/*, NgModule*/ } from '@angular/core';
+import { /*MatDialog,*/ MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { map, /*catchError*/ } from 'rxjs/operators'
 import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
 
 @Component({
@@ -15,7 +16,7 @@ import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, 
 })
 export class AnimalDialogComponent implements OnInit {
 
-    _animal = new Animal();
+    _animal: Animal;
     experimentId: number;
     isTaken: boolean;
 
@@ -37,6 +38,9 @@ export class AnimalDialogComponent implements OnInit {
         this.gender = fb.control('', [Validators.required])
         this.strain = fb.control('', [Validators.required])
         this.genotype = fb.control('', [Validators.required])
+        this.experimentId = 0;
+        this.isTaken = false;
+        this._animal = { AnimalID: 0, ExpID: 0, Genotype: '', GID: 0, Sex: '', SID: 0, Strain: '', UserAnimalID: '' }
     }
 
     ngOnInit() {
@@ -62,7 +66,7 @@ export class AnimalDialogComponent implements OnInit {
     }
 
     // Getting Selected Strain ID and Pass it to get Genolist
-    selectedStrainChange(selectedStrainVal) {
+    selectedStrainChange(selectedStrainVal: number) {
 
         this.genotype.setValue([]);
 
@@ -70,7 +74,7 @@ export class AnimalDialogComponent implements OnInit {
 
     }
 
-    getGenoList(selected_StrainValue): any {
+    getGenoList(selected_StrainValue: number): any {
 
         this.animalService.getAllGeno(selected_StrainValue).subscribe(data => { this.GenoList = data; });
     }
@@ -123,14 +127,15 @@ export class AnimalDialogComponent implements OnInit {
         if (this.data.animalObj == null) {   // Insert Mode: Insert Animal
             this.isTaken = false;
 
-            this.animalService.createAnimal(this._animal).map(res => {
+            this.animalService.createAnimal(this._animal).pipe(map(res => {
                 if (res == TAKEN) {
                     this.isTaken = true;
                     this.userAnimalId.setErrors({ 'taken': true });
                 } else {
                     this.thisDialogRef.close(true);
                 }
-            }).subscribe();
+            })
+            ).subscribe();
 
         } else {  // Edit Mode: Edit Animal
 
@@ -138,34 +143,37 @@ export class AnimalDialogComponent implements OnInit {
             if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) {
 
                 this._animal.AnimalID = this.data.animalObj.animalID;
-                this.animalService.updateAniaml(this._animal).map(res => {
+                this.animalService.updateAniaml(this._animal).pipe(map((res: {id: string}) => {
                     // close it so we can see the loading
                     this.thisDialogRef.close(true);
 
-                }).subscribe();
+                })
+             ).subscribe();
 
             }
             else {
 
                 // Check If edited UserAnimalID exist in Table Animal
-                this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).map(res => {
-                    if (res == NOTEXIST) {
+                this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
+                    if (!res) {
                         alert("ERROR: " + ANIMALIDDOESNOTEXIST);
 
                     } else {
                         // Edit UserAnimalId based what exists in tbl Animal in Database
-                        this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).map(res => {
+                        this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
                             // close it so we can see the loading
-                            if (res == SUCCESSFUL) {
+                            if (res) {
                                 this.thisDialogRef.close(false);
                             }
                             else {
                                 alert(CANNOTSAVEEDITS);
                             }
 
-                        }).subscribe();
+                        })
+                    ).subscribe();
                     }
-                }).subscribe();
+                })
+            ).subscribe();
             }
 
 

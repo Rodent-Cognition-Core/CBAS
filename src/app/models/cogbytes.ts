@@ -1,20 +1,20 @@
 import { PubscreenAuthor } from "./pubscreenAuthor";
 
-export class Cogbytes {
+export interface Cogbytes {
 
-    public id: number;
-    public title: string;
-    public date: string;
-    public keywords: string;
-    public doi: string;
-    public authourID: Array<number>;
-    public authorString: string;
-    public piID: Array<number>;
-    public piString: string;
-    public link: string;
-    public privacyStatus: boolean;
-    public description: string;
-    public additionalNotes: string;
-    public dateRepositoryCreated: string;
+    id: number;
+    title: string;
+    date: string;
+    keywords: string;
+    doi: string;
+    authourID: Array<number>;
+    authorString: string;
+    piID: Array<number>;
+    piString: string;
+    link: string;
+    privacyStatus: boolean;
+    description: string;
+    additionalNotes: string;
+    dateRepositoryCreated: string;
 
 }

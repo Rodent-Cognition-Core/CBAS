@@ -8,10 +8,15 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class GenericDialogComponent implements OnInit {
 
-    constructor(public dialogRef: MatDialogRef<GenericDialogComponent>) { }
-
     public title: string;
     public message: string;
+
+    constructor(public dialogRef: MatDialogRef<GenericDialogComponent>) {
+        this.title = '';
+        this.message = '';
+
+    }
+
 
     ngOnInit() {
     }

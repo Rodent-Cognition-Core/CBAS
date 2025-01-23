@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import * as _ from 'underscore';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
 
@@ -30,9 +30,7 @@ export class SharedExperimentComponent implements OnInit {
     faQuestionCircle = faQuestionCircle;
     selectedExpValue: any;
     selectedSubExpValue: any;
-    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
     SubExpModel: any // ngModel for Radio Button
-    dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>;
 
     @Input() hideSubExperiment: boolean;
     @Input() showSubExpTbl: boolean;
@@ -59,18 +57,22 @@ export class SharedExperimentComponent implements OnInit {
         private location: Location,
         private snackBar: MatSnackBar,
         private subexpDialogeService: SubExpDialogeService,
-        private spinnerService: NgxSpinnerService,) {
+        private spinnerService: NgxSpinnerService,
+        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
+        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>) {
 
+        this.hideSubExperiment = false;
+        this.showSubExpTbl = false;
     }
 
-    getSelectedExp(selValue) {
+    getSelectedExp(selValue : any) {
         
-        return this.expList.find(x => x.expID === selValue);
+        return this.expList.find((x : any) => x.expID === selValue);
     }
 
 
-    getSelectedSubExp(selValue) {
-        return this.subExpList.find(x => x.subExpID === selValue);
+    getSelectedSubExp(selValue : any) {
+        return this.subExpList.find((x: any) => x.subExpID === selValue);
     }
 
     selectExpChange() {
@@ -82,7 +84,7 @@ export class SharedExperimentComponent implements OnInit {
         this.GetSubExpSelect(this.selectedExpValue)
     }
 
-    SelectedSubExpChangedRD(event) {
+    SelectedSubExpChangedRD(event : any) {
 
         this.selectedSubExpValue = event.value;
         this.selectSubExpChangeDD();
@@ -102,7 +104,7 @@ export class SharedExperimentComponent implements OnInit {
     }
     
     // Creating Experiment
-    openDialog(Experiment): void {
+    openDialog(Experiment : any): void {
         let dialogref = this.dialog.open(ExpDialogeComponent, {
             //height: '700px',
             width: '600px',
@@ -118,7 +120,7 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // Creating Sub experiment
-    openDialogSubExp(SubExperiment, ExpID): void {
+    openDialogSubExp(SubExperiment : any, ExpID : any): void {
         //console.log(SubExperiment);
         var Experiment = this.getSelectedExp(ExpID)
         let dialogref = this.dialog.open(SubExpDialogeComponent, {
@@ -135,7 +137,7 @@ export class SharedExperimentComponent implements OnInit {
     } 
 
     // Deleting Experiment
-    openConfirmationDialog(expID) {
+    openConfirmationDialog(expID : any) {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -146,7 +148,7 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.experimentService.deleteExperimentbyID(expID).map(res => {
+                this.experimentService.deleteExperimentbyID(expID).map((res : any) => {
 
                     
                     this.spinnerService.hide();
@@ -156,12 +158,13 @@ export class SharedExperimentComponent implements OnInit {
 
                 }).subscribe();
             }
-            this.dialogRef = null;
+            //this.dialogRef = null;
+            this.dialogRef.close();
         });
     }
 
     // Deleting Sub Experiment
-    openSubExpConfirmationDialog(subExp) {
+    openSubExpConfirmationDialog(subExp : any) {
         this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -170,15 +173,16 @@ export class SharedExperimentComponent implements OnInit {
         this.dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).map(res => {
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).map((res : any) => {
                    // location.reload()
                     this.GetSubExpSelect(this.selectedExpValue);
                     this.spinnerService.hide();
-                    this.outSelectedSubExperiment.emit(null);
+                    this.outSelectedSubExperiment.emit(undefined);
                    
                 }).subscribe();
             }
-            this.dialogRef = null;
+            //this.dialogRef = null;
+            this.dialogRef.close();
         });
     }
 
@@ -186,7 +190,7 @@ export class SharedExperimentComponent implements OnInit {
     ngOnInit() {
         //this.imageDescriptionNotNull = false;
         this.GetExpSelect();
-        this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; /*console.log(this.repList);*/ });
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; /*console.log(this.repList);*/ });
 
         if (this.hideSubExperiment == null) {
             this.hideSubExperiment = false;
@@ -200,7 +204,7 @@ export class SharedExperimentComponent implements OnInit {
     // Get List of all Experiment
     GetExpSelect() {
 
-        this.uploadService.getAllExperiment().subscribe(data => {
+        this.uploadService.getAllExperiment().subscribe((data : any) => {
             this.expList = data;
             //console.log(this.expList);
         });
@@ -208,9 +212,9 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // Get List of All sub Experiment
-    GetSubExpSelect(selectedExpVal) {
+    GetSubExpSelect(selectedExpVal : any) {
         
-        this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe(data => {
+        this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe((data : any) => {
                         
             // this.subExpList = data;
             this.subExpList = _.sortBy(data, function (i) {
@@ -226,13 +230,13 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // Deleting Experiment
-    delExp(expID) {
+    delExp(expID : any) {
 
         this.openConfirmationDialog(expID);
     }
 
     // Deleting Sub Experiment
-    delSubExp(subExp) {
+    delSubExp(subExp : any) {
         //console.log(subExp)
         this.openSubExpConfirmationDialog(subExp);
 
@@ -241,18 +245,18 @@ export class SharedExperimentComponent implements OnInit {
     // function definition to ge the min age from the subexp list
     getMinAge() {
 
-       var minValue = Math.min.apply(Math, this.subExpList.map(function (o) { return o.ageInMonth; }));
+       var minValue = Math.min.apply(Math, this.subExpList.map(function (o : any) { return o.ageInMonth; }));
        //var age = JSON.parse(this.subExpList);
        // console.log(minValue);
        return minValue;
         
     }
     
-    runPostQC(subExpObj) {
+    runPostQC(subExpObj : any) {
 
         this.spinnerService.show();
 
-        this.postProcessingQcService.postProcessSubExperiment(subExpObj).subscribe(errorMessage => {
+        this.postProcessingQcService.postProcessSubExperiment(subExpObj).subscribe((errorMessage : string) => {
 
             setTimeout(() => {
                 this.spinnerService.hide();
@@ -277,9 +281,9 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // post processing result dialog
-    openPostProcessingResult(subExpID) {
+    openPostProcessingResult(subExpID : any) {
         
-        this.postProcessingQcService.getPostProcessingResult(subExpID).subscribe(errorMessage => {
+        this.postProcessingQcService.getPostProcessingResult(subExpID).subscribe((errorMessage : string) => {
             if (errorMessage == "")
                 errorMessage = PLEASERUNPREPROCESSING;
 
@@ -291,11 +295,11 @@ export class SharedExperimentComponent implements OnInit {
 
     }
 
-    getRepTitle(repGuid) {
+    getRepTitle(repGuid : any) {
         if (repGuid == "") {
             return "N/A";
         }
-        return this.repList[this.repList.map(function (x) { return x.repoLinkGuid }).indexOf(repGuid)].title;
+        return this.repList[this.repList.map(function (x: any) { return x.repoLinkGuid }).indexOf(repGuid)].title;
     }
 }
 

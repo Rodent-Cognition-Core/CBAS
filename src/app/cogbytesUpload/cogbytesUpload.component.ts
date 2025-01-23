@@ -77,11 +77,12 @@ export class CogbytesUploadComponent implements OnInit {
     intervention: FormControl;
     numSubjects: FormControl;
 
-    _cogbytesUpload = new CogbytesUpload();
+    _cogbytesUpload: CogbytesUpload;
 
     // DropZone
-    @ViewChild(DropzoneComponent, {static: false}) componentRef: DropzoneComponent;
-    @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective;
+
+    componentRef: DropzoneComponent;
+    directiveRef: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -92,8 +93,6 @@ export class CogbytesUploadComponent implements OnInit {
     uploadErrorFileType: string = "";
 
     uploadConfirmShowed: boolean = false;
-
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
 
     //DropZone
     public config: DropzoneConfigInterface = {
@@ -115,27 +114,43 @@ export class CogbytesUploadComponent implements OnInit {
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent,
+        @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective,
+        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
+
     )
     {
+        this.repID = 0;
+        this.isEditMode = false;
+        this.uploadID = 0;
+        this._cogbytesUpload = {
+            additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
+            housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
+            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
+        }
+
+        this.name = fb.control('', [Validators.required]);
+        this.fileType = fb.control('', [Validators.required]);
+        this.cognitiveTask = fb.control('', [Validators.required]);
+        this.intervention = fb.control('', [Validators.required]);
+        this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
+        this.componentRef = componentRef;
+        this.directiveRef = directiveRef;
+
         this.resetFormVals();
-        this.name = fb.control('', [Validators.required])
-        this.fileType = fb.control('', [Validators.required])
-        this.cognitiveTask = fb.control('', [Validators.required])
-        this.intervention = fb.control('', [Validators.required])
-        this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')])
     }
         
     
     ngOnInit() {
 
-        this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
-        this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
-        this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
-        this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
-        this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
-        this.cogbytesService.getGenos().subscribe(data => { this.genosList = data; });
-        this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+        this.cogbytesService.getFileTypes().subscribe((data : any) => { this.fileTypeList = data; });
+        this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe((data: any) => { this.speciesList = data; });
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genosList = data; });
+        this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
 
         if (this.isEditMode) {
 
@@ -272,7 +287,7 @@ export class CogbytesUploadComponent implements OnInit {
 
         this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
-        this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
+        this.cogbytesService.addUpload(this._cogbytesUpload).subscribe((data: any) => {
 
             if (data === null) {
                 alert(FEATURESUPLOADFAILED);
@@ -344,7 +359,7 @@ export class CogbytesUploadComponent implements OnInit {
         console.log('onUploadError:', args);
     }
 
-    onSending(data): void {
+    onSending(data : any): void {
 
         this.proceedUpload = true;
         this.spinnerService.show();
@@ -366,7 +381,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     }
 
-    onAddedFile(data): void {
+    onAddedFile(data : any): void {
 
         //this.componentRef.directiveRef.dropzone().processQueue();
 
@@ -436,12 +451,12 @@ export class CogbytesUploadComponent implements OnInit {
     }
 
     // Delete File 
-    deleteFile(file) {
+    deleteFile(file : any) {
         this.openConfirmationDialogDelFile(file);
     }
 
     // Delete File Dialog
-    openConfirmationDialogDelFile(file) {
+    openConfirmationDialogDelFile(file : any) {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -455,22 +470,23 @@ export class CogbytesUploadComponent implements OnInit {
                 }, 500);
 
                 let path = file.permanentFilePath + '\\' + file.sysFileName;
-                this.cogbytesService.deleteFile(file.expID, path).map(res => {
+                this.cogbytesService.deleteFile(file.expID, path).map((res : any) => {
 
                 }).subscribe(
-                    response => { this.UpdateFileList(); });
+                    (response : any) => { this.UpdateFileList(); });
 
                 //this.spinnerService.hide();
                 //this.filesUploaded.emit(null);
 
                 //this.UpdateFileList();
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            this.dialogRefDelFile.close();
         });
     }
 
     UpdateFileList() {
-        this.cogbytesService.getUploadFiles(this.uploadID).subscribe(data => { this.uploadFileList = data });
+        this.cogbytesService.getUploadFiles(this.uploadID).subscribe((data : any) => { this.uploadFileList = data });
     }
 
     DeleteUpload() {
@@ -488,16 +504,17 @@ export class CogbytesUploadComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.cogbytesService.deleteUpload(this.uploadID).map(res => {
+                this.cogbytesService.deleteUpload(this.uploadID).map((res : any) => {
 
-                }).subscribe(result => {
+                }).subscribe((result : any) => {
                     this.filesUploaded.emit(null);
                     setTimeout(() => {
                         this.spinnerService.hide();
                     }, 500);
                 });
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            this.dialogRefDelFile.close();
         });
     }
     //remove() {

@@ -25,8 +25,11 @@ import { User } from '../models/user';
     /**
      * Behavior subjects of the user's status & data.
      */
-    private signinStatus = new BehaviorSubject<boolean>(false);
-    private user = new BehaviorSubject<User>(new User());
+    _user: User;
+    //private signinStatus = new BehaviorSubject<boolean>(false);
+    //private user = new BehaviorSubject<User>(this._user);
+
+
 
     /**
      * Scheduling of the refresh token.
@@ -40,9 +43,12 @@ import { User } from '../models/user';
 
     constructor(
         private router: Router,
-        private oAuthService: OAuthService
+        private oAuthService: OAuthService,
+        private signinStatus: BehaviorSubject<boolean>,
+        private user: BehaviorSubject<User>
     ) {
         this.redirectUrl = "";
+        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }
 
     public init(): void {
@@ -58,7 +64,7 @@ import { User } from '../models/user';
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
-        this.user.next(new User());
+        this.user.next(this._user);
 
         // Unschedules the refresh token.
         this.unscheduleRefresh();
@@ -91,7 +97,7 @@ import { User } from '../models/user';
     }
 
     public getUser(): User {
-        const user: User = new User();
+        const user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
         if (this.oAuthService.hasValidAccessToken()) {
             const userInfo: any = this.oAuthService.getIdentityClaims();
 
@@ -160,7 +166,7 @@ import { User } from '../models/user';
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
-        this.user.next(new User());
+        this.user.next(this._user);
 
         // Unschedules the refresh token.
         this.unscheduleRefresh();
@@ -176,7 +182,12 @@ import { User } from '../models/user';
     }
 
     private getAuthTime(): number {
-        return parseInt(this.storage.getItem('access_token_stored_at'), 10);
+        var storageitem: any = this.storage.getItem("access_token_stored_at");
+        if (storageitem != null) {
+            return parseInt(storageitem, 10);
+        } else {
+            return 0
+        }
     }
 
 }

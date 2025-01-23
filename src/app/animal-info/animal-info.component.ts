@@ -1,6 +1,6 @@
-import { Component, OnInit, NgModule } from '@angular/core';
+import { Component, OnInit, /*NgModule*/ } from '@angular/core';
 import { AnimalService } from '../services/animal.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, /*MAT_DIALOG_DATA*/ } from '@angular/material/dialog';
 import { AuthenticationService } from '../services/authentication.service';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { PagerService } from '../services/pager.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CONFIRMDELETE } from '../shared/messages';
+import { map } from 'rxjs/operators'
 //import { OAuthService } from 'angular-oauth2-oidc';
 //mport { SharedModule } from '../shared/shared.module';
 
@@ -27,7 +28,6 @@ export class AnimalInfoComponent implements OnInit {
     pager: any = {};
     expfilter: any = '';
     pagedItems: any[];
-    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>;
 
     constructor(private animalService: AnimalService,
         private authenticationService: AuthenticationService,
@@ -35,14 +35,18 @@ export class AnimalInfoComponent implements OnInit {
         private location: Location,
         private pagerService: PagerService,
         private spinnerService: NgxSpinnerService,
-    ) { }
+        public dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>
+    ) {
+        this.experimentName = '';
+        this.pagedItems = [];
+    }
 
     ngOnInit() {
         // this.GetAnimalInfo();
 
     }
 
-    GetAnimalInfo(selectedExperimentID) {
+    GetAnimalInfo(selectedExperimentID: number) {
         this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
@@ -52,14 +56,14 @@ export class AnimalInfoComponent implements OnInit {
 
     }
 
-    SelectedExpChanged(experiment) {
+    SelectedExpChanged(experiment: any) {
         this.GetAnimalInfo(experiment.expID);
         this.experimentName = experiment.expName;
         this.experimentID = experiment.expID;
 
     }
 
-    openDialog(Animal): void {
+    openDialog(Animal: any): void {
         //console.log(Animal);
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
@@ -74,7 +78,7 @@ export class AnimalInfoComponent implements OnInit {
     }
 
     // Delete Animal Dialog
-    openConfirmationDialogDelAnimal(animalID, expId) {
+    openConfirmationDialogDelAnimal(animalID: number, expId: number) {
         this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -85,7 +89,7 @@ export class AnimalInfoComponent implements OnInit {
         this.dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.animalService.deleteAnimalbyID(animalID).map(res => {
+                this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
 
 
                     this.GetAnimalInfo(expId);
@@ -93,14 +97,15 @@ export class AnimalInfoComponent implements OnInit {
 
                     this.spinnerService.hide();
 
-                }).subscribe();
+                })).subscribe();
             }
-            this.dialogRefDelAnimal = null;
+            //this.dialogRefDelAnimal = null;
+            this.dialogRefDelAnimal.close();
         });
     }
 
     // Delete animal 
-    delAnimal(animalID, expId) {
+    delAnimal(animalID: number, expId: number) {
         this.openConfirmationDialogDelAnimal(animalID, expId);
     }
 
@@ -128,9 +133,9 @@ export class AnimalInfoComponent implements OnInit {
         this.setPage(1);
     }
 
-    filterByString(data, s): any {
+    filterByString(data: any, s: string): any {
         s = s.trim();
-        return data.filter(e => e.userAnimalID.includes(s)); // || e.another.includes(s)
+        return data.filter((e : any) => e.userAnimalID.includes(s)); // || e.another.includes(s)
         //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
 

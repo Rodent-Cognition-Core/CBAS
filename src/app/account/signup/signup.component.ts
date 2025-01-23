@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 //import { FormControl } from '@angular/forms';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+//import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 
@@ -37,8 +37,8 @@ export class SignupComponent extends Signin {
     // Get the list of PISite
     GetPISiteList() {
 
-        this.piSiteService.getPISite().subscribe(data => {
-            this.piSiteList = data;
+        this.piSiteService.getPISite().subscribe((data) => {
+            this.piSiteList = data.PISite;
             //console.log(this.piSiteList);
         });
 

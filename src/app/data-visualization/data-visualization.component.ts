@@ -3,7 +3,7 @@ declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { MatTable, MatTableDataSource } from '@angular/material/table'
+//import { MatTable, MatTableDataSource } from '@angular/material/table'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/user'
@@ -16,7 +16,6 @@ import { User } from '../models/user'
 export class DataVisualizationComponent implements OnInit {
 
     selectedCogTaskValue: any = '';
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
     user: User;
 
@@ -47,8 +46,10 @@ export class DataVisualizationComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) {
 
+        this.user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }
 
     ngOnInit() {
@@ -69,7 +70,7 @@ export class DataVisualizationComponent implements OnInit {
 
     }
 
-    selectCogTaskChange(reload) {
+    selectCogTaskChange(reload : any) {
 
         this.spinnerService.show();
 
@@ -131,7 +132,7 @@ export class DataVisualizationComponent implements OnInit {
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = 'mbusername=\"' + this.user.userName + '\";';
 
-        var onError = function (errorCode, description) {
+        var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
         var onOpenedfunction = function () {

@@ -1,8 +1,8 @@
-export class PubscreenAuthor {
+export interface PubscreenAuthor {
 
-    public id: number;
-    public firstName: string;
-    public lastName: string;
-    public affiliation: string;
+     id: number;
+     firstName: string;
+     lastName: string;
+     affiliation: string;
 
 }

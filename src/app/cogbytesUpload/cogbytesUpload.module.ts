@@ -6,7 +6,7 @@ import { ManageUserService } from '../services/manageuser.service';
 import { CogbytesUploadComponent } from './cogbytesUpload.component';
 import { IdentityService } from '../services/identity.service';
 import { CogbytesService } from '../services/cogbytes.service';
-import { CogbytesUpload } from '../models/cogbytesUpload';
+//import { CogbytesUpload } from '../models/cogbytesUpload';
 
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';

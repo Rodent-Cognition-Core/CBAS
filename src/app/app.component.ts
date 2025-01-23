@@ -50,8 +50,6 @@ export class AppComponent implements OnInit {
         { name: 'Searching Publications', route: 'pubScreen-search' }
     ];
 
-    signedIn: Observable<boolean>;
-
     name: string;
     isAdmin: boolean;
     isUser: boolean;
@@ -65,8 +63,15 @@ export class AppComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private router: Router,
         private el: ElementRef,
-        angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+        angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
+        private signedIn: Observable<boolean>
     ) {
+        this.name = '';
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.showFooter = false;
+
         if (this.oAuthService.hasValidAccessToken()) {
             this.authenticationService.init();
 
@@ -131,7 +136,7 @@ export class AppComponent implements OnInit {
         //https://www.google.ca/search?rlz=1C1CHBF_enCA773CA773&ei=mjY0W7SqI6mZjwSm_alQ&q=scrollintoview+behavior+smooth+chrome+workaround&oq=scrollintoview+behavior+smooth+chrome+workaround&gs_l=psy-ab.3...4370.6235.0.6330.10.10.0.0.0.0.142.930.8j2.10.0....0...1c.1.64.psy-ab..0.9.852...33i22i29i30k1j33i160k1j33i21k1.0.pMohbacSZr0
     }
 
-    navigateHomeAndScrollTo(element) {
+    navigateHomeAndScrollTo(element : any) {
         this.router.navigate(["/home"]).then(() => {
             this.scrollTo(element);
         });
@@ -179,7 +184,7 @@ export class AppComponent implements OnInit {
 
     }
 
-    onActivate(event) {
+    onActivate(event : any) {
 
         this.showHideFooter(this.router.url);
         //console.log(this.router.url);

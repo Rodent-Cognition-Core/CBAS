@@ -27,7 +27,11 @@ export class Signin {
         protected router: Router,
         protected oAuthService: OAuthService,
         protected authenticationService: AuthenticationService,
-        protected manageuserService: ManageUserService) { }
+        protected manageuserService: ManageUserService) {
+
+        this.isEmailApproved = false;
+        this.isTermsConfirmed = false;
+    }
 
     signin(): void {
         this.oAuthService
@@ -60,7 +64,7 @@ export class Signin {
                         case "invalid_grant":
 
                             // call another api and find out if the user is not approved.
-                            this.manageuserService.GetEmailApprovalAndUserLockedStatus(this.model.username).subscribe(data => {
+                            this.manageuserService.GetEmailApprovalAndUserLockedStatus(this.model.username).subscribe((data) => {
                                 this.isEmailApproved = data.isUserApproved;
 
                                 if (this.isEmailApproved) {

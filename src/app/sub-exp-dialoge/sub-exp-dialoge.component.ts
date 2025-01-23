@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { SubExperiment } from '../models/subexperiment';
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { FIELDISREQUIRED, SUBEXPERIEMENTWITHSAMECONDITIONS, SUBEXPERIMENTNAMETAKEN } from '../shared/messages';
@@ -42,13 +42,16 @@ export class SubExpDialogeComponent implements OnInit {
     lightCycle: FormControl;
     
 
-    private _subexperiment = new SubExperiment();
+    private _subexperiment: SubExperiment;
 
 
     constructor(public thisDialogRef: MatDialogRef<SubExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, private subexpDialogeService: SubExpDialogeService,
         private fb: FormBuilder) {
 
+        this.isTakenSubExpName = false;
+        this.isTakenAge = false;
+        this.isTakenAgeSubExp = false;
         this.ageInMonth = fb.control('', [Validators.required]);
         this.subExp = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);
@@ -61,6 +64,11 @@ export class SubExpDialogeComponent implements OnInit {
         this.imageDescription = fb.control('', [Validators.required]);
         this.housing = fb.control('', [Validators.required]);
         this.lightCycle = fb.control('', [Validators.required]);
+        this._subexperiment = {
+            AgeID: 0, AgeInMonth: '', drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
+            ImageIds: [], ImageInfo: '', interventionDescription: '', isDrug: false, isIntervention: false, IsPostProcessingPass: false, LightCycle: '',
+            SubExpID: 0, SubExpName: ''
+        }
     }
 
     ngOnInit() {
@@ -68,9 +76,9 @@ export class SubExpDialogeComponent implements OnInit {
         this.taskID = this.data.expObj.taskID;
         //console.log(this.taskID)
 
-        this.subexpDialogeService.getAllAge().subscribe(data => { this.ageList = data; });
+        this.subexpDialogeService.getAllAge().subscribe((data: any) => { this.ageList = data; });
 
-        this.subexpDialogeService.getAllImages().subscribe(data => { this.imageList = data;  });
+        this.subexpDialogeService.getAllImages().subscribe((data: any) => { this.imageList = data;  });
 
         //console.log(this.data.subexperimentObj);
         if (this.data.subexperimentObj != null) {
@@ -221,7 +229,7 @@ export class SubExpDialogeComponent implements OnInit {
         return false;
     }
 
-    getSelectedImage(selectedImageVal) {
+    getSelectedImage(selectedImageVal : any) {
 
         if (selectedImageVal != null) {
             return this.selectedImageResult = selectedImageVal.length;
@@ -287,7 +295,7 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenAge = false;
 
 
-            this.subexpDialogeService.createSubExp(this._subexperiment).map(res => {
+            this.subexpDialogeService.createSubExp(this._subexperiment).map((res: any) => {
 
                 //console.log('create');
                 //console.log(res);
@@ -321,7 +329,7 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenAge = false;
 
             this._subexperiment.SubExpID = this.data.subexperimentObj.subExpID;
-            this.subexpDialogeService.updateSubExp(this._subexperiment).map(res => {
+            this.subexpDialogeService.updateSubExp(this._subexperiment).map((res : any) => {
 
                 //console.log('update');
                 //console.log(res);

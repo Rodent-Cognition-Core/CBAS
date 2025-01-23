@@ -2,8 +2,8 @@ import { Component, OnInit, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SearchExperimentService } from '../services/searchexperiment.service';
 import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { IdentityService } from '../services/identity.service';
+//import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+//import { IdentityService } from '../services/identity.service';
 
 declare var $: any;
 
@@ -27,11 +27,14 @@ export class SearchExperimentComponent implements OnInit {
 
     constructor(private pagerService: PagerService,
         public dialog: MatDialog,
-        private searchexperimentService: SearchExperimentService,) { }
+        private searchexperimentService: SearchExperimentService,) {
+
+        this.pagedItems = [];
+    }
 
     ngOnInit() {
 
-        this.searchexperimentService.GetSearchList().subscribe(data => {
+        this.searchexperimentService.GetSearchList().subscribe((data : any) => {
             this.searchList = data;
             this.setPage(1);
             //console.log(this.searchList);
@@ -70,9 +73,9 @@ export class SearchExperimentComponent implements OnInit {
         }, 500);
     }
 
-    filterByString(data, s): any {
+    filterByString(data: any, s: string): any {
         s = s.trim();
-        return data.filter(e => e.expName.toUpperCase().includes(s.toUpperCase()) || e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) || e.strain.toUpperCase().includes(s.toUpperCase())
+        return data.filter((e : any) => e.expName.toUpperCase().includes(s.toUpperCase()) || e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) || e.strain.toUpperCase().includes(s.toUpperCase())
             || e.status.toUpperCase().includes(s.toUpperCase()) || e.genotype.toUpperCase().includes(s.toUpperCase()) || e.age.includes(s) ||
             e.username.toUpperCase().includes(s.toUpperCase()) || e.period.toUpperCase().includes(s.toUpperCase())); 
 
