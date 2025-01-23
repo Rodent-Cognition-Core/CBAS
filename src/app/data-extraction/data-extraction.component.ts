@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener, inject } from '@angular/core';
-import { TaskAnalysisService } from '../services/taskanalysis.service';
+//import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 //import { NgModel } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
@@ -39,7 +39,7 @@ export class DataExtractionComponent implements OnInit {
     AnimalInfoListStrain: any;
     subSessionList: any[] = [];
     genoIDList: number[] = [];
-    _geno = new Geno();
+    _geno: Geno;
     filteredGenoList: any[] = [];
     InterventionList: any[] = [];
     speciesList: any
@@ -67,16 +67,13 @@ export class DataExtractionComponent implements OnInit {
     species: FormControl;
     //});
 
-    data
+    data : any
 
-    _dataExtractionObj = new DataExtraction();
+    _dataExtractionObj: DataExtraction;
 
     linkGuid: any;
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     showGeneratedLink: any;
 
-
-    dataSource: MatTableDataSource<Element[]>;
     result: any;
     colNames: any;
 
@@ -129,10 +126,20 @@ export class DataExtractionComponent implements OnInit {
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
+        public dataSource: MatTableDataSource<Element[]>
     ) {
         this.colNames = [];
         this.showGeneratedLink = false;
+        this.termsChecked = false;
+        this.pagedItems = [];
+        this._geno = { Description: '', Genotype: '', ID: 0, Link: '' }
+        this._dataExtractionObj = {
+            ageVals: [], aggNames: '', expIDs: [], genotypeVals: [], isTrialByTrials: false, markerInfoNames: [], pisiteIDs: [],
+            sessionInfoNames: [], sessionName: [], sexVals: [], species: '', speciesID: 0, strainVals: [], subExpID: [], subtaskID: 0,
+            subTaskName: '', taskID: 0, taskName: ''
+        }
         this.task = fb.control('', [Validators.required])
         this.subtask = fb.control('', [Validators.required])
         this.exp = fb.control('', [Validators.required])
@@ -168,18 +175,18 @@ export class DataExtractionComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     @HostListener('window:resize', ['$event'])
-    onResize(event) {
+    onResize(event : any) {
         $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
     }
 
     ngOnInit() {
 
         // loading speciesList for Species Dropdown 
-        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; console.log(this.speciesList); });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; console.log(this.speciesList); });
 
 
         // loading TaskList for Task Dropdown
-        this.dataExtractionService.getAllTask().subscribe(data => { this.taskList = data; });
+        this.dataExtractionService.getAllTask().subscribe((data: any) => { this.taskList = data; });
 
     }
 
@@ -192,7 +199,7 @@ export class DataExtractionComponent implements OnInit {
     }
 
     // Getting Selected Task ID and Pass it to get Explist & SubtaskList
-    selectedTaskChange(selectedTaskVal, selectedSpeciesvalue) {
+    selectedTaskChange(selectedTaskVal : any, selectedSpeciesvalue :any) {
 
         var isUser = this.authenticationService.isInRole("user");
         var isAdmin = this.authenticationService.isInRole("administrator");
@@ -201,7 +208,7 @@ export class DataExtractionComponent implements OnInit {
 
         if (isUser || isAdmin) {
 
-            this.dataExtractionService.getUserGuid().subscribe(userGuid => {
+            this.dataExtractionService.getUserGuid().subscribe((userGuid : any) => {
 
                 this.resetDdls();
                 this.getExpList(selectedTaskVal, userGuid, selectedSpeciesvalue);
@@ -222,11 +229,11 @@ export class DataExtractionComponent implements OnInit {
     }
 
     // Getting SubTask ID and ExpID and pass them for getting MarkerInfolist
-    selectedSubTaskChange(selectedSubTaskVal, selectedExpVal) {
+    selectedSubTaskChange(selectedSubTaskVal : any, selectedExpVal : any) {
         this.markerinfo.setValue([]);
 
         //this.subSessionList = [];
-        this.uploadService.getSessionInfo().subscribe(data => {
+        this.uploadService.getSessionInfo().subscribe((data : any) => {
 
             this.subSessionList = data;
             this.selectedSubSessionValue = [];
@@ -309,7 +316,7 @@ export class DataExtractionComponent implements OnInit {
         });
     }
 
-    selectedExpChange(selectedExpVal) {
+    selectedExpChange(selectedExpVal : number) {
         this.subtask.setValue('');
         this.selectedSubTaskChange(this.subtask.value, selectedExpVal);
         // call function for extracting intervention list
@@ -318,11 +325,11 @@ export class DataExtractionComponent implements OnInit {
 
 
     // Getting ExpList for the selected Task ID
-    getExpList(selected_TaskValue, userGuid, selectedSpeciesvalue): any {
+    getExpList(selected_TaskValue : number, userGuid : any, selectedSpeciesvalue : number): any {
 
         var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
 
-        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe(data => {
+        this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe((data : any) => {
             this.expList = data;
             //console.log(this.expList);
 
@@ -342,9 +349,9 @@ export class DataExtractionComponent implements OnInit {
     }
 
     // Getting subTakList for the selected Task ID
-    getSubTaskList(selected_TaskValue) {
+    getSubTaskList(selected_TaskValue : number) {
 
-        this.dataExtractionService.getAllSubtaskByTaskID(selected_TaskValue).subscribe(data => {
+        this.dataExtractionService.getAllSubtaskByTaskID(selected_TaskValue).subscribe((data : any) => {
             this.subTakList = data;
             //console.log(this.subTakList);
 
@@ -355,9 +362,9 @@ export class DataExtractionComponent implements OnInit {
     }
 
     // Getting InterventionList for the selected experiments
-    getInterventionList(selectedExpVal) {
+    getInterventionList(selectedExpVal : number) {
 
-        this.dataExtractionService.getAllInterventionByExpID(selectedExpVal).subscribe(data => {
+        this.dataExtractionService.getAllInterventionByExpID(selectedExpVal).subscribe((data : any) => {
             this.InterventionList = data;
             //console.log(this.subTakList);
 
@@ -367,21 +374,21 @@ export class DataExtractionComponent implements OnInit {
 
     }
 
-    getSelectedSubTask(selValue) {
-        return this.subTakList.find(x => x.id === selValue);
+    getSelectedSubTask(selValue : number) {
+        return this.subTakList.find((x : any) => x.id === selValue);
     }
 
 
-    getSelectedTask(selValue) {
-        return this.taskList.find(x => x.id === selValue);
+    getSelectedTask(selValue : number) {
+        return this.taskList.find((x : any) => x.id === selValue);
     }
 
-    getSelectedSpecies(selValue) {
-        return this.speciesList.find(x => x.id === selValue);
+    getSelectedSpecies(selValue : number) {
+        return this.speciesList.find((x : any) => x.id === selValue);
     }
 
     // Getting MarkerInfoList for the selected SubTaskID & ExpID
-    getMarkerInfo(selected_SubTaskValue, selected_ExpVal) {
+    getMarkerInfo(selected_SubTaskValue : string, selected_ExpVal : string) {
         if (selected_SubTaskValue == '' || selected_ExpVal.length == 0) {
             this.markerInfoList = [];
             return;
@@ -390,7 +397,7 @@ export class DataExtractionComponent implements OnInit {
 
         this.spinnerService.show();
 
-        this.dataExtractionService.getMarkerInfoBySubTaskIDExpID(selected_SubTaskValue, selected_ExpVal).subscribe(data => {
+        this.dataExtractionService.getMarkerInfoBySubTaskIDExpID(selected_SubTaskValue, selected_ExpVal).subscribe((data : any) => {
             this.markerInfoList = data;
             //console.log(this.markerInfoList);
 
@@ -412,22 +419,22 @@ export class DataExtractionComponent implements OnInit {
     }
 
     // Getting AnimalList for the selected ExpIDs
-    getAnimalInfo(selected_ExpVal) {
+    getAnimalInfo(selected_ExpVal : string) {
 
         // Age
-        this.dataExtractionService.getAnimalAgebyExpIDs(selected_ExpVal).subscribe(data => {
+        this.dataExtractionService.getAnimalAgebyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListAge = data;
             //console.log(this.AnimalInfoListAge);
         });
 
         // Sex
-        this.dataExtractionService.getAnimalSexbyExpIDs(selected_ExpVal).subscribe(data => {
+        this.dataExtractionService.getAnimalSexbyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListSex = data;
             //console.log(this.AnimalInfoListSex);
         });
 
         // Strain
-        this.dataExtractionService.getAnimalStrainbyExpIDs(selected_ExpVal).subscribe(data => {
+        this.dataExtractionService.getAnimalStrainbyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListStrain = data;
             //console.log(this.AnimalInfoListStrain);
         });
@@ -437,11 +444,11 @@ export class DataExtractionComponent implements OnInit {
     }
 
     //To extract list of Genotypes
-    selectedStrainChange(selected_StrainVal, selected_ExpVal) {
+    selectedStrainChange(selected_StrainVal : any, selected_ExpVal : string) {
         //console.log(selected_StrainVal);
         this.selectedGenotypeValue = [];
         // apply filtering to Genotype list based on what selected from Strain List
-        if (selected_StrainVal !== undefined || selected_StrainVal.length != 0) {
+        if (selected_StrainVal.length != 0 || selected_StrainVal != undefined) {
 
             this.genoIDList = [];
             if (selected_StrainVal.indexOf(1) > -1) {
@@ -736,7 +743,7 @@ export class DataExtractionComponent implements OnInit {
 
             //console.log(this.genoIDList);
             //selected_ExpVal
-            this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe(data => {
+            this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe((data : any) => {
                 this.AnimalInfoListGenotype = data;
                 //console.log(this.AnimalInfoListGenotype);
 
@@ -856,7 +863,7 @@ export class DataExtractionComponent implements OnInit {
 
         // filter the Experiment
         this.filteredExpMulti.next(
-            this.expList.filter(t => t.expName.toLowerCase().indexOf(search) > -1)
+            this.expList.filter((t : any) => t.expName.toLowerCase().indexOf(search) > -1)
         );
     }
 
@@ -878,7 +885,7 @@ export class DataExtractionComponent implements OnInit {
 
         // filter the Experiment
         this.filteredMarkerInfoList.next(
-            this.markerInfoList.filter(x => x.toLowerCase().indexOf(searchMarkerInfo) > -1)
+            this.markerInfoList.filter((x : any) => x.toLowerCase().indexOf(searchMarkerInfo) > -1)
         );
     }
 
@@ -927,7 +934,7 @@ export class DataExtractionComponent implements OnInit {
         this._dataExtractionObj.subExpID = this.selectedInterventionValue;
         this._dataExtractionObj.sessionName = this.selectedSubSessionValue;
 
-        this.dataExtractionService.getData(this._dataExtractionObj).subscribe(data => {
+        this.dataExtractionService.getData(this._dataExtractionObj).subscribe((data : any) => {
             //console.log(this._dataExtractionObj);
             //console.log(data);
 
@@ -975,7 +982,7 @@ export class DataExtractionComponent implements OnInit {
     }
 
     GenerateLink() {
-        this.dataExtractionService.saveLink(this.linkGuid).subscribe(data => {
+        this.dataExtractionService.saveLink(this.linkGuid).subscribe((data : any) => {
             if (data === true) {
                 this.showGeneratedLink = true;
 
@@ -995,8 +1002,8 @@ export class DataExtractionComponent implements OnInit {
     DownloadCsv() {
 
         this.dataExtractionService.IncreaseCounter().subscribe(data => {
-
-            let csv: '';
+            var csv: string;
+            csv= '';
 
             //var items = this.result;
             var items = this.result;

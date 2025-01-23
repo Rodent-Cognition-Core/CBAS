@@ -1,8 +1,8 @@
-export class SubTask {
+export interface SubTask {
 
-    public ID: number;
-    public Task_ID: number;
-    public Name: string;
-    public OriginalName: string;
-    public SubTaskDescription: string;
+     ID: number;
+     Task_ID: number;
+     Name: string;
+     OriginalName: string;
+     SubTaskDescription: string;
 }

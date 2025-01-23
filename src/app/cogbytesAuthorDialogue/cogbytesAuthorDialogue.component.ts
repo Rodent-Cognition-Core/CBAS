@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 //import { Request } from '../models/request';
 import { CogbytesService } from '../services/cogbytes.service';
-import { SharedModule } from '../shared/shared.module';
+//import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -48,7 +48,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe(result => {
+        this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe((result: any) => {
             if (result == 0) {
                 alert("Author already in database!");
             }

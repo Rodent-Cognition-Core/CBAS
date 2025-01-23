@@ -1,31 +1,31 @@
-export class SessionInfo {
+export interface SessionInfo {
 
-    public SessionID: number;
-    public SiteID: number;
-    public UserID: number;
-    public Database_Name: string;
-    public Date_Time: any;
-    public Environment: string;
-    public Machine_Name: string;
-    public Analysis_Name: string;
-    public Schedule_Name: string;
-    public Guid: string;
-    public Schedule_Run_ID: number;
-    public Version: string;
-    public Version_Name: string;
-    public Animal_ID: string;
-    public Application_Version: string;
-    public Max_Number_Trials: number;
-    public Max_Schedule_Time: number;
-    public Schedule_Description: string;
-    public Schedule_Start_Time: string;
-    public Age: string;
-    public Sex: string;
-    public Genotype: string;
-    public Strain: string;
-    public IsCompleted: boolean;
-    public IsDeleted: boolean;
-    public ErrorMessage: string;
+     SessionID: number;
+     SiteID: number;
+     UserID: number;
+     Database_Name: string;
+     Date_Time: any;
+     Environment: string;
+     Machine_Name: string;
+     Analysis_Name: string;
+     Schedule_Name: string;
+     Guid: string;
+     Schedule_Run_ID: number;
+     Version: string;
+     Version_Name: string;
+     Animal_ID: string;
+     Application_Version: string;
+     Max_Number_Trials: number;
+     Max_Schedule_Time: number;
+     Schedule_Description: string;
+     Schedule_Start_Time: string;
+     Age: string;
+     Sex: string;
+     Genotype: string;
+     Strain: string;
+     IsCompleted: boolean;
+     IsDeleted: boolean;
+     ErrorMessage: string;
 
        
 }

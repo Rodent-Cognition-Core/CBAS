@@ -25,6 +25,8 @@ export class DownloadDsComponent implements OnInit {
         private searchexperimentService: SearchExperimentService,
 
     ) {
+        this.text = '';
+        this.dsName = '';
         this.route.queryParams.subscribe(params => {
             this.dsName = params['ds'];
             if (params['ds'] == null) {
@@ -37,7 +39,7 @@ export class DownloadDsComponent implements OnInit {
         //console.log(this.dsName);
         
         if (this.dsName != "") {
-            this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe(data => {
+            this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe((data : any) => {
                 this.expObj = data[0];
                 this.expObj.age = this.expObj.age.replaceAll('<br/>', ', ');
                 this.expObj.strain = this.expObj.strain.replaceAll('<br/>', ', ');
