@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+//import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-upload-result-dialog',
@@ -13,7 +13,9 @@ export class UploadResultDialogComponent implements OnInit {
     expName: string;
 
     constructor(public thisDialogRef: MatDialogRef<UploadResultDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any) { }
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.expName = '';
+    }
 
     
 

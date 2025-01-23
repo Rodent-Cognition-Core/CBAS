@@ -1,22 +1,22 @@
-export class SubExperiment {
+export interface SubExperiment {
 
-    public SubExpID: number;
-    public ExpID: number;
-    public AgeID: number;
-    public AgeInMonth: string;
-    public SubExpName: string;
-    public ErrorMessage: string;
-    public IsPostProcessingPass: boolean;
-    public isIntervention: boolean;
-    public isDrug: boolean;
-    public drugName: string;
-    public drugUnit: string;
-    public drugQuantity: string;
-    public interventionDescription: string;
-    public ImageIds: Array<number>;
-    public ImageInfo: string;
-    public ImageDescription: string;
-    public Housing: string;
-    public LightCycle: string;
+     SubExpID: number;
+     ExpID: number;
+     AgeID: number;
+     AgeInMonth: string;
+     SubExpName: string;
+     ErrorMessage: string;
+     IsPostProcessingPass: boolean;
+     isIntervention: boolean;
+     isDrug: boolean;
+     drugName: string;
+     drugUnit: string;
+     drugQuantity: string;
+     interventionDescription: string;
+     ImageIds: Array<number>;
+     ImageInfo: string;
+     ImageDescription: string;
+     Housing: string;
+     LightCycle: string;
 
     }

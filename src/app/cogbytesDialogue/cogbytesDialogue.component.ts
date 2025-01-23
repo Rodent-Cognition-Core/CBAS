@@ -4,8 +4,8 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { Location } from '@angular/common';
+//import { NgModel } from '@angular/forms';
+//import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -52,7 +52,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
     repID: any;
 
-    private form: FormGroup;
+    //private form: FormGroup;
 
     //Form Validation Variables for adding publications
     author: FormControl;
@@ -64,7 +64,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
 
     //onbj variable from Models
-    _cogbytes = new Cogbytes();
+    _cogbytes: Cogbytes;
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -88,12 +88,17 @@ export class CogbytesDialogueComponent implements OnInit {
         
         @Inject(MAT_DIALOG_DATA) public data: any,) {
 
-        this.resetFormVals();
+        this.isEditMode = false;
         this.author = fb.control('', [Validators.required])
         this.pi = fb.control('', [Validators.required])
         this.title = fb.control('', [Validators.required])
         this.date = fb.control('', [Validators.required])
         this.privacyStatus = fb.control('', [Validators.required])
+        this._cogbytes = {
+            additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
+            doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: ''
+        }
+        this.resetFormVals();
     }
 
     ngOnInit() {
@@ -166,7 +171,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
     GetAuthorList() {
 
-        this.cogbytesService.getAuthor().subscribe(data => {
+        this.cogbytesService.getAuthor().subscribe((data : any) => {
             this.authorList = data;
 
             // load the initial AuthorList
@@ -202,14 +207,14 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x : any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe(data => {
+        this.cogbytesService.getPI().subscribe((data : any) => {
             this.piList = data;
 
             // load the initial expList
@@ -244,7 +249,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the PI
         this.filteredPIList.next(
-            this.piList.filter(x => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+            this.piList.filter((x : any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
         );
     }
 
@@ -315,7 +320,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.cogbytesService.addRepository(this._cogbytes).subscribe(data => {
+        this.cogbytesService.addRepository(this._cogbytes).subscribe((data : any) => {
 
             this.thisDialogRef.close();
             setTimeout(() => {
@@ -374,11 +379,11 @@ export class CogbytesDialogueComponent implements OnInit {
     }
 
 
-    processList(data, item, propertyName) {
+    processList(data : any, item : any, propertyName : any) {
 
-        const ret = data.filter(row => (row[propertyName] === item));
+        const ret = data.filter((row : any) => (row[propertyName] === item));
         if (ret.length > 0) {
-            data.splice(data.findIndex(row => (row[propertyName] === item)), 1);
+            data.splice(data.findIndex((row: any) => (row[propertyName] === item)), 1);
             data.push(ret[0])
         }
         

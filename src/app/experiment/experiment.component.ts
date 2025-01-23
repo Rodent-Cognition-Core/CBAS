@@ -4,11 +4,11 @@ import { AuthenticationService } from '../services/authentication.service';
 import { ExperimentService } from '../services/experiment.service';
 import { UploadService } from '../services/upload.service';
 import { PagerService } from '../services/pager.service';
-import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
+//import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { Location } from '@angular/common';
-import { Experiment } from '../models/experiment';
+//import { Experiment } from '../models/experiment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
@@ -35,28 +35,32 @@ export class ExperimentComponent implements OnInit {
     pagerTblFile: any = {};
     pagedItems: any[];
     pagedItemsTblFile: any[];
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>;
     //@ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private experimentService: ExperimentService, public dialog: MatDialog,
         private authenticationService: AuthenticationService, private location: Location,
         private uploadService: UploadService,
         private spinnerService: NgxSpinnerService,
-        private pagerService: PagerService
-    ) { }
+        private pagerService: PagerService,
+        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>,
+        public dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>,
+        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>
+    ) {
+        this.pagedItems = [];
+        this.pagedItemsTblFile = [];
+
+    }
 
     ngOnInit() {
         // this.GetAllExp();
 
     }
 
-    GetUploadInfo(selectedSubExperimentID) {
+    GetUploadInfo(selectedSubExperimentID: number) {
 
         this.spinnerService.show();
 
-        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe(data => {
+        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
             this.UploadList = data;
             //console.log(this.UploadList);
             this.setPageTblFile(1);
@@ -65,7 +69,7 @@ export class ExperimentComponent implements OnInit {
             }, 500);
 
         },
-            error => {
+            (error : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
                 }, 500);
@@ -73,11 +77,11 @@ export class ExperimentComponent implements OnInit {
 
     }
 
-    SelectedExpChanged(experiment) {
+    SelectedExpChanged(experiment : any) {
         this.selectedSubExperiment = null;
     }
 
-    SelectedSubExpChanged(subExperiment) {
+    SelectedSubExpChanged(subExperiment : any) {
         this.selectedSubExperiment = subExperiment;
         if (subExperiment != null) {
             var subExpId = subExperiment.subExpID;
@@ -87,7 +91,7 @@ export class ExperimentComponent implements OnInit {
     }
 
     // Delete File Dialog
-    openConfirmationDialogDelFile(uploadID, subExpID) {
+    openConfirmationDialogDelFile(uploadID : number, subExpID : number) {
         this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -96,19 +100,20 @@ export class ExperimentComponent implements OnInit {
         this.dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).map(res => {
+                this.experimentService.deleteFilebyID(uploadID).map((res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadInfo(subExpID);
                 }).subscribe();
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            this.dialogRefDelFile.close();
         });
     }
 
 
     // Delete File 
-    deleteFile(uploadID, subExpID) {
+    deleteFile(uploadID : any, subExpID : any) {
         this.openConfirmationDialogDelFile(uploadID, subExpID);
     }
 
@@ -162,9 +167,9 @@ export class ExperimentComponent implements OnInit {
         this.setPageTblFile(1);
     }
 
-    filterByString(data, s): any {
+    filterByString(data : any, s : string): any {
         s = s.trim();
-        return data.filter(e => e.userFileName.toLowerCase().includes(s.toLowerCase()) || e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase())); // || e.another.includes(s)
+        return data.filter((e : any) => e.userFileName.toLowerCase().includes(s.toLowerCase()) || e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase())); // || e.another.includes(s)
         //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
   

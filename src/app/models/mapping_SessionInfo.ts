@@ -1,8 +1,8 @@
-export class Mapping_SessionInfo {
+export interface Mapping_SessionInfo {
 
-    public ID: number;
-    public OriginalName: string;
-    public MappedName: string;
+     ID: number;
+     OriginalName: string;
+     MappedName: string;
        
 }
 

@@ -13,11 +13,14 @@ import { TaskAnalysisService } from '../services/taskanalysis.service';
 export class TaskAnalysisComponent implements OnInit {
 
     displayedColumns = ['id', 'taskname', 'originalname'];
-    dataSource: TaskAnalysisDataSource;
 
-    private _taskAnalysis = new TaskAnalysis();
+    private _taskAnalysis: TaskAnalysis;
 
-    constructor(private taskAnalysisService: TaskAnalysisService) { }
+    constructor(private taskAnalysisService: TaskAnalysisService,
+        public dataSource: TaskAnalysisDataSource) {
+        this._taskAnalysis = { ID: 0, Name: '', OriginalName: '', TaskDescription: '' }
+
+    }
 
     ngOnInit() {
         this.taskAnalysisService.getAll();

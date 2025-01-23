@@ -1,11 +1,11 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+//import { SharedModule } from '../shared/shared.module';
+//import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
@@ -26,7 +26,7 @@ export class ReqTaskDialogeComponent implements OnInit {
 
     reqScheduleModel: string;
            
-    private _request = new Request();
+    private _request: Request;
 
     // FormControl Parameters
 
@@ -40,9 +40,15 @@ export class ReqTaskDialogeComponent implements OnInit {
         private requestService: RequestService,
         private fb: FormBuilder) {
 
+        this.reqScheduleModel = '';
         this.name = fb.control('', [Validators.required]);
         this.task = fb.control('', [Validators.required]);
         this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
     }
 
     ngOnInit() {
