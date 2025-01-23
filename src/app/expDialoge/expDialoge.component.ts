@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { Experiment } from '../models/experiment';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
@@ -54,15 +54,17 @@ export class ExpDialogeComponent implements OnInit {
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    private _experiment = new Experiment();
+    private _experiment: Experiment;
 
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
         private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
         private fb: FormBuilder
-    ) { 
-        this.exp = fb.control('',[Validators.required])
+    ) {
+        this.DOIModel = '';
+        this.isTaken = false;
+        this.exp = fb.control('', [Validators.required])
         this.sDate = fb.control('',[Validators.required])
         this.eDate = fb.control('',[Validators.required])
         this.task = fb.control('',[Validators.required])
@@ -71,13 +73,18 @@ export class ExpDialogeComponent implements OnInit {
         this.status = fb.control('',[Validators.required])
         this.expDescription = fb.control('',[Validators.required])
         this.expBattery = fb.control('',[Validators.required])
-        this.isMultipleSessions = fb.control('',[Validators.required])
+        this.isMultipleSessions = fb.control('', [Validators.required])
+        this._experiment = {
+            DOI: '', EndExpDate: new Date(), ExpID: 0, ExpName: '', ImageIds: [], ImageInfo: '', multipleSessions: true,
+            PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), Status: false,
+            TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: ''
+        }
     }
 
     ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; /*console.log(this.taskList)*/; });
-        this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; /*console.log(this.speciesList)*/; });
+        this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/; });
+        this.piSiteService.getPISitebyUserID().subscribe((data : any) => { this.piSiteList = data; });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/; });
         this.GetRepList();
 
         this.isRepoLink = '0';
@@ -105,7 +112,7 @@ export class ExpDialogeComponent implements OnInit {
 
     GetRepList() {
 
-        this.cogbytesService.getAllRepositories().subscribe(data => {
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => {
             this.repList = data;
 
             // load the initial expList
@@ -140,7 +147,7 @@ export class ExpDialogeComponent implements OnInit {
 
         // filter the rep
         this.filteredRepList.next(
-            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
+            this.repList.filter((x : any) => x.title.toLowerCase().indexOf(searchRep) > -1)
         );
     }
 
@@ -175,7 +182,7 @@ export class ExpDialogeComponent implements OnInit {
             // Insert Mode: Insert Experiment
             this.isTaken = false;
 
-            this.expDialogeService.create(this._experiment).map(res => {
+            this.expDialogeService.create(this._experiment).map((res : any) => {
                 if (res == "Taken") {
                     this.isTaken = true;
                     this.exp.setErrors({ 'taken': true });
@@ -183,7 +190,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe(data => {
+            }).subscribe((data : any) => {
 
                 setTimeout(() => {
                     this.spinnerService.hide();
@@ -197,7 +204,7 @@ export class ExpDialogeComponent implements OnInit {
 
             this.isTaken = false;
             this._experiment.ExpID = this.data.experimentObj.expID;
-            this.expDialogeService.updateExp(this._experiment).map(res => {
+            this.expDialogeService.updateExp(this._experiment).map((res : any) => {
 
 
 
@@ -208,7 +215,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe(data => {
+            }).subscribe((data : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
 
@@ -311,12 +318,12 @@ export class ExpDialogeComponent implements OnInit {
         return false;
     }
 
-    getSelectedTask(selectedValue) {
-        return this.taskList.find(x => x.id === selectedValue);
+    getSelectedTask(selectedValue : any) {
+        return this.taskList.find((x : any) => x.id === selectedValue);
     }
 
-    getSelectedPIS(selectedVal) {
-        return this.piSiteList.find(x => x.pusid === selectedVal);
+    getSelectedPIS(selectedVal : any) {
+        return this.piSiteList.find((x : any) => x.pusid === selectedVal);
     }
 
 

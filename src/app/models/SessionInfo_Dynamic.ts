@@ -1,8 +1,8 @@
-export class SessionInfo_Dynamic {
+export interface SessionInfo_Dynamic {
 
-    public ID: number;
-    public SessionID: number;
-    public Name: string;
-    public Value: string;
+     ID: number;
+     SessionID: number;
+     Name: string;
+     Value: string;
 
 }

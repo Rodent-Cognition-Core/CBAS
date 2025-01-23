@@ -30,6 +30,8 @@ export class DataLinkComponent implements OnInit {
     ) {
         this.description = "";
         this.colNames = [];
+        this.linkGuid = "";
+        this.pagedItems = [];
 
         this.route.queryParams.subscribe(params => {
             this.linkGuid = params['linkguid'];
@@ -39,7 +41,7 @@ export class DataLinkComponent implements OnInit {
     }
 
     @HostListener('window:resize', ['$event'])
-    onResize(event) {
+    onResize(event : any) {
         $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
     }
 
@@ -50,7 +52,7 @@ export class DataLinkComponent implements OnInit {
     GetDataByLinkGuid() {
         this.spinnerService.show();
 
-        this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe(data => {
+        this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe((data : any) => {
 
             //console.log(data);
 
@@ -92,7 +94,8 @@ export class DataLinkComponent implements OnInit {
     }
 
     DownloadCsv() {
-        let csv: '';
+        var csv: string;
+        csv = '';
 
         //var items = this.result;
         var items = this.result;

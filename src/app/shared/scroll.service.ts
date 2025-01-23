@@ -37,6 +37,8 @@ export class ScrollService {
         private location: PlatformLocation) {
         // On resize, the toolbar might change height, so "invalidate" the top offset.
         fromEvent(window, 'resize').subscribe(() => this._topOffset = null);
+        this._topOffset = 0;
+        this._topOfPageElement = this.document.querySelector('.top-of-page');
     }
 
     /**

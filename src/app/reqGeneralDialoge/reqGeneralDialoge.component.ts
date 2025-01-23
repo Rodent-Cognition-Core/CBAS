@@ -1,11 +1,11 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+//import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
+//import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
@@ -20,7 +20,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 })
 export class ReqGeneralDialogeComponent implements OnInit {
            
-    private _request = new Request();
+    private _request: Request;
 
     // FormControl Parameters
 
@@ -37,6 +37,11 @@ export class ReqGeneralDialogeComponent implements OnInit {
         this.name = fb.control('', [Validators.required]);
         this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
         this.request = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
     }
 
     ngOnInit() {

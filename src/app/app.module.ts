@@ -1,8 +1,6 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatDialogModule, MatInputModule, MatFormFieldModule } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
@@ -84,35 +82,26 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
 
 const ROUTES: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'guidline', component: GuidelineDataLabComponent },
-    { path: 'guidline', component: DataLinkComponent },
-    { path: 'guidline', component: GenomicsComponent },
-    { path: 'guidline', component: DownloadDsComponent },
+    { path: 'guidline-datalab', component: GuidelineDataLabComponent },
+    { path: 'data-link', component: DataLinkComponent },
+    { path: 'genomics', component: GenomicsComponent },
+    { path: 'download-dataset', component: DownloadDsComponent },
 ];
 
 @NgModule({
     imports: [
         BrowserModule,
         AppRoutingModule,
+        RouterModule.forRoot(ROUTES),
         BrowserAnimationsModule,
         SharedModule,
         OAuthModule.forRoot(),
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        // Ng4LoadingSpinnerModule.forRoot(),
-        //MatSelectModule,
         NgxSpinnerModule,
-        MatFormFieldModule,
-        //NgxMatSelectSearchModule,
         FlexLayoutModule,
         CarouselModule,
         CountUpModule,
         FontAwesomeModule,
         DropzoneModule,
-        RouterModule.forRoot(ROUTES),
         Angulartics2Module.forRoot(),
 
 
@@ -146,7 +135,6 @@ const ROUTES: Routes = [
         DataLinkComponent,
         GenomicsComponent,
         DownloadDsComponent,
-        //CogbytesUploadComponent,    
 
     ],
     exports: [
@@ -168,30 +156,6 @@ const ROUTES: Routes = [
         ManageUserService,
         ScrollService,
 
-    ],
-    entryComponents: [
-        ExpDialogeComponent,
-        PubscreenDialogeComponent,
-        AnimalDialogComponent,
-        PasswordDialogComponent,
-        UploadResultDialogComponent,
-        DeleteConfirmDialogComponent,
-        GenericDialogComponent,
-        SubExpDialogeComponent,
-        NotificationDialogComponent,
-        ReqTaskDialogeComponent,
-        ReqPIDialogeComponent,
-        ReqAgeDialogeComponent,
-        ReqGeneralDialogeComponent,
-        ReqPubTaskDialogeComponent,
-        ReqPubModelDialogeComponent,
-        ReqPubSubMethodDialogeComponent,
-        TermsDialogeComponent,
-        ReqMouseLineDialogeComponent,
-        AuthorDialogeComponent,
-        CogbytesDialogueComponent,
-        CogbytesAuthorDialogueComponent,
-        CogbytesPIDialogeComponent,
     ],
     bootstrap: [AppComponent]
 })

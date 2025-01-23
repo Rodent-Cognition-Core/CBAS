@@ -2,8 +2,8 @@ import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+//import { NgModel } from '@angular/forms';
+//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
@@ -27,7 +27,7 @@ export class PubScreenEditComponent implements OnInit {
     isLoaded: boolean;
 
 
-    _pubSCreenSearch = new Pubscreen();
+    _pubSCreenSearch: Pubscreen;
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -42,13 +42,22 @@ export class PubScreenEditComponent implements OnInit {
         public dialogAuthor: MatDialog) {
 
         this.isLoaded = false;
-
+        this.paperLinkGuid = '';
+        this.isAdmin = false;
+        this.isFullDataAccess = false;
         this.route.queryParams.subscribe(params => {
             this.paperLinkGuid = params['paperlinkguid'].split(" ")[0];
 
             this.GetDataByLinkGuid(this.paperLinkGuid);
         });
-
+        this._pubSCreenSearch = {
+            abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
+            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
+            strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
+            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+        }
     }
 
     ngOnInit() {
@@ -57,10 +66,10 @@ export class PubScreenEditComponent implements OnInit {
         this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
     }
 
-    GetDataByLinkGuid(paperLinkGuid) {
+    GetDataByLinkGuid(paperLinkGuid : any) {
         this.spinnerService.show();
 
-        this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe(data => {
+        this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe((data : any) => {
 
             this.paperInfo = data;
             console.log(this.paperInfo)
@@ -78,7 +87,7 @@ export class PubScreenEditComponent implements OnInit {
     }
 
     // Edit publication
-    openDialogEditPublication(Publication): void {
+    openDialogEditPublication(Publication : any): void {
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '850px',
             width: '1200px',
