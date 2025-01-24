@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
             this.uploadLogList = data;
             this.setPage(1);
 
-            console.log(this.uploadLogList);
+            console.log(this.uploadLogList.length);
 
         });
 
