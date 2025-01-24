@@ -37,7 +37,7 @@
     "dropzone": "6.0.0-beta.2",
     "font-awesome": "^4.7.0",
     "ngx-countup": "^7.3.3",
-    "ngx-dropzone-wrapper": "^11.0.0",
+    "ngx-dropzone-wrapper": "^10.0.0",
     "ngx-mat-select-search": "^3.3.3",
     "ngx-order-pipe": "^2.2.0",
     "ngx-owl-carousel-o": "^5.1.1",
