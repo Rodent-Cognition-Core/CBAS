@@ -25,7 +25,6 @@ const routes: Routes = [
     { path: 'search-experiment', loadChildren: './search-experiment/search-experiment.module#SearchExperimentModule' },
     { path: 'manage-user', loadChildren: './manage-user/manage-user.module#ManageUserModule' },
     { path: 'profile', loadChildren: './profile/profile.module#ProfileModule' },
-    { path: 'genomics', loadChildren: './genomics/genomics.module#GenomicsModule' },
     { path: 'guideline', loadChildren: './guideline/guideline.module#GuidelineModule' },
     { path: 'guideline-datalab', loadChildren: './guidelineDataLab/guidelineDataLab.module#GuidelineDataLabModule' },
     { path: 'data-visualization', loadChildren: './data-visualization/data-visualization.module#DataVisualizationModule' },

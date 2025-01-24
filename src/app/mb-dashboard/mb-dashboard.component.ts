@@ -13,7 +13,6 @@ import { NotificationDialogComponent } from '../notification-dialog/notification
 })
 export class MBDashboardComponent implements OnInit {
 
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
 
    
@@ -21,7 +20,8 @@ export class MBDashboardComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute,) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialog) {
 
     }
 

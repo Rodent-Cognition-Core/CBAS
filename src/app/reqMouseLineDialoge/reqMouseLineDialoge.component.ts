@@ -51,7 +51,8 @@ export class ReqMouseLineDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
          
         private requestService: RequestService,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.reqGenoModel = '';
         this.refModel = '';

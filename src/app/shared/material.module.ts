@@ -37,7 +37,6 @@ import { MatRippleModule } from '@angular/material/core'
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog'
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { A11yModule } from '@angular/cdk/a11y';
@@ -77,6 +76,51 @@ import { MatStepperModule } from '@angular/material/stepper';
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
  */
+const materialModules: any[] = [
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatTableModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    //MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    MatSnackBarModule,
+    MatSortModule,
+    MatStepperModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatNativeDateModule,
+    CdkTableModule,
+    A11yModule,
+    BidiModule,
+    CdkAccordionModule,
+    ObserversModule,
+    OverlayModule,
+    PlatformModule,
+    PortalModule
+]
+
+
 @NgModule({
     exports: [
         MatAutocompleteModule,

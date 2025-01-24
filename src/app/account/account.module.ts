@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { AccountRoutingModule } from './account-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -11,7 +12,10 @@ import { ResetComponent } from './reset/reset.component';
 @NgModule({
     imports: [
         AccountRoutingModule,
-        SharedModule
+        SharedModule,
+        FormsModule,
+        ReactiveFormsModule
+
     ],
     declarations: [
         SigninComponent,
