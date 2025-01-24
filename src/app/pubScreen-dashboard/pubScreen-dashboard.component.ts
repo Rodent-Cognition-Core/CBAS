@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table'
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+//import { MatTableDataSource } from '@angular/material/table'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 
 @Component({
@@ -13,7 +13,6 @@ import { NotificationDialogComponent } from '../notification-dialog/notification
 })
 export class PSDashboardComponent implements OnInit {
 
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>
     app: any;
 
    
@@ -21,7 +20,8 @@ export class PSDashboardComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute,) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialog) {
 
     }
 

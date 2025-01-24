@@ -28,8 +28,6 @@ import { User } from '../models/user';
      * Behavior subjects of the user's status & data.
      */
     private _user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
-    private signinStatus = new BehaviorSubject<boolean>(false);
-    private user = new BehaviorSubject<User>(this._user);
 
     /**
      * Scheduling of the refresh token.
@@ -40,6 +38,14 @@ import { User } from '../models/user';
      * Offset for the scheduling to avoid the inconsistency of data on the client.
      */
     private offsetSeconds: number = 30;
+
+    private signinStatus = new BehaviorSubject<boolean>(false);
+
+    public signinStatus$ = this.signinStatus.asObservable();
+
+    private user = new BehaviorSubject<User>(this._user);
+
+    public user$ = this.user.asObservable();
 
     constructor(
         private router: Router,

@@ -14,6 +14,7 @@ import { Pubscreen } from '../models/pubscreen';
 import { Subject ,  ReplaySubject } from 'rxjs';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
 import { take, takeUntil } from 'rxjs/operators';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUCCESSFULL, PUBLICATIONSUCESSFULLYADDED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 
 @Component({
@@ -150,6 +151,8 @@ export class PubscreenDialogeComponent implements OnInit {
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
+
+    faQuestionCircle = faQuestionCircle;
 
     constructor(
         public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
