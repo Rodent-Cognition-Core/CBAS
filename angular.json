@@ -25,7 +25,14 @@
                 "src/thirdparties/owl.carousel-modified.css",
                 "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
-            "scripts": [ ]
+            "scripts": [ ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "hmr": {
@@ -60,7 +67,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
