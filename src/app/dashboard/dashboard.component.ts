@@ -28,9 +28,6 @@ export class DashboardComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
     expfilter: any = '';
-    dialogRefDelErrorList: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
 
 
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
@@ -38,6 +35,9 @@ export class DashboardComponent implements OnInit {
         private authenticationService: AuthenticationService, private pagerService: PagerService,
         private spinnerService: NgxSpinnerService, private animalService: AnimalService,
         public dialog: MatDialog,
+        public dialogRefDelErrorList: MatDialog,
+        public dialogRefDelAnimal: MatDialog,
+        public dialogRefDelFile: MatDialog
 
     ) {
 
@@ -84,12 +84,12 @@ export class DashboardComponent implements OnInit {
     
     // Delete Animal Dialog
     openConfirmationDialogDelAnimal(animalID : number, expId : number) {
-        this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelAnimal.afterClosed().subscribe(result => {
+        dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
                 this.animalService.deleteAnimalbyID(animalID).pipe(map((res : any) => {
                     //location.reload()
@@ -97,7 +97,7 @@ export class DashboardComponent implements OnInit {
                 })).subscribe();
             }
             //this.dialogRefDelAnimal = null;
-            this.dialogRefDelAnimal.close();
+            dialogRefDelAnimal.close();
         });
     }
 
@@ -223,12 +223,12 @@ export class DashboardComponent implements OnInit {
     //****************Clear uploadErrorLogList********************************************
 
     openConfirmationDialogDelErrorList(expID : number) {
-        this.dialogRefDelErrorList = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelErrorList = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelErrorList.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelErrorList.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelErrorList.afterClosed().subscribe(result => {
+        dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
 
                 this.dashboardService.clearUploadLogTblbyExpID(expID).map((res : any) => {
@@ -240,7 +240,7 @@ export class DashboardComponent implements OnInit {
 
             }
             //this.dialogRefDelErrorList = null;
-            this.dialogRefDelErrorList.close();
+            dialogRefDelErrorList.close();
         });
     }
 
@@ -260,12 +260,12 @@ export class DashboardComponent implements OnInit {
 
     // Delete File Dialog
     openConfirmationDialogDelFile(uploadID : number) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 this.experimentService.deleteFilebyID(uploadID).map((res : any) => {
@@ -275,7 +275,7 @@ export class DashboardComponent implements OnInit {
                 }).subscribe();
             }
             //this.dialogRefDelFile = null;
-            this.dialogRefDelFile.close();
+            dialogRefDelFile.close();
         });
     }
 

@@ -38,7 +38,8 @@ export class ReqTaskDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<ReqTaskDialogeComponent>,
          
         private requestService: RequestService,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.reqScheduleModel = '';
         this.name = fb.control('', [Validators.required]);

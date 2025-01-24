@@ -127,8 +127,6 @@ export class PubScreenComponent implements OnInit {
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
 
 
     showGeneratedLink: any;
@@ -139,7 +137,10 @@ export class PubScreenComponent implements OnInit {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         public dialogML: MatDialog,
-        private fb: FormBuilder,) { 
+        private fb: FormBuilder,
+        //public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
+        public dialogRef: MatDialog,
+        public dialogRefLink: MatDialog) { 
 
         this.pubCount = 0;
         this.featureCount = 0;
@@ -681,7 +682,10 @@ export class PubScreenComponent implements OnInit {
     }
 
     // Opening Dialog for adding a new publication.
-    openDialogAddPublication(Publication : any): void {
+    openDialogAddPublication(Publication?: any): void {
+        if (Publication == 'undefined') {
+            Publication = null;
+        }
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '850px',
             width: '1200px',
@@ -772,13 +776,13 @@ export class PubScreenComponent implements OnInit {
 
     // Deleting Experiment
     openConfirmationDialog(pubID: any) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
 
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
@@ -795,15 +799,15 @@ export class PubScreenComponent implements OnInit {
                 }).subscribe();
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
     getLink(guid : any) {
 
-            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
 
     }
 

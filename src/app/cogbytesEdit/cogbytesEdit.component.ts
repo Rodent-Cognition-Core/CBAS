@@ -29,6 +29,7 @@ export class CogbytesEditComponent implements OnInit {
     repoLinkGuid: string;
     isAdmin: boolean;
     isFullDataAccess: boolean;
+    panelOpenState: boolean;
     
    
     public authorMultiFilterCtrl: FormControl = new FormControl();
@@ -47,6 +48,7 @@ export class CogbytesEditComponent implements OnInit {
         this.repoLinkGuid = '';
         this.isAdmin = false;
         this.isFullDataAccess = false;
+        this.panelOpenState = false;
         this.route.queryParams.subscribe(params => {
             this.repoLinkGuid = params['repolinkguid'].split(" ")[0];
 

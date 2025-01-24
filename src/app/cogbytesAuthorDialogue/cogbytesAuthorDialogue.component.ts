@@ -28,7 +28,8 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<CogbytesAuthorDialogueComponent>,
          
         private cogbytesService: CogbytesService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.authorName = fb.control('', [Validators.required])
         this.authorLastName = fb.control('', [Validators.required])

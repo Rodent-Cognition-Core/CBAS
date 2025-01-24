@@ -28,7 +28,6 @@ export class AnimalInfoComponent implements OnInit {
     pager: any = {};
     expfilter: any = '';
     pagedItems: any[];
-    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>
 
     constructor(private animalService: AnimalService,
         private authenticationService: AuthenticationService,
@@ -36,6 +35,7 @@ export class AnimalInfoComponent implements OnInit {
         private location: Location,
         private pagerService: PagerService,
         private spinnerService: NgxSpinnerService,
+        public dialogRefDelAnimal: MatDialog
     ) {
         this.experimentName = '';
         this.pagedItems = [];
@@ -63,12 +63,15 @@ export class AnimalInfoComponent implements OnInit {
 
     }
 
-    openDialog(Animal: any): void {
+    openDialog(animal?: any): void {
         //console.log(Animal);
+        if (typeof animal == 'undefined') {
+            animal = null;
+        }
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',
-            data: { experimentId: this.experimentID, animalObj: Animal }
+            data: { experimentId: this.experimentID, animalObj: animal }
 
         });
 
@@ -79,14 +82,14 @@ export class AnimalInfoComponent implements OnInit {
 
     // Delete Animal Dialog
     openConfirmationDialogDelAnimal(animalID: number, expId: number) {
-        this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE;
 
 
 
-        this.dialogRefDelAnimal.afterClosed().subscribe(result => {
+        dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
@@ -100,7 +103,7 @@ export class AnimalInfoComponent implements OnInit {
                 })).subscribe();
             }
             //this.dialogRefDelAnimal = null;
-            this.dialogRefDelAnimal.close();
+            dialogRefDelAnimal.close();
         });
     }
 

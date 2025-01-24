@@ -880,7 +880,7 @@ namespace AngularSPAWebAPI.Services
                 try
                 {
                     await cn.OpenAsync();
-                    return await ExecDSAsync(cn, cmdType, cmdTxt, cmdParams.ToArray());
+                    return await ExecDSAsync(cn, cmdType, cmdTxt, cmdParams?.ToArray());
                 }
                 catch (SqlException ex)
                 {

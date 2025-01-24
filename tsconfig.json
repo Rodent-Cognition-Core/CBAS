@@ -23,11 +23,14 @@
         "strictFunctionTypes": true,
         "strictPropertyInitialization": true,
         "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "extendedDiagnostics": true,
+        "disableSizeLimit": true
     },
     "angularCompilerOptions": {
-        "enableIvy": true
+        "enableIvy": true,
+        "fullTemplateTypeCheck": true
     },
     "include": [ "src/**/*.ts" ],
-    "exclude":  ["node_modules", "dist", "test.ts", "**/*.spec.ts"]
+    "exclude":  ["node_modules", "dist", "test.ts", "**/*.spec.ts", "src/"]
 }

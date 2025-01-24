@@ -48,7 +48,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     fileTypeModel: any;
 
-    panelOpenState = false;
+    panelOpenState: boolean;
 
     // Definiing List Variables
     repList: any;
@@ -95,7 +95,6 @@ export class CogbytesSearchComponent implements OnInit {
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
 
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
@@ -103,7 +102,8 @@ export class CogbytesSearchComponent implements OnInit {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
-        private fb: FormBuilder,) {
+        private fb: FormBuilder,
+        public dialogRef: MatDialog) {
 
         this._cogbytesSearch = {
             ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
@@ -118,6 +118,7 @@ export class CogbytesSearchComponent implements OnInit {
         this.doiModel = '';
         this.keywordsModel = '';
         this.interventionModel = '';
+        this.panelOpenState = false;
         this.yearTo = fb.control('')
         this.route.queryParams.subscribe(params => {
             this.showAll = false;

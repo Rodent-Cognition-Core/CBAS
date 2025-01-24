@@ -25,7 +25,7 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public GetSearchByExpID(expID): any {
+    public GetSearchByExpID(expID : any): any {
 
         return this.http
             .get("/api/searchexp/GetSearchByExpID?expID=" + expID, {
@@ -34,7 +34,7 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    downloadExpDs(expDsFileName): Observable<Blob> {
+    downloadExpDs(expDsFileName : any): Observable<Blob> {
 
         return this.http.get("/api/searchexp/DownloadExpDs?expDsFileName=" + expDsFileName,
             { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: "blob" });
