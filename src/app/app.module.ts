@@ -59,10 +59,10 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper'
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RouterModule, Routes } from '@angular/router'
-import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
-import { DataLinkComponent } from './data-link/data-link.component';
-import { GenomicsComponent } from './genomics/genomics.component';
-import { DownloadDsComponent } from './download-ds/download-ds.component';
+//import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
+//import { DataLinkComponent } from './data-link/data-link.component';
+//import { GenomicsComponent } from './genomics/genomics.component';
+//import { DownloadDsComponent } from './download-ds/download-ds.component';
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
@@ -80,19 +80,19 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
 //    }
 //}
 
-const ROUTES: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'guidline-datalab', component: GuidelineDataLabComponent },
-    { path: 'data-link', component: DataLinkComponent },
-    { path: 'genomics', component: GenomicsComponent },
-    { path: 'download-dataset', component: DownloadDsComponent },
-];
+//const ROUTES: Routes = [
+//    { path: '', component: HomeComponent },
+//    { path: 'guidline-datalab', component: GuidelineDataLabComponent },
+//    { path: 'data-link', component: DataLinkComponent },
+//    { path: 'genomics', component: GenomicsComponent },
+//    { path: 'download-dataset', component: DownloadDsComponent },
+//];
 
 @NgModule({
     imports: [
         BrowserModule,
         AppRoutingModule,
-        RouterModule.forRoot(ROUTES),
+        //RouterModule.forRoot(ROUTES),
         BrowserAnimationsModule,
         SharedModule,
         OAuthModule.forRoot(),
@@ -131,10 +131,6 @@ const ROUTES: Routes = [
         CogbytesDialogueComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
-        GuidelineDataLabComponent,
-        DataLinkComponent,
-        GenomicsComponent,
-        DownloadDsComponent,
 
     ],
     exports: [

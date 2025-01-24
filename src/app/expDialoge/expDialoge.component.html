@@ -15,7 +15,7 @@
 
         <!--Start Date-->
         <mat-form-field class="full-width">
-            <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [max]="eDateModel" required>
+            <input matInput [matDatepicker]="picker" placeholder="Start Date" [formControl]="sDate" [max]="eDate.value" required>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="sDate.invalid">{{getErrorMessagesDate()}}</mat-error>
@@ -23,7 +23,7 @@
 
         <!--End Date-->
         <mat-form-field class="full-width">
-            <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [min]="sDateModel" required>
+            <input matInput [matDatepicker]="picker1" placeholder="Expected End Date" [formControl]="eDate" [min]="sDate.value" required>
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
             <mat-error *ngIf="eDate.invalid">{{getErrorMessageeDate()}}</mat-error>

@@ -48,7 +48,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     fileTypeModel: any;
 
-    panelOpenState = false;
+    panelOpenState: boolean;
 
     // Definiing List Variables
     repList: any;
@@ -102,7 +102,7 @@ export class CogbytesSearchComponent implements OnInit {
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
         private fb: FormBuilder,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>) {
+        public dialogRef: MatDialog) {
 
         this._cogbytesSearch = {
             ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
@@ -114,6 +114,7 @@ export class CogbytesSearchComponent implements OnInit {
         this.isFullDataAccess = false;
         this.isSearch = false;
         this.showAll = false;
+        this.panelOpenState = false;
         this.yearTo = fb.control('')
         this.route.queryParams.subscribe(params => {
             this.showAll = false;

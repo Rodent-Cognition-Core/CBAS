@@ -44,8 +44,7 @@
                             <mat-option disabled="disabled" class="filter-option">
                                 <button mat-raised-button
                                         class="mat-primary fill text-sm"
-                                        (click)="selectAllExperiments()"
-                                        [disabled]="ExpMultiSelect != undefined && ExpMultiSelect != ''">
+                                        (click)="selectAllExperiments()">
                                     Select All
                                 </button>
                                 <button mat-raised-button
@@ -186,7 +185,7 @@
                             <!--Animal Strain-->
                             <mat-form-field>
 
-                                <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, selectedExpvalue)" multiple>
+                                <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, exp.value)" multiple>
                                     <mat-option *ngFor="let animal of AnimalInfoListStrain" [value]="animal.id">
                                         <span matTooltip="{{animal.strain}}">{{animal.strain}}, <a href="{{animal.link}}" target="_blank">Reference</a></span>
                                     </mat-option>

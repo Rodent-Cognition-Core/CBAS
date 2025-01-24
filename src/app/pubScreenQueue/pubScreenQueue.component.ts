@@ -42,8 +42,8 @@ export class PubScreenQueueComponent implements OnInit {
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>) {
+        public dialogRefLink: MatDialog,
+        public dialogRef: MatDialog) {
 
         this.isAdmin = false;
         this.isUser = false;
@@ -80,12 +80,12 @@ export class PubScreenQueueComponent implements OnInit {
     }
 
     openAcceptDialog(pubmedID : any, doi : string) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMACCEPTPAPERTOPUBSCREEN
+        dialogRef.componentInstance.confirmMessage = CONFIRMACCEPTPAPERTOPUBSCREEN
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
@@ -105,17 +105,17 @@ export class PubScreenQueueComponent implements OnInit {
 
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
     openRejectDialog(pubmedID : any, doi: any) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMREJECTPAPER;
+        dialogRef.componentInstance.confirmMessage = CONFIRMREJECTPAPER;
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
@@ -133,7 +133,7 @@ export class PubScreenQueueComponent implements OnInit {
                 });
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
@@ -148,9 +148,9 @@ export class PubScreenQueueComponent implements OnInit {
             this.showGeneratedLink = true;
             var guid = data.paperLinkGuid;
 
-            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
 
 
 

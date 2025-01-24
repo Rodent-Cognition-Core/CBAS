@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, ElementRef, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
@@ -50,6 +50,8 @@ export class AppComponent implements OnInit {
         { name: 'Searching Publications', route: 'pubScreen-search' }
     ];
 
+    public signedIn!: Observable<boolean>;
+
     name: string;
     isAdmin: boolean;
     isUser: boolean;
@@ -63,8 +65,7 @@ export class AppComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private router: Router,
         private el: ElementRef,
-        angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
-        private signedIn: Observable<boolean>
+        angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
     ) {
         this.name = '';
         this.isAdmin = false;

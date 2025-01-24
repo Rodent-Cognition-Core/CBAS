@@ -21,7 +21,7 @@ const sharedModules: any[] = [
 ];
 
 @NgModule({
-    imports: sharedModules,
+    imports: [sharedModules],
     declarations: [
         SharedExperimentComponent, SharedPubscreenComponent
     ],

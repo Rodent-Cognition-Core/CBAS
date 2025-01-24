@@ -50,7 +50,7 @@
 
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="fileTypeModel>=1&&fileTypeModel<=5" [expanded]="true">
+        <mat-expansion-panel *ngIf="fileType.value>=1&&fileType.value<=5" [expanded]="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     Key Features:
@@ -70,7 +70,7 @@
             </mat-form-field>
 
             <mat-form-field style="width:20%; padding-left:30px">
-                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjectsModel=null" multiple>
+                <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjects.setValue(null)" multiple>
                     <mat-option *ngFor="let species of speciesList" [value]="species.id">
                         <span matTooltip="{{species.species}}">{{species.species}}</span>
                     </mat-option>
@@ -140,7 +140,7 @@
 
             <br />
 
-            <mat-form-field class="full-width" *ngIf="interventionModel=='true'">
+            <mat-form-field class="full-width" *ngIf="intervention.value=='true'">
                 <!--<mat-form-field class="full-width">-->
                 <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>
@@ -207,7 +207,7 @@
         <!--<dropzone [config]="config" [disabled]="!isUploadAdded" [message]="'Click or drag your files here to upload'"
                   class="dropzone-container" (sending)="onSending($event)" (error)="onUploadError($event)"
                   (addedFile)="onAddedFile($event)" (queueComplete)="onQueueComplete($event)" (successMultiple)="onUploadSuccess($event)"></dropzone>-->
-        <dropzone [config]="dropzoneConfig"
+        <dropzone [config]="config"
                   [disabled]="!isUploadAdded"
                   [message]="'Click or drag your files here to upload'"
                   class="dropzone-container"

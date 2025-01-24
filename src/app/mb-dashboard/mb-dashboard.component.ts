@@ -21,7 +21,7 @@ export class MBDashboardComponent implements OnInit {
         private spinnerService: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) {
+        public dialogRefLink: MatDialog) {
 
     }
 

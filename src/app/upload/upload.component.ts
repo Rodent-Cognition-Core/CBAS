@@ -26,6 +26,9 @@ import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from 
 })
 export class UploadComponent implements OnInit {
 
+    @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;
+
     //selectedExpValue: string;
     experimentName: string;
     experimentID: any;
@@ -51,10 +54,6 @@ export class UploadComponent implements OnInit {
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
 
-    //DropZone
-    componentRef: any;
-    directiveRef: any;
-
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
@@ -71,9 +70,7 @@ export class UploadComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>,
-        @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent,
-        @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective
+        public dialogRefDelFile: MatDialog
 
     ) {
         this.experimentName = '';
@@ -84,9 +81,6 @@ export class UploadComponent implements OnInit {
         this.isDrug = false;
         this.ageInMonth = '';
         this.expTask = '';
-        this.componentRef = componentRef;
-        this.directiveRef = directiveRef;
-
 
     }
 
@@ -202,7 +196,7 @@ export class UploadComponent implements OnInit {
 
             this.uploadConfirmShowed = true;
 
-            this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+            const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
                 width: '700px',
                 disableClose: true
             });
@@ -210,20 +204,20 @@ export class UploadComponent implements OnInit {
             // Based on Subexp features, generate the confirmation message
             if (this.isIntervention && this.isDrug) {
 
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName + "</b>?";
             }
 
             if (this.isIntervention && !this.isDrug) {
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.interventionDescription + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.interventionDescription + "</b>?";
             }
 
             if (!this.isIntervention && !this.isDrug) {
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b>?";
             }
 
 
 
-            this.dialogRefDelFile.afterClosed().subscribe(result => {
+            dialogRefDelFile.afterClosed().subscribe(result => {
                 if (result) {
 
                     if (this.uploadErrorFileType != "") {
@@ -236,14 +230,18 @@ export class UploadComponent implements OnInit {
                     }
                     this.uploadErrorFileType = "";
 
-                    this.componentRef.directiveRef.dropzone().processQueue();
+                    if (this.componentRef?.directiveRef?.dropzone) {
+                        this.componentRef.directiveRef.dropzone().processQueue();
+                    }
                 } else {
-                    this.componentRef.directiveRef.dropzone().removeAllFiles();
+                    if (this.componentRef?.directiveRef?.dropzone) {
+                        this.componentRef.directiveRef.dropzone().removeAllFiles();
+                    }
                 }
 
                 this.uploadConfirmShowed = false;
                 //this.dialogRefDelFile = null;
-                this.dialogRefDelFile.close();
+                dialogRefDelFile.close();
             });
 
 
@@ -273,7 +271,9 @@ export class UploadComponent implements OnInit {
         if (this.type === 'directive') {
             this.directiveRef.reset();
         } else {
-            this.componentRef.directiveRef.reset();
+            if (this.componentRef?.directiveRef?.reset) {
+                this.componentRef.directiveRef.reset();
+            }
         }
 
     }

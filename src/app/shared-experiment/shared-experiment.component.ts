@@ -10,7 +10,7 @@ import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { PostProcessingQcService } from '../services/postprocessingqc.service';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as _ from 'underscore';
+//import * as _ from 'underscore';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
 //import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
@@ -58,8 +58,8 @@ export class SharedExperimentComponent implements OnInit {
         private snackBar: MatSnackBar,
         private subexpDialogeService: SubExpDialogeService,
         private spinnerService: NgxSpinnerService,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>) {
+        public dialogRef: MatDialog,
+        public dialogRefPostProcessingResult: MatDialog) {
 
         this.hideSubExperiment = false;
         this.showSubExpTbl = false;
@@ -138,13 +138,13 @@ export class SharedExperimentComponent implements OnInit {
 
     // Deleting Experiment
     openConfirmationDialog(expID : any) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
 
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
@@ -159,18 +159,18 @@ export class SharedExperimentComponent implements OnInit {
                 }).subscribe();
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
     // Deleting Sub Experiment
     openSubExpConfirmationDialog(subExp : any) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).map((res : any) => {
@@ -182,7 +182,7 @@ export class SharedExperimentComponent implements OnInit {
                 }).subscribe();
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
@@ -212,21 +212,10 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // Get List of All sub Experiment
-    GetSubExpSelect(selectedExpVal : any) {
-        
-        this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe((data : any) => {
-                        
-            // this.subExpList = data;
-            this.subExpList = _.sortBy(data, function (i) {
-
-                               
-                return i.ageID;                      
-            
-            });
-                       
+    GetSubExpSelect(selectedExpVal: any) {
+        this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe((data: any) => {
+            this.subExpList = data.sort((a: any, b: any) => a.ageID - b.ageID);
         });
-                       
-        
     }
 
     // Deleting Experiment
@@ -287,10 +276,10 @@ export class SharedExperimentComponent implements OnInit {
             if (errorMessage == "")
                 errorMessage = PLEASERUNPREPROCESSING;
 
-            this.dialogRefPostProcessingResult = this.dialog.open(GenericDialogComponent, {
+            const dialogRefPostProcessingResult = this.dialog.open(GenericDialogComponent, {
                 disableClose: false
             });
-            this.dialogRefPostProcessingResult.componentInstance.message = errorMessage;
+            dialogRefPostProcessingResult.componentInstance.message = errorMessage;
         });
 
     }

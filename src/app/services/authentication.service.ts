@@ -25,7 +25,8 @@ import { User } from '../models/user';
     /**
      * Behavior subjects of the user's status & data.
      */
-    _user: User;
+    private _user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
+;
     //private signinStatus = new BehaviorSubject<boolean>(false);
     //private user = new BehaviorSubject<User>(this._user);
 
@@ -41,14 +42,20 @@ import { User } from '../models/user';
      */
     private offsetSeconds: number = 30;
 
+    private signinStatus = new BehaviorSubject<boolean>(false);
+
+    public signinStatus$ = this.signinStatus.asObservable();
+
+    private user = new BehaviorSubject<User>(this._user);
+
+    public user$ = this.user.asObservable();
+
     constructor(
         private router: Router,
-        private oAuthService: OAuthService,
-        private signinStatus: BehaviorSubject<boolean>,
-        private user: BehaviorSubject<User>
+        private oAuthService: OAuthService
     ) {
         this.redirectUrl = "";
-        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
+        //this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }
 
     public init(): void {

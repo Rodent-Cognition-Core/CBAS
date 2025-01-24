@@ -20,6 +20,7 @@ export class TermsDialogeComponent implements OnInit {
 
     
     constructor(public thisDialogRef: MatDialogRef<TermsDialogeComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any
          
         ) { }
 

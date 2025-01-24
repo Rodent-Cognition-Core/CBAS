@@ -37,7 +37,6 @@ import { MatRippleModule } from '@angular/material/core'
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog'
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { A11yModule } from '@angular/cdk/a11y';
@@ -118,8 +117,7 @@ const materialModules: any[] = [
     ObserversModule,
     OverlayModule,
     PlatformModule,
-    PortalModule,
-    MatDialog
+    PortalModule
 ]
 
 

@@ -84,7 +84,7 @@ export class DataExtractionComponent implements OnInit {
     dataextractionForm = FormControl;
 
     // SessionInfo Features' names
-    private sessionInfoFeature: any[] = [
+    public sessionInfoFeature: any[] = [
         { name: 'Analysis_Name' },
         { name: 'Schedule_Name' },
         { name: 'Max_Number_Trials' },
@@ -103,7 +103,7 @@ export class DataExtractionComponent implements OnInit {
     ];
 
     // Aggregation functions' names
-    private aggregationFunction: any[] = [
+    public aggregationFunction: any[] = [
 
         { name: 'COUNT' },
         { name: 'MEAN' },
@@ -118,6 +118,8 @@ export class DataExtractionComponent implements OnInit {
     public expMultiFilterCtrl: FormControl = new FormControl();
     public MarkerInfoMultiFilterCtrl: FormControl = new FormControl();
 
+    //dataSource: MatTableDataSource<Element[]>;
+
     constructor(
         public dialog: MatDialog,
         private dataExtractionService: DataExtractionService,
@@ -128,8 +130,7 @@ export class DataExtractionComponent implements OnInit {
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
         private fb: FormBuilder,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
-        public dataSource: MatTableDataSource<Element[]>
+        public dialogRefLink: MatDialog
     ) {
         this.colNames = [];
         this.showGeneratedLink = false;
@@ -987,9 +988,9 @@ export class DataExtractionComponent implements OnInit {
             if (data === true) {
                 this.showGeneratedLink = true;
 
-                this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+                const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
                 });
-                this.dialogRefLink.componentInstance.message = "http://localhost:4200/data-link?linkguid=" + this.linkGuid;
+                dialogRefLink.componentInstance.message = "http://localhost:4200/data-link?linkguid=" + this.linkGuid;
 
 
 

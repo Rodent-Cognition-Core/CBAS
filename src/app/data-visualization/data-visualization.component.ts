@@ -46,8 +46,7 @@ export class DataVisualizationComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) {
+        private route: ActivatedRoute) {
 
         this.user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }

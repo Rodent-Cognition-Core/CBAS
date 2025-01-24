@@ -1,4 +1,4 @@
-import { Component, OnInit, /*Inject, NgModule*/ } from '@angular/core';
+import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 //import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, Validators, /*ReactiveFormsModule, FormGroup,*/ FormBuilder } from '@angular/forms';
@@ -29,7 +29,8 @@ export class AuthorDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
          
         private pubScreenService: PubScreenService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.authorName = fb.control('', [Validators.required])
         this.authorLastName = fb.control('', [Validators.required])

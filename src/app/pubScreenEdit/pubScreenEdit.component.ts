@@ -26,6 +26,8 @@ export class PubScreenEditComponent implements OnInit {
     isFullDataAccess: boolean;
     isLoaded: boolean;
 
+    panelOpenState: boolean
+
 
     _pubSCreenSearch: Pubscreen;
 
@@ -45,6 +47,7 @@ export class PubScreenEditComponent implements OnInit {
         this.paperLinkGuid = '';
         this.isAdmin = false;
         this.isFullDataAccess = false;
+        this.panelOpenState = false;
         this.route.queryParams.subscribe(params => {
             this.paperLinkGuid = params['paperlinkguid'].split(" ")[0];
 

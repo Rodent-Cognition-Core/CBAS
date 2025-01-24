@@ -81,8 +81,10 @@ export class CogbytesUploadComponent implements OnInit {
 
     // DropZone
 
-    componentRef: DropzoneComponent;
-    directiveRef: DropzoneDirective;
+    //componentRef: DropzoneComponent;
+    //directiveRef: DropzoneDirective;
+    @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -115,9 +117,7 @@ export class CogbytesUploadComponent implements OnInit {
         private cogbytesService: CogbytesService,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private fb: FormBuilder,
-        @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent,
-        @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
+        public dialogRefDelFile: MatDialog
 
     )
     {
@@ -135,8 +135,6 @@ export class CogbytesUploadComponent implements OnInit {
         this.cognitiveTask = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);
         this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
-        this.componentRef = componentRef;
-        this.directiveRef = directiveRef;
 
         this.resetFormVals();
     }
@@ -341,7 +339,9 @@ export class CogbytesUploadComponent implements OnInit {
         if (this.type === 'directive') {
             this.directiveRef.reset();
         } else {
-            this.componentRef.directiveRef.reset();
+            if (this.componentRef?.directiveRef?.reset) {
+                this.componentRef.directiveRef.reset();
+            }
         }
 
     }
@@ -457,12 +457,12 @@ export class CogbytesUploadComponent implements OnInit {
 
     // Delete File Dialog
     openConfirmationDialogDelFile(file : any) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 setTimeout(() => {
@@ -481,7 +481,7 @@ export class CogbytesUploadComponent implements OnInit {
                 //this.UpdateFileList();
             }
             //this.dialogRefDelFile = null;
-            this.dialogRefDelFile.close();
+            dialogRefDelFile.close();
         });
     }
 
@@ -495,12 +495,12 @@ export class CogbytesUploadComponent implements OnInit {
 
     // Delete Upload Dialog
     openConfirmationDialogDelUpload() {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
@@ -514,7 +514,7 @@ export class CogbytesUploadComponent implements OnInit {
                 });
             }
             //this.dialogRefDelFile = null;
-            this.dialogRefDelFile.close();
+            dialogRefDelFile.close();
         });
     }
     //remove() {

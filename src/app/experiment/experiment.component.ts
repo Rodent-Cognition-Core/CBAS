@@ -10,7 +10,7 @@ import { GenericDialogComponent } from '../generic-dialog/generic-dialog.compone
 import { Location } from '@angular/common';
 //import { Experiment } from '../models/experiment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import * as _ from 'underscore';
+//import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
 
 //declare global {
@@ -42,9 +42,9 @@ export class ExperimentComponent implements OnInit {
         private uploadService: UploadService,
         private spinnerService: NgxSpinnerService,
         private pagerService: PagerService,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>
+        public dialogRefDelFile: MatDialog,
+        public dialogRefDelExp: MatDialog,
+        public dialogRefPostProcessingResult: MatDialog
     ) {
         this.pagedItems = [];
         this.pagedItemsTblFile = [];
@@ -92,12 +92,12 @@ export class ExperimentComponent implements OnInit {
 
     // Delete File Dialog
     openConfirmationDialogDelFile(uploadID : number, subExpID : number) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 this.experimentService.deleteFilebyID(uploadID).map((res : any) => {
@@ -107,7 +107,7 @@ export class ExperimentComponent implements OnInit {
                 }).subscribe();
             }
             //this.dialogRefDelFile = null;
-            this.dialogRefDelFile.close();
+            dialogRefDelFile.close();
         });
     }
 

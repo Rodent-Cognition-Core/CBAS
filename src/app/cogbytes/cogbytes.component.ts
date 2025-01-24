@@ -56,8 +56,8 @@ export class CogbytesComponent implements OnInit {
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
         private spinnerService: NgxSpinnerService,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>
+        public dialogRefLink: MatDialog,
+        public dialogRef: MatDialog
     )
     {
         this.uploadKey = 0;
@@ -109,18 +109,18 @@ export class CogbytesComponent implements OnInit {
         //return this.repList;
     }
 
-    GetUploads() {
+    GetUploads(event?: any) {
         if (this.repModel != null) {
             let repID = this.getRep().id;
             this.cogbytesService.getUploads(repID).subscribe((data: any) => { this.uploadList = data; });
         }
     }
 
-    ClosePanel() {
+    ClosePanel(event?: any) {
         this.panelOpenState = false;
     }
 
-    NewUpload() {
+    NewUpload(event? : any) {
         this.GetUploads();
         this.ClosePanel();
     }
@@ -163,13 +163,13 @@ export class CogbytesComponent implements OnInit {
     }
 
     // Delete File Dialog
-    deleteRepository(file: any) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+    deleteRepository(file?: any) {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFRIMREPOSITORYDETLETE;
+        dialogRef.componentInstance.confirmMessage = CONFRIMREPOSITORYDETLETE;
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 this.cogbytesService.deleteRepository(this.getRep().id).map((res: any) => {
@@ -179,7 +179,7 @@ export class CogbytesComponent implements OnInit {
                 this.repModel = null;
             }
             //this.dialogRef = null;
-            this.dialogRef.close();
+            dialogRef.close();
         });
     }
 
@@ -240,9 +240,9 @@ export class CogbytesComponent implements OnInit {
             this.showGeneratedLink = true;
             var guid = data.repoLinkGuid;
 
-            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
 
         });
 
