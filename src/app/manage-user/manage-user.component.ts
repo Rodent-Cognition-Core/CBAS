@@ -72,7 +72,8 @@ export class ManageUserComponent implements OnInit {
     filterByString(data : any, s : string): any {
         s = s.trim();
         //console.log(s.toString());
-        return data.filter((e : any) => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
+        const dataArray = Array.isArray(data.result) ? data.result : [];
+        return dataArray.filter((e : any) => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
         //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
 
