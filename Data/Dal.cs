@@ -900,7 +900,7 @@ namespace AngularSPAWebAPI.Services
 
         public static async Task<DataTable> GetDataTableAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
         {
-            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt, cmdParams);
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt);
             if (ds != null && ds.Tables.Count > 0)
             {
                 return ds.Tables[0];
@@ -909,25 +909,26 @@ namespace AngularSPAWebAPI.Services
             return null;
         }
 
-        public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
-        {
-            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString_PubScreen, cmdTxt, cmdParams);
-            if (ds != null && ds.Tables.Count > 0)
-            {
-                return ds.Tables[0];
-            }
+        //public static async Task<DataTable> GetDataTablePubAsync(string cmdTxt)
+        //{
+        //    DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString_PubScreen, cmdTxt);
+        //    if (ds != null && ds.Tables.Count > 0)
+        //    {
+        //        return ds.Tables[0];
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt, List<SqlParameter> cmdParams = null)
+        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt)
         {
             using (SqlConnection cn = new SqlConnection(connectionString))
             {
                 try
                 {
                     await cn.OpenAsync();
-                    return await ExecDSAsync(cn, cmdType, cmdTxt, cmdParams?.ToArray());
+                    DataSet ds = await ExecDSAsync(cn, cmdType, cmdTxt);
+                    return ds;
                 }
                 catch (SqlException ex)
                 {
