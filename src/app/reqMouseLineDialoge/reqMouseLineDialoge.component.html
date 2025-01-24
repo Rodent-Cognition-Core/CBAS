@@ -44,7 +44,7 @@
 
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="geneticModificationModel==='Transgenic' || geneticModificationModel === 'KnockIn' || geneticModificationModel === 'KnockOut'">
+        <mat-form-field class="full-width" *ngIf="geneticModi.value==='Transgenic' || geneticModi.value === 'KnockIn' || geneticModi.value === 'KnockOut'">
             <textarea matInput placeholder="Enter all the possible control suggestions for the strain separated by comma:" [(ngModel)]="controlModel" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
 

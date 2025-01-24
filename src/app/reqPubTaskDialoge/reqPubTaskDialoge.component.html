@@ -37,7 +37,7 @@
 
         </mat-form-field>&nbsp;&nbsp;&nbsp;
 
-        <mat-form-field *ngIf="reqTaskCategoryModel=='None'" style="width:48%;">
+        <mat-form-field *ngIf="taskCategory.value=='None'" style="width:48%;">
             <input matInput placeholder="New Task Category" [formControl]="newCategory" required>
             <mat-error *ngIf="newCategory.invalid">{{getErrorMessageNewCategory()}}</mat-error>
         </mat-form-field>

@@ -31,7 +31,8 @@ export class CogbytesPIDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
          
         private cogbytesService: CogbytesService,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
         this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")])
         this.piName = fb.control('', [Validators.required])
         this.institution = fb.control('', [Validators.required])

@@ -29,7 +29,8 @@ export class AuthorDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
          
         private pubScreenService: PubScreenService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.authorName = fb.control('', [Validators.required])
         this.authorLastName = fb.control('', [Validators.required])

@@ -29,7 +29,7 @@
                         <br /> <br />
 
                         <!--Adding Paper option for pubmed-->
-                        <mat-radio-group [formControl]="addingOption" required *ngIf="sourceOptionModel == 1">
+                        <mat-radio-group [formControl]="addingOption" required *ngIf="sourceOption.value == 1">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-radio-button value="2" (change)="resetFormVals()">PubMedID</mat-radio-button>
@@ -37,14 +37,14 @@
                         </mat-radio-group>
 
                         <!--Adding Paper option for bioRxiv-->
-                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOptionModel == 2">
+                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value == 2">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
                         </mat-radio-group>
 
                         <!--Adding Paper option for crossRef-->
-                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOptionModel == 3">
+                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value == 3">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
@@ -53,45 +53,45 @@
 
                         <!--Submitting Paper DOI to get Author List, Title, Abstract, Year, Keywords -->
                         <!--Paper DOI if DOI is available for pubMed-->
-                        <mat-form-field *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'">
+                        <mat-form-field *ngIf="addingOption.value=='1' && sourceOption.value=='1'">
 
                             <input matInput placeholder="Paper's DOI" [formControl]="doiKey" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKey()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="addingOptionModel=='1' && sourceOptionModel=='1'" matTooltip="Add DOI to get some information of paper from pubMed" (click)="addDOI(doiKeyModel)" [disabled]="setDisabledAddDOI()">Add DOI</button>
+                        <button mat-raised-button *ngIf="addingOption.value=='1' && sourceOption.value=='1'" matTooltip="Add DOI to get some information of paper from pubMed" (click)="addDOI(doiKey.value)" [disabled]="setDisabledAddDOI()">Add DOI</button>
 
                         <!--Paper's PubMedID if PubmedID is available for pubMed-->
-                        <mat-form-field *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'">
+                        <mat-form-field *ngIf="addingOption.value=='2' && sourceOption.value=='1'">
 
                             <input matInput placeholder="Paper's PubMedID" [formControl]="pubMedKey" required>
                             <mat-error *ngIf="pubMedKey.invalid">{{getErrorMessagePubMedKey()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="addingOptionModel=='2' && sourceOptionModel=='1'" matTooltip="Add PubMedID to get some information of paper from pubMed" (click)="addPubMedID(PubMedKeyModel)" [disabled]="setDisabledAddPubMedID()">Add PubMedID</button>
+                        <button mat-raised-button *ngIf="addingOption.value=='2' && sourceOption.value=='1'" matTooltip="Add PubMedID to get some information of paper from pubMed" (click)="addPubMedID(pubMedKey.value)" [disabled]="setDisabledAddPubMedID()">Add PubMedID</button>
 
                         <!--Paper's PubMedID if PubmedID is available for bioRxiv-->
-                        <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'">
+                        <mat-form-field *ngIf="bioAddingOption.value=='1' && sourceOption.value=='2'">
 
                             <input matInput placeholder="Paper's DOI" [formControl]="doiKeyBio" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKeyBio()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
+                        <button mat-raised-button *ngIf="bioAddingOption.value=='1' && sourceOption.value=='2'" matTooltip="Add DOI to get some information of paper from bioRxiv" (click)="addDOIBio(doiKeyBio.value)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
 
                         <!--Paper's DOI if DOI is available for Crossref-->
-                        <mat-form-field *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'">
+                        <mat-form-field *ngIf="bioAddingOption.value=='1' && sourceOption.value=='3'">
 
                             <input matInput placeholder="Paper's DOI" [formControl]="doiKeyBio" required>
                             <mat-error *ngIf="doiKey.invalid">{{getErrorMessageDOIKeyBio()}}</mat-error>
 
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="bioAddingOptionModel=='1' && sourceOptionModel=='3'" matTooltip="Add DOI to get some information of paper from Crossref" (click)="addDOICrossref(bioDoiKeyModel)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
+                        <button mat-raised-button *ngIf="bioAddingOption.value=='1' && sourceOption.value=='3'" matTooltip="Add DOI to get some information of paper from Crossref" (click)="addDOICrossref(doiKeyBio.value)" [disabled]="setDisabledAddDOIBio()">Add DOI</button>
                         <br />
                     </div>
 
                     <!--Paper Author if either pubmedI or DOI is not available-->
-                    <div *ngIf="sourceOptionModel=='4' || isEditMode">
+                    <div *ngIf="sourceOption.value=='4' || isEditMode">
                         <mat-form-field>
                             <mat-select [formControl]="author" placeholder="Select Author" required multiple>
 
@@ -104,13 +104,13 @@
                             <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
                         </mat-form-field>&nbsp;
 
-                        <button mat-icon-button *ngIf="sourceOptionModel=='4'" matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
+                        <button mat-icon-button *ngIf="sourceOption.value=='4'" matTooltip="Add new author" (click)="openDialogAuthor()"><mat-icon>add</mat-icon></button>
 
                         <br /><br />
                     </div>
 
                     <!--Paper Author-->
-                    <mat-form-field style="width:62%" *ngIf="sourceOptionModel!='4' && !isEditMode">
+                    <mat-form-field style="width:62%" *ngIf="sourceOption.value!='4' && !isEditMode">
 
                         <textarea matInput placeholder="Paper's Author" [(ngModel)]="authorModel2" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     
@@ -119,7 +119,7 @@
                     </mat-form-field>
 
                     <!--paper reference-->
-                    <mat-form-field [ngStyle]="{'width': '31%', 'padding-left': (data.publicationObj!=null) ? '0px' : '30px'}" *ngIf="sourceOptionModel!='4'">
+                    <mat-form-field [ngStyle]="{'width': '31%', 'padding-left': (data.publicationObj!=null) ? '0px' : '30px'}" *ngIf="sourceOption.value!='4'">
 
                         <textarea matInput placeholder="Paper's Reference" [(ngModel)]="referenceModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4">
     

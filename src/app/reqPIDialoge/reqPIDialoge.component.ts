@@ -33,7 +33,8 @@ export class ReqPIDialogeComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
          
         private requestService: RequestService,
-        private fb: FormBuilder) {
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.name = fb.control('', [Validators.required]);
         this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);

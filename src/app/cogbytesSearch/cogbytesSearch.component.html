@@ -111,7 +111,7 @@
                             <mat-form-field style="width:14%; padding-left:30px">
 
                                 <mat-select placeholder="Year To" [formControl]="yearTo"
-                                            (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
+                                            (selectionChange)="selectYearToChange(yearFromSearchModel, yearTo.value)">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
                                     </mat-option>
