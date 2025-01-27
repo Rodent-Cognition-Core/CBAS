@@ -115,7 +115,10 @@
             <!--Repository List-->
             <mat-form-field class="full-width">
                 <mat-select matInput placeholder="Repository List" [(ngModel)]="repModel">
-                    <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+
+                    <mat-option>
+                        <ngx-mat-select-search placeholderLabel="Search based on title" noEntriesFoundLabel="Result not found!" [formControl]="repMultiFilterCtrl"></ngx-mat-select-search>
+                    </mat-option>
 
                     <mat-option *ngFor="let rep of filteredRepList | async" [value]="rep.repoLinkGuid">
                         <span matTooltip="{{rep.title}}">{{rep.title}}</span>
