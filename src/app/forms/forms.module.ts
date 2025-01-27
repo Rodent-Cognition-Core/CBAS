@@ -4,34 +4,34 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsComponent } from './forms.component';
 import { RequestService } from '../services/request.service';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
 
 
 
 @NgModule({
-    imports: [
-        FormsRoutingModule,
-        SharedModule,
-        MatDialogModule,
-        MatButtonModule,
-       
-        
+  imports: [
+    FormsRoutingModule,
+    SharedModule,
+    MatDialogModule,
+    MatButtonModule,
 
-    ],
-    declarations: [
-        FormsComponent,
-        
-    ],
-    providers: [
-        RequestService,
-        
-        
-    ],
 
-    bootstrap: [FormsComponent],
 
-    exports: [FormsComponent],
+  ],
+  declarations: [
+    FormsComponent,
+
+  ],
+  providers: [
+    RequestService,
+
+
+  ],
+
+  bootstrap: [FormsComponent],
+
+  exports: [FormsComponent],
 
 })
-export class FormsModule { } 
+export class FormsModule { }
 

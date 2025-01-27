@@ -1,158 +1,152 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-//import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqMouseLineDialoge',
-    templateUrl: './reqMouseLineDialoge.component.html',
-    styleUrls: ['./reqMouseLineDialoge.component.scss'],
-    providers: [RequestService]
+  selector: 'app-reqMouseLineDialoge',
+  templateUrl: './reqMouseLineDialoge.component.html',
+  styleUrls: ['./reqMouseLineDialoge.component.scss'],
+  providers: [RequestService]
 
 })
 export class ReqMouseLineDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  // Defining Models Parameters
 
-    reqGenoModel: string;
-    refModel: string
-    controlModel: string
-   
-   // DEfining obj model parameters        
-    private _request: Request;
+  reqGenoModel: string;
+  refModel: string;
+  controlModel: string;
 
-    // FormControl Parameters
+  // DEfining obj model parameters
+  private _request: Request;
 
-    name: FormControl;
-    email: FormControl;
-    strain: FormControl;
-    geneticModi: FormControl;
-    //control = new FormControl('', [Validators.required]);
-    
+  // FormControl Parameters
 
-    // List of GeneticModification for Mouse line
-    public geneticModification: any[] = [
-           
-        { name: 'Transgenic' },
-        { name: 'WildType' },
-        { name: 'KnockIn' },
-        { name: 'KnockOut' }
-        
-    ];
-    
-
-    constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
-         
-        private requestService: RequestService,
-        private fb: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-
-        this.reqGenoModel = '';
-        this.refModel = '';
-        this.controlModel = '';
-        this.name = fb.control('', [Validators.required]);
-        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-        this.strain = fb.control('', [Validators.required]);
-        this.geneticModi = fb.control('', [Validators.required])
-        this._request = {
-            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-            subModel: '', taskCategory: '', taskName: '', type: ''
-        }
-    }
-
-    ngOnInit() {
-      
-    }
-
-    onCloseCancel(): void {
+  name: FormControl;
+  email: FormControl;
+  strain: FormControl;
+  geneticModi: FormControl;
+  // control = new FormControl('', [Validators.required]);
 
 
-        this.thisDialogRef.close('Cancel');
+  // List of GeneticModification for Mouse line
+  public geneticModification: any[] = [
 
-    }
+    { name: 'Transgenic' },
+    { name: 'WildType' },
+    { name: 'KnockIn' },
+    { name: 'KnockOut' }
 
-    onCloseSubmit(): void {
-
-        // building request object
-        this._request.fullName = this.name.value;
-        this._request.email = this.email.value;
-        this._request.mouseStrain = this.strain.value;
-        this._request.genotype = this.reqGenoModel;
-        this._request.geneticModification = this.geneticModi.value;
-        this._request.strainReference = this.refModel;
-        this._request.controlSuggestion = this.controlModel;
-
-        
-        // Submiting the request to server
-        this.requestService.addMouseLine(this._request).subscribe( this.thisDialogRef.close()); 
-       
-    }
+  ];
 
 
-    getErrorMessage()
-    {
+  constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
 
-        return this.name.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+    private requestService: RequestService,
+    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    getErrorMessageEmail()
-    {
+    this.reqGenoModel = '';
+    this.refModel = '';
+    this.controlModel = '';
+    this.name = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.strain = fb.control('', [Validators.required]);
+    this.geneticModi = fb.control('', [Validators.required]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+      subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-        return this.email.hasError('required') ? FIELDISREQUIRED :
-            '';
+  ngOnInit() {
 
-    }
-    
-    getErrorMessageEmailValid()
-    {
+  }
 
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
+  onCloseCancel(): void {
 
-    getErrorMessageStrain() {
-        return this.strain.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
 
-    getErrorMessageGM() {
+    this.thisDialogRef.close('Cancel');
 
-        return this.geneticModi.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  }
 
-    //getErrorMessageControl() {
-    //    return this.control.hasError('required') ? 'You must enter a value' :
-    //        '';
-    //}
+  onCloseSubmit(): void {
 
-      
-    setDisabledVal()
-    {
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.mouseStrain = this.strain.value;
+    this._request.genotype = this.reqGenoModel;
+    this._request.geneticModification = this.geneticModi.value;
+    this._request.strainReference = this.refModel;
+    this._request.controlSuggestion = this.controlModel;
 
-        if (this.name.hasError('required') ||
+
+    // Submiting the request to server
+    this.requestService.addMouseLine(this._request).subscribe( this.thisDialogRef.close());
+
+  }
+
+
+  getErrorMessage() {
+
+    return this.name.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageEmail() {
+
+    return this.email.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+  getErrorMessageEmailValid() {
+
+    return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+  getErrorMessageStrain() {
+    return this.strain.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageGM() {
+
+    return this.geneticModi.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  // getErrorMessageControl() {
+  //    return this.control.hasError('required') ? 'You must enter a value' :
+  //        '';
+  // }
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
             this.strain.hasError('required') ||
             this.geneticModi.hasError('required')
-                                   
-        )
 
-        {
-            return true;
-        }
-
-        return false;
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

@@ -6,12 +6,12 @@ import { ContactUsComponent } from './contact-us.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: ContactUsComponent, pathMatch: 'full' }
+  { path: '', component: ContactUsComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class ContactUsRoutingModule { } 
+export class ContactUsRoutingModule { }
 

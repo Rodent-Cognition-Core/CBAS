@@ -6,12 +6,12 @@ import { SharedModule } from '../shared/shared.module';
 import { ResourcesComponent } from './resources.component';
 
 @NgModule({
-    imports: [
-        ResourcesRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        ResourcesComponent
-    ]
+  imports: [
+    ResourcesRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    ResourcesComponent
+  ]
 })
 export class ResourcesModule { }

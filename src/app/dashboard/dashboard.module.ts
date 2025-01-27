@@ -10,13 +10,13 @@ import { AnimalService } from '../services/animal.service';
 import { ExperimentService } from '../services/experiment.service';
 
 @NgModule({
-    imports: [
-        DashboardRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        DashboardComponent
-    ],
-    providers: [DashboardService, UploadService, PagerService, AnimalService, ExperimentService,]
+  imports: [
+    DashboardRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    DashboardComponent
+  ],
+  providers: [DashboardService, UploadService, PagerService, AnimalService, ExperimentService, ]
 })
 export class DashboardModule { }

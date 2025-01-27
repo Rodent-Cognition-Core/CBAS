@@ -6,11 +6,11 @@ import { CogbytesUploadComponent } from './cogbytesUpload.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: CogbytesUploadComponent, pathMatch: 'full'}
+  { path: '', component: CogbytesUploadComponent, pathMatch: 'full'}
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class CogbytesUploadRoutingModule { } 
+export class CogbytesUploadRoutingModule { }

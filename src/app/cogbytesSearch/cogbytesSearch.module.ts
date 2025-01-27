@@ -9,17 +9,17 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { CogbytesService } from '../services/cogbytes.service';
 
 @NgModule({
-    imports: [
-        CogbytesSearchRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        CogbytesSearchComponent
-    ],
-    providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService,],
+  imports: [
+    CogbytesSearchRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    CogbytesSearchComponent
+  ],
+  providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService, ],
 
-    bootstrap: [CogbytesSearchComponent],
+  bootstrap: [CogbytesSearchComponent],
 
-    exports: [CogbytesSearchComponent],
+  exports: [CogbytesSearchComponent],
 })
 export class CogbytesSearchModule { }

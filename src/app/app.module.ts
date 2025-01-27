@@ -28,11 +28,11 @@ import { ReqGeneralDialogeComponent } from './reqGeneralDialoge/reqGeneralDialog
 import { ReqPubTaskDialogeComponent } from './reqPubTaskDialoge/reqPubTaskDialoge.component';
 import { ReqPubModelDialogeComponent } from './reqPubModelDialoge/reqPubModelDialoge.component';
 import { ReqPubSubMethodDialogeComponent } from './reqPubSubMethodDialoge/reqPubSubMethodDialoge.component';
-import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
+import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component';
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
-import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
-import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
-import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
+import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component';
+import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
+import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component';
 
 
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
@@ -41,7 +41,7 @@ import { NotificationDialogComponent } from './notification-dialog/notification-
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
 
 
-import { NgxSpinnerModule } from 'ngx-spinner'
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -52,107 +52,107 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollService } from './shared/scroll.service';
 import { CountUpModule } from 'ngx-countup';
 
-import { DropzoneModule } from 'ngx-dropzone-wrapper'
-import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper'
-import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper'
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
-import { RouterModule, Routes } from '@angular/router'
-//import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
-//import { DataLinkComponent } from './data-link/data-link.component';
-//import { GenomicsComponent } from './genomics/genomics.component';
-//import { DownloadDsComponent } from './download-ds/download-ds.component';
+import { RouterModule, Routes } from '@angular/router';
+// import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
+// import { DataLinkComponent } from './data-link/data-link.component';
+// import { GenomicsComponent } from './genomics/genomics.component';
+// import { DownloadDsComponent } from './download-ds/download-ds.component';
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
-    return () => oAuthConfig.load();
+  return () => oAuthConfig.load();
 }
 
-//declare global {
-  //  interface Navigator {
-  //      msSaveBlob?: (blob: any, defaultName?: string) => boolean
-  //  }
-//}
+// declare global {
+//  interface Navigator {
+//      msSaveBlob?: (blob: any, defaultName?: string) => boolean
+//  }
+// }
 
-//declare global {
+// declare global {
 //    interface Navigator {
 //        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
 //    }
-//}
+// }
 
-//const ROUTES: Routes = [
+// const ROUTES: Routes = [
 //    { path: '', component: HomeComponent },
 //    { path: 'guidline-datalab', component: GuidelineDataLabComponent },
 //    { path: 'data-link', component: DataLinkComponent },
 //    { path: 'genomics', component: GenomicsComponent },
 //    { path: 'download-dataset', component: DownloadDsComponent },
-//];
+// ];
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        //RouterModule.forRoot(ROUTES),
-        BrowserAnimationsModule,
-        SharedModule,
-        OAuthModule.forRoot(),
-        NgxSpinnerModule,
-        FlexLayoutModule,
-        CarouselModule,
-        CountUpModule,
-        FontAwesomeModule,
-        DropzoneModule,
-        Angulartics2Module.forRoot(),
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    // RouterModule.forRoot(ROUTES),
+    BrowserAnimationsModule,
+    SharedModule,
+    OAuthModule.forRoot(),
+    NgxSpinnerModule,
+    FlexLayoutModule,
+    CarouselModule,
+    CountUpModule,
+    FontAwesomeModule,
+    DropzoneModule,
+    Angulartics2Module.forRoot(),
 
 
-    ],
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        ExpDialogeComponent,
-        PubscreenDialogeComponent,
-        AnimalDialogComponent,
-        PasswordDialogComponent,
-        ReqTaskDialogeComponent,
-        ReqPIDialogeComponent,
-        ReqAgeDialogeComponent,
-        ReqMouseLineDialogeComponent,
-        ReqGeneralDialogeComponent,
-        ReqPubTaskDialogeComponent,
-        ReqPubModelDialogeComponent,
-        ReqPubSubMethodDialogeComponent,
-        TermsDialogeComponent,
-        AuthorDialogeComponent,
-        UploadResultDialogComponent,
-        DeleteConfirmDialogComponent,
-        GenericDialogComponent,
-        SubExpDialogeComponent,
-        NotificationDialogComponent,
-        CogbytesDialogueComponent,
-        CogbytesAuthorDialogueComponent,
-        CogbytesPIDialogeComponent,
+  ],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ExpDialogeComponent,
+    PubscreenDialogeComponent,
+    AnimalDialogComponent,
+    PasswordDialogComponent,
+    ReqTaskDialogeComponent,
+    ReqPIDialogeComponent,
+    ReqAgeDialogeComponent,
+    ReqMouseLineDialogeComponent,
+    ReqGeneralDialogeComponent,
+    ReqPubTaskDialogeComponent,
+    ReqPubModelDialogeComponent,
+    ReqPubSubMethodDialogeComponent,
+    TermsDialogeComponent,
+    AuthorDialogeComponent,
+    UploadResultDialogComponent,
+    DeleteConfirmDialogComponent,
+    GenericDialogComponent,
+    SubExpDialogeComponent,
+    NotificationDialogComponent,
+    CogbytesDialogueComponent,
+    CogbytesAuthorDialogueComponent,
+    CogbytesPIDialogeComponent,
 
-    ],
-    exports: [
+  ],
+  exports: [
 
-     ],
-    providers: [
-        Title,
-        OAuthConfig,
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initOAuth,
-            deps: [OAuthConfig],
-            multi: true
-        },
-        AuthGuard,
-        AuthenticationService,
-        IdentityService,
-        PISiteService,
-        ManageUserService,
-        ScrollService,
+  ],
+  providers: [
+    Title,
+    OAuthConfig,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initOAuth,
+      deps: [OAuthConfig],
+      multi: true
+    },
+    AuthGuard,
+    AuthenticationService,
+    IdentityService,
+    PISiteService,
+    ManageUserService,
+    ScrollService,
 
-    ],
-    bootstrap: [AppComponent]
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

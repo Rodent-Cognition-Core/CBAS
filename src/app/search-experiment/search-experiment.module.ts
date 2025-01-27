@@ -12,19 +12,19 @@ import { PagerService } from '../services/pager.service';
 // import { SharedExperimentComponent } from '../shared-experiment/shared-experiment.component';
 
 @NgModule({
-    imports: [
-        SearchExperimentRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        SearchExperimentComponent,
-        // SharedExperimentComponent
+  imports: [
+    SearchExperimentRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    SearchExperimentComponent,
+    // SharedExperimentComponent
 
-    ],
-    providers: [
-        SearchExperimentService, PagerService,
-    ],
+  ],
+  providers: [
+    SearchExperimentService, PagerService,
+  ],
 
-    exports: [SearchExperimentComponent]
+  exports: [SearchExperimentComponent]
 })
 export class SearchExperimentModule { }

@@ -1,27 +1,27 @@
 import { Component, OnInit, HostListener, NgModule } from '@angular/core';
 
-declare var $: any;
+declare let $: any;
 
 @Component({
-    selector: 'app-guideline',
-    templateUrl: './guideline.component.html',
-    styleUrls: ['./guideline.component.scss']
+  selector: 'app-guideline',
+  templateUrl: './guideline.component.html',
+  styleUrls: ['./guideline.component.scss']
 })
 export class GuidelineComponent implements OnInit {
 
-    showItem: boolean = false;
-    constructor() { }
+  showItem = false;
+  constructor() { }
 
-    ngOnInit() {
-        setTimeout(() => {
-            this.showItem = false;
-        });
-    }
+  ngOnInit() {
+    setTimeout(() => {
+      this.showItem = false;
+    });
+  }
 
-    ngAfterViewChecked() {
-        setTimeout(() => {
-            this.showItem = true;
-        });
-    }
+  ngAfterViewChecked() {
+    setTimeout(() => {
+      this.showItem = true;
+    });
+  }
 
 }

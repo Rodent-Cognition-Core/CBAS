@@ -6,11 +6,11 @@ import { PubScreenQueueComponent } from './pubScreenQueue.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: PubScreenQueueComponent, pathMatch: 'full'}
+  { path: '', component: PubScreenQueueComponent, pathMatch: 'full'}
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class PubScreenQueueRoutingModule { } 
+export class PubScreenQueueRoutingModule { }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Optional } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog'
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-terms',
@@ -8,7 +8,7 @@ import { MatDialogRef } from '@angular/material/dialog'
 })
 export class TermsComponent implements OnInit {
 
-    constructor(@Optional() public dialogRef: MatDialogRef<TermsComponent>) { }
+  constructor(@Optional() public dialogRef: MatDialogRef<TermsComponent>) { }
 
   ngOnInit() {
   }

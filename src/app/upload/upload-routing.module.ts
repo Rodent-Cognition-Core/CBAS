@@ -6,11 +6,11 @@ import { UploadComponent } from './upload.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: UploadComponent, pathMatch: 'full', canActivate: [AuthGuard] }
+  { path: '', component: UploadComponent, pathMatch: 'full', canActivate: [AuthGuard] }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class UploadRoutingModule { }

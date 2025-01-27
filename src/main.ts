@@ -5,16 +5,16 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 if (environment.production || environment.staging) {
-    enableProdMode();
+  enableProdMode();
 }
 
 declare const module: any;
 // Enables Hot Module Replacement.
 if (environment.hmr) {
-    if (module.hot) {
-        module.hot.accept();
-    }
+  if (module.hot) {
+    module.hot.accept();
+  }
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule)
-    .catch(err => console.log(err));
+  .catch(err => console.log(err));

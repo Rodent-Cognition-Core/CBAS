@@ -6,12 +6,12 @@ import { PubScreenEditComponent } from './pubScreenEdit.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: PubScreenEditComponent }
+  { path: '', component: PubScreenEditComponent }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class PubScreenEditRoutingModule { } 
+export class PubScreenEditRoutingModule { }
 

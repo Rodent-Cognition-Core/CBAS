@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-//import { NgModel } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-upload-result-dialog',
@@ -9,33 +9,33 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 })
 export class UploadResultDialogComponent implements OnInit {
 
-    uploadResultList: any;
-    expName: string;
+  uploadResultList: any;
+  expName: string;
 
-    constructor(public thisDialogRef: MatDialogRef<UploadResultDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-        this.expName = '';
-    }
-
-    
-
-    ngOnInit() {
-        this.uploadResultList = this.data.uploadResult;
-        this.expName = this.data.experimentName;
+  constructor(public thisDialogRef: MatDialogRef<UploadResultDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.expName = '';
   }
 
-    onCloseCancel(): void {
 
-        this.thisDialogRef.close('Cancel');
-    }
 
-    downloadFile() {
+  ngOnInit() {
+    this.uploadResultList = this.data.uploadResult;
+    this.expName = this.data.experimentName;
+  }
 
-    }
+  onCloseCancel(): void {
 
-    ResolveIssue() {
+    this.thisDialogRef.close('Cancel');
+  }
 
-    }
-   
+  downloadFile() {
+
+  }
+
+  ResolveIssue() {
+
+  }
+
 
 }

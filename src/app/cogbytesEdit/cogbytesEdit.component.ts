@@ -2,118 +2,118 @@ import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+// import { NgModel } from '@angular/forms';
+// import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { CogbytesService } from '../services/cogbytes.service'
+import { CogbytesService } from '../services/cogbytes.service';
 // import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
-//import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
+// import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
-    selector: 'app-cogbytesEdit',
-    templateUrl: './cogbytesEdit.component.html',
-    styleUrls: ['./cogbytesEdit.component.scss']
+  selector: 'app-cogbytesEdit',
+  templateUrl: './cogbytesEdit.component.html',
+  styleUrls: ['./cogbytesEdit.component.scss']
 })
 export class CogbytesEditComponent implements OnInit {
 
-    
-    repObj: any;
-    repoList: any;
-    uploadObj: any
- 
-    
-   
-    repoLinkGuid: string;
-    isAdmin: boolean;
-    isFullDataAccess: boolean;
-    panelOpenState: boolean;
-    
-   
-    public authorMultiFilterCtrl: FormControl = new FormControl();
-    public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    /** Subject that emits when the component has been destroyed. */
-    private _onDestroy = new Subject<void>();
 
-    constructor(public dialog: MatDialog,
-        private authenticationService: AuthenticationService,
-        private cogbytesService: CogbytesService,
-        private route: ActivatedRoute,
-        private spinnerService: NgxSpinnerService,
-        public dialogAuthor: MatDialog) {
+  repObj: any;
+  repoList: any;
+  uploadObj: any;
 
-        //this.isLoaded = false;
-        this.repoLinkGuid = '';
-        this.isAdmin = false;
-        this.isFullDataAccess = false;
-        this.panelOpenState = false;
-        this.route.queryParams.subscribe(params => {
-            this.repoLinkGuid = params['repolinkguid'].split(" ")[0];
 
-            this.GetDataByLinkGuid(this.repoLinkGuid);
-        });
 
-    }
+  repoLinkGuid: string;
+  isAdmin: boolean;
+  isFullDataAccess: boolean;
+  panelOpenState: boolean;
 
-    ngOnInit() {
 
-        this.isAdmin = this.authenticationService.isInRole("administrator");
-        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
-    }
+  public authorMultiFilterCtrl: FormControl = new FormControl();
+  public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  /** Subject that emits when the component has been destroyed. */
+  private _onDestroy = new Subject<void>();
 
-    GetDataByLinkGuid(repoLinkGuid: string) {
-        this.spinnerService.show();
+  constructor(public dialog: MatDialog,
+    private authenticationService: AuthenticationService,
+    private cogbytesService: CogbytesService,
+    private route: ActivatedRoute,
+    private spinnerService: NgxSpinnerService,
+    public dialogAuthor: MatDialog) {
 
-        this.cogbytesService.getDataByLinkGuid(repoLinkGuid).subscribe((data : any) => {
+    // this.isLoaded = false;
+    this.repoLinkGuid = '';
+    this.isAdmin = false;
+    this.isFullDataAccess = false;
+    this.panelOpenState = false;
+    this.route.queryParams.subscribe(params => {
+      this.repoLinkGuid = params['repolinkguid'].split(' ')[0];
 
-            this.repObj = data[0];
-            this.repoList = data;
-            //console.log(this.repObj);
-            //console.log(this.repoList);
+      this.GetDataByLinkGuid(this.repoLinkGuid);
+    });
 
-        });
+  }
 
-        this.spinnerService.hide();
+  ngOnInit() {
 
-    }
+    this.isAdmin = this.authenticationService.isInRole('administrator');
+    this.isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
+  }
 
-    // Downloading file
-    DownloadFile(file: any): void {
+  GetDataByLinkGuid(repoLinkGuid: string) {
+    this.spinnerService.show();
 
-        let path = file.permanentFilePath + '\\' + file.sysFileName;
-        this.cogbytesService.downloadFile(path)
-            .subscribe(result => {
+    this.cogbytesService.getDataByLinkGuid(repoLinkGuid).subscribe((data: any) => {
 
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
+      this.repObj = data[0];
+      this.repoList = data;
+      // console.log(this.repObj);
+      // console.log(this.repoList);
 
-                var fileData = new Blob([result]);
-                var csvURL = null;
+    });
 
-                csvURL = window.URL.createObjectURL(fileData);
+    this.spinnerService.hide();
 
-                var tempLink = document.createElement('a');
-                tempLink.href = csvURL;
-                tempLink.setAttribute('download', file.userFileName);
-                document.body.appendChild(tempLink);
-                tempLink.click();
+  }
 
-            },
-                error => {
-                    if (error.error instanceof Error) {
-                        console.log('An error occurred:', error.error.message);
-                    } else {
-                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
-                    }
-                });
-    }
+  // Downloading file
+  DownloadFile(file: any): void {
 
-   
+    const path = file.permanentFilePath + '\\' + file.sysFileName;
+    this.cogbytesService.downloadFile(path)
+      .subscribe(result => {
 
-   
-    
+        // console.log('downloadresult', result);
+        // let url = window.URL.createObjectURL(result);
+        // window.open(url);
+
+        const fileData = new Blob([result]);
+        let csvURL = null;
+
+        csvURL = window.URL.createObjectURL(fileData);
+
+        const tempLink = document.createElement('a');
+        tempLink.href = csvURL;
+        tempLink.setAttribute('download', file.userFileName);
+        document.body.appendChild(tempLink);
+        tempLink.click();
+
+      },
+      error => {
+        if (error.error instanceof Error) {
+          console.log('An error occurred:', error.error.message);
+        } else {
+          console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+        }
+      });
+  }
+
+
+
+
+
 
 }

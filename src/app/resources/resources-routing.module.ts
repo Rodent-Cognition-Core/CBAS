@@ -6,11 +6,11 @@ import { ResourcesComponent } from './resources.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: ResourcesComponent, pathMatch: 'full', canActivate: [AuthGuard] }
+  { path: '', component: ResourcesComponent, pathMatch: 'full', canActivate: [AuthGuard] }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class ResourcesRoutingModule { }

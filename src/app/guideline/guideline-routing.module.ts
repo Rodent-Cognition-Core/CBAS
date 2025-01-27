@@ -6,12 +6,12 @@ import { GuidelineComponent } from './guideline.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: GuidelineComponent, pathMatch: 'full' }
+  { path: '', component: GuidelineComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class GuidelineRoutingModule { } 
+export class GuidelineRoutingModule { }
 

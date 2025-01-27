@@ -10,18 +10,18 @@ import { CountUpModule } from 'ngx-countup';
 
 
 @NgModule({
-    imports: [
-        PubSCreenRoutingModule,
-        SharedModule,
-        CountUpModule
-    ],
-    declarations: [
-        PubScreenComponent
-    ],
-    providers: [ManageUserService, PubScreenService, IdentityService,],
+  imports: [
+    PubSCreenRoutingModule,
+    SharedModule,
+    CountUpModule
+  ],
+  declarations: [
+    PubScreenComponent
+  ],
+  providers: [ManageUserService, PubScreenService, IdentityService, ],
 
-    bootstrap: [PubScreenComponent],
+  bootstrap: [PubScreenComponent],
 
-    exports: [PubScreenComponent],
+  exports: [PubScreenComponent],
 })
 export class PubScreenModule { }

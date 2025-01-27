@@ -8,13 +8,13 @@ import { IdentityService } from '../services/identity.service';
 import { PagerService } from '../services/pager.service';
 
 @NgModule({
-    imports: [
-        ManageUserRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        ManageUserComponent
-    ],
-    providers: [ManageUserService, PagerService, IdentityService,]
+  imports: [
+    ManageUserRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    ManageUserComponent
+  ],
+  providers: [ManageUserService, PagerService, IdentityService, ]
 })
 export class ManageUserModule { }

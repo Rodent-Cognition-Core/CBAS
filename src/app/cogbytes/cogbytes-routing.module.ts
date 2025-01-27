@@ -6,11 +6,11 @@ import { CogbytesComponent } from './cogbytes.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: CogbytesComponent, pathMatch: 'full' }
+  { path: '', component: CogbytesComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class CogbytesRoutingModule { } 
+export class CogbytesRoutingModule { }

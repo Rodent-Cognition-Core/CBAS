@@ -8,15 +8,15 @@ import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 
 @NgModule({
-    imports: [
-        PubScreenQueueRoutingModule,
-        SharedModule
-    ],
-    declarations: [
-        PubScreenQueueComponent
-    ],
-    providers: [ManageUserService, PubScreenService, IdentityService,],
+  imports: [
+    PubScreenQueueRoutingModule,
+    SharedModule
+  ],
+  declarations: [
+    PubScreenQueueComponent
+  ],
+  providers: [ManageUserService, PubScreenService, IdentityService, ],
 
-    bootstrap: [PubScreenQueueComponent],
+  bootstrap: [PubScreenQueueComponent],
 })
 export class PubScreenQueueModule { }

@@ -6,12 +6,12 @@ import { GenomicsComponent } from './genomics.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: GenomicsComponent, pathMatch: 'full' }
+  { path: '', component: GenomicsComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
-export class GenomicsRoutingModule { } 
+export class GenomicsRoutingModule { }
 
