@@ -30,6 +30,6 @@
         "enableIvy": true,
         "fullTemplateTypeCheck": true
     },
-    "include": [ "src/**/*.ts" ],
-    "exclude":  ["node_modules", "dist", "test.ts", "**/*.spec.ts"]
+    "include": [ "src/**/*.ts", "**/*.spec.ts", "src/**/*.html" ],
+    "exclude":  ["node_modules", "dist", "test.ts"]
 }
