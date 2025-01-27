@@ -20,11 +20,11 @@
               "src/assets"
             ],
             "styles": [
-                "src/styles.scss",
-                "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+              "src/styles.scss",
+              "src/thirdparties/owl.carousel-modified.css",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
-            "scripts": [ ],
+            "scripts": [],
             "aot": false,
             "vendorChunk": true,
             "extractLicenses": false,
@@ -102,12 +102,21 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-                "src/styles.scss",
-                "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+              "src/styles.scss",
+              "src/thirdparties/owl.carousel-modified.css",
+              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "assets": [
               "src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
@@ -131,7 +140,8 @@
   "cli": {
     "warnings": {
       "typescriptMismatch": false
-    }
+    },
+    "defaultCollection": "@angular-eslint/schematics"
   },
   "schematics": {
     "@schematics/angular:component": {
