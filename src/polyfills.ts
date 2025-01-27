@@ -34,9 +34,6 @@ import 'core-js/es/map';
 import 'core-js/es/weak-map';
 import 'core-js/es/set';
 
-/** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run `npm install --save classlist.js`.
-
 
 /** Evergreen browsers require these. **/
 // Used for reflect-metadata in JIT. If you use AOT (and only Angular decorators), you can remove.
