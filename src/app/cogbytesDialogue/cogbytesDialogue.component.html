@@ -26,8 +26,9 @@
                             <!--Author-->
                             <mat-form-field style="width: 40%">
                                 <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" (openedChange)="GetAuthorList()" required multiple>
-
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
@@ -44,7 +45,9 @@
                             <mat-form-field style="width: 40%">
                                 <mat-select [formControl]="pi" placeholder="Select PI(s)" (openedChange)="GetPIList()" required multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
                                         {{pi.piFullName}}

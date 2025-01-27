@@ -40,7 +40,10 @@
                     <!--Experiment dropDown-->
                     <mat-form-field *ngIf="task.value!=null">
                         <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
+
+                            <mat-option>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
+                            </mat-option>
                             <mat-option disabled="disabled" class="filter-option">
                                 <button mat-raised-button
                                         class="mat-primary fill text-sm"
@@ -97,8 +100,9 @@
                     <!--Dynamic markerInfo Features-->
                     <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
                         <mat-select [formControl]="markerinfo" placeholder="Select the required features" (selectionChange)="getAnimalInfo(exp.value)" multiple>
-
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
+                            <mat-option>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
+                            </mat-option>
 
                             <mat-option *ngFor="let markerinfo of filteredMarkerInfoList | async" [value]="markerinfo">
                                 <span matTooltip="{{markerinfo}}">{{markerinfo}}</span>
