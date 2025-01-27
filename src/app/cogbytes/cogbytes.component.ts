@@ -28,7 +28,7 @@ import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 
 export class CogbytesComponent implements OnInit {
 
-  readonly DATASET = 1;
+  readonly dATASET = 1;
   public uploadKey: number;
   panelOpenState: boolean;
   showGeneratedLink: boolean;
@@ -88,8 +88,8 @@ export class CogbytesComponent implements OnInit {
       this.cogbytesService.getRepositories().subscribe((data: any) => {
         this.repList = data; /* console.log(data) */
       });
-      this.GetAuthorList();
-      this.GetPIList();
+      this.getAuthorList();
+      this.getPIList();
     }
   }
 
@@ -103,16 +103,16 @@ export class CogbytesComponent implements OnInit {
 
   }
 
-  GetRepositories() {
-    this.GetAuthorList();
-    this.GetPIList();
+  getRepositories() {
+    this.getAuthorList();
+    this.getPIList();
     this.cogbytesService.getRepositories().subscribe((data: any) => {
       this.repList = data;
     });
     // return this.repList;
   }
 
-  GetUploads(event?: any) {
+  getUploads(event?: any) {
     if (this.repModel != null) {
       const repID = this.getRep().id;
       this.cogbytesService.getUploads(repID).subscribe((data: any) => {
@@ -121,13 +121,13 @@ export class CogbytesComponent implements OnInit {
     }
   }
 
-  ClosePanel(event?: any) {
+  closePanel(event?: any) {
     this.panelOpenState = false;
   }
 
-  NewUpload(event?: any) {
-    this.GetUploads();
-    this.ClosePanel();
+  newUpload(event?: any) {
+    this.getUploads();
+    this.closePanel();
   }
 
 
@@ -145,7 +145,7 @@ export class CogbytesComponent implements OnInit {
     dialogref.afterClosed().subscribe(result => {
       // console.log('the dialog was closed');
       this.repModel = null;
-      this.GetRepositories();
+      this.getRepositories();
 
     });
   }
@@ -165,7 +165,7 @@ export class CogbytesComponent implements OnInit {
 
     dialogref.afterClosed().subscribe(result => {
       // console.log('the dialog was closed');
-      this.GetRepositories();
+      this.getRepositories();
     });
   }
 
@@ -197,7 +197,7 @@ export class CogbytesComponent implements OnInit {
   }
 
 
-  GetAuthorList() {
+  getAuthorList() {
 
 
     this.cogbytesService.getAuthor().subscribe((data: any) => {
@@ -208,7 +208,7 @@ export class CogbytesComponent implements OnInit {
   }
 
 
-  GetPIList() {
+  getPIList() {
 
     this.cogbytesService.getPI().subscribe((data: any) => {
       this.piList = data;
@@ -234,13 +234,13 @@ export class CogbytesComponent implements OnInit {
 
   // Function for getting string of repository PIs
   getRepPIString(rep: any) {
-    let PIString = '';
+    let piString = '';
     for (const id of rep.piid) {
-      PIString += this.piList[this.piList.map(function (x: any) {
+      piString += this.piList[this.piList.map(function (x: any) {
         return x.id;
       }).indexOf(id)].piFullName + ', ';
     }
-    return PIString.slice(0, -2);
+    return piString.slice(0, -2);
   }
 
   getRep(): any {

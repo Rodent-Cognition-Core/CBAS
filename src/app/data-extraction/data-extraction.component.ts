@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject, Renderer2 } from '@angular/core';
 // import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -30,19 +30,22 @@ declare let $: any;
 export class DataExtractionComponent implements OnInit {
   // private formBuilder = inject(FormBuilder);
 
+  public filteredExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
   taskList: any;
   expList: any;
   subTakList: any;
   markerInfoList: any;
-  AnimalInfoListAge: any;
-  AnimalInfoListSex: any;
-  AnimalInfoListGenotype: any;
-  AnimalInfoListStrain: any;
+  animalInfoListAge: any;
+  animalInfoListSex: any;
+  animalInfoListGenotype: any;
+  animalInfoListStrain: any;
   subSessionList: any[] = [];
   genoIDList: number[] = [];
   _geno: Geno;
   filteredGenoList: any[] = [];
-  InterventionList: any[] = [];
+  interventionList: any[] = [];
   speciesList: any;
 
   // ngModels vars
@@ -63,7 +66,7 @@ export class DataExtractionComponent implements OnInit {
   exp: FormControl;
   sessioninfo: FormControl;
   markerinfo: FormControl;
-  PISite: FormControl;
+  piSite: FormControl;
   aggFunc: FormControl;
   species: FormControl;
   // });
@@ -116,7 +119,11 @@ export class DataExtractionComponent implements OnInit {
   public expMultiCtrl: FormControl = new FormControl();
   /** control for the MatSelect filter keyword multi-selection */
   public expMultiFilterCtrl: FormControl = new FormControl();
-  public MarkerInfoMultiFilterCtrl: FormControl = new FormControl();
+  public markerInfoMultiFilterCtrl: FormControl = new FormControl();
+
+
+
+  private _onDestroy = new Subject<void>();
 
   // dataSource: MatTableDataSource<Element[]>;
 
@@ -130,13 +137,14 @@ export class DataExtractionComponent implements OnInit {
     public uploadService: UploadService,
     private expDialogeService: ExpDialogeService,
     private fb: FormBuilder,
-    public dialogRefLink: MatDialog
+    public dialogRefLink: MatDialog,
+    private renderer: Renderer2
   ) {
     this.colNames = [];
     this.showGeneratedLink = false;
     this.termsChecked = false;
     this.pagedItems = [];
-    this._geno = { Description: '', Genotype: '', ID: 0, Link: '' };
+    this._geno = { description: '', genotype: '', id: 0, link: '' };
     this._dataExtractionObj = {
       ageVals: [], aggNames: '', expIDs: [], genotypeVals: [], isTrialByTrials: false, markerInfoNames: [], pisiteIDs: [],
       sessionInfoNames: [], sessionName: [], sexVals: [], species: '', speciesID: 0, strainVals: [], subExpID: [], subtaskID: 0,
@@ -147,10 +155,22 @@ export class DataExtractionComponent implements OnInit {
     this.exp = fb.control('', [Validators.required]);
     this.sessioninfo = fb.control('', [Validators.required]);
     this.markerinfo = fb.control('', [Validators.required]);
-    this.PISite = fb.control('', [Validators.required]);
+    this.piSite = fb.control('', [Validators.required]);
     this.aggFunc = fb.control('', [Validators.required]);
     this.species = fb.control('', [Validators.required]);
     this.resetDdls();
+  }
+
+  /** list of experiments filtered by search keyword for multi-selection */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    const paneHScroll = document.querySelector('.pane-hScroll') as HTMLElement;
+    const paneVScroll = document.querySelector('.pane-vScroll') as HTMLElement;
+
+    if (paneHScroll && paneVScroll) {
+      const newWidth = paneHScroll.offsetWidth + paneHScroll.scrollLeft;
+      this.renderer.setStyle(paneVScroll, 'width', `${newWidth}px`);
+    }
   }
 
   resetDdls() {
@@ -167,18 +187,6 @@ export class DataExtractionComponent implements OnInit {
     this.isTrialByTrial = false;
     this.selectedSubSessionValue = [];
 
-  }
-
-  /** list of experiments filtered by search keyword for multi-selection */
-  public filteredExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-
-  /** Subject that emits when the component has been destroyed. */
-  private _onDestroy = new Subject<void>();
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
   }
 
   ngOnInit() {
@@ -278,16 +286,17 @@ export class DataExtractionComponent implements OnInit {
         }
         case 78:
         { // case CPT Analysis for Stage 1 to Stage 4
-          this.subSessionList = this.subSessionList.filter(x => (x.taskID === 11) && (x.sessionName == 'Stage 1 - Stimulus Touch') &&
-                            (x.sessionName == 'Stage 2 - Target Stimulus Touch') && (x.sessionName == 'Stage 3 - One Target and one non-target') &&
-                            (x.sessionName == 'Stage 4 - One Target and four non-targets'));
+          this.subSessionList = this.subSessionList.filter(x => (x.taskID === 11) && (x.sessionName === 'Stage 1 - Stimulus Touch') &&
+              (x.sessionName === 'Stage 2 - Target Stimulus Touch') &&
+              (x.sessionName === 'Stage 3 - One Target and one non-target') &&
+                            (x.sessionName === 'Stage 4 - One Target and four non-targets'));
           break;
         }
 
         case 88:
         {   // VMLC Analysis
 
-          this.subSessionList = this.subSessionList.filter(x => (x.taskID === 12) && (x.sessionName != 'Punish Incorrect II'));
+          this.subSessionList = this.subSessionList.filter(x => (x.taskID === 12) && (x.sessionName !== 'Punish Incorrect II'));
           break;
 
         }
@@ -331,11 +340,12 @@ export class DataExtractionComponent implements OnInit {
 
 
   // Getting ExpList for the selected Task ID
-  getExpList(selected_TaskValue: number, userGuid: any, selectedSpeciesvalue: number): any {
+  getExpList(selectedTaskValue: number, userGuid: any, selectedSpeciesvalue: number): any {
 
     const isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
 
-    this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe((data: any) => {
+    this.dataExtractionService.getAllExpByTaskID(selectedTaskValue, userGuid,
+      isFullDataAccess, selectedSpeciesvalue).subscribe((data: any) => {
       this.expList = data;
       // console.log(this.expList);
 
@@ -355,9 +365,9 @@ export class DataExtractionComponent implements OnInit {
   }
 
   // Getting subTakList for the selected Task ID
-  getSubTaskList(selected_TaskValue: number) {
+  getSubTaskList(selectedTaskValue: number) {
 
-    this.dataExtractionService.getAllSubtaskByTaskID(selected_TaskValue).subscribe((data: any) => {
+    this.dataExtractionService.getAllSubtaskByTaskID(selectedTaskValue).subscribe((data: any) => {
       this.subTakList = data;
       // console.log(this.subTakList);
 
@@ -371,12 +381,12 @@ export class DataExtractionComponent implements OnInit {
   getInterventionList(selectedExpVal: number) {
 
     this.dataExtractionService.getAllInterventionByExpID(selectedExpVal).subscribe((data: any) => {
-      this.InterventionList = data;
+      this.interventionList = data;
       // console.log(this.subTakList);
 
     });
 
-    return this.InterventionList;
+    return this.interventionList;
 
   }
 
@@ -394,8 +404,8 @@ export class DataExtractionComponent implements OnInit {
   }
 
   // Getting MarkerInfoList for the selected SubTaskID & ExpID
-  getMarkerInfo(selected_SubTaskValue: string, selected_ExpVal: string) {
-    if (selected_SubTaskValue == '' || selected_ExpVal.length == 0) {
+  getMarkerInfo(selectedSubTaskValue: string, selectedExpVal: string) {
+    if (selectedSubTaskValue === '' || selectedExpVal.length === 0) {
       this.markerInfoList = [];
       return;
     }
@@ -403,7 +413,7 @@ export class DataExtractionComponent implements OnInit {
 
     this.spinnerService.show();
 
-    this.dataExtractionService.getMarkerInfoBySubTaskIDExpID(selected_SubTaskValue, selected_ExpVal).subscribe((data: any) => {
+    this.dataExtractionService.getMarkerInfoBySubTaskIDExpID(selectedSubTaskValue, selectedExpVal).subscribe((data: any) => {
       this.markerInfoList = data;
       // console.log(this.markerInfoList);
 
@@ -413,7 +423,7 @@ export class DataExtractionComponent implements OnInit {
       // load the initial expList
       this.filteredMarkerInfoList.next(this.markerInfoList.slice());
 
-      this.MarkerInfoMultiFilterCtrl.valueChanges
+      this.markerInfoMultiFilterCtrl.valueChanges
         .pipe(takeUntil(this._onDestroy))
         .subscribe(() => {
           this.filterMarkerInfo();
@@ -425,23 +435,23 @@ export class DataExtractionComponent implements OnInit {
   }
 
   // Getting AnimalList for the selected ExpIDs
-  getAnimalInfo(selected_ExpVal: string) {
+  getAnimalInfo(selectedExpVal: string) {
 
     // Age
-    this.dataExtractionService.getAnimalAgebyExpIDs(selected_ExpVal).subscribe((data: any) => {
-      this.AnimalInfoListAge = data;
+    this.dataExtractionService.getAnimalAgebyExpIDs(selectedExpVal).subscribe((data: any) => {
+      this.animalInfoListAge = data;
       // console.log(this.AnimalInfoListAge);
     });
 
     // Sex
-    this.dataExtractionService.getAnimalSexbyExpIDs(selected_ExpVal).subscribe((data: any) => {
-      this.AnimalInfoListSex = data;
+    this.dataExtractionService.getAnimalSexbyExpIDs(selectedExpVal).subscribe((data: any) => {
+      this.animalInfoListSex = data;
       // console.log(this.AnimalInfoListSex);
     });
 
     // Strain
-    this.dataExtractionService.getAnimalStrainbyExpIDs(selected_ExpVal).subscribe((data: any) => {
-      this.AnimalInfoListStrain = data;
+    this.dataExtractionService.getAnimalStrainbyExpIDs(selectedExpVal).subscribe((data: any) => {
+      this.animalInfoListStrain = data;
       // console.log(this.AnimalInfoListStrain);
     });
 
@@ -450,73 +460,73 @@ export class DataExtractionComponent implements OnInit {
   }
 
   // To extract list of Genotypes
-  selectedStrainChange(selected_StrainVal: any, selected_ExpVal: string) {
+  selectedStrainChange(selectedStrainVal: any, selectedExpVal: string) {
     // console.log(selected_StrainVal);
     this.selectedGenotypeValue = [];
     // apply filtering to Genotype list based on what selected from Strain List
-    if (selected_StrainVal.length != 0 || selected_StrainVal != undefined) {
+    if (selectedStrainVal.length !== 0 || selectedStrainVal !== undefined) {
 
       this.genoIDList = [];
-      if (selected_StrainVal.indexOf(1) > -1) {
+      if (selectedStrainVal.indexOf(1) > -1) {
         this.genoIDList.push(1);
         this.genoIDList.push(4);
 
       }
-      if (selected_StrainVal.indexOf(2) > -1) {
+      if (selectedStrainVal.indexOf(2) > -1) {
         this.genoIDList.push(2);
         this.genoIDList.push(5);
 
       }
-      if (selected_StrainVal.indexOf(3) > -1) {
+      if (selectedStrainVal.indexOf(3) > -1) {
         this.genoIDList.push(3);
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(4) > -1) {
+      if (selectedStrainVal.indexOf(4) > -1) {
         this.genoIDList.push(4);
 
       }
-      if (selected_StrainVal.indexOf(5) > -1) {
+      if (selectedStrainVal.indexOf(5) > -1) {
         this.genoIDList.push(5);
 
       }
-      if (selected_StrainVal.indexOf(6) > -1) {
+      if (selectedStrainVal.indexOf(6) > -1) {
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(7) > -1) {
+      if (selectedStrainVal.indexOf(7) > -1) {
         this.genoIDList.push(7);
         this.genoIDList.push(11);
 
       }
-      if (selected_StrainVal.indexOf(8) > -1) {
+      if (selectedStrainVal.indexOf(8) > -1) {
         this.genoIDList.push(8);
         this.genoIDList.push(11);
 
       }
-      if (selected_StrainVal.indexOf(9) > -1) {
+      if (selectedStrainVal.indexOf(9) > -1) {
         this.genoIDList.push(9);
         this.genoIDList.push(10);
         this.genoIDList.push(12);
         this.genoIDList.push(35);
 
       }
-      if (selected_StrainVal.indexOf(10) > -1) {
+      if (selectedStrainVal.indexOf(10) > -1) {
         this.genoIDList.push(12);
 
       }
-      if (selected_StrainVal.indexOf(11) > -1) {
+      if (selectedStrainVal.indexOf(11) > -1) {
         this.genoIDList.push(11);
 
       }
-      if (selected_StrainVal.indexOf(12) > -1) {
+      if (selectedStrainVal.indexOf(12) > -1) {
         this.genoIDList.push(6);
         this.genoIDList.push(13);
         this.genoIDList.push(14);
         this.genoIDList.push(15);
 
       }
-      if (selected_StrainVal.indexOf(13) > -1) {
+      if (selectedStrainVal.indexOf(13) > -1) {
         this.genoIDList.push(6);
         this.genoIDList.push(13);
         this.genoIDList.push(16);
@@ -524,7 +534,7 @@ export class DataExtractionComponent implements OnInit {
         this.genoIDList.push(18);
 
       }
-      if (selected_StrainVal.indexOf(14) > -1) {
+      if (selectedStrainVal.indexOf(14) > -1) {
         this.genoIDList.push(6);
         this.genoIDList.push(13);
         this.genoIDList.push(19);
@@ -532,78 +542,78 @@ export class DataExtractionComponent implements OnInit {
         this.genoIDList.push(21);
 
       }
-      if (selected_StrainVal.indexOf(15) > -1) {
+      if (selectedStrainVal.indexOf(15) > -1) {
         this.genoIDList.push(22);
         this.genoIDList.push(23);
         this.genoIDList.push(24);
 
       }
-      if (selected_StrainVal.indexOf(16) > -1) {
+      if (selectedStrainVal.indexOf(16) > -1) {
         this.genoIDList.push(11);
         this.genoIDList.push(25);
         this.genoIDList.push(26);
 
       }
-      if (selected_StrainVal.indexOf(17) > -1) {
+      if (selectedStrainVal.indexOf(17) > -1) {
         this.genoIDList.push(26);
 
       }
 
-      if (selected_StrainVal.indexOf(18) > -1) {
+      if (selectedStrainVal.indexOf(18) > -1) {
         this.genoIDList.push(27);
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(19) > -1) {
+      if (selectedStrainVal.indexOf(19) > -1) {
         this.genoIDList.push(28);
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(20) > -1) {
+      if (selectedStrainVal.indexOf(20) > -1) {
         this.genoIDList.push(29);
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(21) > -1) {
+      if (selectedStrainVal.indexOf(21) > -1) {
         this.genoIDList.push(30);
         this.genoIDList.push(6);
 
       }
-      if (selected_StrainVal.indexOf(22) > -1) {
+      if (selectedStrainVal.indexOf(22) > -1) {
         this.genoIDList.push(31);
 
       }
-      if (selected_StrainVal.indexOf(23) > -1) {
+      if (selectedStrainVal.indexOf(23) > -1) {
         this.genoIDList.push(31);
         this.genoIDList.push(32);
 
       }
-      if (selected_StrainVal.indexOf(24) > -1) {
+      if (selectedStrainVal.indexOf(24) > -1) {
         this.genoIDList.push(26);
         this.genoIDList.push(33);
 
       }
-      if (selected_StrainVal.indexOf(25) > -1) {
+      if (selectedStrainVal.indexOf(25) > -1) {
         this.genoIDList.push(31);
         this.genoIDList.push(34);
 
       }
 
-      if (selected_StrainVal.indexOf(26) > -1) {
+      if (selectedStrainVal.indexOf(26) > -1) {
         this.genoIDList.push(35);
       }
 
-      if (selected_StrainVal.indexOf(27) > -1) {
+      if (selectedStrainVal.indexOf(27) > -1) {
         this.genoIDList.push(36);
         this.genoIDList.push(37);
       }
 
-      if (selected_StrainVal.indexOf(28) > -1) {
+      if (selectedStrainVal.indexOf(28) > -1) {
         this.genoIDList.push(37);
 
       }
 
-      if (selected_StrainVal.indexOf(29) > -1) {
+      if (selectedStrainVal.indexOf(29) > -1) {
         this.genoIDList.push(42);
         this.genoIDList.push(39);
         this.genoIDList.push(40);
@@ -611,48 +621,48 @@ export class DataExtractionComponent implements OnInit {
 
       }
 
-      if (selected_StrainVal.indexOf(30) > -1) {
+      if (selectedStrainVal.indexOf(30) > -1) {
         this.genoIDList.push(39);
 
       }
 
-      if (selected_StrainVal.indexOf(31) > -1) {
+      if (selectedStrainVal.indexOf(31) > -1) {
         this.genoIDList.push(40);
 
       }
 
-      if (selected_StrainVal.indexOf(32) > -1) {
+      if (selectedStrainVal.indexOf(32) > -1) {
         this.genoIDList.push(41);
 
       }
 
-      if (selected_StrainVal.indexOf(33) > -1) {
+      if (selectedStrainVal.indexOf(33) > -1) {
         this.genoIDList.push(42);
 
       }
-      if (selected_StrainVal.indexOf(34) > -1) {
+      if (selectedStrainVal.indexOf(34) > -1) {
         this.genoIDList.push(43);
         this.genoIDList.push(44);
 
       }
-      if (selected_StrainVal.indexOf(35) > -1) {
+      if (selectedStrainVal.indexOf(35) > -1) {
         this.genoIDList.push(44);
 
       }
 
-      if (selected_StrainVal.indexOf(36) > -1) {
+      if (selectedStrainVal.indexOf(36) > -1) {
         this.genoIDList.push(45);
         this.genoIDList.push(46);
 
       }
 
-      if (selected_StrainVal.indexOf(37) > -1) {
+      if (selectedStrainVal.indexOf(37) > -1) {
         this.genoIDList.push(46);
 
       }
 
 
-      if (selected_StrainVal.indexOf(38) > -1) {
+      if (selectedStrainVal.indexOf(38) > -1) {
         this.genoIDList.push(47);
         this.genoIDList.push(48);
         this.genoIDList.push(49);
@@ -662,32 +672,32 @@ export class DataExtractionComponent implements OnInit {
 
       }
 
-      if (selected_StrainVal.indexOf(39) > -1) {
+      if (selectedStrainVal.indexOf(39) > -1) {
         this.genoIDList.push(52);
         this.genoIDList.push(53);
         this.genoIDList.push(54);
 
       }
 
-      if (selected_StrainVal.indexOf(40) > -1) {
+      if (selectedStrainVal.indexOf(40) > -1) {
         this.genoIDList.push(53);
 
       }
-      if (selected_StrainVal.indexOf(41) > -1) {
+      if (selectedStrainVal.indexOf(41) > -1) {
         this.genoIDList.push(56);
         this.genoIDList.push(57);
         this.genoIDList.push(58);
 
       }
-      if (selected_StrainVal.indexOf(42) > -1) {
+      if (selectedStrainVal.indexOf(42) > -1) {
         this.genoIDList.push(57);
 
       }
-      if (selected_StrainVal.indexOf(43) > -1) {
+      if (selectedStrainVal.indexOf(43) > -1) {
         this.genoIDList.push(58);
 
       }
-      if (selected_StrainVal.indexOf(44) > -1) {
+      if (selectedStrainVal.indexOf(44) > -1) {
         this.genoIDList.push(59);
         this.genoIDList.push(60);
         this.genoIDList.push(61);
@@ -695,23 +705,23 @@ export class DataExtractionComponent implements OnInit {
         this.genoIDList.push(63);
 
       }
-      if (selected_StrainVal.indexOf(45) > -1) {
+      if (selectedStrainVal.indexOf(45) > -1) {
         this.genoIDList.push(60);
 
       }
-      if (selected_StrainVal.indexOf(46) > -1) {
+      if (selectedStrainVal.indexOf(46) > -1) {
         this.genoIDList.push(61);
 
       }
-      if (selected_StrainVal.indexOf(47) > -1) {
+      if (selectedStrainVal.indexOf(47) > -1) {
         this.genoIDList.push(62);
 
       }
-      if (selected_StrainVal.indexOf(48) > -1) {
+      if (selectedStrainVal.indexOf(48) > -1) {
         this.genoIDList.push(63);
 
       }
-      if (selected_StrainVal.indexOf(49) > -1) {
+      if (selectedStrainVal.indexOf(49) > -1) {
         this.genoIDList.push(64);
         this.genoIDList.push(65);
         this.genoIDList.push(66);
@@ -719,27 +729,27 @@ export class DataExtractionComponent implements OnInit {
         this.genoIDList.push(68);
 
       }
-      if (selected_StrainVal.indexOf(50) > -1) {
+      if (selectedStrainVal.indexOf(50) > -1) {
         this.genoIDList.push(65);
 
       }
-      if (selected_StrainVal.indexOf(51) > -1) {
+      if (selectedStrainVal.indexOf(51) > -1) {
         this.genoIDList.push(66);
 
       }
-      if (selected_StrainVal.indexOf(52) > -1) {
+      if (selectedStrainVal.indexOf(52) > -1) {
         this.genoIDList.push(67);
 
       }
-      if (selected_StrainVal.indexOf(53) > -1) {
+      if (selectedStrainVal.indexOf(53) > -1) {
         this.genoIDList.push(68);
 
       }
-      if (selected_StrainVal.indexOf(54) > -1) {
+      if (selectedStrainVal.indexOf(54) > -1) {
         this.genoIDList.push(6);
         this.genoIDList.push(69);
       }
-      if (selected_StrainVal.indexOf(55) > -1) {
+      if (selectedStrainVal.indexOf(55) > -1) {
         this.genoIDList.push(70);
         this.genoIDList.push(71);
         this.genoIDList.push(6);
@@ -750,7 +760,7 @@ export class DataExtractionComponent implements OnInit {
       // console.log(this.genoIDList);
       // selected_ExpVal
       this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe((data: any) => {
-        this.AnimalInfoListGenotype = data;
+        this.animalInfoListGenotype = data;
         // console.log(this.AnimalInfoListGenotype);
 
 
@@ -839,7 +849,7 @@ export class DataExtractionComponent implements OnInit {
             this.sessioninfo.hasError('required') ||
             this.markerinfo.hasError('required') ||
             this.species.hasError('required') ||
-            (this.aggFunc.hasError('required') && this.isTrialByTrial == false)
+            (this.aggFunc.hasError('required') && this.isTrialByTrial === false)
             )
 
 
@@ -847,52 +857,6 @@ export class DataExtractionComponent implements OnInit {
       return true;
     }
     return false;
-  }
-
-  //* **************End of Error Handling***********************
-
-  // handling multi filtered experiment list
-  private filterExpMulti() {
-    if (!this.expList) {
-      return;
-    }
-
-    // get the search keyword
-    let search = this.expMultiFilterCtrl.value;
-
-    if (!search) {
-      this.filteredExpMulti.next(this.expList.slice());
-      return;
-    } else {
-      search = search.toLowerCase();
-    }
-
-    // filter the Experiment
-    this.filteredExpMulti.next(
-      this.expList.filter((t: any) => t.expName.toLowerCase().indexOf(search) > -1)
-    );
-  }
-
-  // handling multi filtered Markerinfo list
-  private filterMarkerInfo() {
-    if (!this.markerInfoList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchMarkerInfo = this.MarkerInfoMultiFilterCtrl.value;
-
-    if (!searchMarkerInfo) {
-      this.filteredMarkerInfoList.next(this.markerInfoList.slice());
-      return;
-    } else {
-      searchMarkerInfo = searchMarkerInfo.toLowerCase();
-    }
-
-    // filter the Experiment
-    this.filteredMarkerInfoList.next(
-      this.markerInfoList.filter((x: any) => x.toLowerCase().indexOf(searchMarkerInfo) > -1)
-    );
   }
 
   // Function defintion for opening Terms of service
@@ -909,7 +873,7 @@ export class DataExtractionComponent implements OnInit {
   }
 
   //* ********Get Data From Database and show the Result in Table*********
-  GetData() {
+  getData() {
     this.spinnerService.show();
 
     const selectedTask = this.getSelectedTask(this.task.value);
@@ -961,8 +925,8 @@ export class DataExtractionComponent implements OnInit {
         });
         for (const key in a) {
 
-          if (key == 'Image' || key == 'Image_Description') {
-            if (this.task.value == 3 || this.task.value == 4 || this.task.value == 11) {
+          if (key === 'Image' || key === 'Image_Description') {
+            if (this.task.value === 3 || this.task.value === 4 || this.task.value === 11) {
               this.colNames.push(key);
             } // else -> do not push Image col
           } else {
@@ -989,7 +953,7 @@ export class DataExtractionComponent implements OnInit {
 
   }
 
-  GenerateLink() {
+  generateLink() {
     this.dataExtractionService.saveLink(this.linkGuid).subscribe((data: any) => {
       if (data === true) {
         this.showGeneratedLink = true;
@@ -1007,7 +971,7 @@ export class DataExtractionComponent implements OnInit {
     });
   }
 
-  DownloadCsv() {
+  downloadCsv() {
 
     this.dataExtractionService.IncreaseCounter().subscribe(data => {
       let csv: string;
@@ -1026,30 +990,33 @@ export class DataExtractionComponent implements OnInit {
 
           // Loop each property of the object
           for (const key in items[row]) {
-            // This is to not add a comma at the last cell
-            // The '\r\n' adds a new line
-            if (key == 'AnimalID') {
-              csv = '';
+            if (Object.prototype.hasOwnProperty.call(items[row], key)) {
+              // This is to not add a comma at the last cell
+              // The '\r\n' adds a new line
+              if (key === 'AnimalID') {
+                csv = '';
+              }
+              csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
+              // console.log(csv)
+              keysCounter++;
             }
-            csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
-            // console.log(csv)
-            keysCounter++;
           }
         }
 
         keysCounter = 0;
 
         for (const key in items[row]) {
+          if (Object.prototype.hasOwnProperty.call(items[row], key)) {
+            let csvToAdd = '';
+            if (items[row][key] !== null) {
+              csvToAdd = items[row][key].toString();
+              csvToAdd = csvToAdd.split(',').join('-');
 
-          let csvToAdd = '';
-          if (items[row][key] !== null) {
-            csvToAdd = items[row][key].toString();
-            csvToAdd = csvToAdd.split(',').join('-');
+            }
 
+            csv += csvToAdd + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
+            keysCounter++;
           }
-
-          csv += csvToAdd + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
-          keysCounter++;
 
         }
 
@@ -1110,6 +1077,52 @@ export class DataExtractionComponent implements OnInit {
 
     // get current page of items
     this.pagedItems = this.result.slice(this.pager.startIndex, this.pager.endIndex + 1);
+  }
+
+  //* **************End of Error Handling***********************
+
+  // handling multi filtered experiment list
+  private filterExpMulti() {
+    if (!this.expList) {
+      return;
+    }
+
+    // get the search keyword
+    let search = this.expMultiFilterCtrl.value;
+
+    if (!search) {
+      this.filteredExpMulti.next(this.expList.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+
+    // filter the Experiment
+    this.filteredExpMulti.next(
+      this.expList.filter((t: any) => t.expName.toLowerCase().indexOf(search) > -1)
+    );
+  }
+
+  // handling multi filtered Markerinfo list
+  private filterMarkerInfo() {
+    if (!this.markerInfoList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchMarkerInfo = this.markerInfoMultiFilterCtrl.value;
+
+    if (!searchMarkerInfo) {
+      this.filteredMarkerInfoList.next(this.markerInfoList.slice());
+      return;
+    } else {
+      searchMarkerInfo = searchMarkerInfo.toLowerCase();
+    }
+
+    // filter the Experiment
+    this.filteredMarkerInfoList.next(
+      this.markerInfoList.filter((x: any) => x.toLowerCase().indexOf(searchMarkerInfo) > -1)
+    );
   }
 
 

@@ -10,7 +10,7 @@ describe('GenomicsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ GenomicsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

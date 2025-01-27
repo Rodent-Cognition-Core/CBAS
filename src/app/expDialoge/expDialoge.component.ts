@@ -17,7 +17,7 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
 
 @Component({
 
-  selector: 'app-expDialoge',
+  selector: 'app-expdialoge',
   templateUrl: './ExpDialoge.component.html',
   styleUrls: ['./ExpDialoge.component.scss'],
   providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
@@ -25,7 +25,7 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
 })
 export class ExpDialogeComponent implements OnInit {
 
-  DOIModel: string;
+  doiModel: string;
   isTaken: boolean;
   isRepoLink: any;
   repModel: any;
@@ -61,7 +61,7 @@ export class ExpDialogeComponent implements OnInit {
     private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
     private fb: FormBuilder
   ) {
-    this.DOIModel = '';
+    this.doiModel = '';
     this.isTaken = false;
     this.exp = fb.control('', [Validators.required]);
     this.sDate = fb.control('', [Validators.required]);
@@ -74,9 +74,9 @@ export class ExpDialogeComponent implements OnInit {
     this.expBattery = fb.control('', [Validators.required]);
     this.isMultipleSessions = fb.control('', [Validators.required]);
     this._experiment = {
-      DOI: '', EndExpDate: new Date(), ExpID: 0, ExpName: '', ImageIds: [], ImageInfo: '', multipleSessions: true,
-      PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), Status: false,
-      TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: ''
+      doi: '', endExpDate: new Date(), expID: 0, expName: '', imageIds: [], imageInfo: '', multipleSessions: true,
+      piSiteName: '', piSiteUser: '', puSID: 0, repoGuid: '', species: '', speciesID: 0, startExpDate: new Date(), status: false,
+      taskBattery: '', taskDescription: '', taskID: 0, taskName: '', userID: '', userName: ''
     };
   }
 
@@ -90,7 +90,7 @@ export class ExpDialogeComponent implements OnInit {
     this.expDialogeService.getAllSpecies().subscribe((data: any) => {
       this.speciesList = data; /* console.log(this.speciesList)*/;
     });
-    this.GetRepList();
+    this.getRepList();
 
     this.isRepoLink = '0';
 
@@ -105,17 +105,17 @@ export class ExpDialogeComponent implements OnInit {
       this.expDescription.setValue(this.data.experimentObj.taskDescription);
       this.expBattery.setValue(this.data.experimentObj.taskBattery);
       this.piSite.setValue(this.data.experimentObj.pusid);
-      this.DOIModel = this.data.experimentObj.doi;
+      this.doiModel = this.data.experimentObj.doi;
       this.status.setValue(this.data.experimentObj.status ? '1' : '0');
       this.isMultipleSessions.setValue(this.data.experimentObj.multipleSessions ? '1' : '0');
-      if (this.data.experimentObj.repoGuid != '') {
+      if (this.data.experimentObj.repoGuid !== '') {
         this.isRepoLink = '1';
         this.repModel = this.data.experimentObj.repoGuid;
       }
     }
   }
 
-  GetRepList() {
+  getRepList() {
 
     this.cogbytesService.getAllRepositories().subscribe((data: any) => {
       this.repList = data;
@@ -134,28 +134,6 @@ export class ExpDialogeComponent implements OnInit {
     return this.repList;
   }
 
-  // handling multi filtered Rep list
-  private filterRep() {
-    if (!this.repList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchRep = this.repMultiFilterCtrl.value;
-
-    if (!searchRep) {
-      this.filteredRepList.next(this.repList.slice());
-      return;
-    } else {
-      searchRep = searchRep.toLowerCase();
-    }
-
-    // filter the rep
-    this.filteredRepList.next(
-      this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
-    );
-  }
-
   onCloseCancel(): void {
 
 
@@ -166,18 +144,18 @@ export class ExpDialogeComponent implements OnInit {
   onCloseSubmit(): void {
     this.spinnerService.show();
 
-    this._experiment.ExpName = this.exp.value;
-    this._experiment.StartExpDate = this.sDate.value;
-    this._experiment.EndExpDate = this.eDate.value;
-    this._experiment.TaskID = this.getSelectedTask(this.task.value).id; // should be readonly
-    this._experiment.SpeciesID = this.species.value;
-    this._experiment.TaskDescription = this.expDescription.value;
-    this._experiment.TaskBattery = this.expBattery.value;
-    this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
-    this._experiment.DOI = this.DOIModel;
-    this._experiment.Status = this.status.value == '1' ? true : false;
-    this._experiment.multipleSessions = this.isMultipleSessions.value == '1' ? true : false;
-    if (this.isRepoLink == '1') {
+    this._experiment.expName = this.exp.value;
+    this._experiment.startExpDate = this.sDate.value;
+    this._experiment.endExpDate = this.eDate.value;
+    this._experiment.taskID = this.getSelectedTask(this.task.value).id; // should be readonly
+    this._experiment.speciesID = this.species.value;
+    this._experiment.taskDescription = this.expDescription.value;
+    this._experiment.taskBattery = this.expBattery.value;
+    this._experiment.puSID = this.getSelectedPIS(this.piSite.value).pusid;
+    this._experiment.doi = this.doiModel;
+    this._experiment.status = this.status.value === '1' ? true : false;
+    this._experiment.multipleSessions = this.isMultipleSessions.value === '1' ? true : false;
+    if (this.isRepoLink === '1') {
       this._experiment.repoGuid = this.repModel;
     }
 
@@ -188,7 +166,7 @@ export class ExpDialogeComponent implements OnInit {
       this.isTaken = false;
 
       this.expDialogeService.create(this._experiment).map((res: any) => {
-        if (res == 'Taken') {
+        if (res === 'Taken') {
           this.isTaken = true;
           this.exp.setErrors({ 'taken': true });
         } else {
@@ -208,12 +186,12 @@ export class ExpDialogeComponent implements OnInit {
 
 
       this.isTaken = false;
-      this._experiment.ExpID = this.data.experimentObj.expID;
+      this._experiment.expID = this.data.experimentObj.expID;
       this.expDialogeService.updateExp(this._experiment).map((res: any) => {
 
 
 
-        if (res == 'Taken') {
+        if (res === 'Taken') {
           this.isTaken = true;
           this.exp.setErrors({ 'taken': true });
         } else {
@@ -329,6 +307,28 @@ export class ExpDialogeComponent implements OnInit {
 
   getSelectedPIS(selectedVal: any) {
     return this.piSiteList.find((x: any) => x.pusid === selectedVal);
+  }
+
+  // handling multi filtered Rep list
+  private filterRep() {
+    if (!this.repList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchRep = this.repMultiFilterCtrl.value;
+
+    if (!searchRep) {
+      this.filteredRepList.next(this.repList.slice());
+      return;
+    } else {
+      searchRep = searchRep.toLowerCase();
+    }
+
+    // filter the rep
+    this.filteredRepList.next(
+      this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
+    );
   }
 
 

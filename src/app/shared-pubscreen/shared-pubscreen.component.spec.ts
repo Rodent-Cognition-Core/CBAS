@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedPubscreenComponent } from './shared-pubscreen.component';
 
 describe('PubScreenComponent', () => {
-    let component: SharedPubscreenComponent;
-    let fixture: ComponentFixture<SharedPubscreenComponent>;
+  let component: SharedPubscreenComponent;
+  let fixture: ComponentFixture<SharedPubscreenComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [SharedPubscreenComponent ]
+      declarations: [SharedPubscreenComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(SharedPubscreenComponent);
+    fixture = TestBed.createComponent(SharedPubscreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

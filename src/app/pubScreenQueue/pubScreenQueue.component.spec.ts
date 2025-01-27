@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PubScreenQueueComponent } from './pubScreenQueue.component';
 
 describe('PubScreenQueueComponent', () => {
-    let component: PubScreenQueueComponent;
-    let fixture: ComponentFixture<PubScreenQueueComponent>;
+  let component: PubScreenQueueComponent;
+  let fixture: ComponentFixture<PubScreenQueueComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [PubScreenQueueComponent ]
+      declarations: [PubScreenQueueComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(PubScreenQueueComponent);
+    fixture = TestBed.createComponent(PubScreenQueueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -10,7 +10,7 @@ describe('SharedExperimentComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SharedExperimentComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

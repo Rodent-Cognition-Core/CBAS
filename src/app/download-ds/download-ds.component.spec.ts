@@ -10,7 +10,7 @@ describe('DownloadDsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DownloadDsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

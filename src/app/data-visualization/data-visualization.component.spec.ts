@@ -10,7 +10,7 @@ describe('DataVisualizationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DataVisualizationComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

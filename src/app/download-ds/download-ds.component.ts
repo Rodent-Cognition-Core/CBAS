@@ -38,8 +38,8 @@ export class DownloadDsComponent implements OnInit {
   ngOnInit() {
     // console.log(this.dsName);
 
-    if (this.dsName != '') {
-      this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe((data: any) => {
+    if (this.dsName !== '') {
+      this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName, 10)).subscribe((data: any) => {
         this.expObj = data[0];
         this.expObj.age = this.expObj.age.replaceAll('<br/>', ', ');
         this.expObj.strain = this.expObj.strain.replaceAll('<br/>', ', ');
@@ -57,7 +57,7 @@ export class DownloadDsComponent implements OnInit {
   }
 
 
-  DownloadDsFile(file: string): void {
+  downloadDsFile(file: string): void {
 
     const path = 'ds_' + file;
     this.searchexperimentService.downloadExpDs(path)

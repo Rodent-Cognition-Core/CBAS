@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue.component';
 
 describe('CogbytesAuthorDialogueComponent', () => {
-    let component: CogbytesAuthorDialogueComponent;
-    let fixture: ComponentFixture<CogbytesAuthorDialogueComponent>;
+  let component: CogbytesAuthorDialogueComponent;
+  let fixture: ComponentFixture<CogbytesAuthorDialogueComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [CogbytesAuthorDialogueComponent ]
+      declarations: [CogbytesAuthorDialogueComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(CogbytesAuthorDialogueComponent);
+    fixture = TestBed.createComponent(CogbytesAuthorDialogueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

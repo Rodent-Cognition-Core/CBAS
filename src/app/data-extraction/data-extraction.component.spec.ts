@@ -10,7 +10,7 @@ describe('DataExtractionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DataExtractionComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

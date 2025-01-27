@@ -1,8 +1,8 @@
-//import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-//import { AnimalInfoComponent } from './animal-info.component';
+// import { AnimalInfoComponent } from './animal-info.component';
 
-//describe('AnimalInfoComponent', () => {
+// describe('AnimalInfoComponent', () => {
 //  let component: AnimalInfoComponent;
 //  let fixture: ComponentFixture<AnimalInfoComponent>;
 
@@ -22,4 +22,4 @@
 //  it('should create', () => {
 //    expect(component).toBeTruthy();
 //  });
-//});
+// });

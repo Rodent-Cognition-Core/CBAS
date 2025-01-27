@@ -58,7 +58,7 @@ export class Signin {
         this.errorMessages = [];
 
         // Checks for error in response (error from the Token endpoint).
-        if (error.body != '') {
+        if (error.body !== '') {
           const body: any = error; // .json();
           switch (body.error.error) {
             case 'invalid_grant':
@@ -70,11 +70,17 @@ export class Signin {
                 if (this.isEmailApproved) {
                   this.errorMessages.push({ description: '- Invalid email or password.' });
                 } else {
-                  this.errorMessages.push({ description: '- Your account has been created and needs to be approved by the Administrator. You will receive an email once your account is approved.' });
+                  this.errorMessages.push({ description:
+                      '- Your account has been created and needs to be approved by the Administrator.' +
+                      'You will receive an email once your account is approved.' });
                 }
 
                 if (data.isUserLocked) {
-                  this.errorMessages.push({ description: '- Your account has been locked due to multiple login attemps. Please contact administrator at MouseBytes@uwo.ca or try again after 1 hour.' });
+                  this.errorMessages.push({
+                    description:
+                          '- Your account has been locked due to multiple login attemps.' +
+                          'Please contact administrator at MouseBytes@uwo.ca or try again after 1 hour.'
+                  });
                 }
 
               });

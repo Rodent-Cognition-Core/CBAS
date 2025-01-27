@@ -36,7 +36,7 @@ export class DataLinkComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.linkGuid = params['linkguid'];
 
-      this.GetDataByLinkGuid();
+      this.getDataByLinkGuid();
     });
   }
 
@@ -49,7 +49,7 @@ export class DataLinkComponent implements OnInit {
 
   }
 
-  GetDataByLinkGuid() {
+  getDataByLinkGuid() {
     this.spinnerService.show();
 
     this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe((data: any) => {
@@ -72,10 +72,9 @@ export class DataLinkComponent implements OnInit {
           return /* console.log(key)*/;
         });
         for (const key in a) {
-
-          this.colNames.push(key);
-
-
+          if (Object.prototype.hasOwnProperty.call(a, key)) {
+            this.colNames.push(key);
+          }
 
         }
       }
@@ -95,7 +94,7 @@ export class DataLinkComponent implements OnInit {
 
   }
 
-  DownloadCsv() {
+  downloadCsv() {
     let csv: string;
     csv = '';
 
@@ -113,26 +112,29 @@ export class DataLinkComponent implements OnInit {
 
         // Loop each property of the object
         for (const key in items[row]) {
-          // console.log(1)
-          // console.log(key);
+          if (Object.prototype.hasOwnProperty.call(items[row], key)) {
+            // console.log(1)
+            // console.log(key);
 
-          // This is to not add a comma at the last cell
-          // The '\r\n' adds a new line
-          if (key == 'AnimalID') {
-            csv = '';
+            // This is to not add a comma at the last cell
+            // The '\r\n' adds a new line
+            if (key === 'AnimalID') {
+              csv = '';
+            }
+            csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
+            // console.log(csv)
+            keysCounter++;
           }
-          csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
-          // console.log(csv)
-          keysCounter++;
         }
       }
 
       keysCounter = 0;
       for (const key in items[row]) {
-
-        csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
-        // console.log(csv)
-        keysCounter++;
+        if (Object.prototype.hasOwnProperty.call(items[row], key)) {
+          csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n');
+          // console.log(csv)
+          keysCounter++;
+        }
       }
 
 

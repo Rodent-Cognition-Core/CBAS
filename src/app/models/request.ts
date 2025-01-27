@@ -1,6 +1,6 @@
 export interface Request {
 
-  ID: number;
+  id: number;
   type: string;
   fullName: string;
   email: string;

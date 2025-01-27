@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CogbytesComponent } from './cogbytes.component';
 
 describe('CogbytesComponent', () => {
-    let component: CogbytesComponent;
-    let fixture: ComponentFixture<CogbytesComponent>;
+  let component: CogbytesComponent;
+  let fixture: ComponentFixture<CogbytesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [CogbytesComponent ]
+      declarations: [CogbytesComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(CogbytesComponent);
+    fixture = TestBed.createComponent(CogbytesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

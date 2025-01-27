@@ -11,7 +11,7 @@ import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIR
 
 @Component({
 
-  selector: 'app-cogbytesPIDialoge',
+  selector: 'app-cogbytespidialoge',
   templateUrl: './cogbytesPIDialoge.component.html',
   styleUrls: ['./cogbytesPIDialoge.component.scss'],
   providers: [CogbytesService]
@@ -53,7 +53,7 @@ export class CogbytesPIDialogeComponent implements OnInit {
 
     // Submiting the request to server
     this.cogbytesService.addPI(this.piName.value, this.institution.value, this.emailPI.value).subscribe((result: any) => {
-      if (result == 0) {
+      if (result === 0) {
         alert(PIALRADYEXISTS);
       } else {
         alert(PISUCCESSFULLYADDED);

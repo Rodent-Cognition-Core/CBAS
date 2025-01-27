@@ -43,7 +43,6 @@ export class DashboardComponent implements OnInit {
     this.experimentName = '';
     this.experimentID = 0;
     this.pagedItems = [];
-    this;
   }
 
 
@@ -52,7 +51,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // Get list major errors
-  GetUploadLogList(selectedExperimentID: number) {
+  getUploadLogList(selectedExperimentID: number) {
     this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe((data: any) => {
       this.uploadLogList = data;
       this.setPage(1);
@@ -65,7 +64,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // Get list of minor errors
-  GetUploadErrorLogList(selectedExperimentID: number) {
+  getUploadErrorLogList(selectedExperimentID: number) {
     this.dashboardService.getUploadErrorLogById(selectedExperimentID).subscribe((data: any) => {
       this.uploadErrorLogList = data;
 
@@ -73,9 +72,9 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  SelectedExpChanged(experiment: any) {
-    this.GetUploadLogList(experiment.expID);
-    this.GetUploadErrorLogList(experiment.expID);
+  selectedExpChanged(experiment: any) {
+    this.getUploadLogList(experiment.expID);
+    this.getUploadErrorLogList(experiment.expID);
     this.experimentName = experiment.expName;
     this.experimentID = experiment.expID;
 
@@ -92,7 +91,7 @@ export class DashboardComponent implements OnInit {
       if (result) {
         this.animalService.deleteAnimalbyID(animalID).pipe(map((res: any) => {
           // location.reload()
-          this.GetUploadLogList(this.experimentID);
+          this.getUploadLogList(this.experimentID);
         })).subscribe();
       }
       // this.dialogRefDelAnimal = null;
@@ -106,7 +105,7 @@ export class DashboardComponent implements OnInit {
     this.openConfirmationDialogDelAnimal(animalID, expId);
   }
 
-  DownloadFile(uploadId: number, userFileName: string): void {
+  downloadFile(uploadId: number, userFileName: string): void {
 
     this.uploadService.downloadFile(uploadId)
       .subscribe(result => {
@@ -135,7 +134,7 @@ export class DashboardComponent implements OnInit {
   }
 
   // Function definition for handling missing animal info (e.g. Age, Sex, Strain, and Genotype)
-  ResolveIssue(animal: number, uploadId: number): void {
+  resolveIssue(animal: number, uploadId: number): void {
     console.log(animal);
     const dialogref = this.dialog.open(AnimalDialogComponent, {
       height: '480px',
@@ -144,7 +143,8 @@ export class DashboardComponent implements OnInit {
 
     });
 
-    // When "Resolve Issue" button is clicked, the modal should open and ask for the identifier fields.Once the Submit button in this Modal is clicked, the following steps should be considered:
+    // When "Resolve Issue" button is clicked, the modal should open and ask for the identifier fields.
+    // Once the Submit button in this Modal is clicked, the following steps should be considered:
     //   Update Table Animal: done
     //   Update Dashboard table in Dashboard page
     //   Find the PrimaryKey of UserAnimalID and find it in Upload table and update the following fields:
@@ -152,17 +152,18 @@ export class DashboardComponent implements OnInit {
     //   Set IsIdentifierPassed to TRUE
     //   Set IsUploaded to True and Insert the XML data to SessionInfo
     //   Set / update DateUpload
-    // **Find AnimalID in tbl Uploal and all of them should be found, updated in this table and thier data are sent to tbl sessioninfo annd markerinfo
+    // **Find AnimalID in tbl Uploal and all of them should be found,
+    //   updated in this table and thier data are sent to tbl sessioninfo annd markerinfo
 
     dialogref.afterClosed().subscribe(result => {
-      if (result == true) {
+      if (result === true) {
 
         console.log('show spinner');
         this.spinnerService.show();
 
         this.uploadService.setUploadAsResolved(uploadId).subscribe((data: any) => {
 
-          this.GetUploadLogList(this.experimentID);
+          this.getUploadLogList(this.experimentID);
 
           setTimeout(() => {
             this.spinnerService.hide();
@@ -179,12 +180,8 @@ export class DashboardComponent implements OnInit {
             console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
           }
         });
-
-      }
-      // if after close is false and there is not need to do resolve issue
-      // just databind the table again
-      else {
-        this.GetUploadLogList(this.experimentID);
+      }else {
+        this.getUploadLogList(this.experimentID);
       }
     });
 
@@ -216,7 +213,8 @@ export class DashboardComponent implements OnInit {
   filterByString(data: any, s: string): any {
     s = s.trim();
     return data.filter((e: any) => e.userFileName.includes(s) || e.userAnimalID.includes(s)); // || e.another.includes(s)
-    //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
+    //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 :
+    // b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
   }
 
   //* ***************Clear uploadErrorLogList********************************************
@@ -233,7 +231,7 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.clearUploadLogTblbyExpID(expID).map((res: any) => {
           // location.reload()
           this.uploadErrorLogList = [];
-          this.GetUploadLogList(expID);
+          this.getUploadLogList(expID);
 
         }).subscribe();
 
@@ -245,7 +243,7 @@ export class DashboardComponent implements OnInit {
 
   // ******************Clear UploadErrorList Table*****************
 
-  ClearUploadErrorLogList(expID: number) {
+  clearUploadErrorLogList(expID: number) {
 
     this.openConfirmationDialogDelErrorList(expID);
 
@@ -270,7 +268,7 @@ export class DashboardComponent implements OnInit {
         this.experimentService.deleteFilebyID(uploadID).map((res: any) => {
           this.spinnerService.hide();
           // location.reload()
-          this.GetUploadLogList(this.experimentID);
+          this.getUploadLogList(this.experimentID);
         }).subscribe();
       }
       // this.dialogRefDelFile = null;

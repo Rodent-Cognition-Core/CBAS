@@ -1,25 +1,25 @@
 export interface Experiment {
 
-  ExpID: number;
-  UserID: string;
-  PUSID: number;
-  TaskID: number;
-  ExpName: string;
-  PISiteName: string;
-  PISiteUser: string;
-  UserName: string;
-  TaskName: string;
-  StartExpDate: Date;
-  EndExpDate: Date;
+  expID: number;
+  userID: string;
+  puSID: number;
+  taskID: number;
+  expName: string;
+  piSiteName: string;
+  piSiteUser: string;
+  userName: string;
+  taskName: string;
+  startExpDate: Date;
+  endExpDate: Date;
   // ErrorMessage: string;
-  TaskDescription: string;
-  TaskBattery: string;
-  DOI: string;
-  Status: boolean;
-  ImageIds: Array<number>;
+  taskDescription: string;
+  taskBattery: string;
+  doi: string;
+  status: boolean;
+  imageIds: Array<number>;
   // ImagePath: Array<string>;
-  ImageInfo: string;
-  SpeciesID: number;
+  imageInfo: string;
+  speciesID: number;
   species: string;
 
   multipleSessions: boolean;

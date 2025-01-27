@@ -11,7 +11,7 @@ import { FIELDISREQUIRED } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-authorDialoge',
+  selector: 'app-authordialoge',
   templateUrl: './authorDialoge.component.html',
   styleUrls: ['./authorDialoge.component.scss'],
   providers: [PubScreenService]
@@ -50,7 +50,8 @@ export class AuthorDialogeComponent implements OnInit {
   onCloseSubmit(): void {
 
     // Submiting the request to server
-    this.pubScreenService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
+    this.pubScreenService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel)
+      .subscribe(this.thisDialogRef.close());
 
   }
 

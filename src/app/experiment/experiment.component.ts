@@ -27,7 +27,7 @@ import { CONFIRMDELETE } from '../shared/messages';
 })
 export class ExperimentComponent implements OnInit {
 
-  UploadList: any;
+  uploadList: any;
   selectedSubExperiment: any;
   expfilter: any = '';
   // ExpModel: any;
@@ -56,12 +56,12 @@ export class ExperimentComponent implements OnInit {
 
   }
 
-  GetUploadInfo(selectedSubExperimentID: number) {
+  getUploadInfo(selectedSubExperimentID: number) {
 
     this.spinnerService.show();
 
     this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data: any) => {
-      this.UploadList = data;
+      this.uploadList = data;
       // console.log(this.UploadList);
       this.setPageTblFile(1);
       setTimeout(() => {
@@ -77,15 +77,15 @@ export class ExperimentComponent implements OnInit {
 
   }
 
-  SelectedExpChanged(experiment: any) {
+  selectedExpChanged(experiment: any) {
     this.selectedSubExperiment = null;
   }
 
-  SelectedSubExpChanged(subExperiment: any) {
+  selectedSubExpChanged(subExperiment: any) {
     this.selectedSubExperiment = subExperiment;
     if (subExperiment != null) {
       const subExpId = subExperiment.subExpID;
-      this.GetUploadInfo(subExpId);
+      this.getUploadInfo(subExpId);
     }
 
   }
@@ -103,7 +103,7 @@ export class ExperimentComponent implements OnInit {
         this.experimentService.deleteFilebyID(uploadID).map((res: any) => {
           this.spinnerService.hide();
           // location.reload()
-          this.GetUploadInfo(subExpID);
+          this.getUploadInfo(subExpID);
         }).subscribe();
       }
       // this.dialogRefDelFile = null;
@@ -117,7 +117,7 @@ export class ExperimentComponent implements OnInit {
     this.openConfirmationDialogDelFile(uploadID, subExpID);
   }
 
-  DownloadFile(uploadId: number, userFileName: string): void {
+  downloadFile(uploadId: number, userFileName: string): void {
 
     this.uploadService.downloadFile(uploadId)
       .subscribe(result => {
@@ -148,9 +148,9 @@ export class ExperimentComponent implements OnInit {
   setPageTblFile(page: number) {
     // get pager object from service
 
-    let filteredItems = this.UploadList;
+    let filteredItems = this.uploadList;
 
-    filteredItems = this.filterByString(this.UploadList, this.expfilter);
+    filteredItems = this.filterByString(this.uploadList, this.expfilter);
 
     this.pagerTblFile = this.pagerService.getPager(filteredItems.length, page, 10);
 
@@ -169,8 +169,8 @@ export class ExperimentComponent implements OnInit {
 
   filterByString(data: any, s: string): any {
     s = s.trim();
-    return data.filter((e: any) => e.userFileName.toLowerCase().includes(s.toLowerCase()) || e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase())); // || e.another.includes(s)
-    // .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
+    return data.filter((e: any) => e.userFileName.toLowerCase().includes(s.toLowerCase()) ||
+          e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase()));
   }
 
 

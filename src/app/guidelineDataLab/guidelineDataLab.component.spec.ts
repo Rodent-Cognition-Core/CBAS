@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GuidelineDataLabComponent } from './guidelineDataLab.component';
 
 describe('GuidelineDataLabComponent', () => {
-    let component: GuidelineDataLabComponent;
-    let fixture: ComponentFixture<GuidelineDataLabComponent>;
+  let component: GuidelineDataLabComponent;
+  let fixture: ComponentFixture<GuidelineDataLabComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [GuidelineDataLabComponent ]
+      declarations: [GuidelineDataLabComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(GuidelineDataLabComponent);
+    fixture = TestBed.createComponent(GuidelineDataLabComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

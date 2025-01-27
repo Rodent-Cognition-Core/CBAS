@@ -20,7 +20,7 @@ import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialo
 
 @Component({
 
-  selector: 'app-cogbytesDialogue',
+  selector: 'app-cogbytesdialogue',
   templateUrl: './cogbytesDialogue.component.html',
   styleUrls: ['./cogbytesDialogue.component.scss'],
   providers: [TaskAnalysisService,  PISiteService]
@@ -102,7 +102,7 @@ export class CogbytesDialogueComponent implements OnInit {
     this.isEditMode = false;
 
     this.resetFormVals();
-    this.GetAuthorList();
+    this.getAuthorList();
     this.GetPIList();
 
     // console.log(this.data);
@@ -128,128 +128,6 @@ export class CogbytesDialogueComponent implements OnInit {
 
   }
 
-  // Function Definition to open a dialog for adding new Author to the system
-  openDialogAuthor(): void {
-
-    const dialogref = this.dialogAuthor.open(CogbytesAuthorDialogueComponent, {
-      height: '500px',
-      width: '700px',
-      data: {}
-
-    });
-
-    dialogref.afterClosed().subscribe(result => {
-
-      this.GetAuthorList();
-
-    });
-  }
-
-  openDialogPI(): void { // PI Dialog Component must be implemented!
-
-    const dialogref = this.dialogAuthor.open(CogbytesPIDialogeComponent, {
-      height: '500px',
-      width: '700px',
-      data: {}
-
-    });
-
-    dialogref.afterClosed().subscribe(result => {
-
-      this.GetPIList();
-    });
-  }
-
-  // ngOnDestroy() {
-  //    this._onDestroy.next();
-  //    this._onDestroy.complete();
-  // }
-
-  GetAuthorList() {
-
-    this.cogbytesService.getAuthor().subscribe((data: any) => {
-      this.authorList = data;
-
-      // load the initial AuthorList
-      this.filteredAutorList.next(this.authorList.slice());
-
-      this.authorMultiFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterAuthor();
-        });
-
-    });
-
-    return this.authorList;
-  }
-
-
-  /// / handling multi filtered Author list
-  private filterAuthor() {
-    if (!this.authorList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchAuthor = this.authorMultiFilterCtrl.value;
-
-    if (!searchAuthor) {
-      this.filteredAutorList.next(this.authorList.slice());
-      return;
-    } else {
-      searchAuthor = searchAuthor.toLowerCase();
-    }
-
-    // filter the Author
-    this.filteredAutorList.next(
-      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-    );
-  }
-
-
-  GetPIList() {
-
-    this.cogbytesService.getPI().subscribe((data: any) => {
-      this.piList = data;
-
-      // load the initial expList
-      this.filteredPIList.next(this.piList.slice());
-
-      this.piMultiFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterPI();
-        });
-
-    });
-
-    return this.piList;
-  }
-
-  /// / handling multi filtered PI list
-  private filterPI() {
-    if (!this.piList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchPI = this.piMultiFilterCtrl.value;
-
-    if (!searchPI) {
-      this.filteredPIList.next(this.piList.slice());
-      return;
-    } else {
-      searchPI = searchPI.toLowerCase();
-    }
-
-    // filter the PI
-    this.filteredPIList.next(
-      this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
-    );
-  }
-
-  // Handling Error for the required fields
   getErrorMessageAuthor() {
 
     return this.author.hasError('required') ? 'You must enter a value' : '';
@@ -281,7 +159,7 @@ export class CogbytesDialogueComponent implements OnInit {
             this.pi.hasError('required') ||
             this.privacyStatus.hasError('required') ||
             this.date.hasError('required') ||
-            ((this.title.value == null || this.title.value == '') && this.title.hasError('required'))
+            ((this.title.value === null || this.title.value === '') && this.title.hasError('required'))
 
     ) {
 
@@ -294,7 +172,7 @@ export class CogbytesDialogueComponent implements OnInit {
   }
 
 
-  AddRepository() {
+  addRepository() {
 
     this.spinnerService.show();
 
@@ -304,7 +182,7 @@ export class CogbytesDialogueComponent implements OnInit {
     this._cogbytes.doi = this.doiModel;
     this._cogbytes.piID = this.pi.value;
     this._cogbytes.link = this.linkModel;
-    this._cogbytes.privacyStatus = this.privacyStatus.value == 'true' ? true : false;
+    this._cogbytes.privacyStatus = this.privacyStatus.value === 'true' ? true : false;
     this._cogbytes.description = this.descriptionModel;
     this._cogbytes.additionalNotes = this.additionalNotesModel;
     this._cogbytes.date = this.date.value.toISOString().split('T')[0];
@@ -327,7 +205,7 @@ export class CogbytesDialogueComponent implements OnInit {
     });
   }
 
-  EditRepository() {
+  editRepository() {
 
     this.spinnerService.show();
 
@@ -337,7 +215,7 @@ export class CogbytesDialogueComponent implements OnInit {
     this._cogbytes.doi = this.doiModel;
     this._cogbytes.piID = this.pi.value;
     this._cogbytes.link = this.linkModel;
-    this._cogbytes.privacyStatus = this.privacyStatus.value == 'true' ? true : false;
+    this._cogbytes.privacyStatus = this.privacyStatus.value === 'true' ? true : false;
     this._cogbytes.description = this.descriptionModel;
     this._cogbytes.additionalNotes = this.additionalNotesModel;
     this._cogbytes.date = this.date.value.toISOString().split('T')[0];
@@ -382,6 +260,128 @@ export class CogbytesDialogueComponent implements OnInit {
     }
 
     return data;
+  }
+
+  // Function Definition to open a dialog for adding new Author to the system
+  openDialogAuthor(): void {
+
+    const dialogref = this.dialogAuthor.open(CogbytesAuthorDialogueComponent, {
+      height: '500px',
+      width: '700px',
+      data: {}
+
+    });
+
+    dialogref.afterClosed().subscribe(result => {
+
+      this.getAuthorList();
+
+    });
+  }
+
+  openDialogPI(): void { // PI Dialog Component must be implemented!
+
+    const dialogref = this.dialogAuthor.open(CogbytesPIDialogeComponent, {
+      height: '500px',
+      width: '700px',
+      data: {}
+
+    });
+
+    dialogref.afterClosed().subscribe(result => {
+
+      this.getPIList();
+    });
+  }
+
+  // ngOnDestroy() {
+  //    this._onDestroy.next();
+  //    this._onDestroy.complete();
+  // }
+
+  getAuthorList() {
+
+    this.cogbytesService.getAuthor().subscribe((data: any) => {
+      this.authorList = data;
+
+      // load the initial AuthorList
+      this.filteredAutorList.next(this.authorList.slice());
+
+      this.authorMultiFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterAuthor();
+        });
+
+    });
+
+    return this.authorList;
+  }
+
+  getPIList() {
+
+    this.cogbytesService.getPI().subscribe((data: any) => {
+      this.piList = data;
+
+      // load the initial expList
+      this.filteredPIList.next(this.piList.slice());
+
+      this.piMultiFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterPI();
+        });
+
+    });
+
+    return this.piList;
+  }
+
+
+
+
+  /// / handling multi filtered Author list
+  private filterAuthor() {
+    if (!this.authorList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchAuthor = this.authorMultiFilterCtrl.value;
+
+    if (!searchAuthor) {
+      this.filteredAutorList.next(this.authorList.slice());
+      return;
+    } else {
+      searchAuthor = searchAuthor.toLowerCase();
+    }
+
+    // filter the Author
+    this.filteredAutorList.next(
+      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+    );
+  }
+
+  /// / handling multi filtered PI list
+  private filterPI() {
+    if (!this.piList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchPI = this.piMultiFilterCtrl.value;
+
+    if (!searchPI) {
+      this.filteredPIList.next(this.piList.slice());
+      return;
+    } else {
+      searchPI = searchPI.toLowerCase();
+    }
+
+    // filter the PI
+    this.filteredPIList.next(
+      this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+    );
   }
 
 }

@@ -10,7 +10,7 @@ describe('AnimalDialogComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ AnimalDialogComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

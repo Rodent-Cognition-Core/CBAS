@@ -57,8 +57,8 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
 
-    this.GetUserInfo();
-    this.GetPISiteList();
+    this.getUserInfo();
+    this.getPISiteList();
 
 
 
@@ -68,7 +68,7 @@ export class ProfileComponent implements OnInit {
 
 
   // Get the list of all PISite exist in DB
-  GetPISiteList() {
+  getPISiteList() {
 
     this.piSiteService.getPISite().subscribe(data => {
       this.piSiteList = data;
@@ -114,7 +114,7 @@ export class ProfileComponent implements OnInit {
   }
 
   // Get User Info
-  GetUserInfo() {
+  getUserInfo() {
 
     this.profileService.getUserInfo().subscribe((data: any) => {
 
@@ -209,8 +209,8 @@ export class ProfileComponent implements OnInit {
     this.profileService.updateProfile(this._user).map((res: any) => {
 
       // location.reload();
-      this.GetUserInfo();
-      this.GetPISiteList();
+      this.getUserInfo();
+      this.getPISiteList();
       this.selectePISiteModel = [];
 
 

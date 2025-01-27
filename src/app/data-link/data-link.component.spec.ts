@@ -10,7 +10,7 @@ describe('DataLinkComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DataLinkComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

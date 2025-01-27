@@ -10,7 +10,7 @@ describe('GuidelineComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ GuidelineComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -84,7 +84,7 @@ import { User } from '../models/user';
 
     const token: string = this.oAuthService.getAccessToken();
     if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
+      headers = headers.set('authorization', `Bearer ${token}`);
     }
     return headers;
   }

@@ -5,7 +5,7 @@ export interface User {
      */
   givenName: string;
   familyName: string;
-  Email: string;
+  email: string;
   selectedPiSiteIds: Array<number>;
   termsConfirmed: boolean;
   userName: string;

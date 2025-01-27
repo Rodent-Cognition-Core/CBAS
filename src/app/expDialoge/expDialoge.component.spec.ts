@@ -10,7 +10,7 @@ describe('ExpDialogeComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ExpDialogeComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

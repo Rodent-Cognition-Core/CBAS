@@ -61,7 +61,7 @@ export class UploadComponent implements OnInit {
     errorReset: null,
     cancelReset: null,
     timeout: 36000000,
-    headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+    headers: { 'authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
   };
 
   constructor(

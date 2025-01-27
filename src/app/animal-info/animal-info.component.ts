@@ -24,7 +24,7 @@ export class AnimalInfoComponent implements OnInit {
   // selectedExpValueAnimal: string;
   experimentName: string;
   experimentID: any;
-  AnimalList: any;
+  animalList: any;
   pager: any = {};
   expfilter: any = '';
   pagedItems: any[];
@@ -46,9 +46,9 @@ export class AnimalInfoComponent implements OnInit {
 
   }
 
-  GetAnimalInfo(selectedExperimentID: number) {
+  getAnimalInfo(selectedExperimentID: number) {
     this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
-      this.AnimalList = data;
+      this.animalList = data;
       this.setPage(1);
       // console.log(this.AnimalList)
 
@@ -56,8 +56,8 @@ export class AnimalInfoComponent implements OnInit {
 
   }
 
-  SelectedExpChanged(experiment: any) {
-    this.GetAnimalInfo(experiment.expID);
+  selectedExpChanged(experiment: any) {
+    this.getAnimalInfo(experiment.expID);
     this.experimentName = experiment.expName;
     this.experimentID = experiment.expID;
 
@@ -76,7 +76,7 @@ export class AnimalInfoComponent implements OnInit {
     });
 
     dialogref.afterClosed().subscribe(result => {
-      this.GetAnimalInfo(this.experimentID);
+      this.getAnimalInfo(this.experimentID);
     });
   }
 
@@ -95,7 +95,7 @@ export class AnimalInfoComponent implements OnInit {
         this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
 
 
-          this.GetAnimalInfo(expId);
+          this.getAnimalInfo(expId);
           // location.reload()
 
           this.spinnerService.hide();
@@ -116,9 +116,9 @@ export class AnimalInfoComponent implements OnInit {
   setPage(page: number) {
 
 
-    let filteredItems = this.AnimalList;
+    let filteredItems = this.animalList;
 
-    filteredItems = this.filterByString(this.AnimalList, this.expfilter);
+    filteredItems = this.filterByString(this.animalList, this.expfilter);
 
     // get pager object from service
     this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
@@ -139,7 +139,6 @@ export class AnimalInfoComponent implements OnInit {
   filterByString(data: any, s: string): any {
     s = s.trim();
     return data.filter((e: any) => e.userAnimalID.includes(s)); // || e.another.includes(s)
-    //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
   }
 
 }

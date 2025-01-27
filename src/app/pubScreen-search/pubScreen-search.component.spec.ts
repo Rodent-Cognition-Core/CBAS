@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PubScreenSearchComponent } from './pubScreen-search.component';
 
 describe('VideoTutorialComponent', () => {
-    let component: PubScreenSearchComponent;
-    let fixture: ComponentFixture<PubScreenSearchComponent>;
+  let component: PubScreenSearchComponent;
+  let fixture: ComponentFixture<PubScreenSearchComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [PubScreenSearchComponent ]
+      declarations: [PubScreenSearchComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(PubScreenSearchComponent);
+    fixture = TestBed.createComponent(PubScreenSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

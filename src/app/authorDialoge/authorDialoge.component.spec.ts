@@ -3,18 +3,18 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthorDialogeComponent } from './authorDialoge.component';
 
 describe('AuthorDialogeComponent', () => {
-    let component: AuthorDialogeComponent;
-    let fixture: ComponentFixture<AuthorDialogeComponent>;
+  let component: AuthorDialogeComponent;
+  let fixture: ComponentFixture<AuthorDialogeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [AuthorDialogeComponent ]
+      declarations: [AuthorDialogeComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(AuthorDialogeComponent);
+    fixture = TestBed.createComponent(AuthorDialogeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

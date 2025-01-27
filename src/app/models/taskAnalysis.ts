@@ -1,8 +1,8 @@
 export interface TaskAnalysis {
 
-  ID: number;
-  Name: string;
-  OriginalName: string;
-  TaskDescription: string;
+  id: number;
+  name: string;
+  originalName: string;
+  taskDescription: string;
 
 }

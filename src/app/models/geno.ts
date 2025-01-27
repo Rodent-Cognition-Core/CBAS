@@ -1,9 +1,9 @@
 export interface Geno {
 
-  ID: number;
-  Genotype: string;
-  Link: string;
-  Description: string;
+  id: number;
+  genotype: string;
+  link: string;
+  description: string;
 
 
 

@@ -1,22 +1,22 @@
 export interface SubExperiment {
 
-  SubExpID: number;
-  ExpID: number;
-  AgeID: number;
-  AgeInMonth: string;
-  SubExpName: string;
-  ErrorMessage: string;
-  IsPostProcessingPass: boolean;
+  subExpID: number;
+  expID: number;
+  ageID: number;
+  ageInMonth: string;
+  subExpName: string;
+  errorMessage: string;
+  isPostProcessingPass: boolean;
   isIntervention: boolean;
   isDrug: boolean;
   drugName: string;
   drugUnit: string;
   drugQuantity: string;
   interventionDescription: string;
-  ImageIds: Array<number>;
-  ImageInfo: string;
-  ImageDescription: string;
-  Housing: string;
-  LightCycle: string;
+  imageIds: Array<number>;
+  imageInfo: string;
+  imageDescription: string;
+  housing: string;
+  lightCycle: string;
 
 }

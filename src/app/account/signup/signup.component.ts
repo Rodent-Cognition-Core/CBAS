@@ -35,7 +35,7 @@ export class SignupComponent extends Signin {
   }
 
   // Get the list of PISite
-  GetPISiteList() {
+  getPISiteList() {
 
     this.piSiteService.getPISite().subscribe((data) => {
       this.piSiteList = data.PISite;
@@ -89,7 +89,7 @@ export class SignupComponent extends Signin {
   }
 
   ngOnInit() {
-    this.GetPISiteList();
+    this.getPISiteList();
 
   }
 

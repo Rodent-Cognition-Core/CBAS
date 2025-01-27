@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge.component'
+import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge.component';
 
 describe('CogbytesPIDialogeComponent', () => {
-    let component: CogbytesPIDialogeComponent;
-    let fixture: ComponentFixture<CogbytesPIDialogeComponent>;
+  let component: CogbytesPIDialogeComponent;
+  let fixture: ComponentFixture<CogbytesPIDialogeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-        declarations: [CogbytesPIDialogeComponent]
+      declarations: [CogbytesPIDialogeComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(CogbytesPIDialogeComponent);
+    fixture = TestBed.createComponent(CogbytesPIDialogeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -13,7 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
-  selector: 'app-cogbytesEdit',
+  selector: 'app-cogbytesedit',
   templateUrl: './cogbytesEdit.component.html',
   styleUrls: ['./cogbytesEdit.component.scss']
 })
@@ -52,7 +52,7 @@ export class CogbytesEditComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.repoLinkGuid = params['repolinkguid'].split(' ')[0];
 
-      this.GetDataByLinkGuid(this.repoLinkGuid);
+      this.getDataByLinkGuid(this.repoLinkGuid);
     });
 
   }
@@ -63,7 +63,7 @@ export class CogbytesEditComponent implements OnInit {
     this.isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
   }
 
-  GetDataByLinkGuid(repoLinkGuid: string) {
+  getDataByLinkGuid(repoLinkGuid: string) {
     this.spinnerService.show();
 
     this.cogbytesService.getDataByLinkGuid(repoLinkGuid).subscribe((data: any) => {
@@ -80,7 +80,7 @@ export class CogbytesEditComponent implements OnInit {
   }
 
   // Downloading file
-  DownloadFile(file: any): void {
+  downloadFile(file: any): void {
 
     const path = file.permanentFilePath + '\\' + file.sysFileName;
     this.cogbytesService.downloadFile(path)

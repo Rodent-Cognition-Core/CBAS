@@ -10,7 +10,7 @@ describe('GenericDialogComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ GenericDialogComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

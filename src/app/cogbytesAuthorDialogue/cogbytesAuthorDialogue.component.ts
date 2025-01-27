@@ -10,7 +10,7 @@ import { CogbytesService } from '../services/cogbytes.service';
 
 @Component({
 
-  selector: 'app-cogbytesAuthorDialogue',
+  selector: 'app-cogbytesauthordialogue',
   templateUrl: './cogbytesAuthorDialogue.component.html',
   styleUrls: ['./cogbytesAuthorDialogue.component.scss'],
   providers: [CogbytesService]
@@ -49,14 +49,15 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
   onCloseSubmit(): void {
 
     // Submiting the request to server
-    this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe((result: any) => {
-      if (result == 0) {
-        alert('Author already in database!');
-      } else {
-        alert('Author successfully added!');
-      }
-      this.thisDialogRef.close();
-    });
+    this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel)
+      .subscribe((result: any) => {
+        if (result === 0) {
+          alert('Author already in database!');
+        } else {
+          alert('Author successfully added!');
+        }
+        this.thisDialogRef.close();
+      });
 
   }
 

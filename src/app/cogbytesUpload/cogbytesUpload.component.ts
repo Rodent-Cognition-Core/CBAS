@@ -11,7 +11,10 @@ import {
 import { ViewChild } from '@angular/core';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
+import {
+  CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL,
+  FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS
+} from '../shared/messages';
 
 // declare global {
 //    interface Navigator {
@@ -21,7 +24,7 @@ import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOAD
 
 @Component({
 
-  selector: 'app-cogbytesUpload',
+  selector: 'app-cogbytesupload',
   templateUrl: './cogbytesUpload.component.html',
   styleUrls: ['./cogbytesUpload.component.scss'],
   // providers: [CogbytesService],
@@ -37,7 +40,10 @@ export class CogbytesUploadComponent implements OnInit {
   @Output() filesUploaded: EventEmitter<any> = new EventEmitter();
   @Output() repChange: EventEmitter<any> = new EventEmitter();
 
-  readonly DATASET = [1, 2, 3, 4, 5];
+  @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
+  @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;
+
+  readonly dATASET = [1, 2, 3, 4, 5];
 
   isUploadAdded = false;
   uploadID: number;
@@ -83,8 +89,6 @@ export class CogbytesUploadComponent implements OnInit {
 
   // componentRef: DropzoneComponent;
   // directiveRef: DropzoneDirective;
-  @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
-  @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;
 
   // fileToUpload: File = null;
   public type = 'component';
@@ -105,7 +109,7 @@ export class CogbytesUploadComponent implements OnInit {
     errorReset: null,
     cancelReset: null,
     timeout: 36000000,
-    headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+    headers: { 'authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
   };
 
 
@@ -276,7 +280,7 @@ export class CogbytesUploadComponent implements OnInit {
     }
   }
 
-  AddUpload() {
+  addUpload() {
 
     this._cogbytesUpload.repId = this.repID;
     this._cogbytesUpload.fileTypeId = this.fileType.value;
@@ -285,7 +289,7 @@ export class CogbytesUploadComponent implements OnInit {
     this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
     this._cogbytesUpload.description = this.descriptionModel;
     this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-    this._cogbytesUpload.isIntervention = this.intervention.value == 'true' ? true : false;
+    this._cogbytesUpload.isIntervention = this.intervention.value === 'true' ? true : false;
     this._cogbytesUpload.interventionDescription = this.intDesModel;
     // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
     this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -300,7 +304,7 @@ export class CogbytesUploadComponent implements OnInit {
     this._cogbytesUpload.genoID = this.genotypeModel;
     this._cogbytesUpload.ageID = this.ageModel;
 
-    this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
+    this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value, 10);
 
     this.cogbytesService.addUpload(this._cogbytesUpload).subscribe((data: any) => {
 
@@ -314,7 +318,7 @@ export class CogbytesUploadComponent implements OnInit {
     });
   }
 
-  EditUpload() {
+  editUpload() {
 
     this._cogbytesUpload.repId = this.repID;
     this._cogbytesUpload.fileTypeId = this.fileType.value;
@@ -323,7 +327,7 @@ export class CogbytesUploadComponent implements OnInit {
     this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
     this._cogbytesUpload.description = this.descriptionModel;
     this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-    this._cogbytesUpload.isIntervention = this.intervention.value == 'true' ? true : false;
+    this._cogbytesUpload.isIntervention = this.intervention.value === 'true' ? true : false;
     this._cogbytesUpload.interventionDescription = this.intDesModel;
     // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
     this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -338,7 +342,7 @@ export class CogbytesUploadComponent implements OnInit {
     this._cogbytesUpload.genoID = this.genotypeModel;
     this._cogbytesUpload.ageID = this.ageModel;
 
-    this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
+    this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value, 10);
 
     this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
 
@@ -405,7 +409,7 @@ export class CogbytesUploadComponent implements OnInit {
 
   onQueueComplete(args: any): void {
 
-    if (this.uploadErrorServer != '') {
+    if (this.uploadErrorServer !== '') {
       alert(this.uploadErrorServer);
 
       this.uploadErrorFileType = ''; // when server error happens error file type shouldn't be shown
@@ -422,13 +426,13 @@ export class CogbytesUploadComponent implements OnInit {
       this.resetFormVals();
       this.filesUploaded.emit(null);
     } else {
-      this.UpdateFileList();
+      this.updateFileList();
     }
     // this.filesUploaded.emit(null);
   }
 
 
-  DownloadFile(file: any): void {
+  downloadFile(file: any): void {
 
     const path = file.permanentFilePath + '\\' + file.sysFileName;
     this.cogbytesService.downloadFile(path)
@@ -486,7 +490,7 @@ export class CogbytesUploadComponent implements OnInit {
 
         }).subscribe(
           (response: any) => {
-            this.UpdateFileList();
+            this.updateFileList();
           });
 
         // this.spinnerService.hide();
@@ -499,13 +503,13 @@ export class CogbytesUploadComponent implements OnInit {
     });
   }
 
-  UpdateFileList() {
+  updateFileList() {
     this.cogbytesService.getUploadFiles(this.uploadID).subscribe((data: any) => {
       this.uploadFileList = data;
     });
   }
 
-  DeleteUpload() {
+  deleteUpload() {
     this.openConfirmationDialogDelUpload();
   }
 
@@ -522,7 +526,7 @@ export class CogbytesUploadComponent implements OnInit {
 
         this.cogbytesService.deleteUpload(this.uploadID).map((res: any) => {
 
-        }).subscribe((result: any) => {
+        }).subscribe((result2: any) => {
           this.filesUploaded.emit(null);
           setTimeout(() => {
             this.spinnerService.hide();

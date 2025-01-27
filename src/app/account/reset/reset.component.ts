@@ -50,7 +50,7 @@ export class ResetComponent extends Signin {
     this.identityService.submitNewPass(this.model.username, this.token, this.model.password).subscribe(
       (res: any) => {
         // IdentityResult.
-        if (res == 'Invalid Email!') {
+        if (res === 'Invalid Email!') {
           this.errorMessages.push({ description: 'Invalid Email!' });
         } else {
           if (res.succeeded) {

@@ -10,7 +10,7 @@ describe('UploadResultDialogComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ UploadResultDialogComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

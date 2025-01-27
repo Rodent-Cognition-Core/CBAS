@@ -2,16 +2,16 @@
     <mat-card>
         <mat-toolbar color="primary">Forgot password?</mat-toolbar>
         <mat-card-content>
-            <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && forgot()" novalidate>
+            <form name="form" #f="ngForm" (ngSubmit)="(f.form.valid) && forgot()" novalidate>
                 <div>
                     <br />
                     <br />
                     <!--<mat-form-field class="full-width">
-                        <input type="text" matInput [(ngModel)]="model.username" name="email" #username="ngModel" placeholder="email" (keyup)="clearMessages()" required>
-                        <mat-error>
-                            Required
-                        </mat-error>
-                    </mat-form-field>-->
+            <input type="text" matInput [(ngModel)]="model.username" name="email" #username="ngModel" placeholder="email" (keyup)="clearMessages()" required>
+            <mat-error>
+                Required
+            </mat-error>
+        </mat-form-field>-->
 
 
                     <mat-form-field class="full-width">

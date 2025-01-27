@@ -20,13 +20,13 @@ import { INVALIDYEAR } from '../shared/messages';
 
 
 @Component({
-  selector: 'app-cogbytesSearch',
+  selector: 'app-cogbytessearch',
   templateUrl: './cogbytesSearch.component.html',
   styleUrls: ['./cogbytesSearch.component.scss']
 })
 export class CogbytesSearchComponent implements OnInit {
 
-  readonly DATASET = 1;
+  readonly dATASET = 1;
 
   authorModel: any;
   piModel: any;
@@ -118,7 +118,7 @@ export class CogbytesSearchComponent implements OnInit {
     this.yearTo = fb.control('');
     this.route.queryParams.subscribe(params => {
       this.showAll = false;
-      if (params['showall'] != null && params['showall'] == 'true') {
+      if (params['showall'] != null && params['showall'] === 'true') {
         this.showAll = true;
       }
       // console.log(this.showAll);
@@ -127,12 +127,12 @@ export class CogbytesSearchComponent implements OnInit {
 
   ngOnInit() {
 
-    if (this.showAll == true) {
-      this.ShowRepositories();
+    if (this.showAll === true) {
+      this.showRepositories();
     } else {
-      this.GetRepositories();
-      this.GetAuthorList();
-      this.GetPIList();
+      this.getRepositories();
+      this.getAuthorList();
+      this.getPIList();
       this.cogbytesService.getFileTypes().subscribe((data: any) => {
         this.fileTypeList = data;
       });
@@ -161,7 +161,7 @@ export class CogbytesSearchComponent implements OnInit {
     this.isAdmin = this.authenticationService.isInRole('administrator');
     this.isUser = this.authenticationService.isInRole('user');
     this.isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
-    this.yearList = this.GetYear(1970).sort().reverse();
+    this.yearList = this.getYear(1970).sort().reverse();
 
     this.interventionModel = 'All';
 
@@ -177,7 +177,7 @@ export class CogbytesSearchComponent implements OnInit {
   }
 
   // Function definition to get list of years
-  GetYear(startYear: number) {
+  getYear(startYear: number) {
     const currentYear = new Date().getFullYear(), years = [];
     startYear = startYear || 1980;
     while (startYear <= currentYear) {
@@ -186,7 +186,7 @@ export class CogbytesSearchComponent implements OnInit {
     return years;
   }
 
-  GetRepositories() {
+  getRepositories() {
 
     this.cogbytesService.getAllRepositories().subscribe((data: any) => {
       this.repList = data;
@@ -205,7 +205,7 @@ export class CogbytesSearchComponent implements OnInit {
     return this.repList;
   }
 
-  ShowRepositories() {
+  showRepositories() {
 
     this.cogbytesService.showAllRepositories().subscribe(data => {
       this.repShowList = data;
@@ -214,30 +214,8 @@ export class CogbytesSearchComponent implements OnInit {
     });
   }
 
-  // handling multi filtered Rep list
-  private filterRep() {
-    if (!this.repList) {
-      return;
-    }
 
-    // get the search keyword
-    let searchRep = this.repMultiFilterCtrl.value;
-
-    if (!searchRep) {
-      this.filteredRepList.next(this.repList.slice());
-      return;
-    } else {
-      searchRep = searchRep.toLowerCase();
-    }
-
-    // filter the rep
-    this.filteredRepList.next(
-      this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
-    );
-  }
-
-
-  GetAuthorList() {
+  getAuthorList() {
 
 
     this.cogbytesService.getAuthor().subscribe((data: any) => {
@@ -258,7 +236,7 @@ export class CogbytesSearchComponent implements OnInit {
   }
 
 
-  GetPIList() {
+  getPIList() {
 
     this.cogbytesService.getPI().subscribe((data: any) => {
       this.piList = data;
@@ -275,50 +253,6 @@ export class CogbytesSearchComponent implements OnInit {
     });
 
     return this.piList;
-  }
-
-  /// / handling multi filtered PI list
-  private filterPI() {
-    if (!this.piList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchPI = this.piMultiFilterCtrl.value;
-
-    if (!searchPI) {
-      this.filteredPIList.next(this.piList.slice());
-      return;
-    } else {
-      searchPI = searchPI.toLowerCase();
-    }
-
-    // filter the PI
-    this.filteredPIList.next(
-      this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
-    );
-  }
-
-  // handling multi filtered Author list
-  private filterAuthor() {
-    if (!this.authorList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchAuthor = this.authorMultiFilterCtrl.value;
-
-    if (!searchAuthor) {
-      this.filteredAutorList.next(this.authorList.slice());
-      return;
-    } else {
-      searchAuthor = searchAuthor.toLowerCase();
-    }
-
-    // filter the Author
-    this.filteredAutorList.next(
-      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-    );
   }
 
   setDisabledValSearch() {
@@ -340,7 +274,11 @@ export class CogbytesSearchComponent implements OnInit {
     // console.log(yearToVal)
     yearFromVal = yearFromVal === null ? 0 : yearFromVal;
 
-    yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
+    if (yearToVal < yearFromVal) {
+      this.yearTo.setErrors({ incorrect: true });
+    } else {
+      this.yearTo.setErrors(null); // Clear any previous errors
+    }
 
   }
 
@@ -392,7 +330,7 @@ export class CogbytesSearchComponent implements OnInit {
 
   // Function to filter search list based on repository
   getFilteredSearchList(repID: number) {
-    return this.searchResultList.filter((x: any) => x.repID == repID);
+    return this.searchResultList.filter((x: any) => x.repID === repID);
   }
 
   // Function for getting string of repository authors
@@ -412,13 +350,13 @@ export class CogbytesSearchComponent implements OnInit {
 
   // Function for getting string of repository PIs
   getRepPIString(rep: any) {
-    let PIString = '';
+    let piString = '';
     for (const id of rep.piid) {
-      PIString += this.piList[this.piList.map(function (x: any) {
+      piString += this.piList[this.piList.map(function (x: any) {
         return x.id;
       }).indexOf(id)].piFullName + ', ';
     }
-    return PIString.slice(0, -2);
+    return piString.slice(0, -2);
   }
 
   getFileType(upload: any) {
@@ -494,7 +432,7 @@ export class CogbytesSearchComponent implements OnInit {
     return ageString.slice(0, -2);
   }
 
-  DownloadFile(file: any): void {
+  downloadFile(file: any): void {
 
     const path = file.permanentFilePath + '\\' + file.sysFileName;
     this.cogbytesService.downloadFile(path)
@@ -530,6 +468,72 @@ export class CogbytesSearchComponent implements OnInit {
 
   getLinkURL(rep: any) {
     return 'http://localhost:4200/comp-edit?repolinkguid=' + rep.repoLinkGuid;
+  }
+
+  // handling multi filtered Rep list
+  private filterRep() {
+    if (!this.repList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchRep = this.repMultiFilterCtrl.value;
+
+    if (!searchRep) {
+      this.filteredRepList.next(this.repList.slice());
+      return;
+    } else {
+      searchRep = searchRep.toLowerCase();
+    }
+
+    // filter the rep
+    this.filteredRepList.next(
+      this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
+    );
+  }
+
+  /// / handling multi filtered PI list
+  private filterPI() {
+    if (!this.piList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchPI = this.piMultiFilterCtrl.value;
+
+    if (!searchPI) {
+      this.filteredPIList.next(this.piList.slice());
+      return;
+    } else {
+      searchPI = searchPI.toLowerCase();
+    }
+
+    // filter the PI
+    this.filteredPIList.next(
+      this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+    );
+  }
+
+  // handling multi filtered Author list
+  private filterAuthor() {
+    if (!this.authorList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchAuthor = this.authorMultiFilterCtrl.value;
+
+    if (!searchAuthor) {
+      this.filteredAutorList.next(this.authorList.slice());
+      return;
+    } else {
+      searchAuthor = searchAuthor.toLowerCase();
+    }
+
+    // filter the Author
+    this.filteredAutorList.next(
+      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+    );
   }
 }
 

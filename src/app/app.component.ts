@@ -80,11 +80,11 @@ export class AppComponent implements OnInit {
       this.authenticationService.startupTokenRefresh();
     }
 
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        gtag('config', 'G-D1Q51EVX8L', { 'page_path': event.urlAfterRedirects });
-      }
-    });
+    // this.router.events.subscribe((event) => {
+    //  if (event instanceof NavigationEnd) {
+    //    gtag('config', 'G-D1Q51EVX8L', { 'page_path': event.urlAfterRedirects });
+    //  }
+    // });
 
   }
 
@@ -105,21 +105,21 @@ export class AppComponent implements OnInit {
   }
 
   mouseEnter(div: string) {
-    if (div == 'homelink') {
+    if (div === 'homelink') {
       $('#homeImage').css('visibility', 'visible');
-    } else if (div == 'contactus') {
+    } else if (div === 'contactus') {
       $('#contactImage').css('visibility', 'visible');
-    } else if (div == 'aboutus') {
+    } else if (div === 'aboutus') {
       $('#aboutImage').css('visibility', 'visible');
     }
   }
 
   mouseLeave(div: string) {
-    if (div == 'homelink') {
+    if (div === 'homelink') {
       $('#homeImage').css('visibility', 'hidden');
-    } else if (div == 'contactus') {
+    } else if (div === 'contactus') {
       $('#contactImage').css('visibility', 'hidden');
-    } else if (div == 'aboutus') {
+    } else if (div === 'aboutus') {
       $('#aboutImage').css('visibility', 'hidden');
     }
   }
@@ -134,7 +134,6 @@ export class AppComponent implements OnInit {
     const elementList = document.querySelectorAll('.' + className);
     const element = elementList[0] as HTMLElement;
     element.scrollIntoView({ block: 'start', inline: 'nearest' }); // , behavior: 'smooth'
-    // https://www.google.ca/search?rlz=1C1CHBF_enCA773CA773&ei=mjY0W7SqI6mZjwSm_alQ&q=scrollintoview+behavior+smooth+chrome+workaround&oq=scrollintoview+behavior+smooth+chrome+workaround&gs_l=psy-ab.3...4370.6235.0.6330.10.10.0.0.0.0.142.930.8j2.10.0....0...1c.1.64.psy-ab..0.9.852...33i22i29i30k1j33i160k1j33i21k1.0.pMohbacSZr0
   }
 
   navigateHomeAndScrollTo(element: any) {
@@ -159,7 +158,7 @@ export class AppComponent implements OnInit {
             routerUrl.toUpperCase() === '/data-visualization'.toUpperCase() ||
             routerUrl.toUpperCase() === '/mb-dashboard'.toUpperCase() ||
             routerUrl.toUpperCase() === '/pubScreen-dashboard'.toUpperCase() ||
-            routerUrl.toUpperCase().indexOf('/data-link'.toUpperCase()) != -1 ||
+            routerUrl.toUpperCase().indexOf('/data-link'.toUpperCase()) !== -1 ||
             routerUrl.toUpperCase() === '/guideline'.toUpperCase() ||
             routerUrl.toUpperCase() === '/imaging'.toUpperCase() ||
             routerUrl.toUpperCase() === '/genomics'.toUpperCase() ||

@@ -48,7 +48,7 @@ export class DataVisualizationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute) {
 
-    this.user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+    this.user = { email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
   }
 
   ngOnInit() {
@@ -73,14 +73,14 @@ export class DataVisualizationComponent implements OnInit {
 
     this.spinnerService.show();
 
-    if (this.selectedCogTaskValue == 1) {
+    if (this.selectedCogTaskValue === 1) {
       this.loadAnalysis('MB_5C_userbased');
-    } else if (this.selectedCogTaskValue == 2) {
+    } else if (this.selectedCogTaskValue === 2) {
       this.loadAnalysis('MB_PAL_userbased');
-    } else if (this.selectedCogTaskValue == 3) {
+    } else if (this.selectedCogTaskValue === 3) {
       this.loadAnalysis('MB_PD_userbased');
 
-    } else if (this.selectedCogTaskValue == 4) {
+    } else if (this.selectedCogTaskValue === 4) {
       this.loadAnalysis('MB_CPT_userbased');
 
     }
@@ -141,7 +141,8 @@ export class DataVisualizationComponent implements OnInit {
 
     this.app.open('/Public/User_Based_Visualizations/' + spotfireAnalysisName, 'contentpanel', configuration);
 
-    // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan: https://mousebytes.ca/data-visualization?taskid=2&sara=1,3
+    // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan:
+    //      https://mousebytes.ca/data-visualization?taskid=2&sara=1,3
     // 2. when user comes to this page with querystring set, get values from querystring and set filters
 
 
@@ -187,7 +188,8 @@ export class DataVisualizationComponent implements OnInit {
   //    //this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
   //    //});
 
-  //    //this.dialogRefLink.componentInstance.message = "https://mousebytes.ca/" + "?taskid=" + this.selectedCogTaskValue + filterQuerystring;
+  // this.dialogRefLink.componentInstance.message =
+  //    "https://mousebytes.ca/" + "?taskid=" + this.selectedCogTaskValue + filterQuerystring;
 
 
 

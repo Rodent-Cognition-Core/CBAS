@@ -2,7 +2,7 @@ import { Component, Input, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'confirm-dialog',
+  selector: 'app-confirm-dialog',
   templateUrl: './delete-confirm-dialog.component.html',
 })
 export class DeleteConfirmDialogComponent {
