@@ -900,7 +900,7 @@ namespace AngularSPAWebAPI.Services
 
         public static async Task<DataTable> GetDataTableAsync(string cmdTxt, List<SqlParameter> cmdParams = null)
         {
-            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt);
+            DataSet ds = await ExecDSAsync(CommandType.Text, _cnnString, cmdTxt, cmdParams?.ToArray());
             if (ds != null && ds.Tables.Count > 0)
             {
                 return ds.Tables[0];
@@ -920,7 +920,7 @@ namespace AngularSPAWebAPI.Services
         //    return null;
         //}
 
-        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt)
+        public static async Task<DataSet> ExecDSAsync(CommandType cmdType, string connectionString, string cmdTxt, params SqlParameter[] cmdParams)
         {
             using (SqlConnection cn = new SqlConnection(connectionString))
             {
