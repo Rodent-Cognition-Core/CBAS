@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --hmr --configuration=hmr",
-    "build:staging": "ng build --configuration production --configuration=staging",
+    "build:staging": "ng build --configuration production",
     "build:prod": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint",
