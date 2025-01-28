@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit {
     this.email = '';
     this.givenName = fb.control('', [Validators.required]);
     this.familyName = fb.control('', [Validators.required]);
-    this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+    this._user = { email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
   }
 
   ngOnInit() {
@@ -72,25 +72,23 @@ export class ProfileComponent implements OnInit {
 
     this.piSiteService.getPISite().subscribe(data => {
       this.piSiteList = data;
-      console.log(this.piSiteList);
-      this.GetPISiteListByUserID();
+      this.getPISiteListByUserID();
     });
 
   }
 
   // Get List of all PiSite by the user ID
-  GetPISiteListByUserID() {
+  getPISiteListByUserID() {
 
     this.piSiteService.getPISitebyUserID().subscribe((data: any) => {
       this.piSiteListByUserID = data;
-      console.log(this.piSiteListByUserID);
 
-      this.GetFilteredPiSiteList();
+      this.getFilteredPiSiteList();
     });
   }
 
   // Filter PiSiteLsit to get the list of PIS not already added to user profile's PiSite
-  GetFilteredPiSiteList() {
+  getFilteredPiSiteList() {
 
 
     const a = this.piSiteList;
@@ -99,8 +97,8 @@ export class ProfileComponent implements OnInit {
     function comparer(otherArray: any) {
       return function (current: any) {
         return otherArray.filter(function (other: any) {
-          return other.psid == current.psid;
-        }).length == 0;
+          return other.psid === current.psid;
+        }).length === 0;
       };
     }
 
@@ -108,8 +106,6 @@ export class ProfileComponent implements OnInit {
     // var onlyInB = b.filter(comparer(a));
 
     this.piSiteListByUserIDFilter = onlyInA;
-
-    console.log(this.piSiteListByUserIDFilter);
 
   }
 
@@ -173,7 +169,7 @@ export class ProfileComponent implements OnInit {
     this.identityService.changePassword(this.model.currentPassword, this.model.newPassword).subscribe(
       (res: any) => {
         // IdentityResult.
-        if (res == 'Invalid Email!') {
+        if (res === 'Invalid Email!') {
           this.errorMessages.push({ description: INVALIDEMAILADDRESS });
         } else {
           if (res.succeeded) {

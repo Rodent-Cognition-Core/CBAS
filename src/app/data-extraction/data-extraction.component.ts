@@ -973,7 +973,7 @@ export class DataExtractionComponent implements OnInit {
 
   downloadCsv() {
 
-    this.dataExtractionService.IncreaseCounter().subscribe(data => {
+    this.dataExtractionService.increaseCounter().subscribe((data: any) => {
       let csv: string;
       csv = '';
 

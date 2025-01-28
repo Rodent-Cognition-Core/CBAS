@@ -11,7 +11,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-reqMouseLineDialoge',
+  selector: 'app-reqmouselinedialoge',
   templateUrl: './reqMouseLineDialoge.component.html',
   styleUrls: ['./reqMouseLineDialoge.component.scss'],
   providers: [RequestService]
@@ -24,9 +24,6 @@ export class ReqMouseLineDialogeComponent implements OnInit {
   reqGenoModel: string;
   refModel: string;
   controlModel: string;
-
-  // DEfining obj model parameters
-  private _request: Request;
 
   // FormControl Parameters
 
@@ -47,6 +44,7 @@ export class ReqMouseLineDialogeComponent implements OnInit {
 
   ];
 
+  private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
 
@@ -62,9 +60,9 @@ export class ReqMouseLineDialogeComponent implements OnInit {
     this.strain = fb.control('', [Validators.required]);
     this.geneticModi = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 

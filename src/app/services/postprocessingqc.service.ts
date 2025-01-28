@@ -22,10 +22,10 @@ import { AuthenticationService } from './authentication.service';
     });
   }
 
-  public getPostProcessingResult(SubExpId: number): any {
+  public getPostProcessingResult(subExpId: number): any {
 
     return this.http
-      .get('/api/PostProcessingQc/GetPostProcessingResult?SubExpId=' + SubExpId, {
+      .get('/api/PostProcessingQc/GetPostProcessingResult?SubExpId=' + subExpId, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
   }

@@ -12,7 +12,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-reqPubTaskDialoge',
+  selector: 'app-reqpubtaskdialoge',
   templateUrl: './reqPubTaskDialoge.component.html',
   styleUrls: ['./reqPubTaskDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
@@ -22,8 +22,6 @@ export class ReqPubTaskDialogeComponent implements OnInit {
 
   taskCategoryList: any;
 
-  private _request: Request;
-
   // FormControl Parameters
 
   name: FormControl;
@@ -32,6 +30,8 @@ export class ReqPubTaskDialogeComponent implements OnInit {
   newCategory: FormControl;
   newTask: FormControl;
   doi: FormControl;
+
+  private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqPubTaskDialogeComponent>,
 
@@ -46,9 +46,9 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     this.newTask = fb.control('', [Validators.required]);
     this.doi = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 
@@ -72,7 +72,7 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     this._request.fullName = this.name.value;
     this._request.email = this.email.value;
     this._request.doi = this.doi.value;
-    if (this.taskCategory.value != 'None') {
+    if (this.taskCategory.value !== 'None') {
       this._request.taskCategory = this.taskCategory.value;
     } else {
       this._request.taskCategory = 'NEW: ' + this.newCategory.value;
@@ -138,7 +138,7 @@ export class ReqPubTaskDialogeComponent implements OnInit {
             this.newTask.hasError('required') ||
             this.doi.hasError('required') ||
             this.taskCategory.hasError('required') ||
-            (this.newCategory.hasError('required') && this.taskCategory.value == 'None')
+            (this.newCategory.hasError('required') && this.taskCategory.value === 'None')
 
 
     ) {

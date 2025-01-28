@@ -109,7 +109,7 @@ export class CogbytesUploadComponent implements OnInit {
     errorReset: null,
     cancelReset: null,
     timeout: 36000000,
-    headers: { 'authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+    headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
   };
 
 

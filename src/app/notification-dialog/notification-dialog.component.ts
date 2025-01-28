@@ -2,7 +2,7 @@ import { Component, Input, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'message-dialog',
+  selector: 'app-message-dialog',
   templateUrl: './notification-dialog.component.html',
 })
 export class NotificationDialogComponent {

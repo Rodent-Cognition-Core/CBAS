@@ -25,7 +25,7 @@
 
                             <!--Author-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" (openedChange)="GetAuthorList()" required multiple>
+                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" (openedChange)="getAuthorList()" required multiple>
                                     <mat-option>
                                         <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
@@ -43,7 +43,7 @@
                             <!--PI-->
                             <!--PI-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="pi" placeholder="Select PI(s)" (openedChange)="GetPIList()" required multiple>
+                                <mat-select [formControl]="pi" placeholder="Select PI(s)" (openedChange)="getPIList()" required multiple>
 
                                     <mat-option>
                                         <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
@@ -146,12 +146,12 @@
                 <br />
 
                 <div *ngIf="!isEditMode; else changeButtons">
-                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="AddRepository()">Save Repository</button>
+                    <button mat-raised-button color="accent" class="full-width" [disabled]="setDisabledVal()" (click)="addRepository()">Save Repository</button>
                 </div>
 
                 <ng-template #changeButtons>
                     <div>
-                        <button mat-raised-button [disabled]="setDisabledVal()" (click)="EditRepository()">Save Changes</button>
+                        <button mat-raised-button [disabled]="setDisabledVal()" (click)="editRepository()">Save Changes</button>
                         <button mat-raised-button style="float:right" color="accent" [disabled]="setDisabledVal()" (click)="thisDialogRef.close()">Cancel</button>
                     </div>
                 </ng-template>

@@ -11,16 +11,13 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-reqPIDialoge',
+  selector: 'app-reqpidialoge',
   templateUrl: './reqPIDialoge.component.html',
   styleUrls: ['./reqPIDialoge.component.scss'],
   providers: [RequestService]
 
 })
 export class ReqPIDialogeComponent implements OnInit {
-
-
-  private _request: Request;
 
   // FormControl Parameters
 
@@ -29,6 +26,8 @@ export class ReqPIDialogeComponent implements OnInit {
   emailPI: FormControl;
   piName: FormControl;
   institution: FormControl;
+
+  private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
 
@@ -42,9 +41,9 @@ export class ReqPIDialogeComponent implements OnInit {
     this.piName = fb.control('', [Validators.required]);
     this.institution = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 

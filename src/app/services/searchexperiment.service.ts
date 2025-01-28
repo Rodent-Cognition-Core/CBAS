@@ -16,7 +16,7 @@ import { AuthenticationService } from './authentication.service';
 
 
   // Function definition to get list of all users
-  public GetSearchList(): any {
+  public getSearchList(): any {
 
     return this.http
       .get('/api/searchexp/GetSearchList', {
@@ -25,7 +25,7 @@ import { AuthenticationService } from './authentication.service';
       });
   }
 
-  public GetSearchByExpID(expID: any): any {
+  public getSearchByExpID(expID: any): any {
 
     return this.http
       .get('/api/searchexp/GetSearchByExpID?expID=' + expID, {

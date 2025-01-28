@@ -10,7 +10,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 
 @Component({
 
-  selector: 'app-termsDialoge',
+  selector: 'app-termsdialoge',
   templateUrl: './termsDialoge.component.html',
   styleUrls: ['./termsDialoge.component.scss'],
 

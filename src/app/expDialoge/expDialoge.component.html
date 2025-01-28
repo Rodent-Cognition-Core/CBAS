@@ -52,8 +52,8 @@
         <!--PI & Institution-->
         <mat-form-field class="full-width">
             <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required>
-                <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.pusid">
-                    {{PIS.piSiteName}}
+                <mat-option *ngFor="let pis of piSiteList" [value]="pis.PUSID">
+                    {{pis.piSiteName}}
                 </mat-option>
             </mat-select>
             <mat-error *ngIf="piSite.invalid">{{getErrorMessageTask()}}</mat-error>
@@ -89,7 +89,7 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="DOI (e.g. 10.1038/s41593-018-0209-y)" [(ngModel)]="DOIModel" type="url">
+            <input matInput placeholder="DOI (e.g. 10.1038/s41593-018-0209-y)" [(ngModel)]="doiModel" type="url">
 
         </mat-form-field>
 

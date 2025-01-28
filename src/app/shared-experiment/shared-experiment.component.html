@@ -93,7 +93,7 @@
                     <tbody class="docs-markdown-tbody">
                         <tr *ngFor="let subexp of subExpList">
                             <td style="text-align: center; color:#696d70;">
-                                <mat-radio-group [(ngModel)]="SubExpModel">
+                                <mat-radio-group [(ngModel)]="subExpModel">
                                     <mat-radio-button [value]="subexp.subExpID" (change)="SelectedSubExpChangedRD($event)">
 
                                     </mat-radio-button>

@@ -11,7 +11,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-reqAgeDialoge',
+  selector: 'app-reqagedialoge',
   templateUrl: './reqAgeDialoge.component.html',
   styleUrls: ['./reqAgeDialoge.component.scss'],
   providers: [RequestService]
@@ -19,14 +19,13 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 })
 export class ReqAgeDialogeComponent implements OnInit {
 
-
-  private _request: Request;
-
   // FormControl Parameters
 
   name: FormControl;
   email: FormControl;
   age: FormControl;
+
+  private _request: Request;
 
 
   constructor(public thisDialogRef: MatDialogRef<ReqAgeDialogeComponent>,
@@ -39,9 +38,9 @@ export class ReqAgeDialogeComponent implements OnInit {
     this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
     this.age = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 

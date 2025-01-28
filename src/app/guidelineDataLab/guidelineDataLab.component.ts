@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 declare let $: any;
 
 @Component({
-  selector: 'app-guidelineDataLab',
+  selector: 'app-guidelinedatalab',
   templateUrl: './guidelineDataLab.component.html',
   styleUrls: ['./guidelineDataLab.component.scss']
 })

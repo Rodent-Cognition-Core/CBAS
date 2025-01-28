@@ -1,7 +1,7 @@
 <div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>Upload Log</h1></div>
 
 
-<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
+<app-shared-experiment (outSelectedExperiment)="selectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
 
 <br /><br />
 
@@ -52,10 +52,10 @@
                           <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button>
                       </td>
                       <td style="text-align: center; color:#696d70;" class="docs-markdown-td-wide-errorMessage" *ngIf="row.errorMessage.includes('Missing Animal Information:')">
-                          <button mat-button (click)="ResolveIssue(row.animalObj, row.uploadID)">Resolve Issue</button><br />
+                          <button mat-button (click)="resolveIssue(row.animalObj, row.uploadID)">Resolve Issue</button><br />
                           <button mat-button (click)="delAnimal(row.animalID, row.expID)">Delete Animal</button><br />
                           <button mat-button (click)="deleteFile(row.uploadID)">Delete File</button><br />
-                          <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button>
+                          <button mat-icon-button matTooltip="Download File" (click)="downloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button>
                       </td>
                   </tr>
 
@@ -86,7 +86,7 @@
     <table class="docs-markdown-table">
 
         <thead>
-            <tr><td colspan="4" style="padding: 5px; text-align:right; border: 1px solid rgba(0,0,0,.03);"><button mat-button (click)="ClearUploadErrorLogList(experimentID)">Clear Table</button></td></tr>
+            <tr><td colspan="4" style="padding: 5px; text-align:right; border: 1px solid rgba(0,0,0,.03);"><button mat-button (click)="clearUploadErrorLogList(experimentID)">Clear Table</button></td></tr>
             <tr><th colspan="4" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">Minor Upload Errors for {{experimentName}}</th></tr>
             <tr style=" text-align: center; color:#465563;">
                 <td class="docs-markdown-td">Sub-Experiment Name, Age</td>

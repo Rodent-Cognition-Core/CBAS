@@ -12,17 +12,34 @@ export const topMargin = 16;
 @Injectable()
 export class ScrollService {
 
-  private _topOffset: number | null;
+  private _topOffset: number | null = 0;
   private _topOfPageElement: Element;
 
   // Offset from the top of the document to bottom of any static elements
   // at the top (e.g. toolbar) + some margin
-  get topOffset() {
-    if (!this._topOffset) {
-      const toolbar = this.document.querySelector('.app-toolbar');
-      this._topOffset = (toolbar && toolbar.clientHeight || 0) + topMargin;
+
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    private location: PlatformLocation) {
+    // On resize, the toolbar might change height, so "invalidate" the top offset.
+    fromEvent(window, 'resize').subscribe(() => this._topOffset = null);
+    // this._topOffset = 0;
+    this._topOfPageElement = this.document.querySelector('.top-of-page');
+  }
+
+  /**
+     * Scroll to the element with id extracted from the current location hash fragment.
+     * Scroll to top if no hash.
+     * Don't scroll if hash not found.
+     */
+
+  get topOffset(): number {
+    if (this._topOffset === null) {
+      const toolbar = this.document.querySelector('.app-toolbar') as HTMLElement | null;
+      const toolbarHeight = toolbar?.clientHeight ?? 0;
+      this._topOffset = toolbarHeight + topMargin;
     }
-    return this._topOffset!;
+    return this._topOffset;
   }
 
   get topOfPageElement() {
@@ -32,20 +49,6 @@ export class ScrollService {
     return this._topOfPageElement;
   }
 
-  constructor(
-    @Inject(DOCUMENT) private document: any,
-    private location: PlatformLocation) {
-    // On resize, the toolbar might change height, so "invalidate" the top offset.
-    fromEvent(window, 'resize').subscribe(() => this._topOffset = null);
-    this._topOffset = 0;
-    this._topOfPageElement = this.document.querySelector('.top-of-page');
-  }
-
-  /**
-     * Scroll to the element with id extracted from the current location hash fragment.
-     * Scroll to top if no hash.
-     * Don't scroll if hash not found.
-     */
   scroll() {
     const hash = this.getCurrentHash();
     const element: HTMLElement = hash

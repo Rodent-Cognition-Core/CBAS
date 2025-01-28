@@ -17,7 +17,8 @@ export const FEATURESUPLOADSUCESS = 'Upload features were successfully added to 
 export const FEATUREEDITFAILED = 'Failed to edit features to Cogbytes';
 export const FEATUREEDITSUCCESSFULL = 'Features were successfully edited to the system';
 export const FAILEDTOADDUPLOADDUETOMISSINGFEATURES = 'Error: upload zone disabled until required features are selected and saved.';
-export const FAILEDTOADDUPLOADDUETOSERVER = 'Error in upload: please ensure all file types are supported.  If so, please contact administrator at MouseBytes@uwo.ca';
+export const FAILEDTOADDUPLOADDUETOSERVER = 'Error in upload: please ensure all file types are supported.' +
+    'If so, please contact administrator at MouseBytes@uwo.ca';
 export const UPLOADSUCCESS = 'Files were successfully uploaded to the database!';
 export const DOWNLOADERROR = 'Something went wrong! Please try again and contact administrator at MouseBytes@uwo.ca if the issue persists.';
 export const EXPERIMENTNAMETAKEN = 'This Experiment Name was already taken';

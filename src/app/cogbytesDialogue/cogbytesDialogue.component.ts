@@ -103,7 +103,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
     this.resetFormVals();
     this.getAuthorList();
-    this.GetPIList();
+    this.getPIList();
 
     // console.log(this.data);
 

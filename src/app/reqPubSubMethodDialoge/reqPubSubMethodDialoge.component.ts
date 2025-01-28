@@ -12,7 +12,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-  selector: 'app-reqPubSubMethodDialoge',
+  selector: 'app-reqpubsubmethoddialoge',
   templateUrl: './reqPubSubMethodDialoge.component.html',
   styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
@@ -22,8 +22,6 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
 
   methodList: any;
 
-  private _request: Request;
-
   // FormControl Parameters
 
   name: FormControl;
@@ -31,6 +29,8 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
   method: FormControl;
   newSubMethod: FormControl;
   doi: FormControl;
+
+  private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqPubSubMethodDialogeComponent>,
 
@@ -44,9 +44,9 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
     this.newSubMethod = fb.control('', [Validators.required]);
     this.doi = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 

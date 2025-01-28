@@ -27,7 +27,8 @@ import { AuthenticationService } from './authentication.service';
   public getAllExpByTaskID(id: any, userGuid: any, isFullDataAccess: any, speciesID: any): any {
 
     return this.http
-      .get('/api/dataExtraction/GetExpByTaskID?taskId=' + id + '&userGuid=' + userGuid + '&isFullDataAccess=' + isFullDataAccess + '&speciesId=' + speciesID, {
+      .get('/api/dataExtraction/GetExpByTaskID?taskId=' + id + '&userGuid=' + userGuid + '&isFullDataAccess=' +
+            isFullDataAccess + '&speciesId=' + speciesID, {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
       });
 
@@ -120,9 +121,9 @@ import { AuthenticationService } from './authentication.service';
   }
 
   // Getting data from database for all the selected values by the suer
-  public getData(data_extraction: DataExtraction): any {
+  public getData(dataExtraction: DataExtraction): any {
 
-    const body: string = JSON.stringify(data_extraction);
+    const body: string = JSON.stringify(dataExtraction);
 
     return this.http
       .post('/api/dataExtraction/GetData', body, {
@@ -150,7 +151,7 @@ import { AuthenticationService } from './authentication.service';
 
   }
 
-  IncreaseCounter() {
+  increaseCounter() {
 
     return this.http
       .post('/api/dataExtraction/IncreaseCounter', {

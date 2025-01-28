@@ -25,28 +25,28 @@ import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../sh
 })
 export class SharedExperimentComponent implements OnInit {
 
-  // @Input() selectedValue: string;
-  // ngModel vars
-  faQuestionCircle = faQuestionCircle;
-  selectedExpValue: any;
-  selectedSubExpValue: any;
-  SubExpModel: any; // ngModel for Radio Button
 
   @Input() hideSubExperiment: boolean;
   @Input() showSubExpTbl: boolean;
 
   @Output() outSelectedExperiment: EventEmitter<string> = new EventEmitter();
   @Output() outSelectedSubExperiment: EventEmitter<string> = new EventEmitter();
+  // @Input() selectedValue: string;
+  // ngModel vars
+  faQuestionCircle = faQuestionCircle;
+  selectedExpValue: any;
+  selectedSubExpValue: any;
+  subExpModel: any; // ngModel for Radio Button
 
-  public Exps: any;
-  DialogResult = '';
+  dialogResult = '';
   expList: any;
   subExpList: any;
   selectedImageResult: any;
-  Math: any;
+  math: any;
   imageDescriptionNotNullVal = false;
   repList: any;
 
+  public exps: any;
 
   constructor(
     private uploadService: UploadService,
@@ -78,13 +78,12 @@ export class SharedExperimentComponent implements OnInit {
   selectExpChange() {
     // this.outSelectChangeMethod.emit(this.selectedValue);
     this.selectedSubExpValue = null;
-    let selectedExp: any;
-    selectedExp = this.getSelectedExp(this.selectedExpValue);
+    const selectedExp: any = this.getSelectedExp(this.selectedExpValue);
     this.outSelectedExperiment.emit(selectedExp);
-    this.GetSubExpSelect(this.selectedExpValue);
+    this.getSubExpSelect(this.selectedExpValue);
   }
 
-  SelectedSubExpChangedRD(event: any) {
+  selectedSubExpChangedRD(event: any) {
 
     this.selectedSubExpValue = event.value;
     this.selectSubExpChangeDD();
@@ -92,9 +91,8 @@ export class SharedExperimentComponent implements OnInit {
   }
 
   selectSubExpChangeDD() {
-    this.SubExpModel = this.selectedSubExpValue;
-    let selectedSubExp: any;
-    selectedSubExp = this.getSelectedSubExp(this.selectedSubExpValue);
+    this.subExpModel = this.selectedSubExpValue;
+    const selectedSubExp: any = this.getSelectedSubExp(this.selectedSubExpValue);
     // console.log(selectedSubExp)
     if (selectedSubExp.imageIds != null) {
       this.selectedImageResult = selectedSubExp.imageIds.length;
@@ -104,35 +102,35 @@ export class SharedExperimentComponent implements OnInit {
   }
 
   // Creating Experiment
-  openDialog(Experiment: any): void {
+  openDialog(experiment: any): void {
     const dialogref = this.dialog.open(ExpDialogeComponent, {
       // height: '700px',
       width: '600px',
-      data: { experimentObj: Experiment }
+      data: { experimentObj: experiment }
 
     });
 
     dialogref.afterClosed().subscribe(result => {
       // console.log('the dialog was closed');
-      this.DialogResult = result;
-      this.GetExpSelect();
+      this.dialogResult = result;
+      this.getExpSelect();
     });
   }
 
   // Creating Sub experiment
-  openDialogSubExp(SubExperiment: any, ExpID: any): void {
+  openDialogSubExp(subExperiment: any, expID: any): void {
     // console.log(SubExperiment);
-    const Experiment = this.getSelectedExp(ExpID);
+    const experiment = this.getSelectedExp(expID);
     const dialogref = this.dialog.open(SubExpDialogeComponent, {
       width: '600px',
-      data: { subexperimentObj: SubExperiment, expObj: Experiment} // change it for editing
+      data: { subexperimentObj: subExperiment, expObj: experiment} // change it for editing
 
     });
 
     dialogref.afterClosed().subscribe(result => {
       // console.log('the dialog was closed');
 
-      this.GetSubExpSelect(this.selectedExpValue);
+      this.getSubExpSelect(this.selectedExpValue);
     });
   }
 
@@ -175,7 +173,7 @@ export class SharedExperimentComponent implements OnInit {
         this.spinnerService.show();
         this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).map((res: any) => {
           // location.reload()
-          this.GetSubExpSelect(this.selectedExpValue);
+          this.getSubExpSelect(this.selectedExpValue);
           this.spinnerService.hide();
           this.outSelectedSubExperiment.emit(undefined);
 
@@ -189,7 +187,7 @@ export class SharedExperimentComponent implements OnInit {
 
   ngOnInit() {
     // this.imageDescriptionNotNull = false;
-    this.GetExpSelect();
+    this.getExpSelect();
     this.cogbytesService.getAllRepositories().subscribe((data: any) => {
       this.repList = data; /* console.log(this.repList);*/
     });
@@ -204,7 +202,7 @@ export class SharedExperimentComponent implements OnInit {
   }
 
   // Get List of all Experiment
-  GetExpSelect() {
+  getExpSelect() {
 
     this.uploadService.getAllExperiment().subscribe((data: any) => {
       this.expList = data;
@@ -214,7 +212,7 @@ export class SharedExperimentComponent implements OnInit {
   }
 
   // Get List of All sub Experiment
-  GetSubExpSelect(selectedExpVal: any) {
+  getSubExpSelect(selectedExpVal: any) {
     this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe((data: any) => {
       this.subExpList = data.sort((a: any, b: any) => a.ageID - b.ageID);
     });
@@ -255,7 +253,7 @@ export class SharedExperimentComponent implements OnInit {
         this.spinnerService.hide();
       }, 500);
 
-      if (errorMessage == '') {
+      if (errorMessage === '') {
         // this.GetAllSubExp();
       } else {
         this.snackBar.open(POSTPROCESSINGDONE, '', {
@@ -264,7 +262,7 @@ export class SharedExperimentComponent implements OnInit {
           verticalPosition: 'top',
         });
 
-        this.GetSubExpSelect(this.selectedExpValue);
+        this.getSubExpSelect(this.selectedExpValue);
 
       }
 
@@ -277,7 +275,7 @@ export class SharedExperimentComponent implements OnInit {
   openPostProcessingResult(subExpID: any) {
 
     this.postProcessingQcService.getPostProcessingResult(subExpID).subscribe((errorMessage: string) => {
-      if (errorMessage == '') {
+      if (errorMessage === '') {
         errorMessage = PLEASERUNPREPROCESSING;
       }
 
@@ -290,7 +288,7 @@ export class SharedExperimentComponent implements OnInit {
   }
 
   getRepTitle(repGuid: any) {
-    if (repGuid == '') {
+    if (repGuid === '') {
       return 'N/A';
     }
     return this.repList[this.repList.map(function (x: any) {

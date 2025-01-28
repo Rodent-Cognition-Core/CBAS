@@ -2,7 +2,7 @@
 
 <!--<div>-->
 
-<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
+<app-shared-experiment (outSelectedExperiment)="selectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
 
 <br /><br />
 <div *ngIf="experimentID!=null">

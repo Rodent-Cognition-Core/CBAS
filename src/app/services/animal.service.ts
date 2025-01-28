@@ -7,20 +7,20 @@ import { Animal } from '../models/animal';
 
 import { AuthenticationService } from './authentication.service';
 
-export interface strainResponse {
+export interface StrainResponse {
   id: number;
   strain: string;
   link: string;
 }
 
-export interface genoResponse {
+export interface GenoResponse {
   id: number;
   genotype: string;
   link: string;
   description: string;
 }
 
-export interface animalResponse {
+export interface AnimalResponse {
   id: number;
   expid: number;
   gid: number;
@@ -39,10 +39,10 @@ export interface animalResponse {
     private authenticationService: AuthenticationService) { }
 
 
-  public getAnimalInfo(id: any): Observable<animalResponse[]> {
+  public getAnimalInfo(id: any): Observable<AnimalResponse[]> {
 
     return this.http
-      .get<animalResponse[]>('/api/animal/GetAnimalInfoByExpID?expId=' + id, {
+      .get<AnimalResponse[]>('/api/animal/GetAnimalInfoByExpID?expId=' + id, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
@@ -88,26 +88,26 @@ export interface animalResponse {
   }
 
   // Function definition to get list of all strains
-  public getAllStraine(): Observable<strainResponse[]> {
+  public getAllStraine(): Observable<StrainResponse[]> {
 
     return this.http
-      .get<strainResponse[]>('/api/animal/GetAllStrain', {
+      .get<StrainResponse[]>('/api/animal/GetAllStrain', {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
 
   // Function definition to get list of all Genotypes
-  public getAllGeno(id: any): Observable<genoResponse[]> {
+  public getAllGeno(id: any): Observable<GenoResponse[]> {
 
     return this.http
-      .get<genoResponse[]>('/api/animal/GetAllGenoByStrainID?ID=' + id, {
+      .get<GenoResponse[]>('/api/animal/GetAllGenoByStrainID?ID=' + id, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
   }
 
   // Check If edited UserAnimalID exist in Table Animal
-  public IsUserAnimalIDExist(id: any, expID: any): Observable<boolean> {
+  public isUserAnimalIDExist(id: any, expID: any): Observable<boolean> {
 
     return this.http
       .put<boolean>('/api/animal/UserAnimalIDExist?UserAnimalID=' + id + '&ExpID=' + expID, {
@@ -116,10 +116,11 @@ export interface animalResponse {
 
   }
 
-  public EditUserAnimalID(editedUserAnimalId: any, animalId: any, expId: any): Observable<string> {
+  public editUserAnimalID(editedUserAnimalId: any, animalId: any, expId: any): Observable<string> {
 
     return this.http
-      .get<string>('/api/animal/EditUserAnimalID?EditedUserAnimalId=' + editedUserAnimalId + '&OldAnimalId=' + animalId + '&ExpId=' + expId, {
+      .get<string>('/api/animal/EditUserAnimalID?EditedUserAnimalId=' + editedUserAnimalId +
+            '&OldAnimalId=' + animalId + '&ExpId=' + expId, {
       headers: this.authenticationService.getAuthorizationHeader()
     });
 

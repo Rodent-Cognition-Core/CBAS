@@ -84,12 +84,13 @@ export class ExpDialogeComponent implements OnInit {
     this.taskAnalysisService.getAllSelect().subscribe((data: any) => {
       this.taskList = data; /* console.log(this.taskList)*/;
     });
-    this.piSiteService.getPISitebyUserID().subscribe((data: any) => {
-      this.piSiteList = data;
-    });
     this.expDialogeService.getAllSpecies().subscribe((data: any) => {
       this.speciesList = data; /* console.log(this.speciesList)*/;
     });
+    this.piSiteService.getPISitebyUserID().subscribe((data: any) => {
+      this.piSiteList = data;
+    });
+
     this.getRepList();
 
     this.isRepoLink = '0';

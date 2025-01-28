@@ -23,7 +23,7 @@ export interface UserStatusResponse {
     private authenticationService: AuthenticationService) { }
 
 
-  public GetEmailApprovalAndUserLockedStatus(username: string): Observable<UserStatusResponse> {
+  public getEmailApprovalAndUserLockedStatus(username: string): Observable<UserStatusResponse> {
     const url = '/api/manageuser/IsEmailApproved?UserName=${username}';
     return this.http
       .get<UserStatusResponse>(url, {
@@ -34,7 +34,7 @@ export interface UserStatusResponse {
 
 
   // Function definition to get list of all users
-  public GetAllUser(): any {
+  public getAllUser(): any {
 
     return this.http
       .get('/api/manageuser/GetUserList', {

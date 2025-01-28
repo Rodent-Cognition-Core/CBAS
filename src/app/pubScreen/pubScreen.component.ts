@@ -21,7 +21,7 @@ import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
 
 
 @Component({
-  selector: 'app-pubScreen',
+  selector: 'app-pubscreen',
   templateUrl: './pubScreen.component.html',
   styleUrls: ['./pubScreen.component.scss']
 })
@@ -81,6 +81,8 @@ export class PubScreenComponent implements OnInit {
   paperInfoFromDoiList: any;
   checkYear: boolean;
 
+  showGeneratedLink: any;
+
 
   isAdmin: boolean;
   isUser: boolean;
@@ -127,8 +129,6 @@ export class PubScreenComponent implements OnInit {
   /** Subject that emits when the component has been destroyed. */
   private _onDestroy = new Subject<void>();
 
-  showGeneratedLink: any;
-
   constructor(public dialog: MatDialog,
     private authenticationService: AuthenticationService,
     private pubScreenService: PubScreenService,
@@ -146,17 +146,17 @@ export class PubScreenComponent implements OnInit {
     this.isAdmin = false;
     this.isUser = false;
     this.isFullDataAccess = false;
-    this.authorMultiFilterCtrl = fb.control([]),
-    this.strainMultiFilterCtrl = fb.control([]),
-    this.subTaskMultiFilterCtrl = fb.control([]),
-    this.diseaseMultiFilterCtrl = fb.control([]),
-    this.subModelMultiFilterCtrl = fb.control([]),
-    this.regionMultiFilterCtrl = fb.control([]),
-    this.subRegionMultiFilterCtrl = fb.control([]),
-    this.cellTypeMultiFilterCtrl = fb.control([]),
-    this.methodMultiFilterCtrl = fb.control([]),
-    this.subMethodMultiFilterCtrl = fb.control([]),
-    this.neurotransmitterMultiFilterCtrl = fb.control([]),
+    this.authorMultiFilterCtrl = fb.control([]);
+    this.strainMultiFilterCtrl = fb.control([]);
+    this.subTaskMultiFilterCtrl = fb.control([]);
+    this.diseaseMultiFilterCtrl = fb.control([]);
+    this.subModelMultiFilterCtrl = fb.control([]);
+    this.regionMultiFilterCtrl = fb.control([]);
+    this.subRegionMultiFilterCtrl = fb.control([]);
+    this.cellTypeMultiFilterCtrl = fb.control([]);
+    this.methodMultiFilterCtrl = fb.control([]);
+    this.subMethodMultiFilterCtrl = fb.control([]);
+    this.neurotransmitterMultiFilterCtrl = fb.control([]);
     this._pubSCreenSearch = {
       abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
       diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
@@ -176,14 +176,14 @@ export class PubScreenComponent implements OnInit {
       console.error('Error fetching pub count:', error);
     });
 
-    this.GetAuthorList();
+    this.getAuthorList();
     this.pubScreenService.getPaperType().subscribe((data: any) => {
       this.paperTypeList = data;
     });
     this.pubScreenService.getTask().subscribe((data: any) => {
       this.taskList = data;
     });
-    this.GetSubTaskList();
+    this.getSubTaskList();
     // this.pubScreenService.getTaskSubTask().subscribe(data => { this.subTaskList = data; });
     this.pubScreenService.getSpecie().subscribe((data: any) => {
       this.specieList = data;
@@ -191,20 +191,20 @@ export class PubScreenComponent implements OnInit {
     this.pubScreenService.getSex().subscribe((data: any) => {
       this.sexList = data;
     });
-    this.GetStrainList();
-    this.GetDiseaseList();
-    this.GetSubModelList();
-    this.GetRegionList();
-    this.GetSubRegionList();
-    this.GetCellTypeList();
-    this.GetMethodList();
-    this.GetSubMethodList();
-    this.GetNeurotransmitterList();
+    this.getStrainList();
+    this.getDiseaseList();
+    this.getSubModelList();
+    this.getRegionList();
+    this.getSubRegionList();
+    this.getCellTypeList();
+    this.getMethodList();
+    this.getSubMethodList();
+    this.getNeurotransmitterList();
 
     this.isAdmin = this.authenticationService.isInRole('administrator');
     this.isUser = this.authenticationService.isInRole('user');
     this.isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
-    this.yearList = this.GetYear(1970).sort().reverse();
+    this.yearList = this.getYear(1970).sort().reverse();
 
   }
 
@@ -214,7 +214,7 @@ export class PubScreenComponent implements OnInit {
   }
 
   // Function definition to get list of years
-  GetYear(startYear: number) {
+  getYear(startYear: number) {
     const currentYear = new Date().getFullYear(), years = [];
     startYear = startYear || 1980;
     while (startYear <= currentYear) {
@@ -224,7 +224,7 @@ export class PubScreenComponent implements OnInit {
   }
 
 
-  GetAuthorList() {
+  getAuthorList() {
 
 
     this.pubScreenService.getAuthor().subscribe((data: any) => {
@@ -244,7 +244,7 @@ export class PubScreenComponent implements OnInit {
     return this.authorList;
   }
 
-  GetStrainList() {
+  getStrainList() {
 
     this.pubScreenService.getStrain().subscribe((data: any) => {
       this.strainList = data;
@@ -260,7 +260,7 @@ export class PubScreenComponent implements OnInit {
     return this.strainList;
   }
 
-  GetSubTaskList() {
+  getSubTaskList() {
 
     this.pubScreenService.getTaskSubTask().subscribe((data: any) => {
       this.subTaskList = data;
@@ -276,7 +276,7 @@ export class PubScreenComponent implements OnInit {
     return this.subTaskList;
   }
 
-  GetDiseaseList() {
+  getDiseaseList() {
 
     this.pubScreenService.getDisease().subscribe((data: any) => {
       this.diseaseList = data;
@@ -292,7 +292,7 @@ export class PubScreenComponent implements OnInit {
     return this.diseaseList;
   }
 
-  GetSubModelList() {
+  getSubModelList() {
 
     this.pubScreenService.getSubModels().subscribe((data: any) => {
       this.subModelList = data;
@@ -308,7 +308,7 @@ export class PubScreenComponent implements OnInit {
     return this.subModelList;
   }
 
-  GetRegionList() {
+  getRegionList() {
 
     this.pubScreenService.getRegion().subscribe((data: any) => {
       this.regionList = data;
@@ -324,7 +324,7 @@ export class PubScreenComponent implements OnInit {
     return this.regionList;
   }
 
-  GetSubRegionList() {
+  getSubRegionList() {
 
     this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
       this.subRegionList = data;
@@ -340,7 +340,7 @@ export class PubScreenComponent implements OnInit {
     return this.subRegionList;
   }
 
-  GetCellTypeList() {
+  getCellTypeList() {
 
     this.pubScreenService.getCellType().subscribe((data: any) => {
       this.cellTypeList = data;
@@ -356,7 +356,7 @@ export class PubScreenComponent implements OnInit {
     return this.cellTypeList;
   }
 
-  GetMethodList() {
+  getMethodList() {
 
     this.pubScreenService.getMethod().subscribe((data: any) => {
       this.methodList = data;
@@ -372,7 +372,7 @@ export class PubScreenComponent implements OnInit {
     return this.methodList;
   }
 
-  GetSubMethodList() {
+  getSubMethodList() {
 
     this.pubScreenService.getSubMethod().subscribe((data: any) => {
       this.subMethodList = data;
@@ -388,7 +388,7 @@ export class PubScreenComponent implements OnInit {
     return this.subMethodList;
   }
 
-  GetNeurotransmitterList() {
+  getNeurotransmitterList() {
 
     this.pubScreenService.getNeurotransmitter().subscribe((data: any) => {
       this.neurotransmitterList = data;
@@ -402,6 +402,185 @@ export class PubScreenComponent implements OnInit {
     });
 
     return this.neurotransmitterList;
+  }
+
+  selectedTaskChange(selectedTask: string) {
+    this.subTaskModel = [];
+    this.subSubTaskList = this.subTaskList.filter((x: any) => selectedTask.includes(x.taskID));
+    this.filteredSubTaskList.next(this.subSubTaskList.slice());
+  }
+
+  selectedSpeciesChange(selectedSpecies: string) {
+    this.strainModel = [];
+    this.subStrainList = this.strainList.filter((x: any) => selectedSpecies.includes(x.speciesID));
+    this.filteredStrainList.next(this.subStrainList.slice());
+  }
+
+  selectedModelChange(selectedModels: string) {
+    this.subModel = [];
+    this.subSubModelList = this.subModelList.filter((x: any) => selectedModels.includes(x.modelID));
+    this.filteredSubModelList.next(this.subSubModelList.slice());
+  }
+
+  selectedMethodChange(selectedMethods: string) {
+    this.subMethodModel = [];
+    this.subSubMethodList = this.subMethodList.filter((x: any) => selectedMethods.includes(x.methodID));
+    this.filteredSubMethodList.next(this.subSubMethodList.slice());
+  }
+
+  selectedRegionChange(selectedRegion: string) {
+    this.subRegionModel = [];
+    this.subSubRegionList = this.subRegionList.filter((x: any) => selectedRegion.includes(x.rid));
+    this.filteredSubRegionList.next(this.subSubRegionList.slice());
+  }
+
+  setDisabledValSearch() {
+
+    return false;
+
+  }
+
+  // Opening Dialog for adding a new publication.
+  openDialogAddPublication(publication?: any): void {
+    if (publication === 'undefined') {
+      publication = null;
+    }
+    const dialogref = this.dialog.open(PubscreenDialogeComponent, {
+      height: '850px',
+      width: '1200px',
+      data: {
+        publicationObj: publication,
+        // sourceOptionModel: this.sourceOptionModel,
+
+      }
+
+    });
+
+    dialogref.afterClosed().subscribe(result => {
+      // console.log('the dialog was closed');
+      // this.DialogResult = result;
+      this.getAuthorList();
+    });
+  }
+
+  // Edit publication
+  openDialogEditPublication(publication: any): void {
+    const dialogref = this.dialog.open(PubscreenDialogeComponent, {
+      height: '850px',
+      width: '1200px',
+      data: { publicationObj: publication }
+
+    });
+
+    dialogref.afterClosed().subscribe(result => {
+      // console.log('the dialog was closed');
+      this.search();
+    });
+  }
+
+  selectYearToChange(yearFromVal: number, yearToVal: number) {
+    // console.log(yearToVal)
+    yearFromVal = yearFromVal === null ? 0 : yearFromVal;
+
+    if (yearToVal < yearFromVal) {
+      this.yearTo.setErrors({ 'incorrect': true });
+    }
+  }
+
+
+  getErrorMessageYearTo() {
+    // return this.yearTo.getError('Year To should be greater than Year From');
+    return YEARNEEDSTOBEGREATER;
+  }
+
+  // Function definition for searching publications based on search criteria
+  search() {
+
+    this._pubSCreenSearch.authourID = this.authorModel;
+    this._pubSCreenSearch.title = this.titleModel;
+    this._pubSCreenSearch.keywords = this.keywordsModel;
+    this._pubSCreenSearch.doi = this.doiModel;
+    // this._pubSCreenSearch.year = this.yearModel;
+    // this._pubSCreenSearch.years = this.yearSearchModel;
+    this._pubSCreenSearch.paperTypeIdSearch = this.paperTypeModel;
+    this._pubSCreenSearch.taskID = this.cognitiveTaskModel;
+    this._pubSCreenSearch.specieID = this.specieModel;
+    this._pubSCreenSearch.sexID = this.sexModel;
+    this._pubSCreenSearch.strainID = this.strainModel;
+    this._pubSCreenSearch.diseaseID = this.diseaseModel;
+    this._pubSCreenSearch.subModelID = this.subModel;
+    this._pubSCreenSearch.regionID = this.regionModel;
+    this._pubSCreenSearch.subRegionID = this.subRegionModel;
+    this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
+    this._pubSCreenSearch.methodID = this.methodModel;
+    this._pubSCreenSearch.subMethodID = this.subMethodModel;
+    this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
+    this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
+    this._pubSCreenSearch.yearTo = this.yearTo.value;
+    this._pubSCreenSearch.subTaskID = this.subTaskModel;
+    this._pubSCreenSearch.search = this.searchModel;
+
+    console.log(this._pubSCreenSearch);
+
+    this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
+
+      this.searchResultList = data;
+    });
+
+  }
+
+  // Deleting publication
+  delPub(pubRow: any) {
+    this.openConfirmationDialog(pubRow.id);
+  }
+
+  // Deleting Experiment
+  openConfirmationDialog(pubID: any) {
+    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+      disableClose: false
+    });
+    dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.spinnerService.show();
+
+        console.log(pubID);
+
+        this.pubScreenService.deletePublicationById(pubID).map((res: any) => {
+
+
+          this.spinnerService.hide();
+
+
+          location.reload();
+
+        }).subscribe();
+      }
+      // this.dialogRef = null;
+      dialogRef.close();
+    });
+  }
+
+  getLink(guid: any) {
+
+    const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+    });
+    dialogRefLink.componentInstance.message = 'http://localhost:4200/pubScreen-edit?paperlinkguid=' + guid;
+
+  }
+
+  // Function Definition to open a dialog for adding new mouse line to the system
+  openDialogGeneral(): void {
+
+    const dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
+      height: '600px',
+      width: '700px',
+      data: {}
+
+    });
+
   }
 
   // handling multi filtered Author list
@@ -644,184 +823,6 @@ export class PubScreenComponent implements OnInit {
     this.filteredNeurotransmitterList.next(
       this.neurotransmitterList.filter((x: any) => x.neuroTransmitter.toLowerCase().indexOf(searchNeurotransmitter) > -1)
     );
-  }
-
-  selectedTaskChange(SelectedTask: string) {
-    this.subTaskModel = [];
-    this.subSubTaskList = this.subTaskList.filter((x: any) => SelectedTask.includes(x.taskID));
-    this.filteredSubTaskList.next(this.subSubTaskList.slice());
-  }
-
-  selectedSpeciesChange(SelectedSpecies: string) {
-    this.strainModel = [];
-    this.subStrainList = this.strainList.filter((x: any) => SelectedSpecies.includes(x.speciesID));
-    this.filteredStrainList.next(this.subStrainList.slice());
-  }
-
-  selectedModelChange(SelectedModels: string) {
-    this.subModel = [];
-    this.subSubModelList = this.subModelList.filter((x: any) => SelectedModels.includes(x.modelID));
-    this.filteredSubModelList.next(this.subSubModelList.slice());
-  }
-
-  selectedMethodChange(SelectedMethods: string) {
-    this.subMethodModel = [];
-    this.subSubMethodList = this.subMethodList.filter((x: any) => SelectedMethods.includes(x.methodID));
-    this.filteredSubMethodList.next(this.subSubMethodList.slice());
-  }
-
-  selectedRegionChange(SelectedRegion: string) {
-    this.subRegionModel = [];
-    this.subSubRegionList = this.subRegionList.filter((x: any) => SelectedRegion.includes(x.rid));
-    this.filteredSubRegionList.next(this.subSubRegionList.slice());
-  }
-
-  setDisabledValSearch() {
-
-    return false;
-
-  }
-
-  // Opening Dialog for adding a new publication.
-  openDialogAddPublication(Publication?: any): void {
-    if (Publication == 'undefined') {
-      Publication = null;
-    }
-    const dialogref = this.dialog.open(PubscreenDialogeComponent, {
-      height: '850px',
-      width: '1200px',
-      data: {
-        publicationObj: Publication,
-        // sourceOptionModel: this.sourceOptionModel,
-
-      }
-
-    });
-
-    dialogref.afterClosed().subscribe(result => {
-      // console.log('the dialog was closed');
-      // this.DialogResult = result;
-      this.GetAuthorList();
-    });
-  }
-
-  // Edit publication
-  openDialogEditPublication(Publication: any): void {
-    const dialogref = this.dialog.open(PubscreenDialogeComponent, {
-      height: '850px',
-      width: '1200px',
-      data: { publicationObj: Publication }
-
-    });
-
-    dialogref.afterClosed().subscribe(result => {
-      // console.log('the dialog was closed');
-      this.search();
-    });
-  }
-
-  selectYearToChange(yearFromVal: number, yearToVal: number) {
-    // console.log(yearToVal)
-    yearFromVal = yearFromVal === null ? 0 : yearFromVal;
-
-    yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
-
-  }
-
-
-  getErrorMessageYearTo() {
-    // return this.yearTo.getError('Year To should be greater than Year From');
-    return YEARNEEDSTOBEGREATER;
-  }
-
-  // Function definition for searching publications based on search criteria
-  search() {
-
-    this._pubSCreenSearch.authourID = this.authorModel;
-    this._pubSCreenSearch.title = this.titleModel;
-    this._pubSCreenSearch.keywords = this.keywordsModel;
-    this._pubSCreenSearch.doi = this.doiModel;
-    // this._pubSCreenSearch.year = this.yearModel;
-    // this._pubSCreenSearch.years = this.yearSearchModel;
-    this._pubSCreenSearch.paperTypeIdSearch = this.paperTypeModel;
-    this._pubSCreenSearch.taskID = this.cognitiveTaskModel;
-    this._pubSCreenSearch.specieID = this.specieModel;
-    this._pubSCreenSearch.sexID = this.sexModel;
-    this._pubSCreenSearch.strainID = this.strainModel;
-    this._pubSCreenSearch.diseaseID = this.diseaseModel;
-    this._pubSCreenSearch.subModelID = this.subModel;
-    this._pubSCreenSearch.regionID = this.regionModel;
-    this._pubSCreenSearch.subRegionID = this.subRegionModel;
-    this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
-    this._pubSCreenSearch.methodID = this.methodModel;
-    this._pubSCreenSearch.subMethodID = this.subMethodModel;
-    this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
-    this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
-    this._pubSCreenSearch.yearTo = this.yearTo.value;
-    this._pubSCreenSearch.subTaskID = this.subTaskModel;
-    this._pubSCreenSearch.search = this.searchModel;
-
-    console.log(this._pubSCreenSearch);
-
-    this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
-
-      this.searchResultList = data;
-    });
-
-  }
-
-  // Deleting publication
-  delPub(pubRow: any) {
-    this.openConfirmationDialog(pubRow.id);
-  }
-
-  // Deleting Experiment
-  openConfirmationDialog(pubID: any) {
-    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
-      disableClose: false
-    });
-    dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
-
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.spinnerService.show();
-
-        console.log(pubID);
-
-        this.pubScreenService.deletePublicationById(pubID).map((res: any) => {
-
-
-          this.spinnerService.hide();
-
-
-          location.reload();
-
-        }).subscribe();
-      }
-      // this.dialogRef = null;
-      dialogRef.close();
-    });
-  }
-
-  getLink(guid: any) {
-
-    const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
-    });
-    dialogRefLink.componentInstance.message = 'http://localhost:4200/pubScreen-edit?paperlinkguid=' + guid;
-
-  }
-
-  // Function Definition to open a dialog for adding new mouse line to the system
-  openDialogGeneral(): void {
-
-    const dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
-      height: '600px',
-      width: '700px',
-      data: {}
-
-    });
-
   }
 
 }

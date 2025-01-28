@@ -29,7 +29,7 @@ export class ManageUserComponent implements OnInit {
     private identityService: IdentityService) {
 
     this.pagedItems = [];
-    this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+    this._user = { email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
   }
 
   ngOnInit() {
@@ -39,7 +39,7 @@ export class ManageUserComponent implements OnInit {
 
   getUserList() {
 
-    this.manageruserService.GetAllUser().subscribe((data: any) => {
+    this.manageruserService.getAllUser().subscribe((data: any) => {
       this.userList = data;
       this.setPage(1);
       // console.log(this.userList);
@@ -73,8 +73,8 @@ export class ManageUserComponent implements OnInit {
     s = s.trim();
     // console.log(s.toString());
     const dataArray = Array.isArray(data.result) ? data.result : [];
-    return dataArray.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
-    // .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
+    return dataArray.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) ||
+          e.givenName.includes(s) || e.emailConfirmed.toString().includes(s));
   }
 
   // Delete User
@@ -84,7 +84,7 @@ export class ManageUserComponent implements OnInit {
 
   // Approve User
   approveUser(email: any, givenName: any, familyName: any) {
-    this._user.Email = email;
+    this._user.email = email;
     this._user.givenName = givenName;
     this._user.familyName = familyName;
     this.manageruserService.approve(this._user).subscribe((data: any) => {

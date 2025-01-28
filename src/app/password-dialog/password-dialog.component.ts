@@ -47,7 +47,7 @@ export class PasswordDialogComponent implements OnInit {
     this.identityService.changePassword(this.model.currentPassword, this.model.newPassword).subscribe(
       (res: any) => {
         // IdentityResult.
-        if (res == 'Invalid Email!') {
+        if (res === 'Invalid Email!') {
           this.errorMessages.push({ description: 'Invalid Email!' });
         } else {
           if (res.succeeded) {

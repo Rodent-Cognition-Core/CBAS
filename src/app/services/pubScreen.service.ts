@@ -198,7 +198,7 @@ import { AuthenticationService } from './authentication.service';
   }
 
   // Editing a publication
-  public EditPublication(publicationId: number, pubscreenObj: Pubscreen) {
+  public editPublication(publicationId: number, pubscreenObj: Pubscreen) {
 
     const body: string = JSON.stringify(pubscreenObj);
     // Sends an authenticated request.
@@ -208,7 +208,7 @@ import { AuthenticationService } from './authentication.service';
   }
 
   // Editing a publication
-  public EditPublicationPublic(publicationId: number, pubscreenObj: Pubscreen) {
+  public editPublicationPublic(publicationId: number, pubscreenObj: Pubscreen) {
 
     const body: string = JSON.stringify(pubscreenObj);
     // Sends an authenticated request.

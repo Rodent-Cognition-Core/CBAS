@@ -22,10 +22,14 @@ import { User } from '../models/user';
      */
   public redirectUrl: string;
 
+  public signinStatus$: Observable<boolean>;
+
+  public user$: Observable<User>;
+
   /**
      * Behavior subjects of the user's status & data.
      */
-  private _user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
+  private _user: User = { email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     ;
     // private signinStatus = new BehaviorSubject<boolean>(false);
     // private user = new BehaviorSubject<User>(this._user);
@@ -44,17 +48,16 @@ import { User } from '../models/user';
 
   private signinStatus = new BehaviorSubject<boolean>(false);
 
-  public signinStatus$ = this.signinStatus.asObservable();
-
   private user = new BehaviorSubject<User>(this._user);
-
-  public user$ = this.user.asObservable();
 
   constructor(
     private router: Router,
     private oAuthService: OAuthService
   ) {
     this.redirectUrl = '';
+    this.signinStatus$ = this.signinStatus.asObservable();
+
+    this.user$ = this.user.asObservable();
     // this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
   }
 
@@ -84,7 +87,7 @@ import { User } from '../models/user';
 
     const token: string = this.oAuthService.getAccessToken();
     if (token) {
-      headers = headers.set('authorization', `Bearer ${token}`);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
   }
@@ -100,11 +103,11 @@ import { User } from '../models/user';
   public isInRole(role: string): boolean {
     const user: User = this.getUser();
     const roles: string[] = user && typeof user.roles !== 'undefined' ? user.roles : [];
-    return roles.indexOf(role) != -1;
+    return roles.indexOf(role) !== -1;
   }
 
   public getUser(): User {
-    const user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+    const user: User = { email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
     if (this.oAuthService.hasValidAccessToken()) {
       const userInfo: any = this.oAuthService.getIdentityClaims();
 

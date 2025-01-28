@@ -12,7 +12,7 @@ import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
-  selector: 'app-pubScreenEdit',
+  selector: 'app-pubscreenedit',
   templateUrl: './pubScreenEdit.component.html',
   styleUrls: ['./pubScreenEdit.component.scss']
 })
@@ -51,7 +51,7 @@ export class PubScreenEditComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.paperLinkGuid = params['paperlinkguid'].split(' ')[0];
 
-      this.GetDataByLinkGuid(this.paperLinkGuid);
+      this.getDataByLinkGuid(this.paperLinkGuid);
     });
     this._pubSCreenSearch = {
       abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
@@ -69,7 +69,7 @@ export class PubScreenEditComponent implements OnInit {
     this.isFullDataAccess = this.authenticationService.isInRole('fulldataaccess');
   }
 
-  GetDataByLinkGuid(paperLinkGuid: any) {
+  getDataByLinkGuid(paperLinkGuid: any) {
     this.spinnerService.show();
 
     this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe((data: any) => {
@@ -90,11 +90,11 @@ export class PubScreenEditComponent implements OnInit {
   }
 
   // Edit publication
-  openDialogEditPublication(Publication: any): void {
+  openDialogEditPublication(publication: any): void {
     const dialogref = this.dialog.open(PubscreenDialogeComponent, {
       height: '850px',
       width: '1200px',
-      data: { publicationObj: Publication, isPublic: Boolean }
+      data: { publicationObj: publication, isPublic: Boolean }
 
     });
 

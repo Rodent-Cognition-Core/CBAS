@@ -16,7 +16,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 
 @Component({
-  selector: 'app-pubScreen-search',
+  selector: 'app-pubscreen-search',
   templateUrl: './pubScreen-search.component.html',
   styleUrls: ['./pubScreen-search.component.scss']
 })
@@ -90,7 +90,7 @@ export class PubScreenSearchComponent implements OnInit {
 
   ngOnInit() {
 
-    this.GetAuthorList();
+    this.getAuthorList();
     this.pubScreenService.getPaperType().subscribe((data: any) => {
       this.paperTypeList = data;
     });
@@ -131,7 +131,7 @@ export class PubScreenSearchComponent implements OnInit {
     this._onDestroy.complete();
   }
 
-  GetAuthorList() {
+  getAuthorList() {
 
 
     this.pubScreenService.getAuthor().subscribe((data: any) => {
@@ -151,35 +151,14 @@ export class PubScreenSearchComponent implements OnInit {
     return this.authorList;
   }
 
-  // handling multi filtered Author list
-  private filterAuthor() {
-    if (!this.authorList) {
-      return;
-    }
 
-    // get the search keyword
-    let searchAuthor = this.authorMultiFilterCtrl.value;
-
-    if (!searchAuthor) {
-      this.filteredAutorList.next(this.authorList.slice());
-      return;
-    } else {
-      searchAuthor = searchAuthor.toLowerCase();
-    }
-
-    // filter the Author
-    this.filteredAutorList.next(
-      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-    );
-  }
-
-  selectedRegionChange(SelectedRegion: any) {
+  selectedRegionChange(selectedRegion: any) {
 
     this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
       this.regionSubregionList = data;
       // console.log(this.regionSubregionList);
       const filtered = this.regionSubregionList.filter(function (item: any) {
-        return SelectedRegion.indexOf(item.rid) !== -1;
+        return selectedRegion.indexOf(item.rid) !== -1;
       });
 
       // console.log(filtered);
@@ -195,11 +174,11 @@ export class PubScreenSearchComponent implements OnInit {
 
   }
 
-  openDialog(Publication: any): void {
+  openDialog(publication: any): void {
     const dialogref = this.dialog.open(PubscreenDialogeComponent, {
       height: '900px',
       width: '1100px',
-      data: { publicationObj: Publication }
+      data: { publicationObj: publication }
 
     });
 
@@ -226,6 +205,7 @@ export class PubScreenSearchComponent implements OnInit {
     this._pubSCreenSearch.strainID = this.strainModel;
     this._pubSCreenSearch.diseaseID = this.diseaseModel;
     this._pubSCreenSearch.regionID = this.regionModel;
+
     this._pubSCreenSearch.subRegionID = this.subRegionModel;
     this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
     this._pubSCreenSearch.methodID = this.methodModel;
@@ -238,6 +218,28 @@ export class PubScreenSearchComponent implements OnInit {
       // console.log(this.searchResultList);
     });
 
+  }
+
+  // handling multi filtered Author list
+  private filterAuthor() {
+    if (!this.authorList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchAuthor = this.authorMultiFilterCtrl.value;
+
+    if (!searchAuthor) {
+      this.filteredAutorList.next(this.authorList.slice());
+      return;
+    } else {
+      searchAuthor = searchAuthor.toLowerCase();
+    }
+
+    // filter the Author
+    this.filteredAutorList.next(
+      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+    );
   }
 
 }

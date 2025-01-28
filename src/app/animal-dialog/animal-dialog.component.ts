@@ -157,13 +157,13 @@ export class AnimalDialogComponent implements OnInit {
       } else {
 
         // Check If edited userAnimalID exist in Table Animal
-        this.animalService.IsUserAnimalIDExist(this.userAnimalID.value.trim(), this.data.experimentId).pipe(map((res) => {
+        this.animalService.isUserAnimalIDExist(this.userAnimalID.value.trim(), this.data.experimentId).pipe(map((res) => {
           if (!res) {
             alert('ERROR: ' + ANIMALIDDOESNOTEXIST);
 
           } else {
             // Edit userAnimalID based what exists in tbl Animal in Database
-            this.animalService.EditUserAnimalID(this.userAnimalID.value.trim(),
+            this.animalService.editUserAnimalID(this.userAnimalID.value.trim(),
               this.data.animalObj.animalID, this.data.experimentId).pipe(map((res2) => {
               // close it so we can see the loading
               if (res2) {

@@ -101,7 +101,7 @@
                     <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
                         <mat-select [formControl]="markerinfo" placeholder="Select the required features" (selectionChange)="getAnimalInfo(exp.value)" multiple>
                             <mat-option>
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="markerInfoMultiFilterCtrl"></ngx-mat-select-search>
                             </mat-option>
 
                             <mat-option *ngFor="let markerinfo of filteredMarkerInfoList | async" [value]="markerinfo">
@@ -133,7 +133,7 @@
     </mat-form-field>
     &nbsp; &nbsp; &nbsp;-->
                     <!--Show Intervention information if the selected experiments do have intervention-->
-                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!=null ">
+                    <mat-form-field *ngIf="interventionList.length>0 && exp.value.length > 0 && subtask.value!=null ">
                         <mat-select placeholder="Select Intervention" [(ngModel)]="selectedInterventionValue" multiple>
                             <mat-option *ngFor="let intervention of InterventionList" [value]="intervention.subExpID">
                                 <span matTooltip="{{ intervention.isDrug ? intervention.drugName : intervention.interventionDescription }}">{{ intervention.isDrug ? intervention.drugName + " " + intervention.drugQuantity + " " + intervention.drugUnit : intervention.interventionDescription }}</span>
@@ -190,7 +190,7 @@
                             <mat-form-field>
 
                                 <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, exp.value)" multiple>
-                                    <mat-option *ngFor="let animal of AnimalInfoListStrain" [value]="animal.id">
+                                    <mat-option *ngFor="let animal of animalInfoListStrain" [value]="animal.id">
                                         <span matTooltip="{{animal.strain}}">{{animal.strain}}, <a href="{{animal.link}}" target="_blank">Reference</a></span>
                                     </mat-option>
                                 </mat-select>
@@ -202,7 +202,7 @@
                             <mat-form-field *ngIf="selectedStrainValue.length > 0">
 
                                 <mat-select placeholder="Select Animal Genotype" [(ngModel)]="selectedGenotypeValue" multiple>
-                                    <mat-option *ngFor="let animal of AnimalInfoListGenotype" [value]="animal.id">
+                                    <mat-option *ngFor="let animal of animalInfoListGenotype" [value]="animal.id">
                                         <span matTooltip="{{animal.genotype}}">{{animal.genotype}}, <a href="{{animal.link}}" target="_blank">Reference</a> {{animal.description}}</span>
                                     </mat-option>
                                 </mat-select>
@@ -225,7 +225,7 @@
                     </mat-checkbox>
                     <br /><br />
 
-                    <button mat-raised-button (click)="GetData()" [disabled]="setDisabledVal()">Get Data</button>
+                    <button mat-raised-button (click)="getData()" [disabled]="setDisabledVal()">Get Data</button>
 
 
 

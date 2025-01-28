@@ -42,7 +42,7 @@ export class UploadComponent implements OnInit {
   sessionNameVal: any;
   expTask: string;
   expTaskID: any;
-  SessionList: any;
+  sessionList: any;
 
   uploadErrorServer = '';
   uploadErrorFileType = '';
@@ -61,7 +61,7 @@ export class UploadComponent implements OnInit {
     errorReset: null,
     cancelReset: null,
     timeout: 36000000,
-    headers: { 'authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+    headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
   };
 
   constructor(
@@ -87,12 +87,12 @@ export class UploadComponent implements OnInit {
   ngOnInit() {
 
     this.uploadService.getSessionInfo().subscribe((data: any) => {
-      this.SessionList = data; /* console.log(this.SessionList);*/
+      this.sessionList = data; /* console.log(this.sessionList);*/
     });
 
   }
 
-  SelectedExpChanged(experiment: any) {
+  selectedExpChanged(experiment: any) {
 
     // console.log(experiment);
     this.experimentName = experiment.expName;
@@ -101,14 +101,14 @@ export class UploadComponent implements OnInit {
     this.expTaskID = experiment.taskID;
 
     this.uploadService.getSessionInfo().subscribe((data: any) => {
-      this.SessionList = data; /* console.log(this.SessionList);*/
+      this.sessionList = data; /* console.log(this.sessionList);*/
     });
     this.subExpID = null;
     this.sessionNameVal = null;
 
   }
 
-  SelectedSubExpChanged(subExperiment: any) {
+  selectedSubExpChanged(subExperiment: any) {
     // console.log(subExperiment);
     this.subExpID = subExperiment.subExpID;
     this.drugName = subExperiment.drugName;
@@ -123,62 +123,71 @@ export class UploadComponent implements OnInit {
 
     switch (this.expTaskID) {
       case 2: { // 5-choice
-        this.SessionList = this.SessionList.filter(((x: any) => x.taskID === 1 || x.taskID === 2));
-        // console.log(this.SessionList);
+        this.sessionList = this.sessionList.filter(((x: any) => x.taskID === 1 || x.taskID === 2));
+        // console.log(this.sessionList);
         break;
 
       }
       case 3: { // PD
-        this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 3);
+        this.sessionList = this.sessionList.filter((x: any) => x.taskID === 1 || x.taskID === 3);
         break;
       }
       case 4: { // PAL
-        this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 4);
+        this.sessionList = this.sessionList.filter((x: any) => x.taskID === 1 || x.taskID === 4);
         break;
       }
       case 5: {  // LD
-        this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 5);
+        this.sessionList = this.sessionList.filter((x: any) => x.taskID === 1 || x.taskID === 5);
         break;
       }
       case 9: { // PR
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 9) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 9) &&
+                x.sessionName !== 'Must_Initiate' && x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
       case 10: { // PRL
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 10) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 10) &&
+                x.sessionName !== 'Must_Initiate' && x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
       case 11: { // CPT
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 11) &&
+                x.sessionName !== 'Initial_Touch' && x.sessionName !== 'Must_Touch' && x.sessionName !== 'Must_Initiate' &&
+                x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
       case 12: { // VMCL
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 12));
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 12));
         break;
 
       }
       case 13: { // Autoshaping
 
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) &&
+                x.sessionName !== 'Initial_Touch' && x.sessionName !== 'Must_Touch' && x.sessionName !== 'Must_Initiate' &&
+                x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
       case 13: { // Autoshaping
 
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) &&
+                x.sessionName !== 'Initial_Touch' && x.sessionName !== 'Must_Touch' && x.sessionName !== 'Must_Initiate' &&
+                x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
       case 14: { // Extinction
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 14));
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 14));
         break;
 
       }
       case 15: { // Long Sequence
-        this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 15) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+        this.sessionList = this.sessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 15) &&
+                x.sessionName !== 'Must_Initiate' && x.sessionName !== 'Punish_Incorrect');
         break;
 
       }
@@ -208,15 +217,20 @@ export class UploadComponent implements OnInit {
       // Based on Subexp features, generate the confirmation message
       if (this.isIntervention && this.isDrug) {
 
-        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal + '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b> and intervention <b> ' + this.drugName + '</b>?';
+        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal +
+              '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b> and intervention <b> ' +
+              this.drugName + '</b>?';
       }
 
       if (this.isIntervention && !this.isDrug) {
-        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal + '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b> and intervention <b> ' + this.interventionDescription + '</b>?';
+        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal +
+              '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b> and intervention <b> ' +
+              this.interventionDescription + '</b>?';
       }
 
       if (!this.isIntervention && !this.isDrug) {
-        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal + '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b>?';
+        dialogRefDelFile.componentInstance.confirmMessage = 'Are you sure you want to upload <b>' + this.sessionNameVal +
+              '</b> XML files to sub-exp <b>' + this.subExpName + '</b> with age: <b>' + this.ageInMonth + '</b>?';
       }
 
 
@@ -224,7 +238,7 @@ export class UploadComponent implements OnInit {
       dialogRefDelFile.afterClosed().subscribe(result => {
         if (result) {
 
-          if (this.uploadErrorFileType != '') {
+          if (this.uploadErrorFileType !== '') {
             alert(UPLOADERROR + this.uploadErrorFileType);
 
             setTimeout(() => {
@@ -255,7 +269,7 @@ export class UploadComponent implements OnInit {
 
   onQueueComplete(args: any): void {
 
-    if (this.uploadErrorServer != '') {
+    if (this.uploadErrorServer !== '') {
       alert(this.uploadErrorServer);
 
       setTimeout(() => {
@@ -284,7 +298,7 @@ export class UploadComponent implements OnInit {
 
   public onUploadError(args: any) {
 
-    if (args[1] == CANNOTUPLOADFILETYPE) {
+    if (args[1] === CANNOTUPLOADFILETYPE) {
       this.uploadErrorFileType = this.uploadErrorFileType + 'You can\'t upload files of this type: \'' + args[0].name + '\'' + '\n\r';
       // console.log("You can't upload files of this type: '" + args[0].name + "'");
     } else {
@@ -304,13 +318,13 @@ export class UploadComponent implements OnInit {
 
     this.resetDropzoneUploads();
 
-    if (this.proceedUpload == true) {
+    if (this.proceedUpload === true) {
 
 
       const dialogref = this.dialog.open(UploadResultDialogComponent, {
         height: '900px',
         width: '850px',
-        data: { uploadResult: args[1], experimentName: this.experimentName } // data.uploadResult  & data.experimentName should be sent to UploadResultDialogComponent
+        data: { uploadResult: args[1], experimentName: this.experimentName }
       });
     }
 
@@ -329,7 +343,7 @@ export class UploadComponent implements OnInit {
     this.spinnerService.show();
 
 
-    const obj = this.SessionList.filter((x: any) => x.sessionName === this.sessionNameVal);
+    const obj = this.sessionList.filter((x: any) => x.sessionName === this.sessionNameVal);
     const sessionID = obj[0].id;
 
 

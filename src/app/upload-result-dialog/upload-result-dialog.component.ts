@@ -33,7 +33,7 @@ export class UploadResultDialogComponent implements OnInit {
 
   }
 
-  ResolveIssue() {
+  resolveIssue() {
 
   }
 

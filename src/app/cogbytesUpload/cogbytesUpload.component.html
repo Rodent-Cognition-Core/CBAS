@@ -196,11 +196,11 @@
 
     <div>
         <button *ngIf="!isEditMode" mat-raised-button color="accent" class="full-width"
-                [disabled]="setDisabledVal()" (click)="AddUpload()">
+                [disabled]="setDisabledVal()" (click)="addUpload()">
             Save Features
         </button>
         <button *ngIf="isEditMode" mat-raised-button color="accent" class="full-width"
-                [disabled]="setDisabledVal()" (click)="EditUpload()">
+                [disabled]="setDisabledVal()" (click)="editUpload()">
             Save Changes
         </button>
         <br />
@@ -240,7 +240,7 @@
                     <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.userFileName}}</td>
                     <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{file.dateUpload.split('T')[0]}}</td>
                     <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
-                        <button mat-icon-button matTooltip="Download File" (click)="DownloadFile(file)"><mat-icon>get_app</mat-icon></button>
+                        <button mat-icon-button matTooltip="Download File" (click)="downloadFile(file)"><mat-icon>get_app</mat-icon></button>
                     </td>
                     <td style="text-align: center; color:#696d70;" class="docs-markdown-td">
                         <button mat-icon-button matTooltip="Delete File" (click)="deleteFile(file)"><mat-icon>delete</mat-icon></button>
@@ -256,7 +256,7 @@
 
     <div *ngIf="isEditMode">
         <!--<button mat-raised-button>Upload File</button>-->
-        <button mat-raised-button color="warn" class="full-width" (click)="DeleteUpload()">Delete Upload</button>
+        <button mat-raised-button color="warn" class="full-width" (click)="deleteUpload()">Delete Upload</button>
     </div>
 
     <br />

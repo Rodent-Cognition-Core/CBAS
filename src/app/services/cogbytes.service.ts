@@ -123,9 +123,9 @@ import { AuthenticationService } from './authentication.service';
   public addPI(piFullName: string, piAffiliation: string, piEmail: string): any {
 
     const obj = {
-      'PIFullName': piFullName,
-      'PIEmail': piEmail,
-      'PIInstitution': piAffiliation,
+      'piFullName': piFullName,
+      'piEmail': piEmail,
+      'piInstitution': piAffiliation,
     };
 
     const body: string = JSON.stringify(obj);

@@ -65,9 +65,9 @@ export class SubExpDialogeComponent implements OnInit {
     this.housing = fb.control('', [Validators.required]);
     this.lightCycle = fb.control('', [Validators.required]);
     this._subexperiment = {
-      AgeID: 0, AgeInMonth: '', drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
-      ImageIds: [], ImageInfo: '', interventionDescription: '', isDrug: false, isIntervention: false, IsPostProcessingPass: false, LightCycle: '',
-      SubExpID: 0, SubExpName: ''
+      ageID: 0, ageInMonth: '', drugName: '', drugQuantity: '', drugUnit: '', errorMessage: '', expID: 0, housing: '', imageDescription: '',
+      imageIds: [], imageInfo: '', interventionDescription: '', isDrug: false, isIntervention: false, isPostProcessingPass: false,
+      lightCycle: '', subExpID: 0, subExpName: ''
     };
   }
 
@@ -88,8 +88,8 @@ export class SubExpDialogeComponent implements OnInit {
     if (this.data.subexperimentObj != null) {
       this.subExp.setValue(this.data.subexperimentObj.subExpName);
       this.ageInMonth.setValue(this.data.subexperimentObj.ageID);
-      this.intervention.setValue(this.data.subexperimentObj.isIntervention == true ? '1' : '0');
-      this.isDrug.setValue(this.data.subexperimentObj.isDrug == true ? '1' : '0');
+      this.intervention.setValue(this.data.subexperimentObj.isIntervention === true ? '1' : '0');
+      this.isDrug.setValue(this.data.subexperimentObj.isDrug === true ? '1' : '0');
       this.drug.setValue(this.data.subexperimentObj.drugName);
       this.drugQuantity.setValue(this.data.subexperimentObj.drugQuantity);
       this.drugUnit.setValue(this.data.subexperimentObj.drugUnit);
@@ -202,16 +202,6 @@ export class SubExpDialogeComponent implements OnInit {
       '';
   }
 
-
-  // getErrorMessageAgeValidation() {
-
-  //    return this.ageInMonth.hasError('range') ? 'Animal age should be a number between 1 and 36!' : '';
-  // }
-
-  // getErrorMessageAgeSubExpValidation() {
-  //    return this.AgeSubExp.hasError('takenAgeExp') ? 'This sub-experiment name was already taken and a sub-experiment with the same age already exists! ' : '';
-  // }
-
   setDisabledVal() {
 
     if (this.subExp.hasError('required') ||
@@ -222,8 +212,9 @@ export class SubExpDialogeComponent implements OnInit {
             this.intervention.hasError('required') ||
             this.housing.hasError('required') ||
             this.lightCycle.hasError('required')
-            || ((this.taskID == 3 || this.taskID == 4) && this.imageInfo.hasError('required'))
-            || (((this.taskID == 3 && this.imageInfo.value.length > 2) || (this.taskID == 4 && this.imageInfo.value.length > 3)) && this.imageDescription.hasError('required'))
+            || ((this.taskID === 3 || this.taskID === 4) && this.imageInfo.hasError('required'))
+        || (((this.taskID === 3 && this.imageInfo.value.length > 2) || (this.taskID === 4 && this.imageInfo.value.length > 3)) &&
+            this.imageDescription.hasError('required'))
 
 
     ) {
@@ -255,20 +246,20 @@ export class SubExpDialogeComponent implements OnInit {
 
   onCloseSubmit(): void {
 
-    if (this.isDrug.value == '0') {
+    if (this.isDrug.value === '0') {
 
       this.drug.setValue('');
       this.drugQuantity.setValue('');
       this.drugUnit.setValue('');
     }
 
-    if (this.isDrug.value == '1' && this.intervention.value == '1') {
+    if (this.isDrug.value === '1' && this.intervention.value === '1') {
 
       this.intDes.setValue('');
 
     }
 
-    if (this.intervention.value == '0') {
+    if (this.intervention.value === '0') {
 
       this.isDrug.setValue('0');
       this.drug.setValue('');
@@ -278,19 +269,19 @@ export class SubExpDialogeComponent implements OnInit {
 
     }
 
-    this._subexperiment.SubExpName = this.subExp.value;
-    this._subexperiment.AgeID = this.ageInMonth.value;
-    this._subexperiment.ExpID = this.data.expObj.expID;
-    this._subexperiment.isIntervention = this.intervention.value == '1' ? true : false;
-    this._subexperiment.isDrug = this.isDrug.value == '1' ? true : false;
+    this._subexperiment.subExpName = this.subExp.value;
+    this._subexperiment.ageID = this.ageInMonth.value;
+    this._subexperiment.expID = this.data.expObj.expID;
+    this._subexperiment.isIntervention = this.intervention.value === '1' ? true : false;
+    this._subexperiment.isDrug = this.isDrug.value === '1' ? true : false;
     this._subexperiment.drugName = this.drug.value;
     this._subexperiment.drugQuantity = this.drugQuantity.value;
     this._subexperiment.drugUnit = this.drugUnit.value;
     this._subexperiment.interventionDescription = this.intDes.value;
-    this._subexperiment.ImageIds = this.imageInfo.value;
-    this._subexperiment.ImageDescription = this.imageDescription.value;
-    this._subexperiment.Housing = this.housing.value;
-    this._subexperiment.LightCycle = this.lightCycle.value;
+    this._subexperiment.imageIds = this.imageInfo.value;
+    this._subexperiment.imageDescription = this.imageDescription.value;
+    this._subexperiment.housing = this.housing.value;
+    this._subexperiment.lightCycle = this.lightCycle.value;
 
     // console.log(this._subexperiment);
     if (this.data.subexperimentObj == null) {
@@ -304,10 +295,10 @@ export class SubExpDialogeComponent implements OnInit {
         // console.log('create');
         // console.log(res);
 
-        if (res == 'TakenSubExpName') {
+        if (res === 'TakenSubExpName') {
           this.isTakenSubExpName = true;
           this.subExp.setErrors({ 'takenSubExpName': true });
-        } else if (res == 'takenSubExp') {
+        } else if (res === 'takenSubExp') {
           this.isTakenAge = true;
           this.ageInMonth.setErrors({ 'takenAge': true });
         } else {
@@ -319,9 +310,11 @@ export class SubExpDialogeComponent implements OnInit {
     } else { // Edit Mode: edit sub experiment
 
       // check if number of iamges for PAL or PD are equal to 3 and 2 respectively, clean the value of imageDescription
-      if ((this.taskID == 3 && this._subexperiment.ImageIds.length == 2) || (this.taskID == 4 && this._subexperiment.ImageIds.length == 3) ||
-                (this.taskID == 11 && this._subexperiment.ImageIds.length <= 6) || (this.taskID == 12 && this._subexperiment.ImageIds.length <= 4)) {
-        this._subexperiment.ImageDescription = '';
+      if ((this.taskID === 3 && this._subexperiment.imageIds.length === 2) ||
+            (this.taskID === 4 && this._subexperiment.imageIds.length === 3) ||
+            (this.taskID === 11 && this._subexperiment.imageIds.length <= 6) ||
+            (this.taskID === 12 && this._subexperiment.imageIds.length <= 4)) {
+        this._subexperiment.imageDescription = '';
         // console.log(123456);
 
       }
@@ -329,16 +322,16 @@ export class SubExpDialogeComponent implements OnInit {
       this.isTakenSubExpName = false;
       this.isTakenAge = false;
 
-      this._subexperiment.SubExpID = this.data.subexperimentObj.subExpID;
+      this._subexperiment.subExpID = this.data.subexperimentObj.subExpID;
       this.subexpDialogeService.updateSubExp(this._subexperiment).map((res: any) => {
 
         // console.log('update');
         // console.log(res);
 
-        if (res == 'TakenSubExpName') {
+        if (res === 'TakenSubExpName') {
           this.isTakenSubExpName = true;
           this.subExp.setErrors({ 'takenSubExpName': true });
-        } else if (res == 'takenSubExp') {
+        } else if (res === 'takenSubExp') {
           this.isTakenAge = true;
           this.ageInMonth.setErrors({ 'takenAge': true });
         } else {

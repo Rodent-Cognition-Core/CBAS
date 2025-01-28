@@ -34,7 +34,7 @@ export class SearchExperimentComponent implements OnInit {
 
   ngOnInit() {
 
-    this.searchexperimentService.GetSearchList().subscribe((data: any) => {
+    this.searchexperimentService.getSearchList().subscribe((data: any) => {
       this.searchList = data;
       this.setPage(1);
       // console.log(this.searchList);
@@ -75,13 +75,15 @@ export class SearchExperimentComponent implements OnInit {
 
   filterByString(data: any, s: string): any {
     s = s.trim();
-    return data.filter((e: any) => e.expName.toUpperCase().includes(s.toUpperCase()) || e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) || e.strain.toUpperCase().includes(s.toUpperCase())
-            || e.status.toUpperCase().includes(s.toUpperCase()) || e.genotype.toUpperCase().includes(s.toUpperCase()) || e.age.includes(s) ||
+    return data.filter((e: any) => e.expName.toUpperCase().includes(s.toUpperCase()) ||
+          e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) ||
+          e.strain.toUpperCase().includes(s.toUpperCase()) || e.status.toUpperCase().includes(s.toUpperCase()) ||
+          e.genotype.toUpperCase().includes(s.toUpperCase()) || e.age.includes(s) ||
             e.username.toUpperCase().includes(s.toUpperCase()) || e.period.toUpperCase().includes(s.toUpperCase()));
 
   }
 
-  DownloadDsFile(file: any): void {
+  downloadDsFile(file: any): void {
 
     const path = 'ds_' + file;
     this.searchexperimentService.downloadExpDs(path)

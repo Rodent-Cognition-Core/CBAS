@@ -1,7 +1,7 @@
 <div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>EXPERIMENT</h1></div>
 
 
-<app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" (outSelectedSubExperiment)="SelectedSubExpChanged($event)" [showSubExpTbl]="true"></app-shared-experiment>
+<app-shared-experiment (outSelectedExperiment)="selectedExpChanged($event)" (outSelectedSubExperiment)="selectedSubExpChanged($event)" [showSubExpTbl]="true"></app-shared-experiment>
 
 <br /><br />
 
@@ -59,7 +59,7 @@
                 <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
                 </td>
 
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button (click)="downloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>
                 <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="deleteFile(row.uploadID, row.subExpID)"><mat-icon>delete</mat-icon></button> </td>
 
 

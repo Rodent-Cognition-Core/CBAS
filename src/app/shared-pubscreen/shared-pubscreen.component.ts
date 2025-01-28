@@ -182,7 +182,7 @@ export class SharedPubscreenComponent implements OnInit {
 
     dialogref.afterClosed().subscribe(result => {
 
-      this.GetAuthorList();
+      this.getAuthorList();
     });
   }
 
@@ -191,7 +191,7 @@ export class SharedPubscreenComponent implements OnInit {
     this._onDestroy.complete();
   }
 
-  GetAuthorList() {
+  getAuthorList() {
 
     this.resetFormVals();
 
@@ -219,37 +219,13 @@ export class SharedPubscreenComponent implements OnInit {
     });
   }
 
-
-  // handling multi filtered Author list
-  private filterAuthor() {
-    if (!this.authorList) {
-      return;
-    }
-
-    // get the search keyword
-    let searchAuthor = this.authorMultiFilterCtrl.value;
-
-    if (!searchAuthor) {
-      this.filteredAutorList.next(this.authorList.slice());
-      return;
-    } else {
-      searchAuthor = searchAuthor.toLowerCase();
-    }
-
-    // filter the Author
-    this.filteredAutorList.next(
-      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-    );
-  }
-
-
-  selectedRegionChange(SelectedRegion: any) {
+  selectedRegionChange(selectedRegion: any) {
 
     this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
       this.regionSubregionList = data;
       // console.log(this.regionSubregionList);
       const filtered = this.regionSubregionList.filter(function (item: any) {
-        return SelectedRegion.indexOf(item.rid) !== -1;
+        return selectedRegion.indexOf(item.rid) !== -1;
       });
 
       // console.log(filtered);
@@ -327,27 +303,27 @@ export class SharedPubscreenComponent implements OnInit {
       return true;
     }
 
-    if (this.sourceOption.value == 1 && this.addingOption.hasError('required')) {
+    if (this.sourceOption.value === 1 && this.addingOption.hasError('required')) {
       return true;
 
     }
 
-    if (this.sourceOption.value == 2 && this.bioAddingOption.hasError('required')) {
+    if (this.sourceOption.value === 2 && this.bioAddingOption.hasError('required')) {
       return true;
 
     }
 
-    if (this.addingOption.value == 1 && this.doiKey.hasError('required')) {
+    if (this.addingOption.value === 1 && this.doiKey.hasError('required')) {
       return true;
 
     }
 
-    if (this.addingOption.value == 2 && this.pubMedKey.hasError('required')) {
+    if (this.addingOption.value === 2 && this.pubMedKey.hasError('required')) {
       return true;
 
     }
 
-    if (this.bioAddingOption.value == 1 && this.doiKeyBio.hasError('required')) {
+    if (this.bioAddingOption.value === 1 && this.doiKeyBio.hasError('required')) {
       return true;
 
     } else if (this.title.hasError('required') ||
@@ -395,7 +371,7 @@ export class SharedPubscreenComponent implements OnInit {
     this.pubScreenService.getPaparInfoFromDOI(doi).subscribe((data: any) => {
 
       /* console.log(data);
-            console.log(data.result);*/
+                  console.log(data.result);*/
 
       if (data.result == null) {
         alert(DOINOTVALID);
@@ -420,9 +396,9 @@ export class SharedPubscreenComponent implements OnInit {
   }
 
   // Adding pubmed key to get paper information from pubMed
-  addPubMedID(PubMedKey: any) {
+  addPubMedID(pubMedKey: any) {
 
-    this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe((data: any) => {
+    this.pubScreenService.getPaparInfoFromPubmedKey(pubMedKey).subscribe((data: any) => {
 
       // console.log(data);
       // console.log(data.result);
@@ -478,9 +454,9 @@ export class SharedPubscreenComponent implements OnInit {
   }
 
   // Adding a new publication to DB by cliking on Submit button
-  AddPublication() {
+  addPublication() {
 
-    if (this.author.value != null && this.author.value.length != 0) {
+    if (this.author.value != null && this.author.value.length !== 0) {
       this._pubscreen.authourID = this.author.value;
       // console.log(this.authorModel)
     } else {
@@ -519,7 +495,7 @@ export class SharedPubscreenComponent implements OnInit {
 
     switch (this.sourceOption.value) {
 
-      case 1 : {
+      case 1: {
         this._pubscreen.source = 'pubMed';
         break;
       }
@@ -588,5 +564,26 @@ export class SharedPubscreenComponent implements OnInit {
   }
 
 
+  // handling multi filtered Author list
+  private filterAuthor() {
+    if (!this.authorList) {
+      return;
+    }
+
+    // get the search keyword
+    let searchAuthor = this.authorMultiFilterCtrl.value;
+
+    if (!searchAuthor) {
+      this.filteredAutorList.next(this.authorList.slice());
+      return;
+    } else {
+      searchAuthor = searchAuthor.toLowerCase();
+    }
+
+    // filter the Author
+    this.filteredAutorList.next(
+      this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+    );
+  }
 
 }

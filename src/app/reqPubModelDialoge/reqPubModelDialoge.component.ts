@@ -11,7 +11,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 
 @Component({
 
-  selector: 'app-reqPubModelDialoge',
+  selector: 'app-reqpubmodeldialoge',
   templateUrl: './reqPubModelDialoge.component.html',
   styleUrls: ['./reqPubModelDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
@@ -21,8 +21,6 @@ export class ReqPubModelDialogeComponent implements OnInit {
 
   modelList: any;
 
-  private _request: Request;
-
   // FormControl Parameters
 
   name: FormControl;
@@ -30,6 +28,8 @@ export class ReqPubModelDialogeComponent implements OnInit {
   rodentModel: FormControl;
   newSubModel: FormControl;
   doi: FormControl;
+
+  private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqPubModelDialogeComponent>,
 
@@ -43,9 +43,9 @@ export class ReqPubModelDialogeComponent implements OnInit {
     this.newSubModel = fb.control('', [Validators.required]);
     this.doi = fb.control('', [Validators.required]);
     this._request = {
-      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
-      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
-      subModel: '', taskCategory: '', taskName: '', type: ''
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
     };
   }
 
