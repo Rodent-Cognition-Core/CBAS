@@ -1,30 +1,31 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "outDir": "./dist/out-tsc",
-        "sourceMap": true,
-        "declaration": false,
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "target": "es2020",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "lib": [
-            "es2017",
-            "dom"
-        ],
-        "module": "esnext",
-        "baseUrl": "./",
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "strictPropertyInitialization": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "extendedDiagnostics": true,
-        "disableSizeLimit": true
+      "outDir": "./dist/out-tsc",
+      "sourceMap": true,
+      "declaration": false,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "target": "ES2022",
+      "typeRoots": [
+        "node_modules/@types"
+      ],
+      "lib": [
+        "es2017",
+        "dom"
+      ],
+      "module": "esnext",
+      "baseUrl": "./",
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictPropertyInitialization": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "extendedDiagnostics": true,
+      "disableSizeLimit": true,
+      "useDefineForClassFields": false
     },
     "angularCompilerOptions": {
         "enableIvy": true,
