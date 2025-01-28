@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { AnimalInfoRoutingModule } from './animal-info-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
+import { MatSelectModule } from '@angular/material/select';
 import { AnimalInfoComponent } from './animal-info.component';
 import { AnimalService } from '../services/animal.service';
 import { AuthenticationService } from '../services/authentication.service';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { PagerService } from '../services/pager.service';
 
 @NgModule({

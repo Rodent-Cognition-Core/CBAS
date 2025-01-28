@@ -15,7 +15,7 @@ body {
     .mat-sidenav {
         min-width: 20vw;
 
-        .mat-button {
+        .mat-mdc-button {
             width: 100%;
             position: relative;
             bottom: 0;
@@ -119,7 +119,7 @@ body {
     margin: 0 15px 0 0;
 }
 
-.mat-button.mat-small {
+.mat-mdc-button.mat-small {
     min-width: 40px;
     width: 20px;
     height: 20px;
@@ -132,6 +132,7 @@ body {
 }
 
 .active-link {
+    /*TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
     .mat-list-item-content {
         color: $blue;
     }
@@ -140,7 +141,7 @@ body {
 .account-card-container {
     display: flex;
     justify-content: center;
-
+    /*TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
     mat-card {
         width: 400px;
     }

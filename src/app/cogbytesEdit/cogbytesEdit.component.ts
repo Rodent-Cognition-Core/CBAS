@@ -1,9 +1,9 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import {
-    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
-    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
-} from '@angular/material/legacy-dialog';
+    MatDialog, MatDialogRef,
+    MAT_DIALOG_DATA
+} from '@angular/material/dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';

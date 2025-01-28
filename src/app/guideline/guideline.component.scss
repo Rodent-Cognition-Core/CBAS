@@ -14,7 +14,7 @@
         .logo {
             max-width: 35%;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
         mat-card-content {
             position: absolute;
             top: 50%;
@@ -46,7 +46,7 @@
         img {
             opacity: 0;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
         mat-card-content {
             opacity: 1;
             color: white;

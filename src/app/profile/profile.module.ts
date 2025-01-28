@@ -7,8 +7,8 @@ import { ProfileComponent } from './profile.component';
 import { IdentityService } from '../services/identity.service';
 import { PISiteService } from '../services/piSite.service';
 import { ProfileService } from '../services/profile.service';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [

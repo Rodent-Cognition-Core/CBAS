@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 declare let spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatLegacyDialogRef as MatDialogRef, MatLegacyDialog as MatDialog, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import { MatTableDataSource } from '@angular/material/table'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 
