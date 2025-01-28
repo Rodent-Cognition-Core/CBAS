@@ -27,29 +27,29 @@ const COGUPLOAD_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 @NgModule({
   imports: [
-    CogbytesUploadRoutingModule,
-    SharedModule,
-    DropzoneModule,
-    MatDialogModule,
+  CogbytesUploadRoutingModule,
+  SharedModule,
+  DropzoneModule,
+  MatDialogModule,
   ],
   declarations: [
-    CogbytesUploadComponent
+  CogbytesUploadComponent
   ],
   providers: [ManageUserService, CogbytesService, IdentityService, {
-    provide: MatDialogRef,
-    useValue: {}
+  provide: MatDialogRef,
+  useValue: {}
   },
   {
-    provide: MAT_DIALOG_DATA, useValue: {}
+  provide: MAT_DIALOG_DATA, useValue: {}
   },
   {
-    provide: DROPZONE_CONFIG,
-    useValue: COGUPLOAD_DROPZONE_CONFIG,
+  provide: DROPZONE_CONFIG,
+  useValue: COGUPLOAD_DROPZONE_CONFIG,
   },
   ],
 
   bootstrap: [CogbytesUploadComponent],
 
   exports: [CogbytesUploadComponent],
-})
+  })
 export class CogbytesUploadModule { }

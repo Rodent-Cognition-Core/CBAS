@@ -19,26 +19,26 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    GuidelineRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  GuidelineRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    GuidelineComponent,
+  GuidelineComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    TaskAnalysisService,
-    // GenomicsService,
-    PagerService,
+  AuthenticationService,
+  TaskAnalysisService,
+// GenomicsService,
+  PagerService,
 
   ],
   bootstrap: [GuidelineComponent],
 
   exports: [GuidelineComponent],
-})
+  })
 export class GuidelineModule { }
 

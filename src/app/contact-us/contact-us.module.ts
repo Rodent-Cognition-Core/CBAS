@@ -10,24 +10,24 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    ContactUsRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  ContactUsRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    ContactUsComponent,
+  ContactUsComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    PagerService,
+  AuthenticationService,
+  PagerService,
 
   ],
   bootstrap: [ContactUsComponent],
 
   exports: [ContactUsComponent],
-})
+  })
 export class ContactUsModule { }
 

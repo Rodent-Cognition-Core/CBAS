@@ -24,7 +24,7 @@ import { CONFIRMDELETE } from '../shared/messages';
   templateUrl: './experiment.component.html',
   styleUrls: ['./experiment.component.scss'],
 
-})
+  })
 export class ExperimentComponent implements OnInit {
 
   uploadList: any;

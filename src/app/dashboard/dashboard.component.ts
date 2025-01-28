@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
-})
+  })
 export class DashboardComponent implements OnInit {
 
   experimentName: string;

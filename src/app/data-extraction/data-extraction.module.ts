@@ -20,28 +20,28 @@ import { ExpDialogeService } from '../services/expdialoge.service';
 
 @NgModule({
   imports: [
-    DataExtractionRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  DataExtractionRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    DataExtractionComponent,
+  DataExtractionComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    TaskAnalysisService,
-    DataExtractionService,
-    PagerService,
-    UploadService,
-    ExpDialogeService,
+  AuthenticationService,
+  TaskAnalysisService,
+  DataExtractionService,
+  PagerService,
+  UploadService,
+  ExpDialogeService,
 
   ],
   bootstrap: [DataExtractionComponent],
 
   exports: [DataExtractionComponent]
-})
+  })
 export class DataExtractionModule { }
 

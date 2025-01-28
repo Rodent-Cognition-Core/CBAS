@@ -4,7 +4,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_L
 @Component({
   selector: 'app-message-dialog',
   templateUrl: './notification-dialog.component.html',
-})
+  })
 export class NotificationDialogComponent {
 
   public message: string;

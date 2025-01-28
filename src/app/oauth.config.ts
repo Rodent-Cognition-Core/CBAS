@@ -30,7 +30,7 @@ export const oAuthProductionConfig: AuthConfig = {
  */
 @Injectable({
   providedIn: 'root',
-})
+  })
 export class OAuthConfig {
   constructor(private oAuthService: OAuthService) { }
 

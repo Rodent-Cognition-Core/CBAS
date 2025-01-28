@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
@@ -23,7 +26,7 @@ import { INVALIDYEAR } from '../shared/messages';
   selector: 'app-cogbytessearch',
   templateUrl: './cogbytesSearch.component.html',
   styleUrls: ['./cogbytesSearch.component.scss']
-})
+  })
 export class CogbytesSearchComponent implements OnInit {
 
   readonly dATASET = 1;

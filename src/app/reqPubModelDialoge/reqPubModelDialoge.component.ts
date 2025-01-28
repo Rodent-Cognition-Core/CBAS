@@ -16,7 +16,7 @@ import { PubScreenService } from '../services/pubScreen.service';
   styleUrls: ['./reqPubModelDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
 
-})
+  })
 export class ReqPubModelDialogeComponent implements OnInit {
 
   modelList: any;

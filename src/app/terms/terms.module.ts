@@ -14,27 +14,27 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    TermsRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  TermsRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    TermsComponent,
+  TermsComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    TaskAnalysisService,
-    // GenomicsService,
-    PagerService,
+  AuthenticationService,
+  TaskAnalysisService,
+// GenomicsService,
+  PagerService,
 
   ],
   bootstrap: [TermsComponent],
 
   exports: [TermsComponent],
 
-})
+  })
 export class TermsModule { }
 

@@ -22,7 +22,7 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
   styleUrls: ['./ExpDialoge.component.scss'],
   providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
 
-})
+  })
 export class ExpDialogeComponent implements OnInit {
 
   doiModel: string;

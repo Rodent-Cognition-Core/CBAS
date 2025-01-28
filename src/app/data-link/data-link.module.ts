@@ -7,24 +7,24 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    DataLinkRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  DataLinkRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    DataLinkComponent,
+  DataLinkComponent,
 
   ],
   providers: [
-    DataExtractionService,
-    PagerService,
+  DataExtractionService,
+  PagerService,
 
   ],
   bootstrap: [DataLinkComponent],
 
 
-})
+  })
 export class DataLinkModule { }
 

@@ -26,7 +26,7 @@ export class TaskAnalysisDataSource extends DataSource<any> {
   selector: 'app-taskanalysis',
   templateUrl: './taskAnalysis.component.html',
   styleUrls: ['./taskAnalysis.component.scss']
-})
+  })
 export class TaskAnalysisComponent implements OnInit {
 
   displayedColumns = ['id', 'taskname', 'originalname'];

@@ -7,11 +7,11 @@ import { ResourcesComponent } from './resources.component';
 
 @NgModule({
   imports: [
-    ResourcesRoutingModule,
-    SharedModule
+  ResourcesRoutingModule,
+  SharedModule
   ],
   declarations: [
-    ResourcesComponent
+  ResourcesComponent
   ]
-})
+  })
 export class ResourcesModule { }

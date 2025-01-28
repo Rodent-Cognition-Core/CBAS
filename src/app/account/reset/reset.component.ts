@@ -15,7 +15,7 @@ import { ManageUserService } from '../../services/manageuser.service';
   templateUrl: './reset.component.html',
   styleUrls: ['../account.scss'],
 
-})
+  })
 export class ResetComponent extends Signin {
 
   model: any = {};

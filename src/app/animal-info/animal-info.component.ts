@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './animal-info.component.html',
   styleUrls: ['./animal-info.component.scss'],
 
-})
+  })
 export class AnimalInfoComponent implements OnInit {
 
   // selectedExpValueAnimal: string;

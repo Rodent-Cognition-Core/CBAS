@@ -11,17 +11,17 @@ import { CountUpModule } from 'ngx-countup';
 
 @NgModule({
   imports: [
-    PubSCreenRoutingModule,
-    SharedModule,
-    CountUpModule
+  PubSCreenRoutingModule,
+  SharedModule,
+  CountUpModule
   ],
   declarations: [
-    PubScreenComponent
+  PubScreenComponent
   ],
   providers: [ManageUserService, PubScreenService, IdentityService, ],
 
   bootstrap: [PubScreenComponent],
 
   exports: [PubScreenComponent],
-})
+  })
 export class PubScreenModule { }

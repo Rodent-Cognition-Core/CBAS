@@ -11,17 +11,17 @@ import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   imports: [
-    AccountRoutingModule,
-    SharedModule,
-    FormsModule,
-    ReactiveFormsModule
+  AccountRoutingModule,
+  SharedModule,
+  FormsModule,
+  ReactiveFormsModule
 
   ],
   declarations: [
-    SigninComponent,
-    SignupComponent,
-    ForgotComponent,
-    ResetComponent
+  SigninComponent,
+  SignupComponent,
+  ForgotComponent,
+  ResetComponent
   ]
-})
+  })
 export class AccountModule { }

@@ -9,14 +9,14 @@ import { PubScreenService } from '../services/pubScreen.service';
 
 @NgModule({
   imports: [
-    PubScreenQueueRoutingModule,
-    SharedModule
+  PubScreenQueueRoutingModule,
+  SharedModule
   ],
   declarations: [
-    PubScreenQueueComponent
+  PubScreenQueueComponent
   ],
   providers: [ManageUserService, PubScreenService, IdentityService, ],
 
   bootstrap: [PubScreenQueueComponent],
-})
+  })
 export class PubScreenQueueModule { }

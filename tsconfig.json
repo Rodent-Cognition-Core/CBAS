@@ -28,7 +28,6 @@
       "useDefineForClassFields": false
     },
     "angularCompilerOptions": {
-        "enableIvy": true,
         "fullTemplateTypeCheck": true
     },
     "include": [ "src/**/*.ts", "**/*.spec.ts", "src/**/*.html" ],

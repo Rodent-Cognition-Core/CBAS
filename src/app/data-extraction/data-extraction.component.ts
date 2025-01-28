@@ -26,7 +26,7 @@ declare let $: any;
   selector: 'app-data-extraction',
   templateUrl: './data-extraction.component.html',
   styleUrls: ['./data-extraction.component.scss']
-})
+  })
 export class DataExtractionComponent implements OnInit {
   // private formBuilder = inject(FormBuilder);
 

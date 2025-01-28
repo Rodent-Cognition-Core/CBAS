@@ -10,7 +10,7 @@ import { NotificationDialogComponent } from '../notification-dialog/notification
   selector: 'app-ps-dashboard',
   templateUrl: './pubScreen-dashboard.component.html',
   styleUrls: ['./pubScreen-dashboard.component.scss']
-})
+  })
 export class PSDashboardComponent implements OnInit {
 
   app: any;

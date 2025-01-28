@@ -17,7 +17,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
   styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
 
-})
+  })
 export class ReqPubSubMethodDialogeComponent implements OnInit {
 
   methodList: any;

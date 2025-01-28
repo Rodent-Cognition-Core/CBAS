@@ -11,12 +11,12 @@ import { ExperimentService } from '../services/experiment.service';
 
 @NgModule({
   imports: [
-    DashboardRoutingModule,
-    SharedModule
+  DashboardRoutingModule,
+  SharedModule
   ],
   declarations: [
-    DashboardComponent
+  DashboardComponent
   ],
   providers: [DashboardService, UploadService, PagerService, AnimalService, ExperimentService, ]
-})
+  })
 export class DashboardModule { }

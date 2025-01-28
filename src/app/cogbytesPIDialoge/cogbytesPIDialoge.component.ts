@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { Request } from '../models/request';
@@ -16,7 +19,7 @@ import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIR
   styleUrls: ['./cogbytesPIDialoge.component.scss'],
   providers: [CogbytesService]
 
-})
+  })
 export class CogbytesPIDialogeComponent implements OnInit {
 
 

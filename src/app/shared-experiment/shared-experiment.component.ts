@@ -22,7 +22,7 @@ import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../sh
   templateUrl: './shared-experiment.component.html',
   styleUrls: ['./shared-experiment.component.scss'],
   providers: [UploadService, ExperimentService, SubExpDialogeService, PostProcessingQcService, CogbytesService]
-})
+  })
 export class SharedExperimentComponent implements OnInit {
 
 

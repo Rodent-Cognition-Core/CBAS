@@ -16,7 +16,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
   styleUrls: ['./reqMouseLineDialoge.component.scss'],
   providers: [RequestService]
 
-})
+  })
 export class ReqMouseLineDialogeComponent implements OnInit {
 
   // Defining Models Parameters

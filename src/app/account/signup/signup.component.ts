@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 // import { FormControl } from '@angular/forms';
 // import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 
 import { AuthenticationService } from '../../services/authentication.service';
@@ -16,7 +19,7 @@ import { TermsDialogeComponent } from '../../termsDialoge/termsDialoge.component
   templateUrl: './signup.component.html',
   styleUrls: ['../account.scss'],
 
-})
+  })
 export class SignupComponent extends Signin {
 
   piSiteList: any;

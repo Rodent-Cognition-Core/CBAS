@@ -16,29 +16,29 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   imports: [
-    ExperimentRoutingModule,
-    SharedModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
-    OrderModule,
-    NgxDatatableModule,
+  ExperimentRoutingModule,
+  SharedModule,
+  MatSelectModule,
+  MatDialogModule,
+  MatButtonModule,
+  OrderModule,
+  NgxDatatableModule,
   ],
   declarations: [
-    ExperimentComponent,
+  ExperimentComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    ExperimentService,
-    UploadService,
-    // PostProcessingQcService,
-    PagerService,
+  AuthenticationService,
+  ExperimentService,
+  UploadService,
+// PostProcessingQcService,
+  PagerService,
 
   ],
   bootstrap: [ExperimentComponent],
 
 
-})
+  })
 export class ExperimentModule { }
 

@@ -12,7 +12,7 @@ import { User } from '../models/user';
   selector: 'app-data-visualization',
   templateUrl: './data-visualization.component.html',
   styleUrls: ['./data-visualization.component.scss']
-})
+  })
 export class DataVisualizationComponent implements OnInit {
 
   selectedCogTaskValue: any = '';

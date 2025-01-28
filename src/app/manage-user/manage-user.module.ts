@@ -9,12 +9,12 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    ManageUserRoutingModule,
-    SharedModule
+  ManageUserRoutingModule,
+  SharedModule
   ],
   declarations: [
-    ManageUserComponent
+  ManageUserComponent
   ],
   providers: [ManageUserService, PagerService, IdentityService, ]
-})
+  })
 export class ManageUserModule { }

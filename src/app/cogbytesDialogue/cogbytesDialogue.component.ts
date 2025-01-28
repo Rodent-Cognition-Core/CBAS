@@ -2,7 +2,10 @@ import {
   Component, OnInit, Inject, NgModule,
   ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { Location } from '@angular/common';
@@ -25,7 +28,7 @@ import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialo
   styleUrls: ['./cogbytesDialogue.component.scss'],
   providers: [TaskAnalysisService,  PISiteService]
 
-})
+  })
 export class CogbytesDialogueComponent implements OnInit {
 
   // Models Variables for adding Publication

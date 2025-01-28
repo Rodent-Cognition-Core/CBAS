@@ -11,16 +11,16 @@ import { TaskAnalysisComponent } from './taskAnalysis.component';
 
 @NgModule({
   imports: [
-    TaskAnalysisRoutingModule,
-    SharedModule
+  TaskAnalysisRoutingModule,
+  SharedModule
   ],
   declarations: [
-    TaskAnalysisComponent,
-    // SharedExperimentComponent
+  TaskAnalysisComponent,
+// SharedExperimentComponent
 
   ],
   providers: [
-    TaskAnalysisService
+  TaskAnalysisService
   ]
-})
+  })
 export class TaskAnalysisModule { }

@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject/* , NgModule*/ } from '@angular/core';
-import { /* MatDialog,*/ MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { /* MatDialog,*/ MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
@@ -13,7 +15,7 @@ import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, 
   templateUrl: './animal-dialog.component.html',
   styleUrls: ['./animal-dialog.component.scss'],
   providers: [AnimalService]
-})
+  })
 export class AnimalDialogComponent implements OnInit {
 
   _animal: Animal;

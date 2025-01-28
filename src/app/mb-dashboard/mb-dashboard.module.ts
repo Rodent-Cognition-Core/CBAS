@@ -6,23 +6,23 @@ import { DataExtractionService } from '../services/dataextraction.service';
 
 @NgModule({
   imports: [
-    MBDashboardRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  MBDashboardRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    MBDashboardComponent,
+  MBDashboardComponent,
 
   ],
   providers: [
-    DataExtractionService,
+  DataExtractionService,
 
   ],
   bootstrap: [MBDashboardComponent],
 
   exports: [MBDashboardComponent],
-})
+  })
 export class MBDashboardModule { }
 

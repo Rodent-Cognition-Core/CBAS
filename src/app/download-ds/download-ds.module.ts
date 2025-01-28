@@ -11,25 +11,25 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    DownloadDsRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  DownloadDsRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    DownloadDsComponent,
+  DownloadDsComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    PagerService,
-    SearchExperimentService,
+  AuthenticationService,
+  PagerService,
+  SearchExperimentService,
 
   ],
   bootstrap: [DownloadDsComponent],
 
 
-})
+  })
 export class DownloadDsModule { }
 

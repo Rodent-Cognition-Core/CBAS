@@ -6,7 +6,7 @@ declare let $: any;
   selector: 'app-guidelinedatalab',
   templateUrl: './guidelineDataLab.component.html',
   styleUrls: ['./guidelineDataLab.component.scss']
-})
+  })
 export class GuidelineDataLabComponent implements OnInit {
 
   showItem = false;

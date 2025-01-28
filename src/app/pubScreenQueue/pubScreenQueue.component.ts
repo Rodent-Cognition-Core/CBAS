@@ -23,7 +23,7 @@ import { CONFIRMACCEPTPAPERTOPUBSCREEN, CONFIRMREJECTPAPER, PAPERREJECTED, SUCCE
   selector: 'app-pubscreenqueue',
   templateUrl: './pubScreenQueue.component.html',
   styleUrls: ['./pubScreenQueue.component.scss']
-})
+  })
 export class PubScreenQueueComponent implements OnInit {
 
   pubmedQueue: any;

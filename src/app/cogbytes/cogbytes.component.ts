@@ -23,7 +23,7 @@ import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
   selector: 'app-cogbytes',
   templateUrl: './cogbytes.component.html',
   styleUrls: ['./cogbytes.component.scss']
-})
+  })
 
 
 export class CogbytesComponent implements OnInit {

@@ -15,7 +15,7 @@ declare const gtag: Function;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
-})
+  })
 export class AppComponent implements OnInit {
 
   navItems: any[] = [

@@ -18,7 +18,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
   styleUrls: ['./reqTaskDialoge.component.scss'],
   providers: [RequestService]
 
-})
+  })
 export class ReqTaskDialogeComponent implements OnInit {
 
   faQuestionCircle = faQuestionCircle;

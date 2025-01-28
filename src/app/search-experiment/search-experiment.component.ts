@@ -17,7 +17,7 @@ declare let $: any;
   selector: 'app-search-experiment',
   templateUrl: './search-experiment.component.html',
   styleUrls: ['./search-experiment.component.scss']
-})
+  })
 export class SearchExperimentComponent implements OnInit {
 
   pagedItems: any[];

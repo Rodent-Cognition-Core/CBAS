@@ -15,7 +15,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_L
   styleUrls: ['./termsDialoge.component.scss'],
 
 
-})
+  })
 export class TermsDialogeComponent implements OnInit {
 
 

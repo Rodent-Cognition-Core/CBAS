@@ -16,7 +16,7 @@ import { ReqPubSubMethodDialogeComponent } from '../reqPubSubMethodDialoge/reqPu
   selector: 'app-forms',
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss']
-})
+  })
 export class FormsComponent implements OnInit {
 
   constructor(public dialogTask: MatDialog, public dialogPI: MatDialog,

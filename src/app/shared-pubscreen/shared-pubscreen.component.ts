@@ -20,7 +20,7 @@ import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID
   selector: 'app-shared-pubscreen',
   templateUrl: './shared-pubscreen.component.html',
   styleUrls: ['./shared-pubscreen.component.scss']
-})
+  })
 export class SharedPubscreenComponent implements OnInit {
 
 

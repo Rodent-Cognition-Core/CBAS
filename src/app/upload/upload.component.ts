@@ -23,7 +23,7 @@ import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from 
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.scss'],
 
-})
+  })
 export class UploadComponent implements OnInit {
 
   @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;

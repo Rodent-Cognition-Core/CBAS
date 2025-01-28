@@ -14,7 +14,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/mes
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
-})
+  })
 export class ProfileComponent implements OnInit {
 
   // HTML Models Parameters

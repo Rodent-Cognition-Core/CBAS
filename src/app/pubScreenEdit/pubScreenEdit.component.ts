@@ -15,7 +15,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
   selector: 'app-pubscreenedit',
   templateUrl: './pubScreenEdit.component.html',
   styleUrls: ['./pubScreenEdit.component.scss']
-})
+  })
 export class PubScreenEditComponent implements OnInit {
 
 

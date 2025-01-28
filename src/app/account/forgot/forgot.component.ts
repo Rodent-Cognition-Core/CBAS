@@ -18,7 +18,7 @@ import { map, catchError } from 'rxjs/operators';
   templateUrl: './forgot.component.html',
   styleUrls: ['../account.scss'],
 
-})
+  })
 export class ForgotComponent extends Signin {
 
   model: any = {};

@@ -6,23 +6,23 @@ import { DataExtractionService } from '../services/dataextraction.service';
 
 @NgModule({
   imports: [
-    DataVisualizationRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  DataVisualizationRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    DataVisualizationComponent,
+  DataVisualizationComponent,
 
   ],
   providers: [
-    DataExtractionService,
+  DataExtractionService,
 
   ],
   bootstrap: [DataVisualizationComponent],
 
   exports: [DataVisualizationComponent],
-})
+  })
 export class DataVisualizationModule { }
 

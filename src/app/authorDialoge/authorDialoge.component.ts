@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 // import { MatFormFieldModule } from '@angular/material/form-field';
 import { UntypedFormControl, Validators, /* ReactiveFormsModule, FormGroup,*/ UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
@@ -16,7 +19,7 @@ import { FIELDISREQUIRED } from '../shared/messages';
   styleUrls: ['./authorDialoge.component.scss'],
   providers: [PubScreenService]
 
-})
+  })
 export class AuthorDialogeComponent implements OnInit {
 
   // Defining Models Parameters

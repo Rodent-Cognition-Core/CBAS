@@ -17,7 +17,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
   styleUrls: ['./reqPubTaskDialoge.component.scss'],
   providers: [RequestService, PubScreenService]
 
-})
+  })
 export class ReqPubTaskDialogeComponent implements OnInit {
 
   taskCategoryList: any;

@@ -10,16 +10,16 @@ import { CogbytesService } from '../services/cogbytes.service';
 
 @NgModule({
   imports: [
-    CogbytesSearchRoutingModule,
-    SharedModule
+  CogbytesSearchRoutingModule,
+  SharedModule
   ],
   declarations: [
-    CogbytesSearchComponent
+  CogbytesSearchComponent
   ],
   providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService, ],
 
   bootstrap: [CogbytesSearchComponent],
 
   exports: [CogbytesSearchComponent],
-})
+  })
 export class CogbytesSearchModule { }

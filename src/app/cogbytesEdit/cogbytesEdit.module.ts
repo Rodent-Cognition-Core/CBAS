@@ -9,25 +9,25 @@ import { CogbytesService } from '../services/cogbytes.service';
 
 @NgModule({
   imports: [
-    CogbytesEditRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  CogbytesEditRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    CogbytesEditComponent,
+  CogbytesEditComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    CogbytesService,
-    PagerService,
+  AuthenticationService,
+  CogbytesService,
+  PagerService,
 
   ],
   bootstrap: [CogbytesEditComponent],
 
 
-})
+  })
 export class CogbytesEditModule { }
 

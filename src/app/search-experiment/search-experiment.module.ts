@@ -13,18 +13,18 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    SearchExperimentRoutingModule,
-    SharedModule
+  SearchExperimentRoutingModule,
+  SharedModule
   ],
   declarations: [
-    SearchExperimentComponent,
-    // SharedExperimentComponent
+  SearchExperimentComponent,
+// SharedExperimentComponent
 
   ],
   providers: [
-    SearchExperimentService, PagerService,
+  SearchExperimentService, PagerService,
   ],
 
   exports: [SearchExperimentComponent]
-})
+  })
 export class SearchExperimentModule { }

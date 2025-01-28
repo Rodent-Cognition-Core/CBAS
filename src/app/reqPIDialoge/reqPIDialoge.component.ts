@@ -16,7 +16,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
   styleUrls: ['./reqPIDialoge.component.scss'],
   providers: [RequestService]
 
-})
+  })
 export class ReqPIDialogeComponent implements OnInit {
 
   // FormControl Parameters

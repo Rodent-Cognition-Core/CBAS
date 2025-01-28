@@ -1,5 +1,8 @@
 import { Component, OnInit, Inject, NgModule, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import {
+    MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef,
+    MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA
+} from '@angular/material/legacy-dialog';
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesUpload } from '../models/cogbytesUpload';
 import { CogbytesService } from '../services/cogbytes.service';
@@ -28,7 +31,7 @@ import {
   templateUrl: './cogbytesUpload.component.html',
   styleUrls: ['./cogbytesUpload.component.scss'],
   // providers: [CogbytesService],
-})
+  })
 
 
 export class CogbytesUploadComponent implements OnInit {

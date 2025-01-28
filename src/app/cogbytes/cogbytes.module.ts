@@ -14,21 +14,21 @@ import { MatLegacyDialogModule as MatDialogModule, MatLegacyDialogRef as MatDial
 
 @NgModule({
   imports: [
-    CogbytesRoutingModule,
-    CogbytesUploadModule,
-    CogbytesSearchModule,
-    SharedModule,
-    MatDialogModule,
+  CogbytesRoutingModule,
+  CogbytesUploadModule,
+  CogbytesSearchModule,
+  SharedModule,
+  MatDialogModule,
   ],
   declarations: [
-    CogbytesComponent
+  CogbytesComponent
   ],
   providers: [ManageUserService, PubScreenService, IdentityService, CogbytesService, {
-    provide: MatDialogRef,
-    useValue: {}
+  provide: MatDialogRef,
+  useValue: {}
   },
   { provide: MAT_DIALOG_DATA, useValue: {} }, ],
 
   bootstrap: [CogbytesComponent],
-})
+  })
 export class CogbytesModule { }

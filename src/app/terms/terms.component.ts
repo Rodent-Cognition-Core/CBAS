@@ -5,7 +5,7 @@ import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dia
   selector: 'app-terms',
   templateUrl: './terms.component.html',
   styleUrls: ['./terms.component.scss']
-})
+  })
 export class TermsComponent implements OnInit {
 
   constructor(@Optional() public dialogRef: MatDialogRef<TermsComponent>) { }

@@ -5,7 +5,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_L
   selector: 'app-generic-dialog',
   templateUrl: './generic-dialog.component.html',
   styleUrls: ['./generic-dialog.component.scss']
-})
+  })
 export class GenericDialogComponent implements OnInit {
 
   public title: string;

@@ -11,7 +11,7 @@ import { FIELDISREQUIRED, SUBEXPERIEMENTWITHSAMECONDITIONS, SUBEXPERIMENTNAMETAK
   templateUrl: './sub-exp-dialoge.component.html',
   styleUrls: ['./sub-exp-dialoge.component.scss'],
   providers: [SubExpDialogeService, ]
-})
+  })
 
 export class SubExpDialogeComponent implements OnInit {
 

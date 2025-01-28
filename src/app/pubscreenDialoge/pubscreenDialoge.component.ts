@@ -27,7 +27,7 @@ import {
   styleUrls: ['./pubscreenDialoge.component.scss'],
   providers: [TaskAnalysisService,  PISiteService]
 
-})
+  })
 export class PubscreenDialogeComponent implements OnInit {
 
   // Models Variables for adding Publication

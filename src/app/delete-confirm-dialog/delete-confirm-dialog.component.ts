@@ -4,7 +4,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_L
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './delete-confirm-dialog.component.html',
-})
+  })
 export class DeleteConfirmDialogComponent {
 
   public confirmMessage: string;

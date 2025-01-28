@@ -10,20 +10,20 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 
 @NgModule({
   imports: [
-    FormsRoutingModule,
-    SharedModule,
-    MatDialogModule,
-    MatButtonModule,
+  FormsRoutingModule,
+  SharedModule,
+  MatDialogModule,
+  MatButtonModule,
 
 
 
   ],
   declarations: [
-    FormsComponent,
+  FormsComponent,
 
   ],
   providers: [
-    RequestService,
+  RequestService,
 
 
   ],
@@ -32,6 +32,6 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 
   exports: [FormsComponent],
 
-})
+  })
 export class FormsModule { }
 

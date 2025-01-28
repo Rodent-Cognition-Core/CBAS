@@ -19,7 +19,7 @@ import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.
   selector: 'app-pubscreen-search',
   templateUrl: './pubScreen-search.component.html',
   styleUrls: ['./pubScreen-search.component.scss']
-})
+  })
 export class PubScreenSearchComponent implements OnInit {
 
   authorModel: any;

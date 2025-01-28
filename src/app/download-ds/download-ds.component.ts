@@ -13,7 +13,7 @@ import { DOWNLOADERROR } from '../shared/messages';
   selector: 'app-download-ds',
   templateUrl: './download-ds.component.html',
   styleUrls: ['./download-ds.component.scss']
-})
+  })
 export class DownloadDsComponent implements OnInit {
 
   text: string;

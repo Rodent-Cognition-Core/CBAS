@@ -24,7 +24,7 @@ import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
   selector: 'app-pubscreen',
   templateUrl: './pubScreen.component.html',
   styleUrls: ['./pubScreen.component.scss']
-})
+  })
 export class PubScreenComponent implements OnInit {
 
   pubCount: number;

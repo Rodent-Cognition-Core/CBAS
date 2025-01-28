@@ -12,7 +12,7 @@ declare let $: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   providers: [AnimalService]
-})
+  })
 export class HomeComponent {
   showItem: boolean;
 

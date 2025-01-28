@@ -10,7 +10,7 @@ import { NotificationDialogComponent } from '../notification-dialog/notification
   selector: 'app-mb-dashboard',
   templateUrl: './mb-dashboard.component.html',
   styleUrls: ['./mb-dashboard.component.scss']
-})
+  })
 export class MBDashboardComponent implements OnInit {
 
   app: any;

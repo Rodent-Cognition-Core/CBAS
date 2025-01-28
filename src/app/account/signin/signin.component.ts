@@ -12,7 +12,7 @@ import { ManageUserService } from '../../services/manageuser.service';
   templateUrl: './signin.component.html',
   styleUrls: ['../account.scss'],
 
-})
+  })
 export class SigninComponent extends Signin {
 
   constructor(

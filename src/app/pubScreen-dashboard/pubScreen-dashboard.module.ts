@@ -6,23 +6,23 @@ import { DataExtractionService } from '../services/dataextraction.service';
 
 @NgModule({
   imports: [
-    PSDashboardRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  PSDashboardRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    PSDashboardComponent,
+  PSDashboardComponent,
 
   ],
   providers: [
-    DataExtractionService,
+  DataExtractionService,
 
   ],
   bootstrap: [PSDashboardComponent],
 
 
-})
+  })
 export class PSDashboardModule { }
 

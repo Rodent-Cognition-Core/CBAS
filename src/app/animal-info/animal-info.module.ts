@@ -11,26 +11,26 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    AnimalInfoRoutingModule,
-    SharedModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
+  AnimalInfoRoutingModule,
+  SharedModule,
+  MatSelectModule,
+  MatDialogModule,
+  MatButtonModule,
 
   ],
   declarations: [
-    AnimalInfoComponent,
+  AnimalInfoComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    AnimalService,
-    PagerService,
+  AuthenticationService,
+  AnimalService,
+  PagerService,
 
   ],
   bootstrap: [AnimalInfoComponent],
 
 
-})
+  })
 export class AnimalInfoModule { }
 

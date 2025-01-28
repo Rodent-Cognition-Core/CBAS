@@ -17,40 +17,40 @@ import { AuthenticationService } from '../services/authentication.service';
 
 @NgModule({
   imports: [
-    UploadRoutingModule,
-    SharedModule,
-    DropzoneModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
+  UploadRoutingModule,
+  SharedModule,
+  DropzoneModule,
+  MatSelectModule,
+  MatDialogModule,
+  MatButtonModule,
 
 
   ],
   declarations: [
-    UploadComponent,
-    // ExpDialogeComponent
+  UploadComponent,
+// ExpDialogeComponent
 
   ],
   providers: [
-    AuthenticationService,
-    UploadService,
-    {
-      provide: DROPZONE_CONFIG,
-      useValue: {
-        // Change this to your upload POST address:
-        url: 'http://localhost:5000/api/upload/UploadFiles',
-        // maxFilesize: 50,
-        acceptedFiles: '.xml',
-        // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
-        parallelUploads: 10000,
-        uploadMultiple: true,
-        autoProcessQueue: false
-      }
-    }
+  AuthenticationService,
+  UploadService,
+  {
+  provide: DROPZONE_CONFIG,
+  useValue: {
+// Change this to your upload POST address:
+  url: 'http://localhost:5000/api/upload/UploadFiles',
+// maxFilesize: 50,
+  acceptedFiles: '.xml',
+// headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
+  parallelUploads: 10000,
+  uploadMultiple: true,
+  autoProcessQueue: false
+  }
+  }
   ],
   bootstrap: [UploadComponent],
   // bootstrap: [Dialogcomponent]
 
-})
+  })
 export class UploadModule { }
 

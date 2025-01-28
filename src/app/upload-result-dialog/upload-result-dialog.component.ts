@@ -6,7 +6,7 @@ import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_L
   selector: 'app-upload-result-dialog',
   templateUrl: './upload-result-dialog.component.html',
   styleUrls: ['./upload-result-dialog.component.scss']
-})
+  })
 export class UploadResultDialogComponent implements OnInit {
 
   uploadResultList: any;

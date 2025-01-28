@@ -12,19 +12,19 @@ import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/lega
 
 @NgModule({
   imports: [
-    ProfileRoutingModule,
-    SharedModule,
-    MatDialogModule,
-    MatButtonModule,
+  ProfileRoutingModule,
+  SharedModule,
+  MatDialogModule,
+  MatButtonModule,
   ],
   declarations: [
-    ProfileComponent
+  ProfileComponent
   ],
   providers: [ManageUserService,
-    IdentityService,
-    PISiteService,
-    ProfileService, ],
+  IdentityService,
+  PISiteService,
+  ProfileService, ],
 
   bootstrap: [ProfileComponent],
-})
+  })
 export class ProfileModule { }

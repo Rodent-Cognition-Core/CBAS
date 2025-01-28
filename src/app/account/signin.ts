@@ -64,7 +64,7 @@ export class Signin {
             case 'invalid_grant':
 
               // call another api and find out if the user is not approved.
-              this.manageuserService.getEmailApprovalAndUserLockedStatus(this.model.username).subscribe((data : any) => {
+              this.manageuserService.getEmailApprovalAndUserLockedStatus(this.model.username).subscribe((data: any) => {
                 this.isEmailApproved = data.isUserApproved;
 
                 if (this.isEmailApproved) {

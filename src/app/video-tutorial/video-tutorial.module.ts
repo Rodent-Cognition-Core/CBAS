@@ -14,26 +14,26 @@ import { PagerService } from '../services/pager.service';
 
 @NgModule({
   imports: [
-    VideoTutorialRoutingModule,
-    SharedModule,
-    // MatSelectModule,
+  VideoTutorialRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
 
   ],
   declarations: [
-    VideoTutorialComponent,
+  VideoTutorialComponent,
 
   ],
   providers: [
-    AuthenticationService,
-    TaskAnalysisService,
-    // GenomicsService,
-    PagerService,
+  AuthenticationService,
+  TaskAnalysisService,
+// GenomicsService,
+  PagerService,
 
   ],
   bootstrap: [VideoTutorialComponent],
 
   exports: [VideoTutorialComponent],
-})
+  })
 export class VideoTutorialModule { }
 

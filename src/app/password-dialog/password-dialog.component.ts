@@ -13,7 +13,7 @@ import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
   templateUrl: './password-dialog.component.html',
   styleUrls: ['./password-dialog.component.scss'],
   providers: [IdentityService]
-})
+  })
 export class PasswordDialogComponent implements OnInit {
 
   // Parameters Initialization

@@ -10,7 +10,7 @@ declare let $: any;
   selector: 'app-data-link',
   templateUrl: './data-link.component.html',
   styleUrls: ['./data-link.component.scss']
-})
+  })
 export class DataLinkComponent implements OnInit {
 
   linkGuid: string;
