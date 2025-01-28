@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -68,7 +68,7 @@ export class PubScreenSearchComponent implements OnInit {
 
   _pubSCreenSearch: Pubscreen;
 
-  public authorMultiFilterCtrl: FormControl = new FormControl();
+  public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   /** Subject that emits when the component has been destroyed. */
   private _onDestroy = new Subject<void>();

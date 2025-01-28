@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject/* , NgModule*/ } from '@angular/core';
 import { /* MatDialog,*/ MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
@@ -20,10 +20,10 @@ export class AnimalDialogComponent implements OnInit {
   experimentId: number;
   isTaken: boolean;
 
-  userAnimalID: FormControl;
-  gender: FormControl;
-  strain: FormControl;
-  genotype: FormControl;
+  userAnimalID: UntypedFormControl;
+  gender: UntypedFormControl;
+  strain: UntypedFormControl;
+  genotype: UntypedFormControl;
 
   genoList: any;
   strainList: any;
@@ -32,7 +32,7 @@ export class AnimalDialogComponent implements OnInit {
 
   constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: NgxSpinnerService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.userAnimalID = fb.control('', [Validators.required]);
     this.gender = fb.control('', [Validators.required]);

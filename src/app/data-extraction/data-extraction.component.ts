@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, inject, Renderer2 } from '@angular/core';
 // import { TaskAnalysisService } from '../services/taskanalysis.service';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 // import { NgModel } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -61,14 +61,14 @@ export class DataExtractionComponent implements OnInit {
 
   // FormControls vars
   // dataextractionForm = new FormGroup({
-  task: FormControl;
-  subtask: FormControl;
-  exp: FormControl;
-  sessioninfo: FormControl;
-  markerinfo: FormControl;
-  piSite: FormControl;
-  aggFunc: FormControl;
-  species: FormControl;
+  task: UntypedFormControl;
+  subtask: UntypedFormControl;
+  exp: UntypedFormControl;
+  sessioninfo: UntypedFormControl;
+  markerinfo: UntypedFormControl;
+  piSite: UntypedFormControl;
+  aggFunc: UntypedFormControl;
+  species: UntypedFormControl;
   // });
 
   data: any;
@@ -84,7 +84,7 @@ export class DataExtractionComponent implements OnInit {
   pager: any = {};
   pagedItems: any[];
 
-  dataextractionForm = FormControl;
+  dataextractionForm = UntypedFormControl;
 
   // SessionInfo Features' names
   public sessionInfoFeature: any[] = [
@@ -116,10 +116,10 @@ export class DataExtractionComponent implements OnInit {
   ];
 
   /** control for the selected experiments for multi-selection */
-  public expMultiCtrl: FormControl = new FormControl();
+  public expMultiCtrl: UntypedFormControl = new UntypedFormControl();
   /** control for the MatSelect filter keyword multi-selection */
-  public expMultiFilterCtrl: FormControl = new FormControl();
-  public markerInfoMultiFilterCtrl: FormControl = new FormControl();
+  public expMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
+  public markerInfoMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
 
 
 
@@ -136,7 +136,7 @@ export class DataExtractionComponent implements OnInit {
     public dialogTerms: MatDialog,
     public uploadService: UploadService,
     private expDialogeService: ExpDialogeService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public dialogRefLink: MatDialog,
     private renderer: Renderer2
   ) {

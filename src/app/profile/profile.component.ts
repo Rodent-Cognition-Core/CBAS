@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
 // import { SharedModule } from '../shared/shared.module';
 import { PISiteService } from '../services/piSite.service';
@@ -35,8 +35,8 @@ export class ProfileComponent implements OnInit {
 
 
   // FormControls Definition
-  givenName: FormControl;
-  familyName: FormControl;
+  givenName: UntypedFormControl;
+  familyName: UntypedFormControl;
 
 
   // model Variable
@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit {
     private profileService: ProfileService,
     private location: Location,
     public dialog: MatDialog,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
     this.email = '';
     this.givenName = fb.control('', [Validators.required]);

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
@@ -21,18 +21,18 @@ export class ReqPIDialogeComponent implements OnInit {
 
   // FormControl Parameters
 
-  name: FormControl;
-  email: FormControl;
-  emailPI: FormControl;
-  piName: FormControl;
-  institution: FormControl;
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  emailPI: UntypedFormControl;
+  piName: UntypedFormControl;
+  institution: UntypedFormControl;
 
   private _request: Request;
 
   constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
 
     private requestService: RequestService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
     this.name = fb.control('', [Validators.required]);

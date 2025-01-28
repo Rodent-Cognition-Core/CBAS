@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
@@ -28,9 +28,9 @@ export class ReqTaskDialogeComponent implements OnInit {
 
   // FormControl Parameters
 
-  name: FormControl;
-  task: FormControl;
-  email: FormControl;
+  name: UntypedFormControl;
+  task: UntypedFormControl;
+  email: UntypedFormControl;
 
   private _request: Request;
 
@@ -38,7 +38,7 @@ export class ReqTaskDialogeComponent implements OnInit {
   constructor(public thisDialogRef: MatDialogRef<ReqTaskDialogeComponent>,
 
     private requestService: RequestService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
     this.reqScheduleModel = '';

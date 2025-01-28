@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -81,13 +81,13 @@ export class CogbytesSearchComponent implements OnInit {
   filteredSearchList: any;
 
   // yearFrom = new FormControl('', []);
-  yearTo: FormControl;
+  yearTo: UntypedFormControl;
 
-  public repMultiFilterCtrl: FormControl = new FormControl();
+  public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  public authorMultiFilterCtrl: FormControl = new FormControl();
+  public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-  public piMultiFilterCtrl: FormControl = new FormControl();
+  public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
   showAll: boolean;
@@ -101,7 +101,7 @@ export class CogbytesSearchComponent implements OnInit {
     public dialogAuthor: MatDialog,
     private spinnerService: NgxSpinnerService,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public dialogRef: MatDialog) {
 
     this._cogbytesSearch = {

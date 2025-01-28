@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { Request } from '../models/request';
 import { CogbytesService } from '../services/cogbytes.service';
@@ -24,14 +24,14 @@ export class CogbytesPIDialogeComponent implements OnInit {
 
   // FormControl Parameters
 
-  emailPI: FormControl;
-  piName: FormControl;
-  institution: FormControl;
+  emailPI: UntypedFormControl;
+  piName: UntypedFormControl;
+  institution: UntypedFormControl;
 
   constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
 
     private cogbytesService: CogbytesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.emailPI = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
     this.piName = fb.control('', [Validators.required]);

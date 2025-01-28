@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, NgModule, Input } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -65,28 +65,28 @@ export class SharedPubscreenComponent implements OnInit {
   paperInfoFromDoiList: any;
 
   // Form Validation Variables for adding publications
-  author: FormControl;
-  title: FormControl;
-  abstract: FormControl;
-  doi: FormControl;
-  doiKey: FormControl;
-  paperType: FormControl;
-  cognitiveTask: FormControl;
+  author: UntypedFormControl;
+  title: UntypedFormControl;
+  abstract: UntypedFormControl;
+  doi: UntypedFormControl;
+  doiKey: UntypedFormControl;
+  paperType: UntypedFormControl;
+  cognitiveTask: UntypedFormControl;
   // specie = new FormControl('', [Validators.required]);
   // sex = new FormControl('', [Validators.required]);
-  addingOption: FormControl;
-  year: FormControl;
-  pubMedKey: FormControl;
-  sourceOption: FormControl;
-  bioAddingOption: FormControl;
-  doiKeyBio: FormControl;
+  addingOption: UntypedFormControl;
+  year: UntypedFormControl;
+  pubMedKey: UntypedFormControl;
+  sourceOption: UntypedFormControl;
+  bioAddingOption: UntypedFormControl;
+  doiKeyBio: UntypedFormControl;
 
 
   // onbj variable from Models
   _pubscreen: Pubscreen;
   _pubSCreenSearch: Pubscreen;
 
-  public authorMultiFilterCtrl: FormControl;
+  public authorMultiFilterCtrl: UntypedFormControl;
   public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   /** Subject that emits when the component has been destroyed. */
   private _onDestroy = new Subject<void>();
@@ -95,7 +95,7 @@ export class SharedPubscreenComponent implements OnInit {
     // private pagerService: PagerService,
     public dialog: MatDialog,
     private pubScreenService: PubScreenService, public dialogAuthor: MatDialog,
-    private fb: FormBuilder) {
+    private fb: UntypedFormBuilder) {
 
     this.author = fb.control('', [Validators.required]);
     this.title = fb.control('', [Validators.required]);

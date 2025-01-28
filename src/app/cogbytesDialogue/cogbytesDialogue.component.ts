@@ -3,7 +3,7 @@ import {
   ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef
 } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
@@ -51,21 +51,21 @@ export class CogbytesDialogueComponent implements OnInit {
   // private form: FormGroup;
 
   // Form Validation Variables for adding publications
-  author: FormControl;
-  pi: FormControl;
-  title: FormControl;
-  date: FormControl;
-  privacyStatus: FormControl;
+  author: UntypedFormControl;
+  pi: UntypedFormControl;
+  title: UntypedFormControl;
+  date: UntypedFormControl;
+  privacyStatus: UntypedFormControl;
 
 
 
   // onbj variable from Models
   _cogbytes: Cogbytes;
 
-  public authorMultiFilterCtrl: FormControl = new FormControl();
+  public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-  public piMultiFilterCtrl: FormControl = new FormControl();
+  public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
   public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
   /** Subject that emits when the component has been destroyed. */
   private _onDestroy = new Subject<void>();
@@ -78,7 +78,7 @@ export class CogbytesDialogueComponent implements OnInit {
     private cogbytesService: CogbytesService,
     // private cogbytesService: CogbytesService,
     public dialogAuthor: MatDialog,
-    public fb: FormBuilder,
+    public fb: UntypedFormBuilder,
 
     // private resolver: ComponentFactoryResolver,
 

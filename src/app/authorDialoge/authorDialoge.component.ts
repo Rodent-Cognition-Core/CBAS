@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, Validators, /* ReactiveFormsModule, FormGroup,*/ FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, /* ReactiveFormsModule, FormGroup,*/ UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 // import { Request } from '../models/request';
 import { PubScreenService } from '../services/pubScreen.service';
@@ -23,13 +23,13 @@ export class AuthorDialogeComponent implements OnInit {
   authorAffiliationModel: any;
 
   // FormControl Parameters
-  authorName: FormControl;
-  authorLastName: FormControl;
+  authorName: UntypedFormControl;
+  authorLastName: UntypedFormControl;
 
   constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
 
     private pubScreenService: PubScreenService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.authorName = fb.control('', [Validators.required]);

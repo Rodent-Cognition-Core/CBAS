@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 // import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
@@ -22,9 +22,9 @@ export class ReqGeneralDialogeComponent implements OnInit {
 
   // FormControl Parameters
 
-  name: FormControl;
-  email: FormControl;
-  request: FormControl;
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  request: UntypedFormControl;
 
   private _request: Request;
 
@@ -32,7 +32,7 @@ export class ReqGeneralDialogeComponent implements OnInit {
   constructor(public thisDialogRef: MatDialogRef<ReqGeneralDialogeComponent>,
 
     private requestService: RequestService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
     this.name = fb.control('', [Validators.required]);
