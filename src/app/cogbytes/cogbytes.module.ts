@@ -10,7 +10,7 @@ import { CogbytesService } from '../services/cogbytes.service';
 import { CogbytesUploadModule } from '../cogbytesUpload/cogbytesUpload.module';
 import { CogbytesSearchModule } from '../cogbytesSearch/cogbytesSearch.module';
 
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 
 @NgModule({
   imports: [

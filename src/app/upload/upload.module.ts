@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatSelectModule } from '@angular/material/select';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { UploadRoutingModule } from './upload-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
@@ -10,8 +10,8 @@ import { UploadComponent } from './upload.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { AuthenticationService } from '../services/authentication.service';
 
 

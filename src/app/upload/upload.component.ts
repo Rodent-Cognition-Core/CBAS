@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 // import { DataSource } from '@angular/cdk/collections';
 // import { Observable } from 'rxjs';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from '../services/authentication.service';
 // import { AnimalService } from '../services/animal.service';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExperimentService } from '../services/experiment.service';
@@ -9,7 +9,7 @@ import { SubExpDialogeComponent } from '../sub-exp-dialoge/sub-exp-dialoge.compo
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { PostProcessingQcService } from '../services/postprocessingqc.service';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 // import * as _ from 'underscore';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service';
