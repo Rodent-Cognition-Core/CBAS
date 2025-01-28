@@ -31,7 +31,7 @@
     "@schematics/angular": "^14.2.13",
     "@swimlane/ngx-datatable": "^20.1.0",
     "@typescript-eslint/eslint-plugin-tslint": "^7.0.2",
-    "angular-oauth2-oidc": "^15.0.0",
+    "angular-oauth2-oidc": "^14.0.1",
     "angulartics2": "^10.1.0",
     "core-js": "^3.6.5",
     "dropzone": "6.0.0-beta.2",
