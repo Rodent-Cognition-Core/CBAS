@@ -20,9 +20,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "src/thirdparties/owl.carousel-modified.css",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+                "src/styles.scss",
+                "src/thirdparties/owl.carousel-modified.css",
+                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                "./themes/material.css"
             ],
             "scripts": [],
             "aot": false,
@@ -101,9 +102,10 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "src/styles.scss",
-              "src/thirdparties/owl.carousel-modified.css",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+                "src/styles.scss",
+                "src/thirdparties/owl.carousel-modified.css",
+                "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                "./themes/material.css"
             ],
             "assets": [
               "src/assets"
