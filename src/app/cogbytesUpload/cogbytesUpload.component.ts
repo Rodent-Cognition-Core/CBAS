@@ -137,7 +137,7 @@ export class CogbytesUploadComponent implements OnInit {
     };
 
     this.name = fb.control('', [Validators.required]);
-    this.fileType = fb.control('', [Validators.required]);
+    this.fileType = fb.control({ value: '', disabled: this.isEditMode }, [Validators.required]);
     this.cognitiveTask = fb.control('', [Validators.required]);
     this.intervention = fb.control('', [Validators.required]);
     this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);

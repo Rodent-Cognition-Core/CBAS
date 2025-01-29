@@ -66,7 +66,7 @@ export class ExpDialogeComponent implements OnInit {
     this.exp = fb.control('', [Validators.required]);
     this.sDate = fb.control('', [Validators.required]);
     this.eDate = fb.control('', [Validators.required]);
-    this.task = fb.control('', [Validators.required]);
+    this.task = fb.control({ value: '', disabled: data.experimentObj != null}, [Validators.required]);
     this.species = fb.control('', [Validators.required]);
     this.piSite = fb.control('', [Validators.required]);
     this.status = fb.control('', [Validators.required]);

@@ -31,7 +31,7 @@
 
         <!--Cognitive Task-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!=null">
+            <mat-select placeholder="Select the Task" [formControl]="task" required>
                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                     {{task.name}}
                 </mat-option>

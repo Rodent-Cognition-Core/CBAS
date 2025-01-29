@@ -11,7 +11,7 @@
 
             <!--File Type-->
             <mat-form-field style="width: 30%; padding-left:0px">
-                <mat-select matInput placeholder="File Type" [formControl]="fileType" [disabled]="isEditMode" required>
+                <mat-select matInput placeholder="File Type" [formControl]="fileType" required>
                     <mat-option *ngFor="let type of fileTypeList" [value]="type.id">
                         {{type.fileType}}
                     </mat-option>
