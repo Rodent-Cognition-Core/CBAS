@@ -16,7 +16,7 @@ export interface Experiment {
   taskBattery: string;
   doi: string;
   status: boolean;
-  imageIds: Array<number>;
+  imageIds: number[];
   // ImagePath: Array<string>;
   imageInfo: string;
   speciesID: number;

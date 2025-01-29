@@ -19,9 +19,9 @@ declare const gtag: Function;
 export class AppComponent implements OnInit {
 
 
-    isMobile: boolean = false;
-    isTablet: boolean = false;
-    isDesktop: boolean = false;
+    isMobile = false;
+    isTablet = false;
+    isDesktop = false;
   navItems: any[] = [
     // { name: 'Home', route: 'home' },
     // { name: 'Resources', route: 'resources' },

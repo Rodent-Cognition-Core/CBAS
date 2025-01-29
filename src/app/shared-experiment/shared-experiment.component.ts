@@ -29,8 +29,8 @@ export class SharedExperimentComponent implements OnInit {
   @Input() hideSubExperiment: boolean;
   @Input() showSubExpTbl: boolean;
 
-  @Output() outSelectedExperiment: EventEmitter<string> = new EventEmitter();
-  @Output() outSelectedSubExperiment: EventEmitter<string> = new EventEmitter();
+  @Output() outSelectedExperiment = new EventEmitter<string>();
+  @Output() outSelectedSubExperiment = new EventEmitter<string>();
   // @Input() selectedValue: string;
   // ngModel vars
   faQuestionCircle = faQuestionCircle;

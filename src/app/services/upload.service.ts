@@ -40,14 +40,14 @@ import { AuthenticationService } from './authentication.service';
       .get('/api/upload/SetUploadAsResolved?uploadId=' + uploadId, {
         headers: this.authenticationService.getAuthorizationHeader()
       });
-  };
+  }
 
   downloadFile(id: number): Observable<Blob> {
 
     return this.http.get('/api/upload/downloadFile?uploadId=' + id,
       { headers: this.authenticationService.getAuthorizationHeader(), responseType: 'blob' });
 
-  };
+  }
 
   public getSessionInfo(): any {
 

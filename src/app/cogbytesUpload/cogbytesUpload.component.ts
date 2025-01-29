@@ -40,8 +40,8 @@ export class CogbytesUploadComponent implements OnInit {
   @Input() isEditMode: boolean;
   @Input() uploadObj: any;
 
-  @Output() filesUploaded: EventEmitter<any> = new EventEmitter();
-  @Output() repChange: EventEmitter<any> = new EventEmitter();
+  @Output() filesUploaded = new EventEmitter<any>();
+  @Output() repChange = new EventEmitter<any>();
 
   @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
   @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;

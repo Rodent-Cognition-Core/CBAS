@@ -16,7 +16,7 @@ import { AuthenticationService } from './authentication.service';
     private http: HttpClient,
     private authenticationService: AuthenticationService) { }
 
-  getPager(totalItems: number, currentPage: number = 1, pageSize: number = 10) {
+  getPager(totalItems: number, currentPage = 1, pageSize = 10) {
     // calculate total pages
     const totalPages = Math.ceil(totalItems / pageSize);
 

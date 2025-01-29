@@ -39,7 +39,7 @@ import { AuthenticationService } from './authentication.service';
     return this.http.get('/api/searchexp/DownloadExpDs?expDsFileName=' + expDsFileName,
       { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob' });
 
-  };
+  }
 
 
 }

@@ -15,12 +15,12 @@ export interface CogbytesUpload {
   lightCycle: string;
   taskBattery: string;
 
-  taskID: Array<number>;
-  specieID: Array<number>;
-  sexID: Array<number>;
-  strainID: Array<number>;
-  genoID: Array<number>;
-  ageID: Array<number>;
+  taskID: number[];
+  specieID: number[];
+  sexID: number[];
+  strainID: number[];
+  genoID: number[];
+  ageID: number[];
 
   numSubjects: number;
 

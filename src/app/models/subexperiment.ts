@@ -13,7 +13,7 @@ export interface SubExperiment {
   drugUnit: string;
   drugQuantity: string;
   interventionDescription: string;
-  imageIds: Array<number>;
+  imageIds: number[];
   imageInfo: string;
   imageDescription: string;
   housing: string;

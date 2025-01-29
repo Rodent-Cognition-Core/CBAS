@@ -223,7 +223,7 @@ import { AuthenticationService } from './authentication.service';
     return this.http.get('/api/cogbytes/downloadFile?path=' + path,
       { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob' });
 
-  };
+  }
 
   // Deleting a file
   public deleteFile(id: any, path: any): any {
