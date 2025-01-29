@@ -43,7 +43,6 @@ import { GenericDialogComponent } from './generic-dialog/generic-dialog.componen
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
-import { CarouselModule } from 'ngx-owl-carousel-o';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -53,9 +52,6 @@ import { CountUpModule } from 'ngx-countup';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-
-import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { RouterModule, Routes } from '@angular/router';
 // import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
 // import { DataLinkComponent } from './data-link/data-link.component';
@@ -95,11 +91,9 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
   SharedModule,
   OAuthModule.forRoot(),
   NgxSpinnerModule,
-  CarouselModule,
   CountUpModule,
   FontAwesomeModule,
   DropzoneModule,
-  Angulartics2Module.forRoot(),
 
 
   ],
