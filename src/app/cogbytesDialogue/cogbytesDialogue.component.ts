@@ -11,7 +11,7 @@ import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, Untyped
 // import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 // import { UploadService } from '../services/upload.service';
 import { CogbytesService } from '../services/cogbytes.service';
 import { Cogbytes } from '../models/cogbytes';
@@ -76,7 +76,7 @@ export class CogbytesDialogueComponent implements OnInit {
   constructor(
     public thisDialogRef: MatDialogRef<CogbytesDialogueComponent>,
     // private pagerService: PagerService,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialog: MatDialog,
     private cogbytesService: CogbytesService,
     // private cogbytesService: CogbytesService,

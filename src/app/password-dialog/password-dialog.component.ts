@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 // import { NgModel } from '@angular/forms';
 // import { Animal } from '../models/animal';
 import { IdentityService } from '../services/identity.service';
-// import { NgxSpinnerService } from 'ngx-spinner';
+// import { LoadingService } from '../services/loadingservice'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
 

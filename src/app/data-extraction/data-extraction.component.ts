@@ -9,7 +9,7 @@ import { DataExtractionService } from '../services/dataextraction.service';
 import { DataExtraction } from '../models/dataextraction';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { PagerService } from '../services/pager.service';
@@ -130,7 +130,7 @@ export class DataExtractionComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private dataExtractionService: DataExtractionService,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     private authenticationService: AuthenticationService,
     private pagerService: PagerService,
     public dialogTerms: MatDialog,

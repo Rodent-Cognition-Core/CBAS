@@ -6,7 +6,7 @@ import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, Untyped
 // import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { map, /* catchError*/ } from 'rxjs/operators';
 import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
 
@@ -32,8 +32,8 @@ export class AnimalDialogComponent implements OnInit {
   userAnimalLoadVal: any;
 
 
-  constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: NgxSpinnerService,
+    constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: LoadingService,
     private fb: UntypedFormBuilder
   ) {
     this.userAnimalID = fb.control('', [Validators.required]);

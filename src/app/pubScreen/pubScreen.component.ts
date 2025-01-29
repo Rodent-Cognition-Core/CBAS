@@ -14,7 +14,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
@@ -133,7 +133,7 @@ export class PubScreenComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private pubScreenService: PubScreenService,
     public dialogAuthor: MatDialog,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialogML: MatDialog,
     private fb: UntypedFormBuilder,
     // public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,

@@ -11,7 +11,7 @@ import { PostProcessingQcService } from '../services/postprocessingqc.service';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // import * as _ from 'underscore';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { CogbytesService } from '../services/cogbytes.service';
 // import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
@@ -57,7 +57,7 @@ export class SharedExperimentComponent implements OnInit {
     private location: Location,
     private snackBar: MatSnackBar,
     private subexpDialogeService: SubExpDialogeService,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialogRef: MatDialog,
     public dialogRefPostProcessingResult: MatDialog) {
 

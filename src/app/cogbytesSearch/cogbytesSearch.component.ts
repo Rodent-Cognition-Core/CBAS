@@ -17,7 +17,7 @@ import { CogbytesService } from '../services/cogbytes.service';
 import { CogbytesSearch } from '../models/cogbytesSearch';
 import { AuthenticationService } from '../services/authentication.service';
 // import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
@@ -102,7 +102,7 @@ export class CogbytesSearchComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private cogbytesService: CogbytesService,
     public dialogAuthor: MatDialog,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     private route: ActivatedRoute,
     private fb: UntypedFormBuilder,
     public dialogRef: MatDialog) {

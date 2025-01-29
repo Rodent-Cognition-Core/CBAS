@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 declare let spotfire: any;
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import { MatTableDataSource } from '@angular/material/table'
@@ -18,7 +18,7 @@ export class PSDashboardComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     private router: Router,
     private route: ActivatedRoute,
     public dialogRefLink: MatDialog) {

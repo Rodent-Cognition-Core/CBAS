@@ -6,7 +6,7 @@ import {
 import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesUpload } from '../models/cogbytesUpload';
 import { CogbytesService } from '../services/cogbytes.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import {
   DropzoneComponent, DropzoneDirective,
   DropzoneConfigInterface
@@ -119,7 +119,7 @@ export class CogbytesUploadComponent implements OnInit {
   constructor(
     private oAuthService: OAuthService,
     // public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialog: MatDialog,
     private cogbytesService: CogbytesService,
     @Inject(MAT_DIALOG_DATA) public data: any,

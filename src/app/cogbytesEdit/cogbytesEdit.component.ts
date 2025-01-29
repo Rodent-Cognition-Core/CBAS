@@ -12,7 +12,7 @@ import { CogbytesService } from '../services/cogbytes.service';
 // import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 // import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 
 
 @Component({
@@ -44,7 +44,7 @@ export class CogbytesEditComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private cogbytesService: CogbytesService,
     private route: ActivatedRoute,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialogAuthor: MatDialog) {
 
     // this.isLoaded = false;

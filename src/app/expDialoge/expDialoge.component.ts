@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 // import { UploadService } from '../services/upload.service';
 import { CogbytesService } from '../services/cogbytes.service';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -58,7 +58,7 @@ export class ExpDialogeComponent implements OnInit {
   constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
     private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-    private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
+    private piSiteService: PISiteService, private spinnerService: LoadingService, private cogbytesService: CogbytesService,
     private fb: UntypedFormBuilder
   ) {
     this.doiModel = '';

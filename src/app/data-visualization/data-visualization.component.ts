@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 declare let spotfire: any;
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 import { ParamMap, Router, ActivatedRoute } from '@angular/router';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 // import { MatTable, MatTableDataSource } from '@angular/material/table'
@@ -44,7 +44,7 @@ export class DataVisualizationComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private authenticationService: AuthenticationService,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     private router: Router,
     private route: ActivatedRoute) {
 

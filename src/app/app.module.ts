@@ -40,8 +40,6 @@ import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-con
 import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
 
-
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -90,7 +88,6 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
   BrowserAnimationsModule,
   SharedModule,
   OAuthModule.forRoot(),
-  NgxSpinnerModule,
   CountUpModule,
   FontAwesomeModule,
   DropzoneModule,

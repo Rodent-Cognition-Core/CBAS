@@ -5,7 +5,7 @@ import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, Untyped
 // import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { LoadingService } from '../services/loadingservice'
 // import { UploadService } from '../services/upload.service';
 // import { SharedModule } from '../shared/shared.module';
 import { PubScreenService } from '../services/pubScreen.service';
@@ -160,7 +160,7 @@ export class PubscreenDialogeComponent implements OnInit {
   constructor(
     public thisDialogRef: MatDialogRef<PubscreenDialogeComponent>,
     // private pagerService: PagerService,
-    private spinnerService: NgxSpinnerService,
+    private spinnerService: LoadingService,
     public dialog: MatDialog,
     private pubScreenService: PubScreenService,
     public dialogAuthor: MatDialog,
