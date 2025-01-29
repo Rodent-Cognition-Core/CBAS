@@ -5,7 +5,7 @@ html, body {
 }
 
 body {
-    font-family: $font-family;
+    font-family: "Raleway", sans-serif;
 
     * {
         -webkit-font-smoothing: antialiased;
@@ -557,3 +557,232 @@ section {
     padding: 0 10px !important;
 }
 
+.main-toolbar {
+    min-height: 130px;
+    background-color: white;
+    z-index: 1000;
+    position: fixed;
+    width: 100%;
+}
+
+.top-bar {
+    font-size: small;
+    height: 30px;
+    background-color: #8F55E0;
+    color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 30px;
+}
+
+.auth-links a {
+    color: white;
+    margin-left: 10px;
+}
+
+.navigation-bar {
+    height: 100px;
+    background-color: #EDEDEE;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+/* ===========================
+   General Navigation Styles
+=========================== */
+.nav-menu a {
+    text-decoration: none;
+}
+
+/* Styling for all navigation links */
+.nav-menu ul.nav-list li a {
+    color: #354248;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    text-transform: uppercase;
+    display: inline-block;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+/* Hover effect for links */
+.nav-menu ul.nav-list li a:hover {
+    color: #8F55E0;
+    border-bottom: 5px solid #354248;
+    cursor: pointer;
+}
+
+/* ===========================
+   Desktop Menu Styling
+=========================== */
+.desktop-menu {
+    display: flex;
+    align-items: center;
+}
+
+.desktop-menu a > img {
+    width: 200px;
+    vertical-align: middle;
+}
+
+.desktop-menu ul.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.desktop-menu ul.nav-list > li {
+    position: relative;
+    padding: 0 15px;
+}
+
+.desktop-menu ul.nav-list > li > ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    min-width: 300px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
+    z-index: 1000;
+    text-decoration: none;
+}
+
+.desktop-menu ul.nav-list > li:hover > ul {
+    max-height: 60vh;
+    opacity: 1;
+}
+
+.desktop-menu ul.nav-list > li > ul > li {
+    text-align: left;
+    padding: 8px 15px;
+    border-bottom: 1px solid #bcbcbc;
+}
+
+.desktop-menu ul.nav-list > li > ul > li > a {
+    color: white;
+    display: block;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.desktop-menu ul.nav-list > li > ul > li > a:hover {
+    color: #8F55E0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ===========================
+   Tablet Menu Styling
+=========================== */
+.tablet-menu {
+    display: flex;
+    align-items: center;
+}
+
+.tablet-menu ul.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tablet-menu ul.nav-list > li {
+    position: relative;
+    padding: 0 10px;
+}
+
+.tablet-menu ul.nav-list > li > ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    min-width: 200px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+.tablet-menu ul.nav-list > li:hover > ul {
+    max-height: 60vh;
+    opacity: 1;
+}
+
+.tablet-menu ul.nav-list > li > ul > li {
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid #bcbcbc;
+}
+
+.tablet-menu ul.nav-list > li > ul > li > a {
+    color: white;
+    display: block;
+    font-size: 14px;
+}
+
+.tablet-menu ul.nav-list > li > ul > li > a:hover {
+    color: #8F55E0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ===========================
+   Mobile Menu Styling
+=========================== */
+.mobile-menu {
+    display: flex;
+    justify-content: center;
+}
+
+.mobile-menu img {
+    width: 200px;
+    vertical-align: middle;
+}
+
+/* ===========================
+   Responsive Adjustments
+=========================== */
+
+/* Mobile: Hide desktop and tablet menus */
+@media (max-width: 768px) {
+    .desktop-menu,
+    .tablet-menu {
+        display: none;
+    }
+
+    .mobile-menu {
+        display: flex;
+    }
+}
+
+/* Tablet: Hide mobile and desktop menus */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .desktop-menu,
+    .mobile-menu {
+        display: none;
+    }
+
+    .tablet-menu {
+        display: flex;
+    }
+}
+
+/* Desktop: Hide mobile and tablet menus */
+@media (min-width: 1025px) {
+    .mobile-menu,
+    .tablet-menu {
+        display: none;
+    }
+
+    .desktop-menu {
+        display: flex;
+    }
+}
