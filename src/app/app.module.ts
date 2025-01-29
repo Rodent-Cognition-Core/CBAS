@@ -47,6 +47,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollService } from './shared/scroll.service';
 import { CountUpModule } from 'ngx-countup';
 
+import { provideHttpClient } from '@angular/common/http';
+
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
@@ -139,6 +141,7 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
   PISiteService,
   ManageUserService,
   ScrollService,
+  provideHttpClient()
 
   ],
   bootstrap: [AppComponent]
