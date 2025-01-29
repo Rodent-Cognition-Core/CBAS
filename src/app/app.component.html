@@ -1,7 +1,7 @@
 <mat-sidenav-container class="all-wrap" fullscreen>
 
     <mat-sidenav #sidenav style="background-color: #EDEDEE; ">
-        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; "></a></div>
+        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 100px; "></a></div>
 
         <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
 
@@ -81,7 +81,7 @@
 
     <div class="page-wrap">
         <header role="banner">
-            <mat-toolbar class="main-toolbar" style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
+            <mat-toolbar class="main-toolbar" style="min-height:100px; background-color: white; z-index: 1000; position: fixed;">
                 <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color: #8F55E0; color: white; padding-right: 30px; ">
                     <div *ngIf="isMobile" class="menu-button-container">
                         <button mat-icon-button (click)="sidenav.open()" title="Open sidenav">
@@ -92,11 +92,11 @@
                     <span class="fill-remaining-space"></span>
 
                     <div class="auth-links">
-                        <a mat-button routerLink="/account/signin" *ngIf="(signedIn | async) === false">Sign in</a>
-                        <a mat-button routerLink="/account/signup" *ngIf="(signedIn | async) === false">Sign up</a>
+                        <a mat-button routerLink="/account/signin" *ngIf="(signedIn | async) === false" style="color:white;">Sign in</a>
+                        <a mat-button routerLink="/account/signup" *ngIf="(signedIn | async) === false" style="color:white;">Sign up</a>
                         <span *ngIf="!!name">Hi {{ name }}!&nbsp;&nbsp;</span>
-                        <a mat-button routerLink="/profile" *ngIf="signedIn | async">Profile</a>
-                        <a mat-button (click)="signout()" *ngIf="signedIn | async">Sign out</a>
+                        <a mat-button routerLink="/profile" *ngIf="signedIn | async" style="color:white;">Profile</a>
+                        <a mat-button (click)="signout()" *ngIf="signedIn | async" style="color:white;">Sign out</a>
                     </div>
                 </mat-toolbar-row>
 
