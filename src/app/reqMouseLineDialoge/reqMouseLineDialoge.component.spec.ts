@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReqMouseLineDialogeComponent } from './reqMouseLineDialoge.component';
 
@@ -6,7 +6,7 @@ describe('ReqMouseLineDialogeComponent', () => {
   let component: ReqMouseLineDialogeComponent;
   let fixture: ComponentFixture<ReqMouseLineDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ReqMouseLineDialogeComponent]
     })

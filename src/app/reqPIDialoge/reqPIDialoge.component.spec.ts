@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReqPIDialogeComponent } from './reqPIDialoge.component';
 
@@ -6,7 +6,7 @@ describe('ReqPIDialogeComponent', () => {
   let component: ReqPIDialogeComponent;
   let fixture: ComponentFixture<ReqPIDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ReqPIDialogeComponent]
     })

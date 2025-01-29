@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge.component';
 
@@ -6,7 +6,7 @@ describe('CogbytesPIDialogeComponent', () => {
   let component: CogbytesPIDialogeComponent;
   let fixture: ComponentFixture<CogbytesPIDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CogbytesPIDialogeComponent]
     })

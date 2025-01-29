@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataLinkComponent } from './data-link.component';
 
@@ -6,7 +6,7 @@ describe('DataLinkComponent', () => {
   let component: DataLinkComponent;
   let fixture: ComponentFixture<DataLinkComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DataLinkComponent ]
     })

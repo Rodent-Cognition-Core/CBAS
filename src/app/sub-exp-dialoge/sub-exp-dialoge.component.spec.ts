@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubExpDialogeComponent } from './sub-exp-dialoge.component';
 
@@ -6,7 +6,7 @@ describe('SubExpDialogeComponent', () => {
   let component: SubExpDialogeComponent;
   let fixture: ComponentFixture<SubExpDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SubExpDialogeComponent]
     })

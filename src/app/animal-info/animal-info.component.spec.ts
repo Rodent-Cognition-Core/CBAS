@@ -1,4 +1,4 @@
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 // import { AnimalInfoComponent } from './animal-info.component';
 
@@ -6,7 +6,7 @@
 //  let component: AnimalInfoComponent;
 //  let fixture: ComponentFixture<AnimalInfoComponent>;
 
-//  beforeEach(async(() => {
+//  beforeEach(waitForAsync(() => {
 //    TestBed.configureTestingModule({
 //      declarations: [ AnimalInfoComponent ]
 //    })

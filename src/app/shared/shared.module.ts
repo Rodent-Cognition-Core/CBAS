@@ -12,7 +12,6 @@ const sharedModules: any[] = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
-  HttpClientModule,
   MaterialModule,
   NgxMatSelectSearchModule,
   // OwlModule
