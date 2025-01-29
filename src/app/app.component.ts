@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnChanges, ElementRef, HostListener } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 
 declare let $: any;
@@ -18,6 +18,10 @@ declare const gtag: Function;
   })
 export class AppComponent implements OnInit {
 
+
+    isMobile: boolean = false;
+    isTablet: boolean = false;
+    isDesktop: boolean = false;
   navItems: any[] = [
     // { name: 'Home', route: 'home' },
     // { name: 'Resources', route: 'resources' },
@@ -64,8 +68,8 @@ export class AppComponent implements OnInit {
     private oAuthService: OAuthService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private el: ElementRef,
-    angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+      private el: ElementRef,
+      private breakpointObserver: BreakpointObserver
   ) {
     this.name = '';
     this.isAdmin = false;
@@ -88,7 +92,25 @@ export class AppComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+    ngOnInit() {
+
+        this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: any) => {
+            this.isMobile = result.matches;
+            this.isTablet = false;
+            this.isDesktop = false;
+        });
+
+        this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe((result: any) => {
+            this.isTablet = result.matches;
+            this.isMobile = false;
+            this.isDesktop = false;
+        });
+
+        this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result: any) => {
+            this.isDesktop = result.matches;
+            this.isMobile = false;
+            this.isTablet = false;
+        });
     this.title.setTitle('MouseBytes');
 
     this.signedIn = this.authenticationService.isSignedIn();
