@@ -43,8 +43,6 @@ import { GenericDialogComponent } from './generic-dialog/generic-dialog.componen
 
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
-
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -97,7 +95,6 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
   SharedModule,
   OAuthModule.forRoot(),
   NgxSpinnerModule,
-  FlexLayoutModule,
   CarouselModule,
   CountUpModule,
   FontAwesomeModule,
