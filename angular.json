@@ -76,25 +76,25 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-spaweb-api:build",
-            "proxyConfig": "proxy.config.js"
+            "proxyConfig": "proxy.config.js",
+            "buildTarget": "angular-spaweb-api:build"
           },
           "configurations": {
             "hmr": {
-              "browserTarget": "angular-spaweb-api:build:hmr"
+              "buildTarget": "angular-spaweb-api:build:hmr"
             },
             "staging": {
-              "browserTarget": "angular-spaweb-api:build:staging"
+              "buildTarget": "angular-spaweb-api:build:staging"
             },
             "production": {
-              "browserTarget": "angular-spaweb-api:build:production"
+              "buildTarget": "angular-spaweb-api:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-spaweb-api:build"
+            "buildTarget": "angular-spaweb-api:build"
           }
         },
         "test": {
