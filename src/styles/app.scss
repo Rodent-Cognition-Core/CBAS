@@ -97,7 +97,7 @@ body {
 }
 
 .inner-sidenav-content {
-    padding-top: 130px;
+    padding-top: 100px;
     margin: auto;
     text-align: left;
     width: 100%;
@@ -558,7 +558,7 @@ section {
 }
 
 .main-toolbar {
-    min-height: 130px;
+    min-height: 100px;
     background-color: white;
     z-index: 1000;
     position: fixed;
@@ -621,6 +621,7 @@ section {
 .desktop-menu {
     display: flex;
     align-items: center;
+    height: 100px;
 }
 
 .desktop-menu a > img {
