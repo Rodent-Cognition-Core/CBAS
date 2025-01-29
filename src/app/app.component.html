@@ -88,40 +88,54 @@
 
     <div class="page-wrap">
         <header role="banner">
-            <mat-toolbar style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
+            <mat-toolbar class="main-toolbar" style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
                 <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color: #8F55E0; color: white; padding-right: 30px; ">
-                    <div fxHide fxShow.xs="true">
-                        <button type="button"
-                                mat-icon-button
-                                (click)="sidenav.open()"
-                                title="Open sidenav">
+                    <div *ngIf="isMobile" class="menu-button-container">
+                        <button mat-icon-button (click)="sidenav.open()" title="Open sidenav">
                             <mat-icon>menu</mat-icon>
                         </button>
                     </div>
+
                     <span class="fill-remaining-space"></span>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signin" *ngIf="(signedIn | async) === false">Sign in</a>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signup" *ngIf="(signedIn | async) === false">Sign up</a>
-                    <span *ngIf="!!name" style="color: white">Hi {{ name }}!&nbsp;&nbsp;</span>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/profile" *ngIf="signedIn | async">Profile</a>
-                    <a mat-button class="mat-small" style="color: white" (click)="signout()" *ngIf="signedIn | async">Sign out</a>
+
+                    <div class="auth-links">
+                        <a mat-button routerLink="/account/signin" *ngIf="(signedIn | async) === false">Sign in</a>
+                        <a mat-button routerLink="/account/signup" *ngIf="(signedIn | async) === false">Sign up</a>
+                        <span *ngIf="!!name">Hi {{ name }}!&nbsp;&nbsp;</span>
+                        <a mat-button routerLink="/profile" *ngIf="signedIn | async">Profile</a>
+                        <a mat-button (click)="signout()" *ngIf="signedIn | async">Sign out</a>
+                    </div>
                 </mat-toolbar-row>
-                <mat-toolbar-row style="height: 100px; background-color: #EDEDEE; white-space: normal;">
-                    <!--xs menu-->
-                    <div fxLayout="row" fxHide.gt-xs="true" fxShow.xs="true" style="width: 100%;">
-                        <ul class="top-nav-ul" style="width: 100%; text-align: center;">
-                            <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 200px; vertical-align:middle"></a></span>
+
+                <mat-toolbar-row class="navigation-bar">
+                    <!-- Mobile Logo -->
+                    <div *ngIf="isMobile" class="mobile-menu">
+                        <a routerLink="/home">
+                            <img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo">
+                        </a>
+                    </div>
+
+                    <!-- Tablet Menu -->
+                    <div *ngIf="isTablet" class="tablet-menu">
+                        <a routerLink="/home">
+                            <img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo">
+                        </a>
+                        <ul class="nav-list">
+                            <li *ngFor="let navItem of navItems">
+                                <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                            </li>
+                            <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
                         </ul>
                     </div>
-                    <!--sm menu-->
-                    <div class="naviMenu" fxLayout="row" fxHide.gt-sm="true" fxHide.lt-sm="true" fxShow.sm="true" fxShow.md="true" style="display: flex; align-items: center;">
-                        <ul class="top-nav-ul-sm" style="float: left; padding: 0 30px 0 0;">
-                            <span style="padding:0 0 0 0;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png"  alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 120px; vertical-align:middle;"></a></span>
-                        </ul>
 
-                        <ul class="top-nav-ul-sm" style="float: left;">
-
+                    <!-- Desktop Menu -->
+                    <div *ngIf="isDesktop" class="desktop-menu" style="display: flex; align-items: center;">
+                        <a routerLink="/home">
+                            <img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo">
+                        </a>
+                        <ul class="nav-list" style="float: left;">
                             <li>
-                                Touchscreen Data
+                                TOUCHSCREEN DATA
                                 <ul>
                                     <li><a routerLink="/mb-dashboard">Dashboard</a></li>
                                     <li *ngFor="let navItem of navItems">
@@ -130,94 +144,18 @@
                                     <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
                                     <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
                                     <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                    <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
+                                    <li *ngIf="isAdmin || isUser"><a href="/dashboard">Upload Log</a></li>
+                                    <li *ngIf="isAdmin"><a href="/manage-user">User Management</a></li>-->
                                 </ul>
                             </li>
-
                             <li>
                                 MOUSEBYTES+
                                 <ul>
                                     <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
-                                    <li><a routerLink="/comp-search">Search Repositories</a></li>
-                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
+                                    <li><a href="/comp-search">Search Repositories</a></li>
+                                    <li><a href="/comp-search?showall=true">Repositories</a></li>
                                 </ul>
                             </li>
-
-                            <li>
-                                <br />
-                                <b>PUBSCREEN</b>
-                                <ul>
-                                    <li><a href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                TUTORIALS
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsTutorials">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                RESOURCES
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsResources">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                TSC ECOSYSTEM
-                                <ul>
-                                    <li><a href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-                                    <li><a href="https://touchscreencognition.org/forums" target="_blank">TOUCHSCREEN COMMUNITY</a></li>
-                                    <li><a href="https://mouse-trap.org/" target="_blank">MOUSETRAP</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </div>
-
-                    <!--other sizes menu-->
-                    <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true" style="display: flex; align-items: center;">
-                        <ul class="top-nav-ul" style="float: left;">
-                            <span style="padding:0 30px 0 0;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 180px; vertical-align:middle"></a></span>
-                        </ul>
-                        <ul class="top-nav-ul" style="float: left;" fxLayout="row">
-
-                            <li>
-                                Touchscreen Data
-                                <ul>
-                                    <li><a routerLink="/mb-dashboard">Dashboard</a></li>
-                                    <li *ngFor="let navItem of navItems">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                MOUSEBYTES+
-                                <ul>
-                                    <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
-                                    <li><a routerLink="/comp-search">Search Repositories</a></li>
-                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
-                                </ul>
-                            </li>
-
                             <li>
                                 PUBSCREEN
                                 <ul>
@@ -236,17 +174,14 @@
 
                                 </ul>
                             </li>
-
                             <li>
                                 RESOURCES
                                 <ul>
                                     <li *ngFor="let navItem of navItemsResources">
                                         <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
                                     </li>
-
                                 </ul>
                             </li>
-
                             <li>
                                 TSC ECOSYSTEM
                                 <ul>
@@ -259,7 +194,6 @@
                         </ul>
                     </div>
                 </mat-toolbar-row>
-
             </mat-toolbar>
         </header>
         <main id="contentMain" class="content inner-sidenav-content">
