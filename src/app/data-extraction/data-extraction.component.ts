@@ -202,6 +202,12 @@ export class DataExtractionComponent implements OnInit {
       this.taskList = data;
     });
 
+     this.expMultiFilterCtrl.valueChanges
+       .pipe(takeUntil(this._onDestroy))
+       .subscribe(() => {
+       this.filterExpMulti();
+    });
+
   }
 
   selectedSpeciesChange() {
@@ -347,20 +353,15 @@ export class DataExtractionComponent implements OnInit {
     this.dataExtractionService.getAllExpByTaskID(selectedTaskValue, userGuid,
       isFullDataAccess, selectedSpeciesvalue).subscribe((data: any) => {
       this.expList = data;
-      // console.log(this.expList);
+      console.log(this.expList);
+      
+      const uniqueExpList = Array.from(new Set(this.expList.map((exp : any) => exp.expID)))
+          .map(expID => this.expList.find( (exp: any) => exp.expID === expID));
 
-      // load the initial expList
-      this.filteredExpMulti.next(this.expList.slice());
-
-      this.expMultiFilterCtrl.valueChanges
-        .pipe(takeUntil(this._onDestroy))
-        .subscribe(() => {
-          this.filterExpMulti();
-        });
+      // Update filteredExpMulti with unique values
+      this.filteredExpMulti.next(uniqueExpList);
 
     });
-
-    return this.expList;
 
   }
 
@@ -1047,17 +1048,14 @@ export class DataExtractionComponent implements OnInit {
   selectAllExperiments() {
     this.exp.setValue([]);
 
-    /// / in future if we want to enable select all with filter follow this:
-    // this.filteredExpMulti.subscribe(value => {
-    //    for (let filteredItem of value) {
-    //        console.log(filteredItem.expID);
-    //    }
-    // })
+    // Extract all experiment IDs
+    const allExpIDs = this.expList.map((exp: any) => exp.expID);
 
-    for (const exp of this.expList) {
-      this.exp.value.push(exp.expID);
-    }
-    this.selectedExpChange(this.exp.value);
+    // Correctly update the reactive form control
+    this.exp.setValue(allExpIDs);
+
+    // Notify any dependent logic
+    this.selectedExpChange(allExpIDs);
   }
 
   deselectAllExperiments() {
@@ -1100,7 +1098,7 @@ export class DataExtractionComponent implements OnInit {
     // filter the Experiment
     this.filteredExpMulti.next(
       this.expList.filter((t: any) => t.expName.toLowerCase().indexOf(search) > -1)
-    );
+      );
   }
 
   // handling multi filtered Markerinfo list

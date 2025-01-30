@@ -23,7 +23,7 @@
                     </mat-form-field>
                     &nbsp; &nbsp;  &nbsp;
                     <!--Task dropDown-->
-                    <mat-form-field *ngIf="species.value!=null">
+                    <mat-form-field *ngIf="species.value!=''">
                         <mat-select placeholder="Select the Task" [formControl]="task" (selectionChange)="selectedTaskChange(task.value, species.value)" required>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
@@ -38,30 +38,36 @@
                     <br /><br />
 
                     <!--Experiment dropDown-->
-                    <mat-form-field *ngIf="task.value!=null">
-                        <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
+                          <mat-form-field *ngIf="task.value != ''">
+                              <mat-label>Select Experiments</mat-label>
+                              <mat-select [formControl]="exp" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
 
-                            <mat-option>
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
-                            </mat-option>
-                            <mat-option disabled="disabled" class="filter-option">
-                                <button mat-raised-button
-                                        class="mat-primary fill text-sm"
-                                        (click)="selectAllExperiments()">
-                                    Select All
-                                </button>
-                                <button mat-raised-button
-                                        class="mat-accent fill text-sm"
-                                        (click)="deselectAllExperiments()">
-                                    Deselect All
-                                </button>
-                            </mat-option>
-                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID">
-                                <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="exp.invalid">{{getErrorMessageExp()}}</mat-error>
-                    </mat-form-field>
+                                  <!-- Search Field & Buttons Injected Inside the Dropdown -->
+                                  <mat-option disabled class="custom-panel-option">
+                                      <div class="custom-panel">
+                                          <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl">
+                                          </ngx-mat-select-search>
+
+                                          <div class="button-container">
+                                              <button mat-raised-button color="primary" (click)="selectAllExperiments()">Select All</button>
+                                              <button mat-raised-button color="warn" (click)="deselectAllExperiments()">Deselect All</button>
+                                          </div>
+                                      </div>
+                                  </mat-option>
+
+                                      <!-- List of Checkboxes -->
+                                      <div class="scroll-container">
+                                          <ng-container *ngIf="filteredExpMulti | async as experiments">
+                                              <mat-option *ngFor="let exp of experiments" [value]="exp.expID">
+                                                  <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
+                                              </mat-option>
+                                          </ng-container>
+                                      </div>
+                          
+</mat-select>
+
+                              <mat-error *ngIf="exp.invalid">{{ getErrorMessageExp() }}</mat-error>
+                          </mat-form-field>
                     &nbsp; &nbsp; &nbsp;
 
                     <!--SubTask/Session dropDown-->

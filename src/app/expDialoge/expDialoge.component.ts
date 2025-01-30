@@ -105,7 +105,7 @@ export class ExpDialogeComponent implements OnInit {
       this.species.setValue(this.data.experimentObj.speciesID);
       this.expDescription.setValue(this.data.experimentObj.taskDescription);
       this.expBattery.setValue(this.data.experimentObj.taskBattery);
-      this.piSite.setValue(this.data.experimentObj.pusid);
+      this.piSite.setValue(this.data.experimentObj.PUSID);
       this.doiModel = this.data.experimentObj.doi;
       this.status.setValue(this.data.experimentObj.status ? '1' : '0');
       this.isMultipleSessions.setValue(this.data.experimentObj.multipleSessions ? '1' : '0');

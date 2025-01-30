@@ -93,3 +93,40 @@
 :host ::ng-deep .mat-mdc-tooltip {
     font-size: 15px !important;
 }
+
+::ng-deep .mat-select-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+::ng-deep .custom-panel .mat-select-panel {
+    max-height: 250px !important; /* Restrict overall panel height */
+    overflow-y: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-panel {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid #ccc;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid #ccc;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.scroll-container {
+    max-height: 200px;
+    overflow-y: auto;
+}

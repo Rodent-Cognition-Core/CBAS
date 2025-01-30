@@ -11,31 +11,32 @@
             <td class="docs-markdown-td" style="vertical-align:top; width:250px">
                 <div>
                     <label>please select your experiment: </label><br /><br />
-                    <mat-form-field>
-                        <mat-select placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
-                            <mat-option *ngFor="let exp of expList" [value]="exp.expID">
-                                <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
-                            </mat-option>
-                        </mat-select>
-
-                    </mat-form-field>
-                    &nbsp;
-                    <button mat-icon-button matTooltip="Add new experiment" (click)="openDialog(null)"><mat-icon>add</mat-icon></button>
-                </div>
-                <div *ngIf="selectedExpValue!=null && hideSubExperiment==false">
-                    <label>please select your sub-experiment: </label><br /><br />
-                    <mat-form-field>
-                        <mat-select placeholder="select your sub-experiment" [(ngModel)]="selectedSubExpValue" (selectionChange)="selectSubExpChangeDD()">
-                            <mat-option *ngFor="let subexp of subExpList" [value]="subexp.subExpID">
-                                <span matTooltip="{{subexp.subExpName}}, {{subexp.ageInMonth}}m">{{subexp.subExpName}}, {{subexp.ageInMonth}}m</span>
-                            </mat-option>
-                        </mat-select>
-
-                    </mat-form-field>
-                    &nbsp;
-                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
-                </div>
-            </td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <mat-form-field>
+                            <mat-select placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
+                                <mat-option *ngFor="let exp of expList" [value]="exp.expID">
+                                    <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button mat-icon-button matTooltip="Add new experiment" (click)="openDialog(null)"><mat-icon>add</mat-icon></button>
+                    </div> 
+                        &nbsp;
+                    </div>
+                    <div *ngIf="selectedExpValue!=null && hideSubExperiment==false">
+                        <label>please select your sub-experiment: </label><br /><br />
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <mat-form-field>
+                                <mat-select placeholder="select your sub-experiment" [(ngModel)]="selectedSubExpValue" (selectionChange)="selectSubExpChangeDD()">
+                                    <mat-option *ngFor="let subexp of subExpList" [value]="subexp.subExpID">
+                                        <span matTooltip="{{subexp.subExpName}}, {{subexp.ageInMonth}}m">{{subexp.subExpName}}, {{subexp.ageInMonth}}m</span>
+                                    </mat-option>
+                                   </mat-select>
+                                </mat-form-field>
+                                <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
+                        </div>
+                    </div>
+</td>
             <td class="docs-markdown-td" style="vertical-align:top;">
                 <div [hidden]="selectedExpValue==null">
                     <div style="float:left; padding-top:10px;">

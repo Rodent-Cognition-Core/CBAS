@@ -6,37 +6,37 @@
         <!--Animal ID-->
         <mat-form-field class="full-width">
             <!--For Daniel-->  
-            <input matInput placeholder="Animal ID" [formControl]="userAnimalId" [readonly]="data.animalObj!=null" required>
+            <input matInput placeholder="Animal ID" [formControl]="userAnimalID" [readonly]="data.animalObj!=null" required>
             <!--<input matInput placeholder="Animal ID" [formControl]="userAnimalId" [(ngModel)]="userAnimalIdModel" required>-->
-            <mat-error *ngIf="userAnimalId.invalid">{{getErrorMessageId()}}</mat-error>
-            <mat-error *ngIf="userAnimalId.invalid">{{getErrorMessageIdTaken()}}</mat-error>
+            <mat-error *ngIf="userAnimalID === undefined">{{getErrorMessageId()}}</mat-error>
+            <mat-error *ngIf="userAnimalID === undefined">{{getErrorMessageIdTaken()}}</mat-error>
         </mat-form-field>
 
          <!--Animal Gender-->      
         <mat-radio-group [formControl]="gender" required>
             <mat-radio-button value="f">Female</mat-radio-button>
             <mat-radio-button value="m">Male</mat-radio-button>
-            <mat-error *ngIf="gender.invalid">{{getErrorMessageGender()}}</mat-error>
+            <mat-error *ngIf="gender == undefined">{{getErrorMessageGender()}}</mat-error>
         </mat-radio-group>
 
        <!--Animal Strain-->
         <mat-form-field class="full-width">
             <mat-select placeholder="Animal Strain" [formControl]="strain" required (selectionChange)="selectedStrainChange(strain.value)">
-                <mat-option *ngFor="let strain of StrainList" [value]="strain.id">
+                <mat-option *ngFor="let strain of strainList" [value]="strain.id">
                     <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
                 </mat-option>
             </mat-select>
-            <mat-error *ngIf="strain.invalid">{{getErrorMessageStrain()}}</mat-error>
+            <mat-error *ngIf="strain === undefined">{{getErrorMessageStrain()}}</mat-error>
         </mat-form-field>
 
         <!--Animal Genotype-->
         <mat-form-field class="full-width">
             <mat-select placeholder="Animal Genotype" [formControl]="genotype" required>
-                <mat-option *ngFor="let geno of GenoList" [value]="geno.id">
+                <mat-option *ngFor="let geno of genoList" [value]="geno.id">
                     <span matTooltip="{{geno.genotype}}">{{geno.genotype}}, <a href="{{geno.link}}" target="_blank">Reference</a> {{geno.description}}</span>
                 </mat-option>
             </mat-select>
-            <mat-error *ngIf="genotype.invalid">{{getErrorMessageGenotype()}}</mat-error>
+            <mat-error *ngIf="genotype === undefined">{{getErrorMessageGenotype()}}</mat-error>
         </mat-form-field>
 
     </mat-dialog-content>
