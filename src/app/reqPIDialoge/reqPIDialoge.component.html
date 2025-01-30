@@ -7,33 +7,33 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input matInput placeholder="Enter your email address:" [formControl]="email" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI's Full Name" [formControl]="piName" [(ngModel)]="reqPINameModel" required>
+            <input matInput placeholder="Enter PI's Full Name" [formControl]="piName" required>
             <mat-error *ngIf="piName.invalid">{{getErrorMessagePIName()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI email address:" [formControl]="emailPI" [(ngModel)]="reqPIEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input matInput placeholder="Enter PI email address:" [formControl]="emailPI" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="emailPI.invalid">{{getErrorMessagePIEmail()}}</mat-error>
             <mat-error *ngIf="emailPI.invalid">{{getErrorMessagePIEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI's Institution(s)" [formControl]="institution" [(ngModel)]="reqInsNameModel" required>
+            <input matInput placeholder="Enter PI's Institution(s)" [formControl]="institution" required>
             <mat-error *ngIf="institution.invalid">{{getErrorMessageIns()}}</mat-error>
 
         </mat-form-field>

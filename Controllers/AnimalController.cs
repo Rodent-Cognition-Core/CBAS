@@ -50,12 +50,12 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
-        [HttpPost("UpdateAnimal")]
+        [HttpPut("UpdateAnimal")]
         public async Task<IActionResult> UpdateAnimal([FromBody]Animal animal)
         {
 
             await _animalService.UpdateAnimalAsync(animal);
-            return new JsonResult("Done!");
+            return NoContent();
 
         }
 

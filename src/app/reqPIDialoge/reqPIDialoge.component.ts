@@ -1,140 +1,140 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqPIDialoge',
-    templateUrl: './reqPIDialoge.component.html',
-    styleUrls: ['./reqPIDialoge.component.scss'],
-    providers: [RequestService]
+  selector: 'app-reqpidialoge',
+  templateUrl: './reqPIDialoge.component.html',
+  styleUrls: ['./reqPIDialoge.component.scss'],
+  providers: [RequestService]
 
-})
+  })
 export class ReqPIDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  // FormControl Parameters
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqPINameModel: string;
-    reqPIEmailModel: string;
-    reqInsNameModel: string;
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  emailPI: UntypedFormControl;
+  piName: UntypedFormControl;
+  institution: UntypedFormControl;
 
-           
-    private _request = new Request();
+  private _request: Request;
 
-    // FormControl Parameters
+  constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    emailPI = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    piName = new FormControl('', [Validators.required]);
-    institution = new FormControl('', [Validators.required]);
+    private requestService: RequestService,
+    private fb: UntypedFormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
-         
-        private requestService: RequestService, ) { }
+    this.name = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.emailPI = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.piName = fb.control('', [Validators.required]);
+    this.institution = fb.control('', [Validators.required]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-    ngOnInit() {
-      
-    }
+  ngOnInit() {
 
-    onCloseCancel(): void {
+  }
 
-
-        this.thisDialogRef.close('Cancel');
-
-    }
-
-    onCloseSubmit(): void {
-
-        // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.piFullName = this.reqPINameModel;
-        this._request.piEmail = this.reqPIEmailModel;
-        this._request.piInstitution = this.reqInsNameModel;
-        
-
-        // Submiting the request to server
-        this.requestService.addPI(this._request).subscribe( this.thisDialogRef.close()); 
-       
-    }
+  onCloseCancel(): void {
 
 
-    getErrorMessage()
-    {
+    this.thisDialogRef.close('Cancel');
 
-        return this.name.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  }
 
-    getErrorMessageEmail()
-    {
+  onCloseSubmit(): void {
 
-        return this.email.hasError('required') ? FIELDISREQUIRED :
-            '';
-
-    }
-    
-    getErrorMessageEmailValid()
-    {
-
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
-
-    getErrorMessagePIName() {
-        return this.piName.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageIns() {
-        return this.institution.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessagePIEmail() {
-
-        return this.emailPI.hasError('required') ? FIELDISREQUIRED :
-            '';
-
-    }
-
-    getErrorMessagePIEmailValid() {
-
-        return this.emailPI.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.piFullName = this.piName.value;
+    this._request.piEmail = this.emailPI.value;
+    this._request.piInstitution = this.institution.value;
 
 
+    // Submiting the request to server
+    this.requestService.addPI(this._request).subscribe( this.thisDialogRef.close());
 
-   
-    setDisabledVal()
-    {
+  }
 
-        if (this.name.hasError('required') ||
+
+  getErrorMessage() {
+
+    return this.name.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageEmail() {
+
+    return this.email.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+  getErrorMessageEmailValid() {
+
+    return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+  getErrorMessagePIName() {
+    return this.piName.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageIns() {
+    return this.institution.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessagePIEmail() {
+
+    return this.emailPI.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+  getErrorMessagePIEmailValid() {
+
+    return this.emailPI.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
             this.emailPI.hasError('required') ||
             this.emailPI.hasError('pattern') ||
             this.piName.hasError('required') ||
             this.institution.hasError('required')
-            
-        )
-        {
-            return true;
-        }
 
-        return false;
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

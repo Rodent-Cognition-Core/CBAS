@@ -6,12 +6,12 @@ import { DownloadDsComponent } from './download-ds.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: DownloadDsComponent, pathMatch: 'full' }
+  { path: '', component: DownloadDsComponent, pathMatch: 'full' }
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
-})
-export class DownloadDsRoutingModule { } 
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+  })
+export class DownloadDsRoutingModule { }
 

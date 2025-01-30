@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReqPubModelDialogeComponent } from './reqPubModelDialoge.component';
 
 describe('ReqGeneralDialogeComponent', () => {
-    let component: ReqPubModelDialogeComponent;
-    let fixture: ComponentFixture<ReqPubModelDialogeComponent>;
+  let component: ReqPubModelDialogeComponent;
+  let fixture: ComponentFixture<ReqPubModelDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        declarations: [ReqPubModelDialogeComponent]
+      declarations: [ReqPubModelDialogeComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(ReqPubModelDialogeComponent);
+    fixture = TestBed.createComponent(ReqPubModelDialogeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

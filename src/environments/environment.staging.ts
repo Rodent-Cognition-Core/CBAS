@@ -1,5 +1,5 @@
 export const environment: any = {
-    production: false,
-    staging: true,
-    hmr: false
+  production: false,
+  staging: true,
+  hmr: false
 };

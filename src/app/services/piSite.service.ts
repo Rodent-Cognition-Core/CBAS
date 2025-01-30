@@ -1,46 +1,46 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
+
+export interface GetPISiteResponse {
+  piSite: string;
+}
 
 @Injectable() export class PISiteService {
 
-    
-
-    constructor(
-        private http: HttpClient,
-        private authenticationService: AuthenticationService) { }
 
 
-    public getPISite(): any {
+  constructor(
+    private http: HttpClient,
+    private authenticationService: AuthenticationService) { }
 
-        return this.http
-            .get("/api/PISite/GetPISite", {
-                //headers: this.authenticationService.getAuthorizationHeader()
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            }).pipe(
-            map((response: Response) => {
-                return response;
-            }),
-            catchError((error: any) => {
-                return _throw(error);
-            }));
-    }
 
-    public getPISitebyUserID(): any {
+  public getPISite(): Observable<GetPISiteResponse> {
+    const url = '/api/PISite/GetPISite';
+    return this.http
+      .get<GetPISiteResponse>(url, {
+      // headers: this.authenticationService.getAuthorizationHeader()
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    }).pipe(
+      map((response) => response),
+      catchError((error) => throwError(error)));
+  }
 
-        return this.http
-            .get("/api/PISite/GetPISitebyUserID", {
-                headers: this.authenticationService.getAuthorizationHeader()
-            });
-    }
+  public getPISitebyUserID(): any {
+
+    const pilist = this.http
+      .get('/api/PISite/GetPISitebyUserID', {
+        headers: this.authenticationService.getAuthorizationHeader()
+      });
+    return pilist;
+  }
 
 
 
-    
+
 
 
 }

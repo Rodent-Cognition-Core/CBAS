@@ -7,26 +7,26 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input matInput placeholder="Enter your email address:" [formControl]="email" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter strain name" [formControl]="strain" [(ngModel)]="reqStrainModel" required>
+            <input matInput placeholder="Enter strain name" [formControl]="strain" required>
             <mat-error *ngIf="strain.invalid">{{getErrorMessageStrain()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <mat-select [formControl]="geneticModi" placeholder="Select genetic modification type" [(ngModel)]="geneticModificationModel" required>
+            <mat-select [formControl]="geneticModi" placeholder="Select genetic modification type" required>
                 <mat-option *ngFor="let gm of geneticModification" [value]="gm.name">
                     {{gm.name}}
                 </mat-option>
@@ -44,7 +44,7 @@
 
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="geneticModificationModel==='Transgenic' || geneticModificationModel === 'KnockIn' || geneticModificationModel === 'KnockOut'">
+        <mat-form-field class="full-width" *ngIf="geneticModi.value==='Transgenic' || geneticModi.value === 'KnockIn' || geneticModi.value === 'KnockOut'">
             <textarea matInput placeholder="Enter all the possible control suggestions for the strain separated by comma:" [(ngModel)]="controlModel" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5">
 

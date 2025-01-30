@@ -45,7 +45,7 @@
             <td>
                 <div *ngIf="expObj!=null">
                     <br /><br />
-                    &nbsp; &nbsp; &nbsp;<button (click)="DownloadDsFile(expObj.expId)" mat-raised-button [disabled]="expObj.status == 'Private'">Download</button>&nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp;<button (click)="downloadDsFile(expObj.expId)" mat-raised-button [disabled]="expObj.status == 'Private'">Download</button>&nbsp; &nbsp;
                     <span style="color: red" *ngIf="expObj.status == 'Private'">
                         This experiment is private. Please contact the owner of the data.
                     </span>

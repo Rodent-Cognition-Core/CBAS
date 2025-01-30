@@ -1,22 +1,22 @@
-export class DataExtraction {
+export interface DataExtraction {
 
-    public taskID: number;
-    public taskName: string;
-    public expIDs: Array<number>;
-    public subtaskID: number;
-    public subTaskName: string;
-    public sessionInfoNames: Array<string>;
-    public markerInfoNames: Array<string>;
-    public aggNames: string;
-    public pisiteIDs: Array<number>;
-    public ageVals: Array<number>;
-    public sexVals: Array<string>;
-    public genotypeVals: Array<number>;
-    public strainVals: Array<number>;
-    public isTrialByTrials: boolean;
-    public subExpID: Array<number>;
-    public sessionName: Array<string>;
-    public species: string;
-    public speciesID: number;
-           
+  taskID: number;
+  taskName: string;
+  expIDs: number[];
+  subtaskID: number;
+  subTaskName: string;
+  sessionInfoNames: string[];
+  markerInfoNames: string[];
+  aggNames: string;
+  pisiteIDs: number[];
+  ageVals: number[];
+  sexVals: string[];
+  genotypeVals: number[];
+  strainVals: number[];
+  isTrialByTrials: boolean;
+  subExpID: number[];
+  sessionName: string[];
+  species: string;
+  speciesID: number;
+
 }

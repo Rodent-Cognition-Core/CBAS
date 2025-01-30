@@ -1,13 +1,14 @@
-const PROXY_CONFIG = [
-    {
-        context: [
-            "/api",
-            "/connect"
-        ],
-        target: "http://localhost:5000/",
+module.exports = {
+    "/api": {
+        target: "http://localhost:5000",
         secure: false,
-        changeOrigin: true
+        changeOrigin: true,
+        logLevel: "debug"
+    },
+    "/connect": {
+        target: "http://localhost:5000", 
+        secure: false,
+        changeOrigin: true,
+        logLevel: "debug"
     }
-]
-
-module.exports = PROXY_CONFIG;
+};

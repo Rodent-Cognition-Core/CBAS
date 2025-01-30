@@ -1,22 +1,22 @@
-export class CogbytesSearch {
+export interface CogbytesSearch {
 
-    public repID: Array<number>;
-    public keywords: string;
-    public doi: string;
-    public authorID: Array<number>;
-    public piID: Array<number>;
+  repID: number[];
+  keywords: string;
+  doi: string;
+  authorID: number[];
+  piID: number[];
 
-    public taskID: Array<number>;
-    public specieID: Array<number>;
-    public sexID: Array<number>;
-    public strainID: Array<number>;
-    public genoID: Array<number>;
-    public ageID: Array<number>;
+  taskID: number[];
+  specieID: number[];
+  sexID: number[];
+  strainID: number[];
+  genoID: number[];
+  ageID: number[];
 
-    public yearFrom: number;
-    public yearTo: number;
+  yearFrom: number;
+  yearTo: number;
 
-    public intervention: string;
+  intervention: string;
 
-    public fileTypeID: Array<number>;
+  fileTypeID: number[];
 }

@@ -1,133 +1,136 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
 
 
 
 @Component({
 
-    selector: 'app-reqPubModelDialoge',
-    templateUrl: './reqPubModelDialoge.component.html',
-    styleUrls: ['./reqPubModelDialoge.component.scss'],
-    providers: [RequestService, PubScreenService]
+  selector: 'app-reqpubmodeldialoge',
+  templateUrl: './reqPubModelDialoge.component.html',
+  styleUrls: ['./reqPubModelDialoge.component.scss'],
+  providers: [RequestService, PubScreenService]
 
-})
+  })
 export class ReqPubModelDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  modelList: any;
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRodentModel: string;
-    reqDOIModel: string;
-    reqNewSubModel: string;
-   
-    modelList: any;
+  // FormControl Parameters
 
-    private _request = new Request();
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  rodentModel: UntypedFormControl;
+  newSubModel: UntypedFormControl;
+  doi: UntypedFormControl;
 
-    // FormControl Parameters
+  private _request: Request;
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    rodentModel = new FormControl('', [Validators.required]);
-    newSubModel = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+  constructor(public thisDialogRef: MatDialogRef<ReqPubModelDialogeComponent>,
 
-    constructor(public thisDialogRef: MatDialogRef<ReqPubModelDialogeComponent>,
+    private requestService: RequestService, private pubScreenService: PubScreenService,
+    private fb: UntypedFormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+    this.name = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.rodentModel = fb.control('', [Validators.required]);
+    this.newSubModel = fb.control('', [Validators.required]);
+    this.doi = fb.control('', [Validators.required]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-    ngOnInit() {
-        this.pubScreenService.getDisease().subscribe(data => { this.modelList = data; });
+  ngOnInit() {
+    this.pubScreenService.getDisease().subscribe((data: any) => {
+      this.modelList = data;
+    });
 
-    }
+  }
 
-    onCloseCancel(): void {
-
-
-        this.thisDialogRef.close('Cancel');
-
-    }
-
-    onCloseSubmit(): void {
-
-        // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.doi = this.reqDOIModel;
-        this._request.model = this.reqRodentModel;
-        this._request.subModel = this.reqNewSubModel;
-
-        // Submiting the request to server
-        this.requestService.addPubSubModel(this._request).subscribe( this.thisDialogRef.close()); 
-       
-    }
+  onCloseCancel(): void {
 
 
-    getErrorMessage()
-    {
+    this.thisDialogRef.close('Cancel');
 
-        return this.name.hasError('required') ? 'You must enter a value' :
-            '';
-    }
+  }
 
-    getErrorMessageEmail()
-    {
+  onCloseSubmit(): void {
 
-        return this.email.hasError('required') ? 'You must enter a value' :
-            '';
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.doi = this.doi.value;
+    this._request.model = this.rodentModel.value;
+    this._request.subModel = this.newSubModel.value;
 
-    }
-    
-    getErrorMessageEmailValid()
-    {
+    // Submiting the request to server
+    this.requestService.addPubSubModel(this._request).subscribe( this.thisDialogRef.close());
 
-        return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
-            '';
-    }
+  }
 
-    getErrorMessageModel() {
 
-        return this.rodentModel.hasError('required') ? 'You must select a value' :
-            '';
+  getErrorMessage() {
 
-    }
+    return this.name.hasError('required') ? 'You must enter a value' :
+      '';
+  }
 
-    getErrorMessageNewSubModel() {
-        return this.newSubModel.hasError('required') ? 'You must enter a value' :
-            '';
-    }
+  getErrorMessageEmail() {
 
-    getErrorMessageDOI() {
-        return this.doi.hasError('required') ? 'You must enter a value' :
-            '';
-    }
+    return this.email.hasError('required') ? 'You must enter a value' :
+      '';
 
-    
+  }
 
-   
-    setDisabledVal()
-    {
+  getErrorMessageEmailValid() {
 
-        if (this.name.hasError('required') ||
+    return this.email.hasError('pattern') ? 'Enter Valid Email Address' :
+      '';
+  }
+
+  getErrorMessageModel() {
+
+    return this.rodentModel.hasError('required') ? 'You must select a value' :
+      '';
+
+  }
+
+  getErrorMessageNewSubModel() {
+    return this.newSubModel.hasError('required') ? 'You must enter a value' :
+      '';
+  }
+
+  getErrorMessageDOI() {
+    return this.doi.hasError('required') ? 'You must enter a value' :
+      '';
+  }
+
+
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
             this.newSubModel.hasError('required') ||
             this.doi.hasError('required') ||
             this.rodentModel.hasError('required')
-        )
-        {
-            return true;
-        }
-
-        return false;
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

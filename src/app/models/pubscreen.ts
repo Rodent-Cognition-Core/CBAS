@@ -1,47 +1,47 @@
-import { PubscreenAuthor } from "./pubscreenAuthor";
+import { PubscreenAuthor } from './pubscreenAuthor';
 
-export class Pubscreen {
+export interface Pubscreen {
 
-    public id: number;
-    public title: string;
-    public abstract: string;
-    public keywords: string;
-    public doi: string;
-    public year: string;
-    public yearID: Array<string>;
-    public authourID: Array<number>;
-    public authorString: string;
-    public paperTypeIdSearch: Array<number>;
-    public paperTypeID: number;
-    public paperType: string;
-    public taskID: Array<number>;
-    public subTaskID: Array<number>;
-    public specieID: Array<number>;
-    public sexID: Array<number>;
-    public strainID: Array<number>;
-    public diseaseID: Array<number>;
-    public subModelID: Array<number>;
-    public regionID: Array<number>;
-    public subRegionID: Array<number>;
-    public cellTypeID: Array<number>;
-    public methodID: Array<number>;
-    public subMethodID: Array<number>;
-    public transmitterID: Array<number>;
-    public author: Array<PubscreenAuthor>;
-    public reference: string;
-    public source: string;
-    public yearFrom: number;
-    public yearTo: number;
-    public taskOther: string;
-    public specieOther: string;
-    public strainMouseOther: string;
-    public strainRatOther: string;
-    public diseaseOther: string;
-    public celltypeOther: string;
-    public methodOther: string;
-    public neurotransOther: string;
-    public search: string;
+  id: number;
+  title: string;
+  abstract: string;
+  keywords: string;
+  doi: string;
+  year: string;
+  yearID: string[];
+  authourID: number[];
+  authorString: string;
+  paperTypeIdSearch: number[];
+  paperTypeID: number;
+  paperType: string;
+  taskID: number[];
+  subTaskID: number[];
+  specieID: number[];
+  sexID: number[];
+  strainID: number[];
+  diseaseID: number[];
+  subModelID: number[];
+  regionID: number[];
+  subRegionID: number[];
+  cellTypeID: number[];
+  methodID: number[];
+  subMethodID: number[];
+  transmitterID: number[];
+  author: PubscreenAuthor[];
+  reference: string;
+  source: string;
+  yearFrom: number;
+  yearTo: number;
+  taskOther: string;
+  specieOther: string;
+  strainMouseOther: string;
+  strainRatOther: string;
+  diseaseOther: string;
+  celltypeOther: string;
+  methodOther: string;
+  neurotransOther: string;
+  search: string;
 
-                 
+
 
 }

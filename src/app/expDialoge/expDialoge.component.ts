@@ -1,297 +1,290 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Experiment } from '../models/experiment';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-//import { UploadService } from '../services/upload.service';
-import { SharedModule } from '../shared/shared.module';
-import { CogbytesService } from '../services/cogbytes.service'
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { LoadingService } from '../services/loadingservice'
+// import { UploadService } from '../services/upload.service';
+import { CogbytesService } from '../services/cogbytes.service';
+import { ReplaySubject ,  Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
 
 @Component({
 
-    selector: 'app-expDialoge',
-    templateUrl: './ExpDialoge.component.html',
-    styleUrls: ['./ExpDialoge.component.scss'],
-    providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
+  selector: 'app-expdialoge',
+  templateUrl: './ExpDialoge.component.html',
+  styleUrls: ['./ExpDialoge.component.scss'],
+  providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
 
-})
+  })
 export class ExpDialogeComponent implements OnInit {
 
-    expNameModel: string;
-    sDateModel: Date;
-    eDateModel: Date;
-    taskDesModel: string;
-    DOIModel: string;
-    statusModel: string;
-    isTaken: boolean;
-    selectedvalue: any;
-    selectPISvalue: any;
-    speciesModel: any;
-    taskBatteryModel: any;
-    isMultipleSessionsModel: string;
-    isRepoLink: any;
-    repModel: any;
+  doiModel: string;
+  isTaken: boolean;
+  isRepoLink: any;
+  repModel: any;
 
-    taskList: any;
-    piSiteList: any;
-    speciesList: any;
-    repList: any;
+  taskList: any;
+  piSiteList: any;
+  speciesList: any;
+  repList: any;
 
-    public repMultiFilterCtrl: FormControl = new FormControl();
-    public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    repMultiSelect: any;
+  exp: UntypedFormControl;
+  sDate: UntypedFormControl;
+  eDate: UntypedFormControl;
+  task: UntypedFormControl;
+  species: UntypedFormControl;
+  piSite: UntypedFormControl;
+  status: UntypedFormControl;
+  expDescription: UntypedFormControl;
+  expBattery: UntypedFormControl;
+  isMultipleSessions: UntypedFormControl;
 
-    /** Subject that emits when the component has been destroyed. */
-    private _onDestroy = new Subject<void>();
 
-    private _experiment = new Experiment();
+  public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
+  public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
-        private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, private cogbytesService: CogbytesService) { }
+  /** Subject that emits when the component has been destroyed. */
+  private _onDestroy = new Subject<void>();
 
-    ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; /*console.log(this.taskList)*/; });
-        this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; /*console.log(this.speciesList)*/; });
-        this.GetRepList();
+  private _experiment: Experiment;
 
-        this.isRepoLink = '0';
+  constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
+    private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
+    private piSiteService: PISiteService, private spinnerService: LoadingService, private cogbytesService: CogbytesService,
+    private fb: UntypedFormBuilder
+  ) {
+    this.doiModel = '';
+    this.isTaken = false;
+    this.exp = fb.control('', [Validators.required]);
+    this.sDate = fb.control('', [Validators.required]);
+    this.eDate = fb.control('', [Validators.required]);
+    this.task = fb.control({ value: '', disabled: data.experimentObj != null}, [Validators.required]);
+    this.species = fb.control('', [Validators.required]);
+    this.piSite = fb.control('', [Validators.required]);
+    this.status = fb.control('', [Validators.required]);
+    this.expDescription = fb.control('', [Validators.required]);
+    this.expBattery = fb.control('', [Validators.required]);
+    this.isMultipleSessions = fb.control('', [Validators.required]);
+    this._experiment = {
+      doi: '', endExpDate: new Date(), expID: 0, expName: '', imageIds: [], imageInfo: '', multipleSessions: true,
+      piSiteName: '', piSiteUser: '', puSID: 0, repoGuid: '', species: '', speciesID: 0, startExpDate: new Date(), status: false,
+      taskBattery: '', taskDescription: '', taskID: 0, taskName: '', userID: '', userName: ''
+    };
+  }
 
-        //console.log(this.data.experimentObj);
-        // if it is an Edit model
-        if (this.data.experimentObj != null) {
-            this.expNameModel = this.data.experimentObj.expName;
-            this.sDateModel = this.data.experimentObj.startExpDate;
-            this.eDateModel = this.data.experimentObj.endExpDate;
-            this.selectedvalue = this.data.experimentObj.taskID;
-            this.speciesModel = this.data.experimentObj.speciesID
-            this.taskDesModel = this.data.experimentObj.taskDescription;
-            this.taskBatteryModel = this.data.experimentObj.taskBattery;
-            this.selectPISvalue = this.data.experimentObj.pusid;
-            this.DOIModel = this.data.experimentObj.doi;
-            this.statusModel = this.data.experimentObj.status ? "1" : "0";
-            this.isMultipleSessionsModel = this.data.experimentObj.multipleSessions ? "1" : "0";
-            if (this.data.experimentObj.repoGuid != "") {
-                this.isRepoLink = '1';
-                this.repModel = this.data.experimentObj.repoGuid;
-            }
-        }
+  ngOnInit() {
+    this.taskAnalysisService.getAllSelect().subscribe((data: any) => {
+      this.taskList = data; /* console.log(this.taskList)*/
+    });
+    this.expDialogeService.getAllSpecies().subscribe((data: any) => {
+      this.speciesList = data; /* console.log(this.speciesList)*/
+    });
+    this.piSiteService.getPISitebyUserID().subscribe((data: any) => {
+      this.piSiteList = data;
+    });
+
+    this.getRepList();
+
+    this.isRepoLink = '0';
+
+    // console.log(this.data.experimentObj);
+    // if it is an Edit model
+    if (this.data.experimentObj != null) {
+      this.exp.setValue(this.data.experimentObj.expName);
+      this.sDate.setValue(this.data.experimentObj.startExpDate);
+      this.eDate.setValue(this.data.experimentObj.endExpDate);
+      this.task.setValue(this.data.experimentObj.taskID);
+      this.species.setValue(this.data.experimentObj.speciesID);
+      this.expDescription.setValue(this.data.experimentObj.taskDescription);
+      this.expBattery.setValue(this.data.experimentObj.taskBattery);
+      this.piSite.setValue(this.data.experimentObj.PUSID);
+      this.doiModel = this.data.experimentObj.doi;
+      this.status.setValue(this.data.experimentObj.status ? '1' : '0');
+      this.isMultipleSessions.setValue(this.data.experimentObj.multipleSessions ? '1' : '0');
+      if (this.data.experimentObj.repoGuid !== '') {
+        this.isRepoLink = '1';
+        this.repModel = this.data.experimentObj.repoGuid;
+      }
     }
+  }
 
-    GetRepList() {
+  getRepList() {
 
-        this.cogbytesService.getAllRepositories().subscribe(data => {
-            this.repList = data;
+    this.cogbytesService.getAllRepositories().subscribe((data: any) => {
+      this.repList = data;
 
-            // load the initial expList
-            this.filteredRepList.next(this.repList.slice());
+      // load the initial expList
+      this.filteredRepList.next(this.repList.slice());
 
-            this.repMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
-                .subscribe(() => {
-                    this.filterRep();
-                });
-
+      this.repMultiFilterCtrl.valueChanges
+        .pipe(takeUntil(this._onDestroy))
+        .subscribe(() => {
+          this.filterRep();
         });
 
-        return this.repList;
+    });
+
+    return this.repList;
+  }
+
+  onCloseCancel(): void {
+
+
+    this.thisDialogRef.close('Cancel');
+
+  }
+
+  onCloseSubmit(): void {
+    this.spinnerService.show();
+
+    this._experiment.expName = this.exp.value;
+    this._experiment.startExpDate = this.sDate.value;
+    this._experiment.endExpDate = this.eDate.value;
+    this._experiment.taskID = this.getSelectedTask(this.task.value).id; // should be readonly
+    this._experiment.speciesID = this.species.value;
+    this._experiment.taskDescription = this.expDescription.value;
+    this._experiment.taskBattery = this.expBattery.value;
+    this._experiment.puSID = this.getSelectedPIS(this.piSite.value).pusid;
+    this._experiment.doi = this.doiModel;
+    this._experiment.status = this.status.value === '1' ? true : false;
+    this._experiment.multipleSessions = this.isMultipleSessions.value === '1' ? true : false;
+    if (this.isRepoLink === '1') {
+      this._experiment.repoGuid = this.repModel;
     }
 
-    // handling multi filtered Rep list
-    private filterRep() {
-        if (!this.repList) {
-            return;
-        }
+    // console.log(this._experiment.ImageIds);
 
-        // get the search keyword
-        let searchRep = this.repMultiFilterCtrl.value;
+    if (this.data.experimentObj == null) {
+      // Insert Mode: Insert Experiment
+      this.isTaken = false;
 
-        if (!searchRep) {
-            this.filteredRepList.next(this.repList.slice());
-            return;
+      this.expDialogeService.create(this._experiment).map((res: any) => {
+        if (res === 'Taken') {
+          this.isTaken = true;
+          this.exp.setErrors({ 'taken': true });
         } else {
-            searchRep = searchRep.toLowerCase();
+          this.thisDialogRef.close();
         }
 
-        // filter the rep
-        this.filteredRepList.next(
-            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
-        );
-    }
+      }).subscribe((data: any) => {
 
-    onCloseCancel(): void {
+        setTimeout(() => {
+          this.spinnerService.hide();
 
 
-        this.thisDialogRef.close('Cancel');
+        }, 500);
 
-    }
+      });
+    } else { // Edit Mode: edit experiment
 
-    onCloseSubmit(): void {
-        this.spinnerService.show();
 
-        this._experiment.ExpName = this.expNameModel;
-        this._experiment.StartExpDate = this.sDateModel;
-        this._experiment.EndExpDate = this.eDateModel;
-        this._experiment.TaskID = this.getSelectedTask(this.selectedvalue).id; // should be readonly
-        this._experiment.SpeciesID = this.speciesModel;
-        this._experiment.TaskDescription = this.taskDesModel;
-        this._experiment.TaskBattery = this.taskBatteryModel;
-        this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
-        this._experiment.DOI = this.DOIModel;
-        this._experiment.Status = this.statusModel == "1" ? true : false;
-        this._experiment.multipleSessions = this.isMultipleSessionsModel == "1" ? true : false;
-        if (this.isRepoLink == '1') {
-            this._experiment.repoGuid = this.repModel;
+      this.isTaken = false;
+      this._experiment.expID = this.data.experimentObj.expID;
+      this.expDialogeService.updateExp(this._experiment).map((res: any) => {
+
+
+
+        if (res === 'Taken') {
+          this.isTaken = true;
+          this.exp.setErrors({ 'taken': true });
+        } else {
+          this.thisDialogRef.close();
         }
 
-        //console.log(this._experiment.ImageIds);
+      }).subscribe((data: any) => {
+        setTimeout(() => {
+          this.spinnerService.hide();
 
-        if (this.data.experimentObj == null) {
-            // Insert Mode: Insert Experiment
-            this.isTaken = false;
+        }, 500);
 
-            this.expDialogeService.create(this._experiment).map(res => {
-                if (res == "Taken") {
-                    this.isTaken = true;
-                    this.exp.setErrors({ 'taken': true });
-                } else {
-                    this.thisDialogRef.close();
-                }
-
-            }).subscribe(data => {
-
-                setTimeout(() => {
-                    this.spinnerService.hide();
-
-
-                }, 500);
-
-            });
-        } else { // Edit Mode: edit experiment
-
-
-            this.isTaken = false;
-            this._experiment.ExpID = this.data.experimentObj.expID;
-            this.expDialogeService.updateExp(this._experiment).map(res => {
-
-
-
-                if (res == "Taken") {
-                    this.isTaken = true;
-                    this.exp.setErrors({ 'taken': true });
-                } else {
-                    this.thisDialogRef.close();
-                }
-
-            }).subscribe(data => {
-                setTimeout(() => {
-                    this.spinnerService.hide();
-
-                }, 500);
-
-            });
-
-        }
+      });
 
     }
 
-    exp = new FormControl('', [Validators.required]);
-    sDate = new FormControl('', [Validators.required]);
-    eDate = new FormControl('', [Validators.required]);
-    task = new FormControl('', [Validators.required]);
-    species = new FormControl('', [Validators.required]);
-    piSite = new FormControl('', [Validators.required]);
-    status = new FormControl('', [Validators.required]);
-    expDescription = new FormControl('', [Validators.required]);
-    expBattery = new FormControl('', [Validators.required]);
-    isMultipleSessions = new FormControl('', [Validators.required]);
+  }
 
-    getErrorMessage() {
+  getErrorMessage() {
 
-        return this.exp.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+    return this.exp.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
 
-    getErrorMessageTaken() {
+  getErrorMessageTaken() {
 
-        return this.exp.hasError('taken') ? EXPERIMENTNAMETAKEN :
-            '';
+    return this.exp.hasError('taken') ? EXPERIMENTNAMETAKEN :
+      '';
 
-    }
+  }
 
-    getErrorMessagesDate() {
+  getErrorMessagesDate() {
 
-        return this.sDate.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+    return this.sDate.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
 
-    getErrorMessageeDate() {
+  getErrorMessageeDate() {
 
-        return this.eDate.hasError('required') ? FIELDISREQUIRED :
-            '';
+    return this.eDate.hasError('required') ? FIELDISREQUIRED :
+      '';
 
-    }
+  }
 
-    getErrorMessageTask() {
+  getErrorMessageTask() {
 
 
-        return this.task.hasError('required') ? FIELDISREQUIRED :
-            '';
+    return this.task.hasError('required') ? FIELDISREQUIRED :
+      '';
 
-    }
+  }
 
-    getErrorMessagePiSite() {
-
-
-        return this.piSite.hasError('required') ? FIELDISREQUIRED :
-            '';
-
-    }
-
-    getErrorMessageStatus() {   
-        return this.status.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageExpDescription() {
-        return this.expDescription.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageSpecies() {
-        return this.species.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageExpBattery() {
-
-        return this.expBattery.hasError('required') ? FIELDISREQUIRED + ' ' + NAIFNOTAPPLICABLE :
-            '';
-
-    }
-
-    getErrorMessageMultipleSessions() {
-
-        return this.isMultipleSessions.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  getErrorMessagePiSite() {
 
 
-    setDisabledVal() {
+    return this.piSite.hasError('required') ? FIELDISREQUIRED :
+      '';
 
-        if (this.exp.hasError('required') ||
+  }
+
+  getErrorMessageStatus() {
+    return this.status.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageExpDescription() {
+    return this.expDescription.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageSpecies() {
+    return this.species.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageExpBattery() {
+
+    return this.expBattery.hasError('required') ? FIELDISREQUIRED + ' ' + NAIFNOTAPPLICABLE :
+      '';
+
+  }
+
+  getErrorMessageMultipleSessions() {
+
+    return this.isMultipleSessions.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+
+  setDisabledVal() {
+
+    if (this.exp.hasError('required') ||
             this.sDate.hasError('required') ||
             this.eDate.hasError('required') ||
             this.task.hasError('required') ||
@@ -301,21 +294,43 @@ export class ExpDialogeComponent implements OnInit {
             this.expBattery.hasError('required') ||
             this.species.hasError('required') ||
             this.isMultipleSessions.hasError('required')
-        ) {
+    ) {
 
-            return true;
-        }
-
-        return false;
+      return true;
     }
 
-    getSelectedTask(selectedValue) {
-        return this.taskList.find(x => x.id === selectedValue);
+    return false;
+  }
+
+  getSelectedTask(selectedValue: any) {
+    return this.taskList.find((x: any) => x.id === selectedValue);
+  }
+
+  getSelectedPIS(selectedVal: any) {
+    return this.piSiteList.find((x: any) => x.pusid === selectedVal);
+  }
+
+  // handling multi filtered Rep list
+  private filterRep() {
+    if (!this.repList) {
+      return;
     }
 
-    getSelectedPIS(selectedVal) {
-        return this.piSiteList.find(x => x.pusid === selectedVal);
+    // get the search keyword
+    let searchRep = this.repMultiFilterCtrl.value;
+
+    if (!searchRep) {
+      this.filteredRepList.next(this.repList.slice());
+      return;
+    } else {
+      searchRep = searchRep.toLowerCase();
     }
+
+    // filter the rep
+    this.filteredRepList.next(
+      this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
+    );
+  }
 
 
 

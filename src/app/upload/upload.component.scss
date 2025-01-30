@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
 
-    .mat-table {
+    .mat-mdc-table {
         overflow: hidden;
     }
 }
@@ -17,6 +17,6 @@
     
 }
 
-/deep/ .mat-tooltip {
+:host ::ng-deep .mat-mdc-tooltip {
     font-size: 15px !important;
 }

@@ -7,23 +7,24 @@ import { ProfileComponent } from './profile.component';
 import { IdentityService } from '../services/identity.service';
 import { PISiteService } from '../services/piSite.service';
 import { ProfileService } from '../services/profile.service';
-import { MatDialogModule, MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    imports: [
-        ProfileRoutingModule,
-        SharedModule,
-        MatDialogModule,
-        MatButtonModule,
-    ],
-    declarations: [
-        ProfileComponent
-    ],
-    providers: [ManageUserService,
-        IdentityService,
-        PISiteService,
-        ProfileService,],
+  imports: [
+  ProfileRoutingModule,
+  SharedModule,
+  MatDialogModule,
+  MatButtonModule,
+  ],
+  declarations: [
+  ProfileComponent
+  ],
+  providers: [ManageUserService,
+  IdentityService,
+  PISiteService,
+  ProfileService, ],
 
-    bootstrap: [ProfileComponent],
-})
+  bootstrap: [ProfileComponent],
+  })
 export class ProfileModule { }

@@ -1,28 +1,28 @@
-export class Experiment {
+export interface Experiment {
 
-    public ExpID: number;
-    public UserID: string;
-    public PUSID: number;
-    public TaskID: number;
-    public ExpName: string;
-    public PISiteName: string;
-    public PISiteUser: string;
-    public UserName: string;
-    public TaskName: string;
-    public StartExpDate: Date;
-    public EndExpDate: Date;
-    //public ErrorMessage: string;
-    public TaskDescription: string;
-    public TaskBattery: string;
-    public DOI: string;
-    public Status: boolean;
-    public ImageIds: Array<number>;
-    //public ImagePath: Array<string>;
-    public ImageInfo: string;
-    public SpeciesID: number;
-    public species: string;
+  expID: number;
+  userID: string;
+  puSID: number;
+  taskID: number;
+  expName: string;
+  piSiteName: string;
+  piSiteUser: string;
+  userName: string;
+  taskName: string;
+  startExpDate: Date;
+  endExpDate: Date;
+  // ErrorMessage: string;
+  taskDescription: string;
+  taskBattery: string;
+  doi: string;
+  status: boolean;
+  imageIds: number[];
+  // ImagePath: Array<string>;
+  imageInfo: string;
+  speciesID: number;
+  species: string;
 
-    public multipleSessions: boolean;
-    public repoGuid: string;
+  multipleSessions: boolean;
+  repoGuid: string;
 
 }

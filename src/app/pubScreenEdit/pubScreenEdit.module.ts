@@ -8,26 +8,26 @@ import { PagerService } from '../services/pager.service';
 
 
 @NgModule({
-    imports: [
-        PubScreenEditRoutingModule,
-        SharedModule,
-        //MatSelectModule,
-        
+  imports: [
+  PubScreenEditRoutingModule,
+  SharedModule,
+// MatSelectModule,
 
-    ],
-    declarations: [
-        PubScreenEditComponent,
-        
-    ],
-    providers: [
-        AuthenticationService,
-        PubScreenService,
-        PagerService,
-        
-    ],
-    bootstrap: [PubScreenEditComponent],
-    
 
-})
-export class PubScreenEditModule { } 
+  ],
+  declarations: [
+  PubScreenEditComponent,
+
+  ],
+  providers: [
+  AuthenticationService,
+  PubScreenService,
+  PagerService,
+
+  ],
+  bootstrap: [PubScreenEditComponent],
+
+
+  })
+export class PubScreenEditModule { }
 

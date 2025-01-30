@@ -1,114 +1,122 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
+// import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqTaskDialoge',
-    templateUrl: './reqTaskDialoge.component.html',
-    styleUrls: ['./reqTaskDialoge.component.scss'],
-    providers: [RequestService]
+  selector: 'app-reqtaskdialoge',
+  templateUrl: './reqTaskDialoge.component.html',
+  styleUrls: ['./reqTaskDialoge.component.scss'],
+  providers: [RequestService]
 
-})
+  })
 export class ReqTaskDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  faQuestionCircle = faQuestionCircle;
+  // Defining Models Parameters
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqTaskModel: string;
-    reqScheduleModel: string;
-           
-    private _request = new Request();
+  reqScheduleModel: string;
 
-    // FormControl Parameters
+  // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    task = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    
+  name: UntypedFormControl;
+  task: UntypedFormControl;
+  email: UntypedFormControl;
 
-    constructor(public thisDialogRef: MatDialogRef<ReqTaskDialogeComponent>,
-         
-        private requestService: RequestService, ) { }
-
-    ngOnInit() {
-      
-    }
-
-    onCloseCancel(): void {
+  private _request: Request;
 
 
-        this.thisDialogRef.close('Cancel');
+  constructor(public thisDialogRef: MatDialogRef<ReqTaskDialogeComponent>,
 
-    }
+    private requestService: RequestService,
+    private fb: UntypedFormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    onCloseSubmit(): void {
+    this.reqScheduleModel = '';
+    this.name = fb.control('', [Validators.required]);
+    this.task = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-        // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.taskName = this.reqTaskModel;
-        this._request.scheduleName = this.reqScheduleModel;
+  ngOnInit() {
 
-        // Submiting the request to server
-        this.requestService.addTask(this._request).subscribe( this.thisDialogRef.close() );
-       
-    }
+  }
 
-
-    getErrorMessage()
-    {
-
-        return this.name.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageTask() {
-
-        return this.task.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
-
-    getErrorMessageEmail()
-    {
-
-        return this.email.hasError('required') ? FIELDISREQUIRED :
-            '';
-
-    }
+  onCloseCancel(): void {
 
 
-    getErrorMessageEmailValid()
-    {
+    this.thisDialogRef.close('Cancel');
 
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
+  }
 
-   
-    setDisabledVal()
-    {
+  onCloseSubmit(): void {
 
-        if (this.name.hasError('required') ||
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.taskName = this.task.value;
+    this._request.scheduleName = this.reqScheduleModel;
+
+    // Submiting the request to server
+    this.requestService.addTask(this._request).subscribe( this.thisDialogRef.close() );
+
+  }
+
+
+  getErrorMessage() {
+
+    return this.name.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageTask() {
+
+    return this.task.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageEmail() {
+
+    return this.email.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+
+  getErrorMessageEmailValid() {
+
+    return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
             this.task.hasError('required')
-            
-        )
-        {
-            return true;
-        }
 
-        return false;
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

@@ -1,116 +1,117 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqGeneralDialoge',
-    templateUrl: './reqGeneralDialoge.component.html',
-    styleUrls: ['./reqGeneralDialoge.component.scss'],
-    providers: [RequestService]
+  selector: 'app-reqgeneraldialoge',
+  templateUrl: './reqGeneralDialoge.component.html',
+  styleUrls: ['./reqGeneralDialoge.component.scss'],
+  providers: [RequestService]
 
-})
+  })
 export class ReqGeneralDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  // FormControl Parameters
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRequestModel: string;
-   
-           
-    private _request = new Request();
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  request: UntypedFormControl;
 
-    // FormControl Parameters
-
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    request = new FormControl('', [Validators.required]);
-    
-
-    constructor(public thisDialogRef: MatDialogRef<ReqGeneralDialogeComponent>,
-         
-        private requestService: RequestService, ) { }
-
-    ngOnInit() {
-      
-    }
-
-    onCloseCancel(): void {
+  private _request: Request;
 
 
-        this.thisDialogRef.close('Cancel');
+  constructor(public thisDialogRef: MatDialogRef<ReqGeneralDialogeComponent>,
 
-    }
+    private requestService: RequestService,
+    private fb: UntypedFormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    onCloseSubmit(): void {
+    this.name = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.request = fb.control('', [Validators.required]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-        // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.generalRequest = this.reqRequestModel;
-      
-        
+  ngOnInit() {
 
-        // Submiting the request to server
-        this.requestService.addGeneral(this._request).subscribe( this.thisDialogRef.close()); 
-       
-    }
+  }
+
+  onCloseCancel(): void {
 
 
-    getErrorMessage()
-    {
+    this.thisDialogRef.close('Cancel');
 
-        return this.name.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  }
 
-    getErrorMessageEmail()
-    {
+  onCloseSubmit(): void {
 
-        return this.email.hasError('required') ? FIELDISREQUIRED :
-            '';
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.generalRequest = this.request.value;
 
-    }
-    
-    getErrorMessageEmailValid()
-    {
 
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
 
-    getErrorMessageRequest() {
-        return this.request.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+    // Submiting the request to server
+    this.requestService.addGeneral(this._request).subscribe( this.thisDialogRef.close());
 
-    
+  }
 
-   
-    setDisabledVal()
-    {
 
-        if (this.name.hasError('required') ||
+  getErrorMessage() {
+
+    return this.name.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageEmail() {
+
+    return this.email.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+  getErrorMessageEmailValid() {
+
+    return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+  getErrorMessageRequest() {
+    return this.request.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
-            this.request.hasError('required') 
-            
-            
-        )
-        {
-            return true;
-        }
+            this.request.hasError('required')
 
-        return false;
+
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-video-tutorial',
   templateUrl: './video-tutorial.component.html',
   styleUrls: ['./video-tutorial.component.scss']
-})
+  })
 export class VideoTutorialComponent implements OnInit {
 
   constructor() { }

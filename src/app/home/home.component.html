@@ -5,31 +5,13 @@
             <div class="container">
                 <div class="row">
                     <h1 class="section-title title-font-size" style="color: #fff; margin:10px 10px">
-                        <span countUp [endVal]="mouseCounter" style="color: #8F55E0">0</span> Registered Mice in&nbsp;
+                        <span [countUp] ="mouseCounter" style="color: #8F55E0">0</span> Registered Mice in&nbsp;
                         Mouse<span class="title-font-size" style="color: #8F55E0">Bytes</span>
                     </h1>
                     <div class="section-subtitle" style="color: #dfdede; font-size: 20px;">Open access database for rodent cognition data integration and sharing</div>
                 </div>
             </div>
         </header>
-        <div class="container">
-            <div class="row">
-                <owl-carousel [options]="carouselOptions"
-                              [items]="images"
-                              [carouselClasses]="['owl-carousel', 'owl-theme', 'row', 'sliding']">
-                    <div class="item" *ngFor="let image of images;let i = index">
-                        <div class="textcenter" fxLayout="column" style="text-align:center;">
-                            <img style="max-width: 400px; min-width: 200px; width: 25%;" src="{{image.src}}" alt="{{image.alt}}"  />
-                            <span style="margin: auto;">
-                                <a routerLink="{{image.btnLink}}">
-                                    <button mat-raised-button style=" background-color: #795d9c; color: white ;" *ngIf="image.btnVisible">{{image.btnText}}</button>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                </owl-carousel>
-            </div>
-        </div>
         <div style="padding-top: 30px; color: #dfdede; font-size: 18px;">Please find the list of Mousebytes datasets <a style="color: azure" href="/search-experiment" target="_blank">here</a> and Mousebytes+ datasets <a style="color: azure" href="/comp-search?showall=true" target="_blank">here</a>.</div>
         <div style="padding-top: 30px; color: #dfdede; font-size: 18px;">Please cite <a style="color: azure" href="https://elifesciences.org/articles/49630">this work</a> if you use, access, or cite Mousebytes data in your publications.</div>
 

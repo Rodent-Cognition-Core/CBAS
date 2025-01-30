@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PSDashboardComponent } from './pubScreen-dashboard.component';
 
 describe('DataVisualizationComponent', () => {
-    let component: PSDashboardComponent;
-    let fixture: ComponentFixture<PSDashboardComponent>;
+  let component: PSDashboardComponent;
+  let fixture: ComponentFixture<PSDashboardComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        declarations: [PSDashboardComponent ]
+      declarations: [PSDashboardComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(PSDashboardComponent);
+    fixture = TestBed.createComponent(PSDashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

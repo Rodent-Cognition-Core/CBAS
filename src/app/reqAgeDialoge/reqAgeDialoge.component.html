@@ -7,20 +7,20 @@
         <!--<app-shared-experiment></app-shared-experiment>-->
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your Full Name" [formControl]="name" [(ngModel)]="reqNameModel" required>
+            <input matInput placeholder="Enter your Full Name" [formControl]="name" required>
             <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your email address:" [formControl]="email" [(ngModel)]="reqEmailModel" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
+            <input matInput placeholder="Enter your email address:" [formControl]="email" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$" required>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmail()}}</mat-error>
             <mat-error *ngIf="email.invalid">{{getErrorMessageEmailValid()}}</mat-error>
 
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter animal's age in month (i.e. age at the beginning of the experiment)" [formControl]="age" [(ngModel)]="reqAgeModel" required>
+            <input matInput placeholder="Enter animal's age in month (i.e. age at the beginning of the experiment)" [formControl]="age" required>
             <mat-error *ngIf="age.invalid">{{getErrorMessageAge()}}</mat-error>
 
         </mat-form-field>

@@ -1,134 +1,137 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, ReactiveFormsModule, FormGroup, UntypedFormBuilder } from '@angular/forms';
+// import { NgModel } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
+// import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqPubSubMethodDialoge',
-    templateUrl: './reqPubSubMethodDialoge.component.html',
-    styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
-    providers: [RequestService, PubScreenService]
+  selector: 'app-reqpubsubmethoddialoge',
+  templateUrl: './reqPubSubMethodDialoge.component.html',
+  styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
+  providers: [RequestService, PubScreenService]
 
-})
+  })
 export class ReqPubSubMethodDialogeComponent implements OnInit {
 
-    // Defining Models Parameters
+  methodList: any;
 
-    reqNameMethod: string;
-    reqEmailMethod: string;
-    reqMethod: string;
-    reqDOIMethod: string;
-    reqNewSubMethod: string;
-   
-    methodList: any;
+  // FormControl Parameters
 
-    private _request = new Request();
+  name: UntypedFormControl;
+  email: UntypedFormControl;
+  method: UntypedFormControl;
+  newSubMethod: UntypedFormControl;
+  doi: UntypedFormControl;
 
-    // FormControl Parameters
+  private _request: Request;
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    method = new FormControl('', [Validators.required]);
-    newSubMethod = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+  constructor(public thisDialogRef: MatDialogRef<ReqPubSubMethodDialogeComponent>,
 
-    constructor(public thisDialogRef: MatDialogRef<ReqPubSubMethodDialogeComponent>,
+    private requestService: RequestService, private pubScreenService: PubScreenService,
+    private fb: UntypedFormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+    this.name = fb.control('', [Validators.required]);
+    this.email = fb.control('', [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]);
+    this.method = fb.control('', [Validators.required]);
+    this.newSubMethod = fb.control('', [Validators.required]);
+    this.doi = fb.control('', [Validators.required]);
+    this._request = {
+      age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', id: 0,
+      method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '',
+      subMethod: '', subModel: '', taskCategory: '', taskName: '', type: ''
+    };
+  }
 
-    ngOnInit() {
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
+  ngOnInit() {
+    this.pubScreenService.getMethod().subscribe((data: any) => {
+      this.methodList = data;
+    });
 
-    }
+  }
 
-    onCloseCancel(): void {
-
-
-        this.thisDialogRef.close('Cancel');
-
-    }
-
-    onCloseSubmit(): void {
-
-        // building request object
-        this._request.fullName = this.reqNameMethod;
-        this._request.email = this.reqEmailMethod;
-        this._request.doi = this.reqDOIMethod;
-        this._request.method = this.reqMethod;
-        this._request.subMethod = this.reqNewSubMethod;
-
-        // Submiting the request to server
-        this.requestService.addPubSubMethod(this._request).subscribe( this.thisDialogRef.close()); 
-       
-    }
+  onCloseCancel(): void {
 
 
-    getErrorMessage()
-    {
+    this.thisDialogRef.close('Cancel');
 
-        return this.name.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  }
 
-    getErrorMessageEmail()
-    {
+  onCloseSubmit(): void {
 
-        return this.email.hasError('required') ? FIELDISREQUIRED :
-            '';
+    // building request object
+    this._request.fullName = this.name.value;
+    this._request.email = this.email.value;
+    this._request.doi = this.doi.value;
+    this._request.method = this.method.value;
+    this._request.subMethod = this.newSubMethod.value;
 
-    }
-    
-    getErrorMessageEmailValid()
-    {
+    // Submiting the request to server
+    this.requestService.addPubSubMethod(this._request).subscribe( this.thisDialogRef.close());
 
-        return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
-            '';
-    }
+  }
 
-    getErrorMessageMethod() {
 
-        return this.method.hasError('required') ? FIELDISREQUIRED :
-            '';
+  getErrorMessage() {
 
-    }
+    return this.name.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
 
-    getErrorMessageNewSubMethod() {
-        return this.newSubMethod.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+  getErrorMessageEmail() {
 
-    getErrorMessageDOI() {
-        return this.doi.hasError('required') ? FIELDISREQUIRED :
-            '';
-    }
+    return this.email.hasError('required') ? FIELDISREQUIRED :
+      '';
 
-    
+  }
 
-   
-    setDisabledVal()
-    {
+  getErrorMessageEmailValid() {
 
-        if (this.name.hasError('required') ||
+    return this.email.hasError('pattern') ? INVALIDEMAILADDRESS :
+      '';
+  }
+
+  getErrorMessageMethod() {
+
+    return this.method.hasError('required') ? FIELDISREQUIRED :
+      '';
+
+  }
+
+  getErrorMessageNewSubMethod() {
+    return this.newSubMethod.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+  getErrorMessageDOI() {
+    return this.doi.hasError('required') ? FIELDISREQUIRED :
+      '';
+  }
+
+
+
+
+  setDisabledVal() {
+
+    if (this.name.hasError('required') ||
             this.email.hasError('required') ||
             this.email.hasError('pattern') ||
             this.newSubMethod.hasError('required') ||
             this.doi.hasError('required') ||
             this.method.hasError('required')
-        )
-        {
-            return true;
-        }
-
-        return false;
+    ) {
+      return true;
     }
 
-        
+    return false;
+  }
+
+
 }

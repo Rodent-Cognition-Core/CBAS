@@ -9,7 +9,7 @@
         <mat-form-field class="full-width">
 
 
-            <input matInput placeholder="Author's First Name" [formControl]="authorName" [(ngModel)]="authorNameModel" required>
+            <input matInput placeholder="Author's First Name" [formControl]="authorName" required>
             <mat-error *ngIf="authorName.invalid">{{getErrorMessageName()}}</mat-error>
         </mat-form-field>
 
@@ -17,7 +17,7 @@
         <mat-form-field class="full-width">
             &nbsp;&nbsp;
 
-            <input matInput placeholder="Author's Last Name" [formControl]="authorLastName" [(ngModel)]="authorLastNameModel" required>
+            <input matInput placeholder="Author's Last Name" [formControl]="authorLastName" required>
             <mat-error *ngIf="authorName.invalid">{{getErrorMessageLastName()}}</mat-error>
 
         </mat-form-field>

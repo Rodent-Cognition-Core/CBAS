@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from 'rxjs';
 
 import { TaskAnalysis } from '../models/taskAnalysis';
 
@@ -11,61 +10,69 @@ import { AuthenticationService } from './authentication.service';
 
 @Injectable() export class TaskAnalysisService {
 
-    public taskAnalysises: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  public taskAnalysises: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-    constructor(
-        private http: HttpClient,
-        private authenticationService: AuthenticationService) { }
+  constructor(
+    private http: HttpClient,
+    private authenticationService: AuthenticationService) { }
 
-    /**
+  /**
      * Gets all task analysises.
      */
-    public getAll(): void {
-        // Sends an authenticated request.
-        this.http
-            .get("/api/taskAnalysis/GetAll", {
-                headers: this.authenticationService.getAuthorizationHeader()
-            })
-            .subscribe((data: any) => {
-                this.taskAnalysises.next(data);
-            },
-            (error: HttpErrorResponse) => {
-                if (error.error instanceof Error) {
-                    //console.log('An error occurred:', error.error.message);
-                } else {
-                    //console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
-                }
-            });
-    }
+  public getAll(): void {
+    // Sends an authenticated request.
+    this.http
+      .get('/api/taskAnalysis/GetAll', {
+        headers: this.authenticationService.getAuthorizationHeader()
+      })
+      .subscribe((data: any) => {
+        this.taskAnalysises.next(data);
+      },
+      (error: HttpErrorResponse) => {
+        if (error.error instanceof Error) {
+          // console.log('An error occurred:', error.error.message);
+        } else {
+          // console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+        }
+      });
+  }
 
-    public getAllSelect(): any {
+  public getAllSelect(): any {
 
-        return this.http
-            .get("/api/taskAnalysis/GetAll", {
-                headers: this.authenticationService.getAuthorizationHeader()
-            });
-    }
+    return this.http
+      .get('/api/taskAnalysis/GetAll', {
+        headers: this.authenticationService.getAuthorizationHeader()
+      });
+  }
 
 
-    public create(taskAnalysis: TaskAnalysis): void {
+  public create(taskAnalysis: TaskAnalysis): Observable<any> {
 
-        const body: string = JSON.stringify(taskAnalysis);
+    const body: string = JSON.stringify(taskAnalysis);
 
-        this.http.post("/api/taskAnalysis/CreateTaskAnalysis", body ,{
-            headers: this.authenticationService.getAuthorizationHeader()
-        })
-            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
+    return this.http.post('/api/taskAnalysis/CreateTaskAnalysis', body , {
+      headers: this.authenticationService.getAuthorizationHeader()
+    }).pipe(
+      map((res: any) =>  /* console.log(res);*/ res ));
 
-    }
+  }
 
-    public getTaskAnalysisByID(taskAnalysisID: number): void {
+  public getTaskAnalysisByID(taskAnalysisID: number): Observable<any> {
 
-        this.http.post("/api/taskAnalysis/GetTaskAnalysisByID", taskAnalysisID, {
-            headers: this.authenticationService.getAuthorizationHeader()
-        })
-            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
+    return this.http.post('/api/taskAnalysis/GetTaskAnalysisByID', taskAnalysisID, {
+      headers: this.authenticationService.getAuthorizationHeader()
+    }).pipe(
+      map((res: any) =>
+      // console.log('TaskAnalysis created successfully:', res);
+        res // Return response for further processing if needed
+      ),
+      catchError((error: any) =>
+      // console.error('Error creating TaskAnalysis:', error);
+        throwError(() => error) // Rethrow the error for the caller to handle
+      )
+    );
 
-    }
+  }
 
 
 }

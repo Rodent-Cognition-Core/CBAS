@@ -168,7 +168,7 @@ namespace AngularSPAWebAPI
                 app.UseCors("LocalCorsPolicy");
                 app.UseDeveloperExceptionPage();
                 // Starts "npm start" command using Shell extension.
-                app.Shell("npm start");
+                app.Shell("ng serve");
             }
             else
             {

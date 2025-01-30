@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PubScreenEditComponent } from './pubScreenEdit.component';
 
 describe('VideoTutorialComponent', () => {
-    let component: PubScreenEditComponent;
-    let fixture: ComponentFixture<PubScreenEditComponent>;
+  let component: PubScreenEditComponent;
+  let fixture: ComponentFixture<PubScreenEditComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        declarations: [PubScreenEditComponent ]
+      declarations: [PubScreenEditComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(PubScreenEditComponent);
+    fixture = TestBed.createComponent(PubScreenEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

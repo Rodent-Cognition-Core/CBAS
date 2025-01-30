@@ -1,13 +1,12 @@
-export class Animal {
+export interface Animal {
 
-    public AnimalID: number;
-    public ExpID: number;
-    public GID: number;
-    public SID: number;
-    public UserAnimalID: string;
-    public Sex: string;
-    public Genotype: string;
-    public Strain: string;
-    
+  animalID: number;
+  expID: number;
+  gID: number;
+  sID: number;
+  userAnimalID: string;
+  sex: string;
+  genotype: string;
+  strain: string;
 
 }

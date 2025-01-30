@@ -1,20 +1,20 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CogbytesEditComponent } from './cogbytesEdit.component';
 
 describe('VideoTutorialComponent', () => {
-    let component: CogbytesEditComponent;
-    let fixture: ComponentFixture<CogbytesEditComponent>;
+  let component: CogbytesEditComponent;
+  let fixture: ComponentFixture<CogbytesEditComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        declarations: [CogbytesEditComponent ]
+      declarations: [CogbytesEditComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-      fixture = TestBed.createComponent(CogbytesEditComponent);
+    fixture = TestBed.createComponent(CogbytesEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

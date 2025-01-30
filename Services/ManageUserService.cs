@@ -74,7 +74,7 @@ namespace AngularSPAWebAPI.Services
                     ).value('.', 'nvarchar(max)'), 1, 6, '') AS PISiteName
                     FROM AspNetUsers";
 
-                using (var dt = await Dal.GetDataTableAsync(sql))
+                using (var dt = Dal.GetDataTable(sql))
                 {
                     foreach (DataRow dr in dt.Rows)
                     {

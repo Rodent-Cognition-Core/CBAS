@@ -6,11 +6,11 @@ import { CogbytesSearchComponent } from './cogbytesSearch.component';
 import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
-    { path: '', component: CogbytesSearchComponent, pathMatch: 'full'}
+  { path: '', component: CogbytesSearchComponent, pathMatch: 'full'}
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
-})
-export class CogbytesSearchRoutingModule { } 
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+  })
+export class CogbytesSearchRoutingModule { }
