@@ -119,12 +119,12 @@ export class CogbytesUploadComponent implements OnInit {
         private fb: FormBuilder
     )
     {
-        this.resetFormVals();
         this.name = fb.control('', [Validators.required])
         this.fileType = fb.control('', [Validators.required])
         this.cognitiveTask = fb.control('', [Validators.required])
         this.intervention = fb.control('', [Validators.required])
         this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')])
+		this.resetFormVals();
     }
         
     
