@@ -87,7 +87,7 @@ export class PubScreenComponent implements OnInit {
     isFullDataAccess: boolean;
 
     //yearFrom = new FormControl('', []);
-    yearTo = new FormControl('', []);
+    public yearTo: FormControl;
 
     _pubSCreenSearch = new Pubscreen();
 
@@ -140,6 +140,11 @@ export class PubScreenComponent implements OnInit {
         public dialogML: MatDialog,
         private fb: FormBuilder    ) { 
 
+        this.authorModel = '';
+        this.titleModel = '';
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.yearTo = fb.control(null);
         this.authorMultiFilterCtrl = fb.control(''),
         this.strainMultiFilterCtrl = fb.control(''),
         this.diseaseMultiFilterCtrl = fb.control(''),
