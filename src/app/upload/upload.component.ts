@@ -46,14 +46,14 @@ export class UploadComponent implements OnInit {
 
     uploadConfirmShowed: boolean = false;
 
+    // DropZone
+    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent;
+    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective;
+
     //fileToUpload: File = null;
     public type: string = 'component';
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
-
-    //DropZone
-    componentRef: any;
-    directiveRef: any;
 
     public config: DropzoneConfigInterface = {
         clickable: true,
@@ -71,9 +71,7 @@ export class UploadComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>,
-        @ViewChild(DropzoneComponent, { static: false }) componentRef: DropzoneComponent,
-        @ViewChild(DropzoneDirective, { static: false }) directiveRef: DropzoneDirective
+        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
 
     ) {
         this.experimentName = '';
