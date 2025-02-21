@@ -47,8 +47,8 @@ export class UploadComponent implements OnInit {
     uploadConfirmShowed: boolean = false;
 
     // DropZone
-    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent;
-    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective;
+    @ViewChild(DropzoneComponent) componentRef!: DropzoneComponent;
+    @ViewChild(DropzoneDirective) directiveRef!: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -82,8 +82,6 @@ export class UploadComponent implements OnInit {
         this.isDrug = false;
         this.ageInMonth = '';
         this.expTask = '';
-        this.componentRef = componentRef;
-        this.directiveRef = directiveRef;
 
 
     }
