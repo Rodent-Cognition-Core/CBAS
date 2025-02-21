@@ -1,0 +1,161 @@
+# version: '3.8'
+
+# services:
+#   backend:
+#     image: mcr.microsoft.com/dotnet/aspnet:8.0-noble
+#     container_name: backend
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     working_dir: /app
+#     command: ["dotnet", "CBAS.dll"]
+#     networks:
+#       - app-network
+#     expose:
+#       - "5000"
+
+#   frontend:
+#     image: nginx:alpine
+#     container_name: frontend
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8080:80"
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+# version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "5000:80"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+
+version: '3.8'
+
+# services:
+#   dotnet-app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.dotnet
+#       target: build
+#     ports:
+#       - "5000:5000"
+#       - "5001:5001"
+#     networks:
+#       - app-network
+#   angular-app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.angular
+#       target: build_node
+#     ports:
+#       - "4200:4200"
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+# version: '3.8'
+
+# services:
+#   angular:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       target: build_node
+#     ports:
+#       - "4200:4200"
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "10m"
+#         max-file: "3"
+
+#   dotnet:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       target: build
+#     ports:
+#       - "5000:5000"
+#       - "5001:5001"
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "10m"
+#         max-file: "3"
+#     depends_on:
+#       - angular
+# version: '3.8'
+
+# services:
+  # angular:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.angular
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - cbas_vol:/shared-data
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+
+
+#   dotnet:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.dotnet
+#     ports:
+#       - "5000:5000"
+#     volumes:
+#       - cbas_vol:/shared-data
+#     environment:
+#        - SEARCH_CERT=${SEARCH_CERT}
+#        - SEARCH_PASS=${SEARCH_PASS}
+#        - SEARCH_USER=${SEARCH_USER}
+#        - DEF_CONN=${DEF_CONN}
+#        - PUB_CONN=${PUB_CONN}
+#        - COG_CONN=${COG_CONN}
+#        - LOG_DIR=${LOG_DIR}
+#        - EMAIL_HOST=${EMAIL_HOST}
+#        - EMAIL_USER=${EMAIL_USER}
+#        - EMAIL_PASS=${EMAIL_PASS}
+#        - PROXY_ADDR=${PROXY_ADDR}
+#     # depends_on:
+#     #   - angular
+#     command: ["dotnet", "watch", "run"]
+# volumes:
+#   cbas_vol:
+
+# version: '3.8'
+
+# services:
+#   backend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: cbas_backend
+#     working_dir: /app
+#     volumes:
+#       - .:/app
+#       - ~/.nuget/packages:/root/.nuget/packages
+#     ports:
+#       - "5000:5000"
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
