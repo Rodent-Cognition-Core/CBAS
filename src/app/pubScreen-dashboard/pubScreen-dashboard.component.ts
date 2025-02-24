@@ -13,6 +13,7 @@ import { NotificationDialogComponent } from '../notification-dialog/notification
 })
 export class PSDashboardComponent implements OnInit {
 
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>
     app: any;
 
    
@@ -20,8 +21,7 @@ export class PSDashboardComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) {
+        private route: ActivatedRoute,) {
 
     }
 

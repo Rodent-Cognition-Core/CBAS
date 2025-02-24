@@ -83,8 +83,8 @@ export class CogbytesUploadComponent implements OnInit {
 
     //componentRef: DropzoneComponent;
     //directiveRef: DropzoneDirective;
-    @ViewChild(DropzoneComponent) componentRef!: DropzoneComponent
-    @ViewChild(DropzoneDirective) directiveRef!: DropzoneDirective
+    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent
+    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -339,9 +339,7 @@ export class CogbytesUploadComponent implements OnInit {
         if (this.type === 'directive') {
             this.directiveRef.reset();
         } else {
-            if (this.componentRef?.directiveRef?.reset) {
-                this.componentRef.directiveRef.reset();
-            }
+            this.componentRef.directiveRef.reset();
         }
 
     }

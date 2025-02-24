@@ -72,8 +72,10 @@ export class DataExtractionComponent implements OnInit {
     _dataExtractionObj: DataExtraction;
 
     linkGuid: any;
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     showGeneratedLink: any;
 
+    public dataSource: MatTableDataSource<Element[]>
     result: any;
     colNames: any;
 
@@ -127,8 +129,6 @@ export class DataExtractionComponent implements OnInit {
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
         private fb: FormBuilder,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
-        public dataSource: MatTableDataSource<Element[]>
     ) {
         this.colNames = [];
         this.showGeneratedLink = false;

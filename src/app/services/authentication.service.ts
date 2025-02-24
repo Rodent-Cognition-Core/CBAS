@@ -25,11 +25,9 @@ import { User } from '../models/user';
     /**
      * Behavior subjects of the user's status & data.
      */
-    _user: User;
-    //private signinStatus = new BehaviorSubject<boolean>(false);
-    //private user = new BehaviorSubject<User>(this._user);
-
-
+    private _user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
+    private signinStatus = new BehaviorSubject<boolean>(false);
+    private user = new BehaviorSubject<User>(this._user);
 
     /**
      * Scheduling of the refresh token.
@@ -43,13 +41,8 @@ import { User } from '../models/user';
 
     constructor(
         private router: Router,
-        private oAuthService: OAuthService,
-        private signinStatus: BehaviorSubject<boolean>,
-        private user: BehaviorSubject<User>
-    ) {
-        this.redirectUrl = "";
-        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
-    }
+        private oAuthService: OAuthService
+    ) { }
 
     public init(): void {
         // Tells all the subscribers about the new status & data.
@@ -60,7 +53,7 @@ import { User } from '../models/user';
     public signout(): void {
         this.oAuthService.logOut(true);
 
-        this.redirectUrl = "";
+        this.redirectUrl = null;
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
@@ -97,7 +90,7 @@ import { User } from '../models/user';
     }
 
     public getUser(): User {
-        const user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+        const user: User = this._user;
         if (this.oAuthService.hasValidAccessToken()) {
             const userInfo: any = this.oAuthService.getIdentityClaims();
 
@@ -182,12 +175,7 @@ import { User } from '../models/user';
     }
 
     private getAuthTime(): number {
-        var storageitem: any = this.storage.getItem("access_token_stored_at");
-        if (storageitem != null) {
-            return parseInt(storageitem, 10);
-        } else {
-            return 0
-        }
+        return parseInt(this.storage.getItem('access_token_stored_at'), 10);
     }
 
 }

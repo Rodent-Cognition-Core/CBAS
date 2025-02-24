@@ -127,6 +127,10 @@ export class PubScreenComponent implements OnInit {
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
+    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
+
+
     showGeneratedLink: any;
 
     constructor(public dialog: MatDialog,
@@ -135,9 +139,7 @@ export class PubScreenComponent implements OnInit {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         public dialogML: MatDialog,
-        private fb: FormBuilder,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>) { 
+        private fb: FormBuilder,) { 
 
         this.pubCount = 0;
         this.featureCount = 0;
