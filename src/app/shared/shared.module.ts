@@ -22,10 +22,10 @@ const sharedModules: any[] = [
 
 @NgModule({
     imports: sharedModules,
+    exports: [sharedModules, SharedExperimentComponent, SharedPubscreenComponent],
     declarations: [
         SharedExperimentComponent, SharedPubscreenComponent
-    ],
-    exports: [sharedModules, SharedExperimentComponent, SharedPubscreenComponent]
+    ]
 })
 
 export class SharedModule { }

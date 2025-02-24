@@ -28,6 +28,7 @@ export class AnimalInfoComponent implements OnInit {
     pager: any = {};
     expfilter: any = '';
     pagedItems: any[];
+    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>
 
     constructor(private animalService: AnimalService,
         private authenticationService: AuthenticationService,
@@ -35,7 +36,6 @@ export class AnimalInfoComponent implements OnInit {
         private location: Location,
         private pagerService: PagerService,
         private spinnerService: NgxSpinnerService,
-        public dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>
     ) {
         this.experimentName = '';
         this.pagedItems = [];

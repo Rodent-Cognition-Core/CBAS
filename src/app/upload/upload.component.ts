@@ -46,6 +46,8 @@ export class UploadComponent implements OnInit {
 
     uploadConfirmShowed: boolean = false;
 
+    public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
+
     // DropZone
     @ViewChild(DropzoneComponent) componentRef!: DropzoneComponent;
     @ViewChild(DropzoneDirective) directiveRef!: DropzoneDirective;
@@ -71,7 +73,6 @@ export class UploadComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
 
     ) {
         this.experimentName = '';

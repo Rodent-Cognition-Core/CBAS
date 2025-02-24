@@ -30,7 +30,9 @@ export class SharedExperimentComponent implements OnInit {
     faQuestionCircle = faQuestionCircle;
     selectedExpValue: any;
     selectedSubExpValue: any;
+    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>
     SubExpModel: any // ngModel for Radio Button
+    dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>
 
     @Input() hideSubExperiment: boolean;
     @Input() showSubExpTbl: boolean;
@@ -57,9 +59,7 @@ export class SharedExperimentComponent implements OnInit {
         private location: Location,
         private snackBar: MatSnackBar,
         private subexpDialogeService: SubExpDialogeService,
-        private spinnerService: NgxSpinnerService,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>) {
+        private spinnerService: NgxSpinnerService,) {
 
         this.hideSubExperiment = false;
         this.showSubExpTbl = false;

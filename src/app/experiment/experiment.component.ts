@@ -35,6 +35,9 @@ export class ExperimentComponent implements OnInit {
     pagerTblFile: any = {};
     pagedItems: any[];
     pagedItemsTblFile: any[];
+    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
+    dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>;
+    dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>;
     //@ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private experimentService: ExperimentService, public dialog: MatDialog,
@@ -42,9 +45,6 @@ export class ExperimentComponent implements OnInit {
         private uploadService: UploadService,
         private spinnerService: NgxSpinnerService,
         private pagerService: PagerService,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>
     ) {
         this.pagedItems = [];
         this.pagedItemsTblFile = [];

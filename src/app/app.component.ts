@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
     navItemsPubscreen: any[] = [
         { name: 'Searching Publications', route: 'pubScreen-search' }
     ];
+    signedIn: Observable<boolean>;
 
     name: string;
     isAdmin: boolean;
@@ -64,7 +65,6 @@ export class AppComponent implements OnInit {
         private router: Router,
         private el: ElementRef,
         angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
-        private signedIn: Observable<boolean>
     ) {
         this.name = '';
         this.isAdmin = false;
