@@ -115,6 +115,9 @@ export class CogbytesSearchComponent implements OnInit {
         this.isFullDataAccess = false;
         this.isSearch = false;
         this.showAll = false;
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.interventionModel = '';
         this.yearTo = fb.control('')
         this.route.queryParams.subscribe(params => {
             this.showAll = false;
@@ -360,13 +363,13 @@ export class CogbytesSearchComponent implements OnInit {
         this._cogbytesSearch.ageID = this.ageModel;
 
         this._cogbytesSearch.yearFrom = this.yearFromSearchModel;
-        this._cogbytesSearch.yearTo = this.yearTo.value;
+        this._cogbytesSearch.yearTo = (this.yearTo.value === '') ? undefined : +this.yearTo.value
 
         this._cogbytesSearch.intervention = this.interventionModel;
 
         this._cogbytesSearch.fileTypeID = this.fileTypeModel;
 
-        //console.log(this._cogbytesSearch);
+        console.log(this._cogbytesSearch);
 
         this.cogbytesService.searchRepositories(this._cogbytesSearch).subscribe(data => {
 
