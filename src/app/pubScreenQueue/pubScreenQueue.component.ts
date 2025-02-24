@@ -33,17 +33,17 @@ export class PubScreenQueueComponent implements OnInit {
     isUser: boolean;
     isFullDataAccess: boolean;
 
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>
     showGeneratedLink: any;
 
+    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>
     private _onDestroy = new Subject<void>();
 
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         public dialogAuthor: MatDialog,
-        private spinnerService: NgxSpinnerService,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
-        public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>) {
+        private spinnerService: NgxSpinnerService,) {
 
         this.isAdmin = false;
         this.isUser = false;
