@@ -28,15 +28,16 @@ export class DashboardComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
     expfilter: any = '';
+    dialogRefDelErrorList: MatDialogRef<DeleteConfirmDialogComponent>;
+    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>;
+    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
+
 
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
         private uploadService: UploadService,
         private authenticationService: AuthenticationService, private pagerService: PagerService,
         private spinnerService: NgxSpinnerService, private animalService: AnimalService,
         public dialog: MatDialog,
-        public dialogRefDelErrorList: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>,
-        public dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>
 
     ) {
 

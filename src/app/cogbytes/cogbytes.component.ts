@@ -31,6 +31,7 @@ export class CogbytesComponent implements OnInit {
     readonly DATASET = 1;
     public uploadKey: number;
     panelOpenState: boolean;
+    dialogRefLink: MatDialogRef<NotificationDialogComponent>
     showGeneratedLink: boolean;
     public repModel: any;
 
@@ -56,7 +57,6 @@ export class CogbytesComponent implements OnInit {
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
         private spinnerService: NgxSpinnerService,
-        public dialogRefLink: MatDialogRef<NotificationDialogComponent>,
         public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>
     )
     {
