@@ -57,6 +57,7 @@ import { User } from '../models/user';
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
+        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
         this.user.next(this._user);
 
         // Unschedules the refresh token.
