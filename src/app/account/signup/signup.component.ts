@@ -38,7 +38,7 @@ export class SignupComponent extends Signin {
     GetPISiteList() {
 
         this.piSiteService.getPISite().subscribe((data) => {
-            this.piSiteList = data.PISite;
+            this.piSiteList = data;
             //console.log(this.piSiteList);
         });
 
