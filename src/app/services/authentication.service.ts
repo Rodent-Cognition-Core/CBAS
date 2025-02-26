@@ -12,7 +12,9 @@ import { User } from '../models/user';
 /**
  * ROPC Authentication service.
  */
-@Injectable() export class AuthenticationService {
+@Injectable({ 
+    providedIn: 'root',
+ }) export class AuthenticationService {
 
     // As in OAuthConfig.
     public storage: Storage = localStorage;
