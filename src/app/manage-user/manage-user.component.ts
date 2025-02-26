@@ -49,7 +49,7 @@ export class ManageUserComponent implements OnInit {
 
     // Function defintion to add pagination to tabl Uploadlist (minor errors)
     setPage(page: number) {
-        var filteredItems = this.userList;
+        let filteredItems = this.userList;
 
         filteredItems = this.filterByString(this.userList, this.expfilter);
 
@@ -69,12 +69,14 @@ export class ManageUserComponent implements OnInit {
         this.setPage(1);
     }
 
-    filterByString(data : any, s : string): any {
+    filterByString(data: any, s: string): any {
         s = s.trim();
-        //console.log(s.toString());
-        return data.filter((e : any) => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
-        //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
-    }
+        // console.log(s.toString());
+        const dataArray = Array.isArray(data.result) ? data.result : [];
+        return dataArray.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) ||
+              e.givenName.includes(s) || e.emailConfirmed.toString().includes(s));
+      }
+    
 
     // Delete User
     deleteUser(username: string) {
