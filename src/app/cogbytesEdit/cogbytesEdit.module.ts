@@ -20,7 +20,6 @@ import { CogbytesService } from '../services/cogbytes.service'
         
     ],
     providers: [
-        AuthenticationService,
         CogbytesService,
         PagerService,
         

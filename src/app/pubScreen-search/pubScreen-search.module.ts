@@ -20,7 +20,6 @@ import { PagerService } from '../services/pager.service';
         
     ],
     providers: [
-        AuthenticationService,
         PubScreenService,
         PagerService,
         

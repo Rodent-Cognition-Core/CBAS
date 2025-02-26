@@ -155,7 +155,6 @@ const ROUTES: Routes = [
             multi: true
         },
         AuthGuard,
-        AuthenticationService,
         IdentityService,
         PISiteService,
         ManageUserService,
