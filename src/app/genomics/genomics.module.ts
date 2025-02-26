@@ -30,7 +30,6 @@ import { PagerService } from '../services/pager.service';
         
     ],
     providers: [
-        AuthenticationService,
         TaskAnalysisService,
         //GenomicsService,
         PagerService,
