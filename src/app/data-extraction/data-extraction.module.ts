@@ -31,7 +31,6 @@ import { ExpDialogeService } from '../services/expdialoge.service';
         
     ],
     providers: [
-        AuthenticationService,
         TaskAnalysisService,
         DataExtractionService,
         PagerService,

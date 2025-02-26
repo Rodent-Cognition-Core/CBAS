@@ -32,7 +32,6 @@ import { AuthenticationService } from '../services/authentication.service';
 
     ],
     providers: [
-        AuthenticationService,
         UploadService,
         {
             provide: DROPZONE_CONFIG,
