@@ -147,7 +147,7 @@ export class PubScreenComponent implements OnInit {
         this.isAdmin = false;
         this.isUser = false;
         this.isFullDataAccess = false;
-        this.authorModel = '';
+        this.authorModel = [];
         this.titleModel = '';
         this.doiModel = '';
         this.keywordsModel = '';
@@ -752,7 +752,7 @@ export class PubScreenComponent implements OnInit {
         this._pubSCreenSearch.subMethodID = this.subMethodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
         this._pubSCreenSearch.yearFrom = this.yearFromSearchModel;
-        this._pubSCreenSearch.yearTo = (this.yearTo.value === '') ? null : +this.yearTo.value;
+        this._pubSCreenSearch.yearTo = (this.yearTo.value === '') ? undefined : +this.yearTo.value;
         this._pubSCreenSearch.subTaskID = this.subTaskModel;
         this._pubSCreenSearch.search = this.searchModel;
 
