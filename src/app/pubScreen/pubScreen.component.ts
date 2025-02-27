@@ -165,11 +165,11 @@ export class PubScreenComponent implements OnInit {
         this.neurotransmitterMultiFilterCtrl = fb.control([]),
         this._pubSCreenSearch = {
             abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
-            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
-            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            diseaseID: [], diseaseOther: '', doi: '', id: undefined, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: undefined, paperTypeIdSearch: [], reference: '', regionID: [],
             search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
             strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
-            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+            title: '', transmitterID: [], year: undefined, yearFrom: undefined, yearID: [], yearTo: undefined
         }
         }
 
