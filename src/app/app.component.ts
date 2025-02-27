@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
     ];
     signedIn: Observable<boolean>;
 
-    public signedIn!: Observable<boolean>;
+    // public signedIn!: Observable<boolean>;
 
     name: string;
     isAdmin: boolean;
@@ -73,6 +73,7 @@ export class AppComponent implements OnInit {
         this.isUser = false;
         this.isFullDataAccess = false;
         this.showFooter = false;
+        this.signedIn = this.authenticationService.isSignedIn();
 
         if (this.oAuthService.hasValidAccessToken()) {
             this.authenticationService.init();
@@ -91,8 +92,6 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.title.setTitle('MouseBytes');
-
-        this.signedIn = this.authenticationService.isSignedIn();
 
         this.authenticationService.userChanged().subscribe(
             (user: User) => {

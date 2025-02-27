@@ -13,8 +13,8 @@ export interface CogbytesSearch {
      genoID: Array<number>;
      ageID: Array<number>;
 
-     yearFrom: number;
-     yearTo: number;
+     yearFrom: any;
+     yearTo: any
 
      intervention: string;
 

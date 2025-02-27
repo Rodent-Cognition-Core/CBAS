@@ -98,11 +98,11 @@ export class CogbytesUploadComponent implements OnInit {
         clickable: true,
         maxFiles: 5000,
         maxFilesize: 10000,
-        autoReset: null,
-        errorReset: null,
-        cancelReset: null,
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
         timeout: 36000000,
-        headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+        headers: {}
     };
     
 
@@ -112,9 +112,9 @@ export class CogbytesUploadComponent implements OnInit {
         private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
         private fb: FormBuilder,
-        public dialogRefDelFile: MatDialog
+        public dialogRefDelFile: MatDialog,
+        @Inject(MAT_DIALOG_DATA) public data: any
 
     )
     {
@@ -132,6 +132,7 @@ export class CogbytesUploadComponent implements OnInit {
         this.cognitiveTask = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);
         this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
+        this.config.headers = { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() };
 
         this.resetFormVals();
     }
@@ -424,7 +425,7 @@ export class CogbytesUploadComponent implements OnInit {
                 //window.open(url);
 
                 var fileData = new Blob([result]);
-                var csvURL = null;
+                var csvURL = '';
                 //if (navigator.msSaveBlob) {
                 //    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
                 //} else {
