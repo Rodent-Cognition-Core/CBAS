@@ -50,10 +50,6 @@ export class UploadComponent implements OnInit {
     uploadConfirmShowed: boolean = false;
 
 
-    // DropZone
-
-    @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
-    @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -63,11 +59,11 @@ export class UploadComponent implements OnInit {
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
-        autoReset: null,
-        errorReset: null,
-        cancelReset: null,
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
         timeout: 36000000,
-        headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+        headers: { }
     };
 
     constructor(
@@ -87,6 +83,7 @@ export class UploadComponent implements OnInit {
         this.isDrug = false;
         this.ageInMonth = '';
         this.expTask = '';
+        this.config.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
 
     }
 
