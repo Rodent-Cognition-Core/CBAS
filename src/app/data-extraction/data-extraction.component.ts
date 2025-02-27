@@ -74,8 +74,6 @@ export class DataExtractionComponent implements OnInit {
 
     linkGuid: any;
     showGeneratedLink: any;
-
-    public dataSource: MatTableDataSource<Element[]>
     result: any;
     colNames: any;
 

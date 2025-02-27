@@ -24,7 +24,8 @@ const sharedModules: any[] = [
     imports: [sharedModules],
     declarations: [
         SharedExperimentComponent, SharedPubscreenComponent
-    ]
+    ],
+    exports: [sharedModules, SharedExperimentComponent, SharedPubscreenComponent]
 })
 
 export class SharedModule { }

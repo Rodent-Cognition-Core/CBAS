@@ -2,12 +2,12 @@ import { PubscreenAuthor } from "./pubscreenAuthor";
 
 export interface Pubscreen {
 
-     id: number;
+     id: any;
      title: string;
      abstract: string;
      keywords: string;
      doi: string;
-     year: string;
+     year: any;
      yearID: Array<string>;
      authourID: Array<number>;
      authorString: string;
@@ -30,8 +30,8 @@ export interface Pubscreen {
      author: Array<PubscreenAuthor>;
      reference: string;
      source: string;
-     yearFrom: number;
-     yearTo: number;
+     yearFrom: any;
+     yearTo: any;
      taskOther: string;
      specieOther: string;
      strainMouseOther: string;
