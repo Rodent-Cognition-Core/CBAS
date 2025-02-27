@@ -16,7 +16,6 @@ import { User } from '../models/user'
 export class DataVisualizationComponent implements OnInit {
 
     selectedCogTaskValue: any = '';
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
     user: User;
 
