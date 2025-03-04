@@ -342,7 +342,6 @@ tempkey.rsa
 npm-debug.log
 testem.log
 /typings
-.eslintrc.js
 
 # e2e
 /e2e/*.js
