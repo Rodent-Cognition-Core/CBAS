@@ -12,7 +12,7 @@ export interface Pubscreen {
      authourID: Array<number>;
      authorString: string;
      paperTypeIdSearch: Array<number>;
-     paperTypeID: number;
+     paperTypeID: any;
      paperType: string;
      taskID: Array<number>;
      subTaskID: Array<number>;
