@@ -186,7 +186,13 @@ import { User } from '../models/user';
     }
 
     private getAuthTime(): number {
-        return parseInt(this.storage.getItem('access_token_stored_at'), 10);
+        const storageitem: any = this.storage.getItem('access_token_stored_at');
+        if(storageitem != null) {
+            return parseInt(storageitem, 10);
+        } else {
+            return 0;
+        }
+
     }
 
 }
