@@ -315,8 +315,8 @@ export class CogbytesSearchComponent implements OnInit {
 
         if
             (
-            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == null
-            && this.doiModel == null && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
+            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == ''
+            && this.doiModel == '' && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
             && this.strainModel == null && this.genoModel == null && this.ageModel == null
         ) {
             return true;
