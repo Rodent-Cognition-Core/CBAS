@@ -1,16 +1,20 @@
-import { Component, Input, Inject } from '@angular/core';
+import { Component, Input, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'message-dialog',
     templateUrl: './notification-dialog.component.html',
 })
-export class NotificationDialogComponent {
+export class NotificationDialogComponent implements OnInit {
 
     public message: string;
     constructor(public dialogRef: MatDialogRef<NotificationDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
         this.message = '';
+    }
+
+    ngOnInit() {
+      
     }
 
     //copyToClipboard() {
