@@ -59,7 +59,7 @@ export interface animalResponse {
     public createAnimal(animal: Animal): Observable<any> {
 
         const body: string = JSON.stringify(animal);
-        return this.http.put<any>("/api/animal/CreateAnimal", body, {
+        return this.http.post<any>("/api/animal/CreateAnimal", body, {
             headers: this.authenticationService.getAuthorizationHeader()
         });
 
