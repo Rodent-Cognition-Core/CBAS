@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 //import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 //import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from "rxjs";
+import { throwError, Observable } from "rxjs";
 
 import { Experiment } from '../models/experiment';
 import { AuthenticationService } from './authentication.service';
@@ -29,7 +29,7 @@ import { AuthenticationService } from './authentication.service';
     //        });
     //}
 
-    public create(experiment: Experiment): any {
+    public create(experiment: Experiment): Observable<any> {
 
         const body: string = JSON.stringify(experiment);
             
