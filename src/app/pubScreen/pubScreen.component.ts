@@ -30,28 +30,28 @@ export class PubScreenComponent implements OnInit {
     pubCount: number;
     featureCount: number;
 
-    authorModel: any;
+    authorModel: Array<number>;
     titleModel: any;
     abstractModel: any;
     yearModel: any;
     keywordsModel: any;
     doiModel: any;
-    paperTypeModel: any;
-    cognitiveTaskModel: any;
-    specieModel: any;
-    sexModel: any;
-    strainModel: any;
-    diseaseModel: any;
-    subModel: any;
-    regionModel: any;
-    subRegionModel: any;
-    cellTypeModel: any;
+    paperTypeModel: Array<number>;
+    cognitiveTaskModel: Array<number>;
+    specieModel: Array<number>;
+    sexModel: Array<number>;
+    strainModel: Array<number>;
+    diseaseModel: Array<number>;
+    subModel: Array<number>;
+    regionModel: Array<number>;
+    subRegionModel: Array<number>;
+    cellTypeModel: Array<number>;
     addingOptionModel: any;
-    methodModel: any;
-    subMethodModel: any;
-    neurotransmitterModel: any;
+    methodModel: Array<number>;
+    subMethodModel: Array<number>;
+    neurotransmitterModel: Array<number>;
     yearFromSearchModel: any;
-    subTaskModel: any;
+    subTaskModel: Array<number>;
     panelOpenState = false;
     searchModel: any;
     // Definiing List Variables 
@@ -153,6 +153,21 @@ export class PubScreenComponent implements OnInit {
         this.doiModel = '';
         this.keywordsModel = '';
         this.searchModel = '';
+        this.authorModel = [];
+        this.cognitiveTaskModel = [];
+        this.paperTypeModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.diseaseModel = [];
+        this.subModel = [];
+        this.regionModel = [];
+        this.subRegionModel = [];
+        this.cellTypeModel = [];
+        this.methodModel = [];
+        this.subMethodModel = [];
+        this.neurotransmitterModel = [];
+        this.subTaskModel = [];
         this.authorMultiFilterCtrl = fb.control([]),
         this.strainMultiFilterCtrl = fb.control([]),
         this.subTaskMultiFilterCtrl = fb.control([]),
