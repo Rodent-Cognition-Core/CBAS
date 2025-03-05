@@ -11,7 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 //import { UploadService } from '../services/upload.service';
 import { CogbytesService } from '../services/cogbytes.service'
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil, map } from 'rxjs/operators';
 import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
 
@@ -159,12 +159,11 @@ export class ExpDialogeComponent implements OnInit {
 
     onCloseSubmit(): void {
         this.spinnerService.show();
-
         this._experiment.ExpName = this.exp.value;
-        this._experiment.StartExpDate = this.sDate.value;
-        this._experiment.EndExpDate = this.eDate.value;
+        this._experiment.StartExpDate = new Date(this.sDate.value);
+        this._experiment.EndExpDate = new Date(this.eDate.value);
         this._experiment.TaskID = this.getSelectedTask(this.task.value).id; // should be readonly
-        this._experiment.SpeciesID = this.species.value;
+        this._experiment.SpeciesID = parseInt(this.species.value);
         this._experiment.TaskDescription = this.expDescription.value;
         this._experiment.TaskBattery = this.expBattery.value;
         this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
@@ -175,13 +174,11 @@ export class ExpDialogeComponent implements OnInit {
             this._experiment.repoGuid = this.repModel;
         }
 
-        //console.log(this._experiment.ImageIds);
-
         if (this.data.experimentObj == null) {
             // Insert Mode: Insert Experiment
             this.isTaken = false;
 
-            this.expDialogeService.create(this._experiment).map((res : any) => {
+            this.expDialogeService.create(this._experiment).pipe(map((res : any) => {
                 if (res == "Taken") {
                     this.isTaken = true;
                     this.exp.setErrors({ 'taken': true });
@@ -189,7 +186,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe((data : any) => {
+            })).subscribe((data : any) => {
 
                 setTimeout(() => {
                     this.spinnerService.hide();
@@ -203,7 +200,7 @@ export class ExpDialogeComponent implements OnInit {
 
             this.isTaken = false;
             this._experiment.ExpID = this.data.experimentObj.expID;
-            this.expDialogeService.updateExp(this._experiment).map((res : any) => {
+            this.expDialogeService.updateExp(this._experiment).pipe(map((res : any) => {
 
 
 
@@ -214,7 +211,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe((data : any) => {
+            })).subscribe((data : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
 
