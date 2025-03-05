@@ -4,6 +4,7 @@ import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } 
 //import { NgModel } from '@angular/forms';
 import { SubExperiment } from '../models/subexperiment';
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
+import { map } from 'rxjs/operators'
 import { FIELDISREQUIRED, SUBEXPERIEMENTWITHSAMECONDITIONS, SUBEXPERIMENTNAMETAKEN } from '../shared/messages';
 
 @Component({
@@ -273,9 +274,8 @@ export class SubExpDialogeComponent implements OnInit {
             this.intDes.setValue('');
 
         }
-
         this._subexperiment.SubExpName = this.subExp.value;
-        this._subexperiment.AgeID = this.ageInMonth.value;
+        this._subexperiment.AgeID = parseInt(this.ageInMonth.value);
         this._subexperiment.ExpID = this.data.expObj.expID;
         this._subexperiment.isIntervention = this.intervention.value == "1" ? true : false;
         this._subexperiment.isDrug = this.isDrug.value == "1" ? true : false;
@@ -295,7 +295,7 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenAge = false;
 
 
-            this.subexpDialogeService.createSubExp(this._subexperiment).map((res: any) => {
+            this.subexpDialogeService.createSubExp(this._subexperiment).pipe(map((res: any) => {
 
                 //console.log('create');
                 //console.log(res);
@@ -312,7 +312,7 @@ export class SubExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe();
+            })).subscribe();
 
         } else { // Edit Mode: edit sub experiment
 
