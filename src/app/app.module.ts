@@ -1,4 +1,4 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -141,6 +141,7 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
     exports: [
 
      ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         Title,
         OAuthConfig,
