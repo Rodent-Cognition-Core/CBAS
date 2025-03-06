@@ -15,6 +15,7 @@ import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
 import { NgxSpinnerService } from 'ngx-spinner';
+import { map } from 'rxjs/operators';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 
@@ -172,9 +173,9 @@ export class CogbytesComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.cogbytesService.deleteRepository(this.getRep().id).map((res: any) => {
+                this.cogbytesService.deleteRepository(this.getRep().id).pipe(map((res: any) => {
 
-                }).subscribe();
+                })).subscribe();
                 this.spinnerService.hide();
                 this.repModel = null;
             }
