@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { map } from 'rxjs/operators';
 //import { NgModel } from '@angular/forms';
 //import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -836,7 +837,7 @@ export class PubScreenComponent implements OnInit {
 
                 console.log(pubID);
 
-                this.pubScreenService.deletePublicationById(pubID).map((res : any) => {
+                this.pubScreenService.deletePublicationById(pubID).pipe(map((res : any) => {
 
 
                     this.spinnerService.hide();
@@ -844,7 +845,7 @@ export class PubScreenComponent implements OnInit {
 
                     location.reload()
 
-                }).subscribe();
+                })).subscribe();
             }
             //this.dialogRef = null;
             dialogRef.close();
