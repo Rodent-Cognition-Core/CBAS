@@ -11,6 +11,7 @@ import {
 import { ViewChild } from '@angular/core'
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component'
 import { OAuthService } from 'angular-oauth2-oidc';
+import { map } from 'rxjs/operators';
 import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
 
 //declare global {
@@ -468,9 +469,9 @@ export class CogbytesUploadComponent implements OnInit {
                 }, 500);
 
                 let path = file.permanentFilePath + '\\' + file.sysFileName;
-                this.cogbytesService.deleteFile(file.expID, path).map((res : any) => {
+                this.cogbytesService.deleteFile(file.expID, path).pipe(map((res : any) => {
 
-                }).subscribe(
+                })).subscribe(
                     (response : any) => { this.UpdateFileList(); });
 
                 //this.spinnerService.hide();
