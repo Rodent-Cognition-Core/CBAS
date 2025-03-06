@@ -16,6 +16,7 @@ import { CogbytesService } from '../services/cogbytes.service'
 //import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-shared-experiment',
@@ -148,7 +149,7 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.experimentService.deleteExperimentbyID(expID).map((res : any) => {
+                this.experimentService.deleteExperimentbyID(expID).pipe(map((res : any) => {
 
                     
                     this.spinnerService.hide();
@@ -156,7 +157,7 @@ export class SharedExperimentComponent implements OnInit {
 
                     location.reload()
 
-                }).subscribe();
+                })).subscribe();
             }
             //this.dialogRef = null;
             dialogRef.close();
@@ -173,13 +174,13 @@ export class SharedExperimentComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).map((res : any) => {
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((res : any) => {
                    // location.reload()
                     this.GetSubExpSelect(this.selectedExpValue);
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
                    
-                }).subscribe();
+                })).subscribe();
             }
             //this.dialogRef = null;
             dialogRef.close();
