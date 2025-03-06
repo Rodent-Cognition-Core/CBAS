@@ -58,7 +58,7 @@ export class ReqMouseLineDialogeComponent implements OnInit {
         this.refModel = '';
         this.controlModel = '';
         this.name = fb.control('', [Validators.required]);
-        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
         this.strain = fb.control('', [Validators.required]);
         this.geneticModi = fb.control('', [Validators.required])
         this._request = {

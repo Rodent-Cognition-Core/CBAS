@@ -40,7 +40,7 @@ export class ReqPubTaskDialogeComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.name = fb.control('', [Validators.required]);
-        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
         this.taskCategory = fb.control('', [Validators.required]);
         this.newCategory = fb.control('', [Validators.required]);
         this.newTask = fb.control('', [Validators.required]);
