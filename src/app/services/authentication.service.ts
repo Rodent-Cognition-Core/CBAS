@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable ,  BehaviorSubject } from 'rxjs';
+import { Observable ,  BehaviorSubject, Subscription, timer } from 'rxjs';
 import { interval } from 'rxjs';
-import { timer } from 'rxjs';
 
 import { OAuthService } from 'angular-oauth2-oidc';
 
@@ -32,12 +31,12 @@ import { User } from '../models/user';
     /**
      * Scheduling of the refresh token.
      */
-    private refreshSubscription: any;
+    private refreshSubscription: Subscription | undefined;
 
     /**
      * Offset for the scheduling to avoid the inconsistency of data on the client.
      */
-    private offsetSeconds: number = 30;
+    private offsetSeconds: number = 60;
 
     private signinStatus = new BehaviorSubject<boolean>(false);
 
@@ -118,14 +117,15 @@ import { User } from '../models/user';
      * Will schedule a refresh at the appropriate time.
      */
     public scheduleRefresh(): void {
-        const source: Observable<number> = interval(
-            this.calcDelay(this.getAuthTime())
-        );
+        this.unscheduleRefresh();
+        const expiresAt: number = this.oAuthService.getAccessTokenExpiration();
+        const delay = this.calcDelay(expiresAt);
+        const source: Observable<number> = timer(delay);
 
         this.refreshSubscription = source.subscribe(() => {
             this.oAuthService.refreshToken()
                 .then(() => {
-                    // Scheduler works.
+                    this.scheduleRefresh();
                 })
                 .catch((error: any) => {
                     this.handleRefreshTokenError();
@@ -138,18 +138,7 @@ import { User } from '../models/user';
      */
     public startupTokenRefresh(): void {
         if (this.oAuthService.hasValidAccessToken()) {
-            const source: Observable<number> = timer(this.calcDelay(new Date().valueOf()));
-
-            // Once the delay time from above is reached, gets a new access token and schedules additional refreshes.
-            source.subscribe(() => {
-                this.oAuthService.refreshToken()
-                    .then(() => {
-                        this.scheduleRefresh();
-                    })
-                    .catch((error: any) => {
-                        this.handleRefreshTokenError();
-                    });
-            });
+            this.scheduleRefresh();
         }
     }
 
@@ -180,9 +169,9 @@ import { User } from '../models/user';
     }
 
     private calcDelay(time: number): number {
-        const expiresAt: number = this.oAuthService.getAccessTokenExpiration();
-        const delay: number = expiresAt - time - this.offsetSeconds * 1000;
-        return delay > 0 ? delay : 0;
+        const now = new Date().valueOf();
+        const delay: number = time - now - (this.offsetSeconds * 1000);
+        return delay > 0 ? delay : 1000;
     }
 
     private getAuthTime(): number {

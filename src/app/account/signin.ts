@@ -39,9 +39,6 @@ export class Signin {
             .then(() => {
                 this.authenticationService.init();
 
-                // Strategy for refresh token through a scheduler.
-                this.authenticationService.scheduleRefresh();
-
                 // Gets the redirect URL from authentication service.
                 // If no redirect has been set, uses the default.
                 const redirect: string = this.authenticationService.redirectUrl

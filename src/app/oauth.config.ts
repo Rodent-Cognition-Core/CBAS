@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 
+import { AuthenticationService } from './services/authentication.service';
+
 import { environment } from '../environments/environment';
 
 export const oAuthDevelopmentConfig: AuthConfig = {
@@ -32,7 +34,9 @@ export const oAuthProductionConfig: AuthConfig = {
     providedIn: 'root',
 })
 export class OAuthConfig {
-    constructor(private oAuthService: OAuthService) { }
+    constructor(private oAuthService: OAuthService,
+                private authenticationService: AuthenticationService
+    ) { }
 
     load(): Promise<void> {
         const config = environment.production
@@ -50,6 +54,7 @@ export class OAuthConfig {
             .loadDiscoveryDocumentAndTryLogin()
             .then(() => {
                 // Additional logic after successful configuration, if needed
+                this.authenticationService.startupTokenRefresh();
                 console.log('OAuth configuration loaded successfully');
             })
             .catch((error) => {
