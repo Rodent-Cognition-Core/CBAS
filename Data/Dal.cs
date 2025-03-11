@@ -8,6 +8,8 @@ using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AngularSPAWebAPI.Models;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 
 namespace AngularSPAWebAPI.Services
@@ -396,72 +398,52 @@ namespace AngularSPAWebAPI.Services
         }
 
 
-        private static SqlDataReader GetReader(SqlConnection connection, CommandType cmdType, string cmdTxt, SqlParameter[] cmdParams)
+        private static async Task<List<T>> GetReaderAsync<T>(string connectionString, string cmdTxt, Func<SqlDataReader, T> map , List<SqlParameter> cmdParams = null)
         {
-            SqlDataReader dr;
-
-            using (SqlCommand cmd = new SqlCommand())
+            var connection = new SqlConnection(connectionString);
+            List<T> result = new List<T>();
+            try
             {
+                await connection.OpenAsync();
+                var cmd = new SqlCommand(cmdTxt, connection);
+                cmd.CommandType = CommandType.Text;
                 cmd.CommandTimeout = 300;
-                ProcCmd(cmd, connection, cmdType, cmdTxt, cmdParams);
 
-                dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-
-                cmd.Parameters.Clear();
-            }
-            return dr;
-        }
-
-        public static SqlDataReader GetReader(string cmdTxt)
-        {
-            return GetReader(CommandType.Text, cmdTxt);
-        }
-
-        public static SqlDataReader GetReader(CommandType cmdType, string cmdTxt)
-        {
-            return GetReader(cmdType, cmdTxt, (SqlParameter[])null);
-        }
-
-        // pubscreen
-        public static SqlDataReader GetReaderPub(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
-        {
-            SqlConnection cn = new SqlConnection(_cnnString_PubScreen);
-            cn.Open();
-
-            try
-            {
-                return GetReader(cn, cmdType, cmdTxt, cmdParams);
-            }
-            catch
-            {
-                cn.Close();
-                throw;
-            }
-        }
-
-        public static SqlDataReader GetReaderCog(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
-        {
-            SqlConnection cn = new SqlConnection(_cnnString_Cogbytes);
-            try
-            {
-                cn.Open();
-                return GetReader(cn, cmdType, cmdTxt, cmdParams);
-            }
-            catch (SqlException ex)
-            {
-                Log.Fatal($"SQL Exception: {ex.Message}");
-                throw;
+                if (cmdParams != null)
+                {
+                    foreach (var param in cmdParams)
+                    {
+                        if (param.Value != null)
+                        {
+                            cmd.Parameters.Add(param);
+                        }
+                    }
+                }
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        result.Add(map(reader));
+                    }
+                    return result;
+                }
+                return default(List<T>);
             }
             catch (Exception ex)
             {
-                Log.Fatal($"Exception: {ex.Message}");
+                string message = "Error in GetReaderAsync, the following error occured: " + ex.Message;
+                if (ex.InnerException != null)
+                {
+                    message += ". The following inner exception: " + ex.InnerException;
+                }
+                Log.Error("Error in GetReaderAsync, the following error occured: " + message);
                 throw;
             }
             finally
             {
-                if (cn.State == ConnectionState.Open)
+                if(connection.State == System.Data.ConnectionState.Open)
                 {
-                    cn.Close();
+                    connection.Close();
                 }
             }
         }
@@ -675,33 +657,6 @@ namespace AngularSPAWebAPI.Services
                     {
                         await conn.CloseAsync();
                     }
-                }
-            }
-        }
-
-        public static SqlDataReader GetReader(CommandType cmdType, string cmdTxt, params SqlParameter[] cmdParams)
-        {
-            SqlConnection cn = new SqlConnection(_cnnString);
-            try
-            {
-                cn.Open();
-                return GetReader(cn, cmdType, cmdTxt, cmdParams);
-            }
-            catch (SqlException ex)
-            {
-                Log.Fatal($"SQL Exception: {ex.Message}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal($"Exception: {ex.Message}");
-                throw;
-            }
-            finally
-            {
-                if (cn.State == ConnectionState.Open)
-                {
-                    cn.Close();
                 }
             }
         }
@@ -1184,6 +1139,20 @@ namespace AngularSPAWebAPI.Services
             return pubScreen;
         }
 
+        // pubscreen
+        public static async Task<List<T>> GetReaderPubAsync<T>(string cmdTxt, Func<SqlDataReader, T> map, List<SqlParameter> cmdParams = null)
+        {
+            return await GetReaderAsync(_cnnString_PubScreen, cmdTxt, map, cmdParams);
+        }
 
+        public static async Task<List<T>> GetReaderCogAsync<T>(string cmdTxt, Func<SqlDataReader, T> map, List<SqlParameter> cmdParams = null)
+        {
+            return await GetReaderAsync(_cnnString_Cogbytes, cmdTxt, map, cmdParams);
+        }
+
+        public static async Task<List<T>> GetReader<T>(string cmdTxt, Func<SqlDataReader, T> map, List<SqlParameter> cmdParams = null)
+        {
+            return await GetReaderAsync(_cnnString, cmdTxt, map, cmdParams);
+        }
     }
 }
