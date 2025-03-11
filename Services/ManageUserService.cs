@@ -73,21 +73,15 @@ namespace AngularSPAWebAPI.Services
                         FOR XML PATH(''), TYPE
                     ).value('.', 'nvarchar(max)'), 1, 6, '') AS PISiteName
                     FROM AspNetUsers";
-
-                using (var dt = await Dal.GetDataTableAsync(sql))
+                lstUser = await Dal.GetReader(sql, reader => new Users
                 {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        lstUser.Add(new Users
-                        {
-                            GivenName = Convert.ToString(dr["GivenName"]),
-                            FamilyName = Convert.ToString(dr["FamilyName"]),
-                            Email = Convert.ToString(dr["Email"]),
-                            EmailConfirmed = Convert.ToBoolean(dr["EmailConfirmed"]),
-                            PISiteName = Convert.ToString(dr["PISiteName"])
-                        });
-                    }
-                }
+                    GivenName = Convert.ToString(reader.GetValue(reader.GetOrdinal("GivenName"))),
+                    FamilyName = Convert.ToString(reader.GetValue(reader.GetOrdinal("FamilyName"))),
+                    Email = Convert.ToString(reader.GetValue(reader.GetOrdinal("Email" +
+                    ""))),
+                    EmailConfirmed = Convert.ToBoolean(reader.GetValue(reader.GetOrdinal("EmailConfirmed"))),
+                    PISiteName = Convert.ToString(reader.GetValue(reader.GetOrdinal("PISiteName")))
+                });
             }
             catch (Exception ex)
             {
