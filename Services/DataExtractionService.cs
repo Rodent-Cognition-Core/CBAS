@@ -706,60 +706,64 @@ namespace AngularSPAWebAPI.Services
 
 
 
-        public GetDataResult GetDataFromDbByLinkGuid(Guid linkGuid)
+        public async Task <GetDataResult> GetDataFromDbByLinkGuid(Guid linkGuid)
         {
-            var linkModel = new LinkModel();
+            //var linkModel = new LinkModel();
             string interventionDescription = string.Empty;
             string SessionNameDescription = string.Empty;
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
 
-            using (IDataReader dr = Dal.GetReader(CommandType.Text, "select top 1 * from Links where LinkGuid=@LinkGuid", parameters.ToArray()))
+            string selectQuery = "select top 1 * from Links where LinkGuid=@LinkGuid";
+
+            var linkModels = await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
             {
-                if (dr.Read())
-                {
-                    linkModel.TaskId = Convert.ToInt32(dr["TaskID"].ToString());
-                    linkModel.SpeciesId = Convert.ToInt32(dr["SpeciesID"].ToString());
-                    linkModel.SubTaskId = Convert.ToInt32(dr["SubTaskId"].ToString());
-                    linkModel.ExpIdCsv = Convert.ToString(dr["ExpIdCsv"]);
-                    linkModel.AnimalAgeCsv = Convert.ToString(dr["AnimalAgeCsv"]);
-                    linkModel.AnimalSexCsv = Convert.ToString(dr["AnimalSexCsv"]);
-                    linkModel.AnimalGenotypeCsv = Convert.ToString(dr["AnimalGenotypeCsv"]);
-                    linkModel.AnimalStrainCsv = Convert.ToString(dr["AnimalStrainCsv"]);
-                    linkModel.PiSiteIdsCsv = Convert.ToString(dr["PiSiteIdsCsv"]);
-                    linkModel.SessionInfoNamesCsv = Convert.ToString(dr["SessionInfoNamesCsv"]);
-                    linkModel.MarkerInfoNamesCsv = Convert.ToString(dr["MarkerInfoNamesCsv"]);
-                    linkModel.AggNamesCsv = Convert.ToString(dr["AggNamesCsv"]);
-                    linkModel.IsTrialByTrials = bool.Parse(dr["IsTrialByTrial"].ToString());
-                    linkModel.SubExpIDcsv = Convert.ToString(dr["SubExpIDcsv"]);
-                    linkModel.SessionNameCsv = Convert.ToString(dr["SessionNameCsv"]);
-                    if (!string.IsNullOrEmpty(linkModel.SubExpIDcsv))
-                    {
-                        interventionDescription = $"Intervention: <b>{GetInterventionFromIdCsv(Convert.ToString(dr["SubExpIDcsv"]))}</b><br />";
-                    }
+                TaskId = Convert.ToInt32(reader.GetOrdinal("TaskID").ToString()),
+                SpeciesId = Convert.ToInt32(reader.GetOrdinal("SpeciesID").ToString()),
+                SubTaskId = Convert.ToInt32(reader.GetOrdinal("SubTaskId").ToString()),
+                ExpIdCsv = Convert.ToString(reader.GetOrdinal("ExpIdCsv").ToString()),
+                AnimalAgeCsv = Convert.ToString(reader.GetOrdinal("AnimalAgeCsv").ToString()),
+                AnimalSexCsv = Convert.ToString(reader.GetOrdinal("AnimalSexCsv").ToString()),
+                AnimalGenotypeCsv = Convert.ToString(reader.GetOrdinal("AnimalGenotypeCsv").ToString()),
+                AnimalStrainCsv = Convert.ToString(reader.GetOrdinal("AnimalStrainCsv").ToString()),
+                PiSiteIdsCsv = Convert.ToString(reader.GetOrdinal("PiSiteIdsCsv").ToString()),
+                SessionInfoNamesCsv = Convert.ToString(reader.GetOrdinal("SessionInfoNamesCsv").ToString()),
+                MarkerInfoNamesCsv = Convert.ToString(reader.GetOrdinal("MarkerInfoNamesCsv").ToString()),
+                AggNamesCsv = Convert.ToString(reader.GetOrdinal("AggNamesCsv").ToString()),
+                IsTrialByTrials = bool.Parse(reader.GetOrdinal("IsTrialByTrial").ToString()),
+                SubExpIDcsv = Convert.ToString(reader.GetOrdinal("SubExpIDcsv").ToString()),
+                SessionNameCsv = Convert.ToString(reader.GetOrdinal("SessionNameCsv").ToString())
+            }, parameters);
 
-                    if (!string.IsNullOrEmpty(linkModel.SessionNameCsv))
-                    {
-                        SessionNameDescription = $"SessionName: <b>{Convert.ToString(dr["SessionNameCsv"])}</b><br />";
-                    }
 
-                    linkModel.Description = $@"Species: <b>{Convert.ToString(dr["Species"])}</b><br />
-                                            Task Name: <b>{Convert.ToString(dr["TaskName"])}</b><br />
-                                            Sub Task Name: <b>{Convert.ToString(dr["SubTaskName"])}</b><br /> 
-                                            Experiment Name: <b>{String.Join(", ", GetAllExperimentsByExpIdsCsv(Convert.ToString(dr["ExpIdCsv"])).Select(x => x.ExpName.ToString()).ToArray())}</b><br />
-                                            Animal Age: <b>{GetAgeCsvFromIdCsv(Convert.ToString(dr["AnimalAgeCsv"]))}</b><br /> 
-                                            Animal Sex: <b>{Convert.ToString(dr["AnimalSexCsv"])}</b><br />
-                                            Animal Genotype: <b>{GetGenotypeCsvFromIdCsv(Convert.ToString(dr["AnimalGenotypeCsv"]))}</b><br /> 
-                                            Animal Strain: <b>{GetStrainCsvFromIdCsv(Convert.ToString(dr["AnimalStrainCsv"]))}</b><br />
-                                            PI/Site Name: <b>{GetPiSiteNamesByPiIdsCsv(Convert.ToString(dr["PiSiteIdsCsv"]), Convert.ToString(dr["ExpIdCsv"]).Split(',').Select(int.Parse).ToList(), false)}</b><br /> 
-                                            Session Info Names: <b>{Convert.ToString(dr["SessionInfoNamesCsv"]).Replace("SessionInfo.", "")}</b><br />
-                                            Marker Info Names: <b>{Convert.ToString(dr["MarkerInfoNamesCsv"]).Replace("§", ", ")}</b><br /> 
-                                            Aggregate functions: <b>{Convert.ToString(dr["AggNamesCsv"]).Replace("§", ", ")}</b><br />
-                                            {interventionDescription}
-                                            {SessionNameDescription} 
-                                            ";
-                }
+            var linkModel = linkModels.FirstOrDefault(); 
+
+            if (!string.IsNullOrEmpty(linkModel.SubExpIDcsv))
+            {
+                interventionDescription = $"Intervention: <b>{GetInterventionFromIdCsv(Convert.ToString(linkModel.SubExpIDcsv))}</b><br />";
             }
+
+            if (!string.IsNullOrEmpty(linkModel.SessionNameCsv))
+            {
+                SessionNameDescription = $"SessionName: <b>{Convert.ToString(linkModel.SessionNameCsv)}</b><br />";
+            }
+
+            linkModel.Description = $@"Species: <b>{Convert.ToString(linkModel.Species)}</b><br />
+                                        Task Name: <b>{Convert.ToString(linkModel.TaskName)}</b><br />
+                                        Sub Task Name: <b>{Convert.ToString(linkModel.SubTaskName)}</b><br /> 
+                                        Experiment Name: <b>{String.Join(", ", GetAllExperimentsByExpIdsCsv(Convert.ToString(linkModel.ExpIdCsv)).Select(x => x.ExpName.ToString()).ToArray())}</b><br />
+                                        Animal Age: <b>{GetAgeCsvFromIdCsv(Convert.ToString(linkModel.AnimalAgeCsv))}</b><br /> 
+                                        Animal Sex: <b>{Convert.ToString(linkModel.AnimalSexCsv)}</b><br />
+                                        Animal Genotype: <b>{GetGenotypeCsvFromIdCsv(Convert.ToString(linkModel.AnimalGenotypeCsv))}</b><br /> 
+                                        Animal Strain: <b>{GetStrainCsvFromIdCsv(Convert.ToString(linkModel.AnimalStrainCsv))}</b><br />
+                                        PI/Site Name: <b>{GetPiSiteNamesByPiIdsCsv(Convert.ToString(linkModel.PiSiteIdsCsv), Convert.ToString(linkModel.ExpIdCsv).Split(',').Select(int.Parse).ToList(), false)}</b><br /> 
+                                        Session Info Names: <b>{Convert.ToString(linkModel.SessionInfoNamesCsv).Replace("SessionInfo.", "")}</b><br />
+                                        Marker Info Names: <b>{Convert.ToString(linkModel.MarkerInfoNamesCsv).Replace("§", ", ")}</b><br /> 
+                                        Aggregate functions: <b>{Convert.ToString(linkModel.AggNamesCsv).Replace("§", ", ")}</b><br />
+                                        {interventionDescription}
+                                        {SessionNameDescription} 
+                                            ";
+            
 
             var sql = DataExtractionQuery(linkModel.TaskId, linkModel.SpeciesId, linkModel.SubTaskId, linkModel.ExpIdCsv, linkModel.AnimalAgeCsv,
                 linkModel.AnimalSexCsv, linkModel.AnimalGenotypeCsv, linkModel.AnimalStrainCsv,
@@ -1321,7 +1325,7 @@ namespace AngularSPAWebAPI.Services
         }
 
         // if generate link clicked the status of IsSaved changed to true.
-        public bool MarkLinkAsSaved(Guid linkGuid)
+        public async Task<bool> MarkLinkAsSaved(Guid linkGuid)
         {
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
@@ -1336,60 +1340,57 @@ namespace AngularSPAWebAPI.Services
             var PiSiteUserIdCsv = string.Empty;
             var SubExpIdCsv = string.Empty;
 
+            string selectQuery = "select top 1 * from Links where LinkGuid=@LinkGuid";
             // fill Links table data (if not already)
-            using (IDataReader dr = Dal.GetReader(CommandType.Text, "select top 1 * from Links where LinkGuid=@LinkGuid", parameters.ToArray()))
+            var savedLink = await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
             {
-                if (dr.Read())
-                {
-                    ExpIdCsv = Convert.ToString(dr["ExpIdCsv"]);
-                    PiSiteIdsCsv = Convert.ToString(dr["PiSiteIdsCsv"]);
-                    AnimalgenotypeCsv = Convert.ToString(dr["AnimalgenotypeCsv"]);
-                    AnimalAgeCsv = Convert.ToString(dr["AnimalAgeCsv"]);
-                    AnimalSexCsv = Convert.ToString(dr["AnimalSexCsv"]);
-                    AnimalStrainCsv = Convert.ToString(dr["AnimalStrainCsv"]);
-                    //SubExpIdCsv = Convert.ToString(dr["SubExpIDcsv"]);
-                }
+                ExpIdCsv = Convert.ToString(reader.GetOrdinal("ExpIdCsv")),
+                PiSiteIdsCsv = Convert.ToString(reader.GetOrdinal("PiSiteIdsCsv")),
+                AnimalGenotypeCsv = Convert.ToString(reader.GetOrdinal("AnimalgenotypeCsv")),
+                AnimalAgeCsv = Convert.ToString(reader.GetOrdinal("AnimalAgeCsv")),
+                AnimalSexCsv = Convert.ToString(reader.GetOrdinal("AnimalSexCsv")),
+                AnimalStrainCsv = Convert.ToString(reader.GetOrdinal("AnimalStrainCsv"))
 
-                List<int> expIds = ExpIdCsv.Split(',').Select(int.Parse).ToList();
-                var lstExps = GetAllExperimentsByExpIdsCsv(ExpIdCsv);
-                ExpNameCsv = String.Join(", ", lstExps.Select(x => x.ExpName.ToString()).ToArray());
+            },  parameters);
 
-                PiSiteUserIdCsv = GetPiSiteNamesByPiIdsCsv(PiSiteIdsCsv, expIds, true);
+            List<int> expIds = ExpIdCsv.Split(',').Select(int.Parse).ToList();
+            var lstExps = GetAllExperimentsByExpIdsCsv(ExpIdCsv);
+            ExpNameCsv = String.Join(", ", lstExps.Select(x => x.ExpName.ToString()).ToArray());
 
-                // if both strain & genotype are empty get all the result based on all the available Genotype and Strain in the selected Experiments
-                if (AnimalStrainCsv == string.Empty && AnimalgenotypeCsv == string.Empty)
-                {
-                    // get all genotypes
-                    var lstAnimals = GetAnimalGenotypeDatabyExpIDs(expIds);
-                    AnimalgenotypeCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
-                }
+            PiSiteUserIdCsv = GetPiSiteNamesByPiIdsCsv(PiSiteIdsCsv, expIds, true);
 
-                if (AnimalgenotypeCsv == string.Empty)
-                {
-                    var lstAnimals = GetAnimalGenotypeDatabyExpIDsStrainList(expIds, AnimalStrainCsv);
-                    AnimalgenotypeCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
-                }
+            // if both strain & genotype are empty get all the result based on all the available Genotype and Strain in the selected Experiments
+            if (AnimalStrainCsv == string.Empty && AnimalgenotypeCsv == string.Empty)
+            {
+                // get all genotypes
+                var lstAnimals = GetAnimalGenotypeDatabyExpIDs(expIds);
+                AnimalgenotypeCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
+            }
+
+            if (AnimalgenotypeCsv == string.Empty)
+            {
+                var lstAnimals = GetAnimalGenotypeDatabyExpIDsStrainList(expIds, AnimalStrainCsv);
+                AnimalgenotypeCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
+            }
 
 
 
-                if (AnimalAgeCsv == string.Empty)
-                {
-                    var lstAnimals = GetAnimalAgeDatabyExpIDs(expIds);
-                    AnimalAgeCsv = String.Join(",", lstAnimals.Select(x => x.AgeID.ToString()).ToArray());
-                }
+            if (AnimalAgeCsv == string.Empty)
+            {
+                var lstAnimals = GetAnimalAgeDatabyExpIDs(expIds);
+                AnimalAgeCsv = String.Join(",", lstAnimals.Select(x => x.AgeID.ToString()).ToArray());
+            }
 
-                if (AnimalStrainCsv == string.Empty)
-                {
-                    var lstAnimals = GetAnimalStrainDatabyExpIDs(expIds);
-                    AnimalStrainCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
-                }
+            if (AnimalStrainCsv == string.Empty)
+            {
+                var lstAnimals = GetAnimalStrainDatabyExpIDs(expIds);
+                AnimalStrainCsv = String.Join(",", lstAnimals.Select(x => x.ID.ToString()).ToArray());
+            }
 
-                if (AnimalSexCsv == string.Empty)
-                {
-                    var lstAnimals = GetAnimalSexDatabyExpIDs(expIds);
-                    AnimalSexCsv = String.Join(",", lstAnimals.Select(x => "'" + x.Sex.ToString() + "'").ToArray());
-                }
-
+            if (AnimalSexCsv == string.Empty)
+            {
+                var lstAnimals = GetAnimalSexDatabyExpIDs(expIds);
+                AnimalSexCsv = String.Join(",", lstAnimals.Select(x => "'" + x.Sex.ToString() + "'").ToArray());
             }
 
             parameters.Add(new SqlParameter("@AnimalgenotypeCsv", AnimalgenotypeCsv));
