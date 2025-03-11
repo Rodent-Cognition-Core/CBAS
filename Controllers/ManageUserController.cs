@@ -42,7 +42,7 @@ namespace AngularSPAWebAPI.Controllers
         [HttpGet("GetUserList")]
         public async Task<IActionResult> GetUserList()
         {
-            var res = _manageUserService.GetAllUserListAsync();
+            var res = await _manageUserService.GetAllUserListAsync();
             return new JsonResult(res);
 
         }
