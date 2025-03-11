@@ -328,7 +328,7 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult GetGuidByRepID(int repID)
         {
             // extract data from database to show in the client
-            return new JsonResult(_cogbytesService.GetGuidByRepID(repID));
+            return new JsonResult(_cogbytesService.GetGuidByRepID(repID).Result);
 
         }
 
