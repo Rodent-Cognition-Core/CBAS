@@ -2706,122 +2706,119 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Function definition to get a publication from searchPub based Guid
-        public PubScreenSearch GetDataFromPubScreenByLinkGuid(Guid paperLinkGuid)
+        public async Task<PubScreenSearch> GetDataFromPubScreenByLinkGuid(Guid paperLinkGuid)
         {
-            PubScreenSearch pubScreenPublication = new PubScreenSearch();
+            string sql = $"Select Top 1 * From SearchPub Where PaperLinkGuid =@paperLinkGuid";
 
-            string sql = $"Select * From SearchPub Where PaperLinkGuid = '{paperLinkGuid}'";
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@paperLinkGuid", paperLinkGuid));
 
-            using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
+            var publications = await Dal.GetReaderPubAsync(sql, reader => new PubScreenSearch
+            {
+                DOI = Convert.ToString(reader.GetOrdinal("DOI")),
+                Keywords = Convert.ToString(reader.GetOrdinal("Keywords")),
+                Title = Convert.ToString(reader.GetOrdinal("Title")),
+                Abstract = Convert.ToString(reader.GetOrdinal("Abstract")),
+                Year = Convert.ToString(reader.GetOrdinal("Year")),
+                Reference = Convert.ToString(reader.GetOrdinal("Reference")),
+                ID = Int32.Parse(reader.GetOrdinal("ID").ToString()),
+                Author = Convert.ToString(reader.GetOrdinal("Author").ToString()),
+                PaperType = Convert.ToString(reader.GetOrdinal("PaperType").ToString()),
+                Task = Convert.ToString(reader.GetOrdinal("Task").ToString()),
+                SubTask = Convert.ToString(reader.GetOrdinal("SubTask").ToString()),
+                Species = Convert.ToString(reader.GetOrdinal("Species").ToString()),
+                Sex = Convert.ToString(reader.GetOrdinal("Sex").ToString()),
+                Strain = Convert.ToString(reader.GetOrdinal("Strain").ToString()),
+                DiseaseModel = Convert.ToString(reader.GetOrdinal("DiseaseModel").ToString()),
+                SubModel = Convert.ToString(reader.GetOrdinal("SubModel").ToString()),
+                BrainRegion = Convert.ToString(reader.GetOrdinal("BrainRegion").ToString()),
+                SubRegion = Convert.ToString(reader.GetOrdinal("SubRegion").ToString()),
+                CellType = Convert.ToString(reader.GetOrdinal("CellType").ToString()),
+                Method = Convert.ToString(reader.GetOrdinal("Method").ToString()),
+                SubMethod = Convert.ToString(reader.GetOrdinal("SubMethod").ToString()),
+                NeuroTransmitter = Convert.ToString(reader.GetOrdinal("NeuroTransmitter").ToString())
+            }, parameters);
+
+            foreach (var publication in publications)
             {
                 string sqlMB = "";
                 string sqlCog = "";
                 List<Experiment> lstExperiment = new List<Experiment>();
                 List<Cogbytes> lstRepo = new List<Cogbytes>();
 
-                if (dr.Read())
+                sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
+                                   Inner join Task on Task.ID = Experiment.TaskID
+                                   Where DOI = '{Convert.ToString(publication.DOI.ToString())}'";
+
+                // empty lstExperiment list
+                lstExperiment.Clear();
+                using (DataTable dtExp = Dal.GetDataTable(sqlMB))
                 {
-                    sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                               Inner join Task on Task.ID = Experiment.TaskID
-                               Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-
-                    // empty lstExperiment list
-                    lstExperiment.Clear();
-                    using (DataTable dtExp = Dal.GetDataTable(sqlMB))
+                    foreach (DataRow drExp in dtExp.Rows)
                     {
-                        foreach (DataRow drExp in dtExp.Rows)
+
+                        lstExperiment.Add(new Experiment
                         {
+                            ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                            ExpName = Convert.ToString(drExp["ExpName"].ToString()),
+                            StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                            TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                            DOI = Convert.ToString(drExp["DOI"].ToString()),
+                            Status = Convert.ToBoolean(drExp["Status"]),
+                            TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
 
-                            lstExperiment.Add(new Experiment
-                            {
-                                ExpID = Int32.Parse(drExp["ExpID"].ToString()),
-                                ExpName = Convert.ToString(drExp["ExpName"].ToString()),
-                                StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
-                                TaskName = Convert.ToString(drExp["TaskName"].ToString()),
-                                DOI = Convert.ToString(drExp["DOI"].ToString()),
-                                Status = Convert.ToBoolean(drExp["Status"]),
-                                TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
-
-                            });
-                        }
-
+                        });
                     }
-
-                    sqlCog = $"Select * From UserRepository Where DOI = '{Convert.ToString(dr["DOI"].ToString())}'";
-                    lstRepo.Clear();
-                    using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
-                    {
-                        foreach (DataRow drCog in dtCog.Rows)
-                        {
-                            var cogbytesService = new CogbytesService();
-                            int repID = Int32.Parse(drCog["RepID"].ToString());
-                            lstRepo.Add(new Cogbytes
-                            {
-                                ID = repID,
-                                RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
-                                Title = Convert.ToString(drCog["Title"].ToString()),
-                                Date = Convert.ToString(drCog["Date"].ToString()),
-                                Keywords = Convert.ToString(drCog["Keywords"].ToString()),
-                                DOI = Convert.ToString(drCog["DOI"].ToString()),
-                                Link = Convert.ToString(drCog["Link"].ToString()),
-                                PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
-                                Description = Convert.ToString(drCog["Description"].ToString()),
-                                AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
-                                AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                                PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                            });
-                        }
-
-                    }
-                    pubScreenPublication.DOI = Convert.ToString(dr["DOI"]);
-                    pubScreenPublication.Keywords = Convert.ToString(dr["Keywords"]);
-                    pubScreenPublication.Title = Convert.ToString(dr["Title"]);
-                    pubScreenPublication.Abstract = Convert.ToString(dr["Abstract"]);
-                    pubScreenPublication.Year = Convert.ToString(dr["Year"]);
-                    pubScreenPublication.Reference = Convert.ToString(dr["Reference"]);
-                    pubScreenPublication.ID = Int32.Parse(dr["ID"].ToString());
-                    pubScreenPublication.Author = Convert.ToString(dr["Author"].ToString());
-                    pubScreenPublication.PaperType = Convert.ToString(dr["PaperType"].ToString());
-                    pubScreenPublication.Task = Convert.ToString(dr["Task"].ToString());
-                    pubScreenPublication.SubTask = Convert.ToString(dr["SubTask"].ToString());
-                    pubScreenPublication.Species = Convert.ToString(dr["Species"].ToString());
-                    pubScreenPublication.Sex = Convert.ToString(dr["Sex"].ToString());
-                    pubScreenPublication.Strain = Convert.ToString(dr["Strain"].ToString());
-                    pubScreenPublication.DiseaseModel = Convert.ToString(dr["DiseaseModel"].ToString());
-                    pubScreenPublication.SubModel = Convert.ToString(dr["SubModel"].ToString());
-                    pubScreenPublication.BrainRegion = Convert.ToString(dr["BrainRegion"].ToString());
-                    pubScreenPublication.SubRegion = Convert.ToString(dr["SubRegion"].ToString());
-                    pubScreenPublication.CellType = Convert.ToString(dr["CellType"].ToString());
-                    pubScreenPublication.Method = Convert.ToString(dr["Method"].ToString());
-                    pubScreenPublication.SubMethod = Convert.ToString(dr["SubMethod"].ToString());
-                    pubScreenPublication.NeuroTransmitter = Convert.ToString(dr["NeuroTransmitter"].ToString());
-                    pubScreenPublication.Experiment = new List<Experiment>(lstExperiment);
-                    pubScreenPublication.Repo = new List<Cogbytes>(lstRepo);
-
                 }
 
+                sqlCog = $"Select * From UserRepository Where DOI = '{Convert.ToString(publication.DOI.ToString())}'";
+                lstRepo.Clear();
+                using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
+                {
+                    foreach (DataRow drCog in dtCog.Rows)
+                    {
+                        var cogbytesService = new CogbytesService();
+                        int repID = Int32.Parse(drCog["RepID"].ToString());
+                        lstRepo.Add(new Cogbytes
+                        {
+                            ID = repID,
+                            RepoLinkGuid = Guid.Parse(drCog["repoLinkGuid"].ToString()),
+                            Title = Convert.ToString(drCog["Title"].ToString()),
+                            Date = Convert.ToString(drCog["Date"].ToString()),
+                            Keywords = Convert.ToString(drCog["Keywords"].ToString()),
+                            DOI = Convert.ToString(drCog["DOI"].ToString()),
+                            Link = Convert.ToString(drCog["Link"].ToString()),
+                            PrivacyStatus = Boolean.Parse(drCog["PrivacyStatus"].ToString()),
+                            Description = Convert.ToString(drCog["Description"].ToString()),
+                            AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
+                            AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                            PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                        });
+                    }
+                }
+                publication.Experiment = lstExperiment;
+                publication.Repo = lstRepo;
             }
-
-            return pubScreenPublication;
+             return publications.FirstOrDefault();
         }
 
-        public PubScreen GetGuidByDoi(string doi)
+        public async Task<PubScreen> GetGuidByDoi(string doi)
         {
-            PubScreen pubScreenPublication = new PubScreen();
-            string sql = $"Select * From Publication Where DOI = '{doi}' ";
-            using (IDataReader dr = Dal.GetReaderPub(CommandType.Text, sql, null))
-            {
-                if (dr.Read())
-                {
-                    pubScreenPublication.PaperLinkGuid = Guid.Parse(dr["PaperLinkGuid"].ToString());
 
-                }
 
-            }
+            string sql = $"Select Top 1 * From Publication Where DOI = @doi";
 
-            return pubScreenPublication;
+            var parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@doi", doi));
+
+            var publicaiton = await Dal.GetReaderPubAsync(sql, reader => new PubScreen{
+                PaperLinkGuid = reader.GetGuid(reader.GetOrdinal("PaperLinkGuid")), 
+           }, parameters);
+
+            return publicaiton.FirstOrDefault();
         }
-        private QueryContainer ApplyQuery(PubScreenElasticSearchModel pubscreen, QueryContainerDescriptor<PubScreenElasticSearchModel> query)
+        private QueryContainer ApplyQuery(PubScreenElasticSearchModel pubscreen,
+QueryContainerDescriptor<PubScreenElasticSearchModel> query)
         {
             return query.Bool(boolQ => boolQ.Should(boolQM => boolQM
                                                 .DisMax(dxq => dxq
@@ -3473,8 +3470,8 @@ namespace AngularSPAWebAPI.Services
                             }
 
                         }
-
-                        paper.PaperLinkGuid = GetGuidByDoi(paper.DOI).PaperLinkGuid;
+                        
+                        paper.PaperLinkGuid = GetGuidByDoi(paper.DOI).Result.PaperLinkGuid;
 
                     }
                     paper.Experiment = lstExperiment;
