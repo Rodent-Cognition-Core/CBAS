@@ -763,8 +763,8 @@ namespace AngularSPAWebAPI.Services
         public void DeleteRepository(int repID)
         {
             // Delete RepGuidLink from Experiments linked to the repository
-            Cogbytes rep = GetGuidByRepID(repID);
-            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.RepoLinkGuid}'");
+            var rep = GetGuidByRepID(repID);
+            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.Result.RepoLinkGuid}'");
 
             using (DataTable dt = Dal.GetDataTableCog($@"Select UploadID From Upload Where RepID = {repID}"))
             {
@@ -1341,24 +1341,20 @@ namespace AngularSPAWebAPI.Services
         }
 
 
-        public Cogbytes GetGuidByRepID(int repID)
+
+        public async Task<Cogbytes> GetGuidByRepID(int repID)
         {
-            Cogbytes cogbytesRepo = new Cogbytes();
-            string sql = $"Select * From UserRepository Where RepID = {repID} ";
-            using (IDataReader dr = Dal.GetReaderCog(CommandType.Text, sql, null))
+            //Cogbytes cogbytesRepo = new Cogbytes();
+            string sql = $"Select * From UserRepository Where RepID = @repID ";
+            var parameters = new List<SqlParameter>() ;
+            parameters.Add(new SqlParameter("@repID", repID));
+
+            var cogbytesRepo = await Dal.GetReaderCogAsync(sql, reader => new Cogbytes
             {
-                if (dr.Read())
-                {
-                    cogbytesRepo.RepoLinkGuid = Guid.Parse(dr["RepoLinkGuid"].ToString());
+                RepoLinkGuid = Guid.Parse(reader.GetOrdinal("RepoLinkGuid").ToString())
+            }, parameters);
 
-                }
-
-            }
-
-            return cogbytesRepo;
+            return cogbytesRepo.FirstOrDefault();
         }
-
-
     }
-
 }
