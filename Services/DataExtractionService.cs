@@ -1329,20 +1329,9 @@ namespace AngularSPAWebAPI.Services
         {
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
-
-            var ExpIdCsv = string.Empty;
-            var PiSiteIdsCsv = string.Empty;
-            var AnimalgenotypeCsv = string.Empty;
-            var ExpNameCsv = string.Empty;
-            var AnimalAgeCsv = string.Empty;
-            var AnimalSexCsv = string.Empty;
-            var AnimalStrainCsv = string.Empty;
-            var PiSiteUserIdCsv = string.Empty;
-            var SubExpIdCsv = string.Empty;
-
-            string selectQuery = "select top 1 * from Links where LinkGuid=@LinkGuid";
+            string selectQuery = "select top 1 * from [Mousebytes].[dbo].[Links] where LinkGuid=@LinkGuid";
             // fill Links table data (if not already)
-            var savedLink = await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
+            var savedLink = (await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
             {
                 ExpIdCsv = Convert.ToString(reader.GetOrdinal("ExpIdCsv")),
                 PiSiteIdsCsv = Convert.ToString(reader.GetOrdinal("PiSiteIdsCsv")),
@@ -1351,12 +1340,22 @@ namespace AngularSPAWebAPI.Services
                 AnimalSexCsv = Convert.ToString(reader.GetOrdinal("AnimalSexCsv")),
                 AnimalStrainCsv = Convert.ToString(reader.GetOrdinal("AnimalStrainCsv"))
 
-            },  parameters);
+            },  parameters)).FirstOrDefault();
+
+            var ExpIdCsv = savedLink.ExpIdCsv;
+            var PiSiteIdsCsv = savedLink.PiSiteIdsCsv;
+            var AnimalgenotypeCsv = savedLink.AnimalGenotypeCsv;
+            var ExpNameCsv = string.Empty;
+            var AnimalAgeCsv = savedLink.AnimalAgeCsv;
+            var AnimalSexCsv = savedLink.AnimalSexCsv;
+            var AnimalStrainCsv = savedLink.AnimalStrainCsv;
+            var PiSiteUserIdCsv = string.Empty;
+            var SubExpIdCsv = string.Empty;
+
 
             List<int> expIds = ExpIdCsv.Split(',').Select(int.Parse).ToList();
             var lstExps = GetAllExperimentsByExpIdsCsv(ExpIdCsv);
             ExpNameCsv = String.Join(", ", lstExps.Select(x => x.ExpName.ToString()).ToArray());
-
             PiSiteUserIdCsv = GetPiSiteNamesByPiIdsCsv(PiSiteIdsCsv, expIds, true);
 
             // if both strain & genotype are empty get all the result based on all the available Genotype and Strain in the selected Experiments
@@ -1392,7 +1391,8 @@ namespace AngularSPAWebAPI.Services
                 var lstAnimals = GetAnimalSexDatabyExpIDs(expIds);
                 AnimalSexCsv = String.Join(",", lstAnimals.Select(x => "'" + x.Sex.ToString() + "'").ToArray());
             }
-
+            parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
             parameters.Add(new SqlParameter("@AnimalgenotypeCsv", AnimalgenotypeCsv));
             parameters.Add(new SqlParameter("@ExpNameCsv", ExpNameCsv));
             parameters.Add(new SqlParameter("@AnimalAgeCsv", AnimalAgeCsv));
@@ -1405,7 +1405,7 @@ namespace AngularSPAWebAPI.Services
                             AnimalStrainCsv = @AnimalStrainCsv, AnimalSexCsv = @AnimalSexCsv, PiSiteIdsCsv = @PiSiteIdsCsv
                             where LinkGuid = @LinkGuid ";
 
-            return (Dal.ExecuteNonQuery(CommandType.Text, sql, parameters.ToArray()).ToString() == "1");
+            return (Dal.ExecuteNonQueryAsync(sql, parameters.ToArray()).Result == 1);
         }
 
         public void IncreaseDLCounter(string buttonName)

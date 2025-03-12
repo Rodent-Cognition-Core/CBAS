@@ -145,9 +145,9 @@ namespace AngularSPAWebAPI.Controllers
         //function definition when Generate Link button is clicked
         [AllowAnonymous]
         [HttpGet("SaveLink")]
-        public IActionResult SaveLink(Guid linkGuid)
+        public async Task<IActionResult> SaveLink(Guid linkGuid)
         {
-            return new JsonResult(_DataExtractionService.MarkLinkAsSaved(linkGuid));
+            return new JsonResult(await _DataExtractionService.MarkLinkAsSaved(linkGuid));
         }
 
         //function definition to increase counter when data is downloaded
