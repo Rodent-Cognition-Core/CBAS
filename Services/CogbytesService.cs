@@ -1351,7 +1351,7 @@ namespace AngularSPAWebAPI.Services
 
             var cogbytesRepo = await Dal.GetReaderCogAsync(sql, reader => new Cogbytes
             {
-                RepoLinkGuid = Guid.Parse(reader.GetOrdinal("RepoLinkGuid").ToString())
+                RepoLinkGuid = reader.GetGuid(reader.GetOrdinal("RepoLinkGuid"))
             }, parameters);
 
             return cogbytesRepo.FirstOrDefault();
