@@ -5,6 +5,7 @@ import { PagerService } from '../services/pager.service';
 //import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { IdentityService } from '../services/identity.service';
 import { User } from '../models/user';
+import { filter } from 'rxjs/operators';
 
 
 @Component({
@@ -52,6 +53,7 @@ export class ManageUserComponent implements OnInit {
         let filteredItems = this.userList;
 
         filteredItems = this.filterByString(this.userList, this.expfilter);
+        console.log(filteredItems);
 
         // get pager object from service
         this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
@@ -71,9 +73,7 @@ export class ManageUserComponent implements OnInit {
 
     filterByString(data: any, s: string): any {
         s = s.trim();
-        // console.log(s.toString());
-        const dataArray = Array.isArray(data.result) ? data.result : [];
-        return dataArray.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) ||
+        return data.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) ||
               e.givenName.includes(s) || e.emailConfirmed.toString().includes(s));
       }
     
