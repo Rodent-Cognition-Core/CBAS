@@ -113,9 +113,9 @@ namespace AngularSPAWebAPI.Services
 
         }
 
-        public static async Task ExecuteNonQueryAsync(string query, SqlParameter[] parameters)
+        public static async Task<int> ExecuteNonQueryAsync(string query, SqlParameter[] parameters)
         {
-            await ExecuteNonQueryAsync(query, _cnnString, parameters);
+            return await ExecuteNonQueryAsync(query, _cnnString, parameters);
         }
         public static async Task ExecuteNonQueryPubAsync(string query, SqlParameter[] parameters)
         {
@@ -125,7 +125,7 @@ namespace AngularSPAWebAPI.Services
         {
             await ExecuteNonQueryAsync(query, _cnnString_Cogbytes, parameters);
         }
-        public static async Task ExecuteNonQueryAsync(string query, string connectionString, SqlParameter[] parameters)
+        public static async Task<int> ExecuteNonQueryAsync(string query, string connectionString, SqlParameter[] parameters)
         {
             try
             {
@@ -138,18 +138,16 @@ namespace AngularSPAWebAPI.Services
                         command.CommandTimeout = 300;
                         if (parameters != null)
                         {
-                            foreach (SqlParameter param in parameters)
+                            foreach (var param in parameters)
                             {
                                 if (param.Value == null)
                                 {
                                     param.Value = DBNull.Value;
                                 }
-
                                 command.Parameters.Add(param);
                             }
-
                         }
-                        await command.ExecuteNonQueryAsync();
+                        return await command.ExecuteNonQueryAsync();
                     }
                 }
             }
