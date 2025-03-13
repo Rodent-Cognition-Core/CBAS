@@ -231,12 +231,12 @@ export class DashboardComponent implements OnInit {
         dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
 
-                this.dashboardService.clearUploadLogTblbyExpID(expID).map((res : any) => {
+                this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((res : any) => {
                     //location.reload()
                     this.uploadErrorLogList = [];
                     this.GetUploadLogList(expID);
 
-                }).subscribe();
+                })).subscribe();
 
             }
             //this.dialogRefDelErrorList = null;
@@ -268,11 +268,11 @@ export class DashboardComponent implements OnInit {
         dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).map((res : any) => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadLogList(this.experimentID);
-                }).subscribe();
+                })).subscribe();
             }
             //this.dialogRefDelFile = null;
             dialogRefDelFile.close();
