@@ -503,9 +503,9 @@ export class CogbytesUploadComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.cogbytesService.deleteUpload(this.uploadID).map((res : any) => {
+                this.cogbytesService.deleteUpload(this.uploadID).pipe(map((res : any) => {
 
-                }).subscribe((result : any) => {
+                })).subscribe((result : any) => {
                     this.filesUploaded.emit(null);
                     setTimeout(() => {
                         this.spinnerService.hide();

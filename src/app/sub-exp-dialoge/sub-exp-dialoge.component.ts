@@ -329,7 +329,7 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenAge = false;
 
             this._subexperiment.SubExpID = this.data.subexperimentObj.subExpID;
-            this.subexpDialogeService.updateSubExp(this._subexperiment).map((res : any) => {
+            this.subexpDialogeService.updateSubExp(this._subexperiment).pipe(map((res : any) => {
 
                 //console.log('update');
                 //console.log(res);
@@ -346,7 +346,7 @@ export class SubExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe();
+            })).subscribe();
 
         }
 

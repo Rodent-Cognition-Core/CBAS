@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { NgxSpinnerService } from 'ngx-spinner';
 //import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
+import { map } from 'rxjs/operators';
 
 //declare global {
 //    interface Navigator {
@@ -100,11 +101,11 @@ export class ExperimentComponent implements OnInit {
         dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).map((res : any) => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadInfo(subExpID);
-                }).subscribe();
+                })).subscribe();
             }
             //this.dialogRefDelFile = null;
             dialogRefDelFile.close();

@@ -9,6 +9,7 @@ import { IdentityService } from '../services/identity.service';
 import { User } from '../models/user';
 import { PasswordDialogComponent } from '../password-dialog/password-dialog.component';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/messages';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-profile',
@@ -206,7 +207,7 @@ export class ProfileComponent implements OnInit {
         this._user.familyName = this.familyName.value;
         this._user.selectedPiSiteIds = this.selectePISiteModel;
         //console.log(this._user);
-        this.profileService.updateProfile(this._user).map((res : any) => {
+        this.profileService.updateProfile(this._user).pipe(map((res : any) => {
 
             //location.reload();
             this.GetUserInfo();
@@ -214,7 +215,7 @@ export class ProfileComponent implements OnInit {
             this.selectePISiteModel = [];
             
 
-        }).subscribe();
+        })).subscribe();
 
     }
 
