@@ -1,6 +1,5 @@
 import { Component, OnInit, NgModule, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AuthenticationService } from '../services/authentication.service';
 import { ExperimentService } from '../services/experiment.service';
 import { UploadService } from '../services/upload.service';
 import { PagerService } from '../services/pager.service';
@@ -39,7 +38,7 @@ export class ExperimentComponent implements OnInit {
     //@ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private experimentService: ExperimentService, public dialog: MatDialog,
-        private authenticationService: AuthenticationService, private location: Location,
+        private location: Location,
         private uploadService: UploadService,
         private spinnerService: NgxSpinnerService,
         private pagerService: PagerService,
