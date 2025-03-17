@@ -1,9 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog} from '@angular/material/dialog';
+import { FormControl } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';

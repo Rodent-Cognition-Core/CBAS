@@ -1,9 +1,7 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { SearchExperimentService } from '../services/searchexperiment.service';
 import { PagerService } from '../services/pager.service';
-//import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-//import { IdentityService } from '../services/identity.service';
 
 declare var $: any;
 

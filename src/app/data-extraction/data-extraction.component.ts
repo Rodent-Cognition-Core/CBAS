@@ -1,14 +1,10 @@
-import { Component, OnInit, HostListener, inject } from '@angular/core';
-//import { TaskAnalysisService } from '../services/taskanalysis.service';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-//import { NgModel } from '@angular/forms';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { DataExtraction } from '../models/dataextraction';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table'
+import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';

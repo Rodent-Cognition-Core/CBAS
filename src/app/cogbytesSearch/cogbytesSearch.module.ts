@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { CogbytesSearchRoutingModule } from './cogbytesSearch-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ManageUserService } from '../services/manageuser.service';

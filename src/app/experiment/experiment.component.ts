@@ -1,15 +1,11 @@
-import { Component, OnInit, NgModule, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ExperimentService } from '../services/experiment.service';
 import { UploadService } from '../services/upload.service';
 import { PagerService } from '../services/pager.service';
-//import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { Location } from '@angular/common';
-//import { Experiment } from '../models/experiment';
 import { NgxSpinnerService } from 'ngx-spinner';
-//import * as _ from 'underscore';
 import { CONFIRMDELETE } from '../shared/messages';
 import { map } from 'rxjs/operators';
 

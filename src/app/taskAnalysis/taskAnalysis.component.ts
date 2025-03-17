@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
-
 import { TaskAnalysis } from '../models/taskAnalysis';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 

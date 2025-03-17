@@ -1,10 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { Request } from '../models/request';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
-//import { SharedModule } from '../shared/shared.module';
 import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
 
 
