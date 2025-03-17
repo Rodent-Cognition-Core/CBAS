@@ -1,20 +1,15 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-//import { AnimalService } from '../services/animal.service';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { UploadService } from '../services/upload.service';
-
 import { ViewChild } from '@angular/core'
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
-import { SubExperiment } from '../models/subexperiment';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
 
 @Component({

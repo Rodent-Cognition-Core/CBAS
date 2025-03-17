@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core'
-
 import { Router } from '@angular/router';
-
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { AuthenticationService } from '../services/authentication.service';
-
-import { IdentityService } from '../services/identity.service';
-
 import { ManageUserService } from '../services/manageuser.service';
 
 /**

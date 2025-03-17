@@ -1,21 +1,13 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, FormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-//import { ManageUserService } from '../services/manageuser.service';
-//import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-//import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-//import { IdentityService } from '../services/identity.service';
+import { takeUntil } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
-//import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
 

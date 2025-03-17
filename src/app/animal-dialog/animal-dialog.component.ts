@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 //import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { map, /*catchError*/ } from 'rxjs/operators'
-import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
+import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, TAKEN } from '../shared/messages';
 
 @Component({
     selector: 'app-animal-dialog',
