@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SearchExperimentService } from '../services/searchexperiment.service';
 import { DOWNLOADERROR } from '../shared/messages';
 

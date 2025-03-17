@@ -1,7 +1,6 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { SubExperiment } from '../models/subexperiment';
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { map } from 'rxjs/operators'

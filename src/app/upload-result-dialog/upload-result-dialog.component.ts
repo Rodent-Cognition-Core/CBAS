@@ -1,6 +1,5 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-upload-result-dialog',

@@ -1,17 +1,10 @@
-import { Component, OnInit, Inject, NgModule, Input } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-//import { ManageUserService } from '../services/manageuser.service';
-//import { PagerService } from '../services/pager.service';
-//import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+import { takeUntil } from 'rxjs/operators';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-//import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { Pubscreen } from '../models/pubscreen';
 import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 

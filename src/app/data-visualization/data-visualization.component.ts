@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { MatTable, MatTableDataSource } from '@angular/material/table'
-import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/user'
 

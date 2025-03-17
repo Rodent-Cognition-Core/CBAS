@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, NgModule } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 declare var $: any;
 

@@ -1,10 +1,5 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { Request } from '../models/request';
-import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 
