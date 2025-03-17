@@ -714,9 +714,9 @@ namespace AngularSPAWebAPI.Services
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
 
-            string selectQuery = "select top 1 * from Links where LinkGuid=@LinkGuid";
+            string selectQuery = "select top 1 * from [Mousebytes].[dbo].[Links] where LinkGuid=@LinkGuid";
 
-            var linkModels = await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
+            var linkModels = await Dal.GetReader(selectQuery, reader => new LinkModel
             {
                 TaskId = Convert.ToInt32(reader.GetOrdinal("TaskID").ToString()),
                 SpeciesId = Convert.ToInt32(reader.GetOrdinal("SpeciesID").ToString()),
@@ -730,7 +730,7 @@ namespace AngularSPAWebAPI.Services
                 SessionInfoNamesCsv = Convert.ToString(reader.GetOrdinal("SessionInfoNamesCsv").ToString()),
                 MarkerInfoNamesCsv = Convert.ToString(reader.GetOrdinal("MarkerInfoNamesCsv").ToString()),
                 AggNamesCsv = Convert.ToString(reader.GetOrdinal("AggNamesCsv").ToString()),
-                IsTrialByTrials = bool.Parse(reader.GetOrdinal("IsTrialByTrial").ToString()),
+                IsTrialByTrials = reader.GetBoolean(reader.GetOrdinal("IsTrialByTrial")),
                 SubExpIDcsv = Convert.ToString(reader.GetOrdinal("SubExpIDcsv").ToString()),
                 SessionNameCsv = Convert.ToString(reader.GetOrdinal("SessionNameCsv").ToString())
             }, parameters);
