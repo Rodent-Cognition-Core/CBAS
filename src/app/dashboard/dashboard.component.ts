@@ -1,6 +1,5 @@
 import { Component, OnInit, NgModule } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AuthenticationService } from '../services/authentication.service';
 import { DashboardService } from '../services/dashboard.service';
 import { UploadService } from '../services/upload.service';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
@@ -32,7 +31,7 @@ export class DashboardComponent implements OnInit {
 
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
         private uploadService: UploadService,
-        private authenticationService: AuthenticationService, private pagerService: PagerService,
+        private pagerService: PagerService,
         private spinnerService: NgxSpinnerService, private animalService: AnimalService,
         public dialog: MatDialog,
         public dialogRefDelErrorList: MatDialog,

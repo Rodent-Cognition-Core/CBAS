@@ -1,7 +1,6 @@
 import { Component, OnInit, /*NgModule*/ } from '@angular/core';
 import { AnimalService } from '../services/animal.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AuthenticationService } from '../services/authentication.service';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { Location } from '@angular/common';
@@ -30,7 +29,6 @@ export class AnimalInfoComponent implements OnInit {
     pagedItems: any[];
 
     constructor(private animalService: AnimalService,
-        private authenticationService: AuthenticationService,
         public dialog: MatDialog,
         private location: Location,
         private pagerService: PagerService,
