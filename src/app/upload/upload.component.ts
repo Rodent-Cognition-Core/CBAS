@@ -3,7 +3,6 @@ import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { AuthenticationService } from '../services/authentication.service';
 //import { AnimalService } from '../services/animal.service';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -68,7 +67,6 @@ export class UploadComponent implements OnInit {
 
     constructor(
         private oAuthService: OAuthService,
-        private authenticationService: AuthenticationService,
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
