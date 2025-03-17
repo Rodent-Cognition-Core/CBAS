@@ -1,17 +1,15 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Experiment } from '../models/experiment';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-//import { UploadService } from '../services/upload.service';
 import { CogbytesService } from '../services/cogbytes.service'
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { take, takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
 

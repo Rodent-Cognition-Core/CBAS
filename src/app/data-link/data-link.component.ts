@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PagerService } from '../services/pager.service';

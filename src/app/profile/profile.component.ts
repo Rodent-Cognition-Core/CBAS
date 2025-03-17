@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
-//import { SharedModule } from '../shared/shared.module';
 import { PISiteService } from '../services/piSite.service';
 import { ProfileService } from '../services/profile.service';
 import { IdentityService } from '../services/identity.service';

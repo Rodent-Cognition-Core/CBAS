@@ -1,6 +1,6 @@
-import { Component, OnInit, /*NgModule*/ } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AnimalService } from '../services/animal.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { Location } from '@angular/common';
@@ -8,8 +8,6 @@ import { PagerService } from '../services/pager.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CONFIRMDELETE } from '../shared/messages';
 import { map } from 'rxjs/operators'
-//import { OAuthService } from 'angular-oauth2-oidc';
-//mport { SharedModule } from '../shared/shared.module';
 
 
 @Component({
