@@ -718,21 +718,21 @@ namespace AngularSPAWebAPI.Services
 
             var linkModels = await Dal.GetReader(selectQuery, reader => new LinkModel
             {
-                TaskId = Convert.ToInt32(reader.GetInt32("TaskID")),
-                SpeciesId = Convert.ToInt32(reader.GetInt32("SpeciesID")),
-                SubTaskId = Convert.ToInt32(reader.GetInt32("SubTaskId")),
-                ExpIdCsv = Convert.ToString(reader.GetString("ExpIdCsv")),
-                AnimalAgeCsv = Convert.ToString(reader.GetString("AnimalAgeCsv")),
-                AnimalSexCsv = Convert.ToString(reader.GetString("AnimalSexCsv")),
-                AnimalGenotypeCsv = Convert.ToString(reader.GetString("AnimalGenotypeCsv")),
-                AnimalStrainCsv = Convert.ToString(reader.GetString("AnimalStrainCsv")),
-                PiSiteIdsCsv = Convert.ToString(reader.GetString("PiSiteIdsCsv")),
-                SessionInfoNamesCsv = Convert.ToString(reader.GetString("SessionInfoNamesCsv")),
-                MarkerInfoNamesCsv = Convert.ToString(reader.GetString("MarkerInfoNamesCsv")),
-                AggNamesCsv = Convert.ToString(reader.GetString("AggNamesCsv")),
+                TaskId = reader.GetInt32("TaskID"),
+                SpeciesId = reader.GetInt32("SpeciesID"),
+                SubTaskId = reader.GetInt32("SubTaskId"),
+                ExpIdCsv = reader.GetString("ExpIdCsv"),
+                AnimalAgeCsv = reader.GetString("AnimalAgeCsv"),
+                AnimalSexCsv = reader.GetString("AnimalSexCsv"),
+                AnimalGenotypeCsv = reader.GetString("AnimalGenotypeCsv"),
+                AnimalStrainCsv = reader.GetString("AnimalStrainCsv"),
+                PiSiteIdsCsv = reader.GetString("PiSiteIdsCsv"),
+                SessionInfoNamesCsv = reader.GetString("SessionInfoNamesCsv"),
+                MarkerInfoNamesCsv = reader.GetString("MarkerInfoNamesCsv"),
+                AggNamesCsv = reader.GetString("AggNamesCsv"),
                 IsTrialByTrials = reader.GetBoolean("IsTrialByTrial"),
-                SubExpIDcsv = Convert.ToString(reader.GetString("SubExpIDcsv")),
-                SessionNameCsv = Convert.ToString(reader.GetString("SessionNameCsv"))
+                SubExpIDcsv = reader.GetString("SubExpIDcsv"),
+                SessionNameCsv = reader.GetString("SessionNameCsv")
             }, parameters);
 
 
