@@ -70,12 +70,9 @@ export interface animalResponse {
 
         const body: string = JSON.stringify(animal);
         return this.http.post<any>("/api/animal/UpdateAnimal", body, {
-            headers: {
-                ...this.authenticationService.getAuthorizationHeader(),
-                'Content-Type': 'application/json'
+            headers: this.authenticationService.getAuthorizationHeader()
 
-            }
-        });
+            });
     }
 
     // Function definition to delete the animal
