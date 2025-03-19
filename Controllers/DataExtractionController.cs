@@ -135,10 +135,11 @@ namespace AngularSPAWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetDataByLinkGuid")]
-        public IActionResult GetDataByLinkGuid(Guid linkGuid)
+        public async Task<IActionResult> GetDataByLinkGuid(Guid linkGuid)
         {
             // extract data from database to show in the client
-            return new JsonResult(_DataExtractionService.GetDataFromDbByLinkGuid(linkGuid));
+            var result = await _DataExtractionService.GetDataFromDbByLinkGuid(linkGuid);
+            return new JsonResult(result);
 
         }
 
