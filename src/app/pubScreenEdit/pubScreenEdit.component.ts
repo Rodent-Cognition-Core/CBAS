@@ -1,16 +1,13 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog} from '@angular/material/dialog';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject ,  Subject } from 'rxjs';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
     selector: 'app-pubScreenEdit',
@@ -27,8 +24,10 @@ export class PubScreenEditComponent implements OnInit {
     isFullDataAccess: boolean;
     isLoaded: boolean;
 
+    panelOpenState: boolean
 
-    _pubSCreenSearch = new Pubscreen();
+
+    _pubSCreenSearch: Pubscreen;
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -39,17 +38,27 @@ export class PubScreenEditComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
         private route: ActivatedRoute,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialogAuthor: MatDialog) {
 
         this.isLoaded = false;
-
+        this.paperLinkGuid = '';
+        this.isAdmin = false;
+        this.isFullDataAccess = false;
+        this.panelOpenState = false;
         this.route.queryParams.subscribe(params => {
             this.paperLinkGuid = params['paperlinkguid'].split(" ")[0];
 
             this.GetDataByLinkGuid(this.paperLinkGuid);
         });
-
+        this._pubSCreenSearch = {
+            abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
+            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
+            strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
+            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+        }
     }
 
     ngOnInit() {
@@ -58,10 +67,10 @@ export class PubScreenEditComponent implements OnInit {
         this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
     }
 
-    GetDataByLinkGuid(paperLinkGuid) {
+    GetDataByLinkGuid(paperLinkGuid : any) {
         this.spinnerService.show();
 
-        this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe(data => {
+        this.pubScreenService.getDataByLinkGuid(paperLinkGuid).subscribe((data : any) => {
 
             this.paperInfo = data;
             console.log(this.paperInfo)
@@ -79,7 +88,7 @@ export class PubScreenEditComponent implements OnInit {
     }
 
     // Edit publication
-    openDialogEditPublication(Publication): void {
+    openDialogEditPublication(Publication : any): void {
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '850px',
             width: '1200px',

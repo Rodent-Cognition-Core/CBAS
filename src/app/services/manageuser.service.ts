@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from "rxjs";
 import { User } from '../models/user';
 
 import { AuthenticationService } from './authentication.service';
+
+//Data Structures
+
+export interface UserStatusResponse {
+    isUserApproved: boolean;
+    isUserLocked: boolean;
+}
 
 @Injectable() export class ManageUserService {
 
@@ -17,10 +23,10 @@ import { AuthenticationService } from './authentication.service';
         private authenticationService: AuthenticationService) { }
 
 
-    public GetEmailApprovalAndUserLockedStatus(username: any): any {
-                
+    public GetEmailApprovalAndUserLockedStatus(username: string): Observable<UserStatusResponse> {
+        const url = "/api/manageuser/IsEmailApproved?UserName=${username}";
         return this.http
-            .get("/api/manageuser/IsEmailApproved?UserName=" + username, {
+            .get<UserStatusResponse>(url, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 

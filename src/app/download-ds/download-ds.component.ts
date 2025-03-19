@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SearchExperimentService } from '../services/searchexperiment.service';
 import { DOWNLOADERROR } from '../shared/messages';
+
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
 
 @Component({
     selector: 'app-download-ds',
@@ -19,6 +25,8 @@ export class DownloadDsComponent implements OnInit {
         private searchexperimentService: SearchExperimentService,
 
     ) {
+        this.text = '';
+        this.dsName = '';
         this.route.queryParams.subscribe(params => {
             this.dsName = params['ds'];
             if (params['ds'] == null) {
@@ -31,7 +39,7 @@ export class DownloadDsComponent implements OnInit {
         //console.log(this.dsName);
         
         if (this.dsName != "") {
-            this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe(data => {
+            this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe((data : any) => {
                 this.expObj = data[0];
                 this.expObj.age = this.expObj.age.replaceAll('<br/>', ', ');
                 this.expObj.strain = this.expObj.strain.replaceAll('<br/>', ', ');
@@ -57,11 +65,12 @@ export class DownloadDsComponent implements OnInit {
 
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
-                } else {
-                    csvURL = window.URL.createObjectURL(fileData);
-                }
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
+                //} else {
+                //    csvURL = window.URL.createObjectURL(fileData);
+                //}
+                csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', path + '.csv');

@@ -1,4 +1,9 @@
-<ng4-loading-spinner [threshold]="300"> </ng4-loading-spinner>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)"
+             size="medium"
+             color="#fff"
+             type="ball-spin-clockwise"
+             [fullScreen]="true">
+</ngx-spinner>
 
 <mat-sidenav-container class="all-wrap" fullscreen>
 
@@ -17,11 +22,11 @@
                     <li *ngFor="let navItem of navItems">
                         <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
                     </li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/experiment">Experiment</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/upload">Upload</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/animal-info">Animal</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" routerLink="/dashboard">Upload Log</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/manage-user">User Management</a></li>
+                    <li [hidden]="!(isAdmin || isUser)"><a style="color: #354248;" routerLink="/experiment">Experiment</a></li>
+                    <li [hidden]="!(isAdmin || isUser)"><a style="color: #354248;" routerLink="/upload">Upload</a></li>
+                    <li [hidden]="!(isAdmin || isUser)"><a style="color: #354248;" routerLink="/animal-info">Animal</a></li>
+                    <li [hidden]="!(isAdmin || isUser)"><a style="color: #354248;" routerLink="/dashboard">Upload Log</a></li>
+                    <li [hidden]="!isAdmin"><a style="color: #354248;" routerLink="/manage-user">User Management</a></li>
                 </ul>
             </li>
 
@@ -29,9 +34,9 @@
                 <br />
                 <b>MOUSEBYTES+</b>
                 <ul>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/comp">Your Repositories</a></li>
-                    <li><a style="color: #354248;" href="/comp-search">Search Repositories</a></li>
-                    <li><a style="color: #354248;" href="/comp-search?showall=true">Repositories</a></li>
+                    <li [hidden]="!(isAdmin || isUser)"><a style="color: #354248;" routerLink="/comp">Your Repositories</a></li>
+                    <li><a style="color: #354248;" routerLink="/comp-search">Search Repositories</a></li>
+                    <li><a style="color: #354248;" routerLink="/comp-search" [queryParams]="{ showall: true}">Repositories</a></li>
                 </ul>
             </li>
 
@@ -39,9 +44,9 @@
                 <br />
                 <b>PUBSCREEN</b>
                 <ul>
-                    <li><a style="color: #354248;" href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                    <li><a style="color: #354248;" href="/pubScreen">Add/Search Publications</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" href="/pubScreen-queue">Queue</a></li>
+                    <li><a style="color: #354248;" routerLink="/pubScreen-dashboard">PubScreen Dashboard</a></li>
+                    <li><a style="color: #354248;" routerLink="/pubScreen">Add/Search Publications</a></li>
+                    <li [hidden]="!isAdmin"><a style="color: #354248;" routerLink="/pubScreen-queue">Queue</a></li>
                 </ul>
             </li>
 
@@ -122,11 +127,11 @@
                                     <li *ngFor="let navItem of navItems">
                                         <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
                                     </li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/experiment">Experiment</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/upload">Upload</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/animal-info">Animal</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/dashboard">Upload Log</a></li>
+                                    <li [hidden]="!isAdmin"><a routerLink="/manage-user">User Management</a></li>
                                     <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
                                 </ul>
                             </li>
@@ -134,7 +139,7 @@
                             <li>
                                 MOUSEBYTES+
                                 <ul>
-                                    <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/comp">Your Repositories</a></li>
                                     <li><a routerLink="/comp-search">Search Repositories</a></li>
                                     <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
                                 </ul>
@@ -144,9 +149,9 @@
                                 <br />
                                 <b>PUBSCREEN</b>
                                 <ul>
-                                    <li><a href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
+                                    <li><a routerLink="/pubScreen-dashboard">PubScreen Dashboard</a></li>
+                                    <li><a routerLink="/pubScreen">Add/Search Publications</a></li>
+                                    <li [hidden]="!isAdmin"><a routerLink="/pubScreen-queue">Queue</a></li>
                                 </ul>
                             </li>
 
@@ -196,18 +201,18 @@
                                     <li *ngFor="let navItem of navItems">
                                         <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
                                     </li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/experiment">Experiment</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/upload">Upload</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/animal-info">Animal</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/dashboard">Upload Log</a></li>
+                                    <li [hidden]="!isAdmin"><a routerLink="/manage-user">User Management</a></li>
                                 </ul>
                             </li>
 
                             <li>
                                 MOUSEBYTES+
                                 <ul>
-                                    <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
+                                    <li [hidden]="!(isAdmin || isUser)"><a routerLink="/comp">Your Repositories</a></li>
                                     <li><a routerLink="/comp-search">Search Repositories</a></li>
                                     <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
                                 </ul>
@@ -216,9 +221,9 @@
                             <li>
                                 PUBSCREEN
                                 <ul>
-                                    <li><a href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
+                                    <li><a routerLink="/pubScreen-dashboard">PubScreen Dashboard</a></li>
+                                    <li><a routerLink="/pubScreen">Add/Search Publications</a></li>
+                                    <li [hidden]="!isAdmin"><a routerLink="/pubScreen-queue">Queue</a></li>
                                 </ul>
                             </li>
 

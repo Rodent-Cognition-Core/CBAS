@@ -1,21 +1,13 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { take, takeUntil } from 'rxjs/operators';
-import { ManageUserService } from '../services/manageuser.service';
-import { PagerService } from '../services/pager.service';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-import { IdentityService } from '../services/identity.service';
 import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { map } from 'rxjs/operators';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 
@@ -32,7 +24,6 @@ export class CogbytesComponent implements OnInit {
     readonly DATASET = 1;
     public uploadKey: number;
     panelOpenState: boolean;
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     showGeneratedLink: boolean;
     public repModel: any;
 
@@ -42,7 +33,7 @@ export class CogbytesComponent implements OnInit {
     authorList: any;
     piList: any;
 
-    _cogbytesUpload = new CogbytesUpload();
+    _cogbytesUpload: CogbytesUpload;
 
 
     isAdmin: boolean;
@@ -52,16 +43,29 @@ export class CogbytesComponent implements OnInit {
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
-
     constructor(
         public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
+        public dialogRefLink: MatDialog,
+        public dialogRef: MatDialog
     )
     {
+        this.uploadKey = 0;
+        this.panelOpenState = false;
+        this.showGeneratedLink = false;
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+
+        this._cogbytesUpload = {
+            additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
+            housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
+            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
+        }
+
         this.resetFormVals();
     }
 
@@ -75,7 +79,7 @@ export class CogbytesComponent implements OnInit {
 
         if (this.isAdmin || this.isUser) {
 
-        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; /*console.log(data) */});
+        this.cogbytesService.getRepositories().subscribe((data : any) => { this.repList = data; /*console.log(data) */});
             this.GetAuthorList();
             this.GetPIList();
         }
@@ -94,22 +98,22 @@ export class CogbytesComponent implements OnInit {
     GetRepositories() {
         this.GetAuthorList();
         this.GetPIList();
-        this.cogbytesService.getRepositories().subscribe(data => { this.repList = data; });
+        this.cogbytesService.getRepositories().subscribe((data: any) => { this.repList = data; });
         //return this.repList;
     }
 
-    GetUploads() {
+    GetUploads(event?: any) {
         if (this.repModel != null) {
             let repID = this.getRep().id;
-            this.cogbytesService.getUploads(repID).subscribe(data => { this.uploadList = data; });
+            this.cogbytesService.getUploads(repID).subscribe((data: any) => { this.uploadList = data; });
         }
     }
 
-    ClosePanel() {
+    ClosePanel(event?: any) {
         this.panelOpenState = false;
     }
 
-    NewUpload() {
+    NewUpload(event? : any) {
         this.GetUploads();
         this.ClosePanel();
     }
@@ -140,7 +144,7 @@ export class CogbytesComponent implements OnInit {
             height: '850px',
             width: '1200px',
             data: {
-                repObj: this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)],
+                repObj: this.repList[this.repList.map(function (x : any) { return x.id }).indexOf(this.repModel)],
             }
 
         });
@@ -152,34 +156,35 @@ export class CogbytesComponent implements OnInit {
     }
 
     // Delete File Dialog
-    deleteRepository(file) {
-        this.dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+    deleteRepository(file?: any) {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRef.componentInstance.confirmMessage = CONFRIMREPOSITORYDETLETE;
+        dialogRef.componentInstance.confirmMessage = CONFRIMREPOSITORYDETLETE;
 
-        this.dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.cogbytesService.deleteRepository(this.getRep().id).map(res => {
+                this.cogbytesService.deleteRepository(this.getRep().id).pipe(map((res: any) => {
 
-                }).subscribe();
+                })).subscribe();
                 this.spinnerService.hide();
                 this.repModel = null;
             }
-            this.dialogRef = null;
+            //this.dialogRef = null;
+            dialogRef.close();
         });
     }
 
     getRepID() : number {
-        return this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)].id;
+        return this.repList[this.repList.map(function (x: any) { return x.id }).indexOf(this.repModel)].id;
     }
 
 
     GetAuthorList() {
 
 
-        this.cogbytesService.getAuthor().subscribe(data => {
+        this.cogbytesService.getAuthor().subscribe((data: any) => {
             this.authorList = data;
         });
 
@@ -189,7 +194,7 @@ export class CogbytesComponent implements OnInit {
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe(data => {
+        this.cogbytesService.getPI().subscribe((data: any) => {
             this.piList = data;
         });
 
@@ -200,8 +205,8 @@ export class CogbytesComponent implements OnInit {
     getRepAuthorString(rep: any) {
         let authorString: string = "";
         for (let id of rep.authourID) {
-            let firstName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].firstName;
-            let lastName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].lastName;
+            let firstName: string = this.authorList[this.authorList.map(function (x : any) { return x.id }).indexOf(id)].firstName;
+            let lastName: string = this.authorList[this.authorList.map(function (x: any) { return x.id }).indexOf(id)].lastName;
             authorString += firstName + "-" + lastName + ", ";
         }
         return authorString.slice(0, -2);
@@ -211,26 +216,26 @@ export class CogbytesComponent implements OnInit {
     getRepPIString(rep: any) {
         let PIString: string = "";
         for (let id of rep.piid) {
-            PIString += this.piList[this.piList.map(function (x) { return x.id }).indexOf(id)].piFullName + ", ";
+            PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].piFullName + ", ";
         }
         return PIString.slice(0, -2);
     }
 
     getRep(): any {
-        return this.repList[this.repList.map(function (x) { return x.id }).indexOf(this.repModel)];
+        return this.repList[this.repList.map(function (x: any) { return x.id }).indexOf(this.repModel)];
     }
 
     // Get Guid by RepoID
-    getLink(repID) {
+    getLink(repID: number) {
 
-        this.cogbytesService.getGuidByRepID(repID).subscribe(data => {
+        this.cogbytesService.getGuidByRepID(repID).subscribe((data : any) => {
 
             this.showGeneratedLink = true;
             var guid = data.repoLinkGuid;
 
-            this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
+            const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            this.dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
 
         });
 

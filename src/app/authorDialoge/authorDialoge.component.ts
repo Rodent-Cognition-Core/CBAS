@@ -1,10 +1,8 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 //import { Request } from '../models/request';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED } from '../shared/messages';
 
 
@@ -20,17 +18,21 @@ import { FIELDISREQUIRED } from '../shared/messages';
 export class AuthorDialogeComponent implements OnInit {
 
     // Defining Models Parameters
-    authorNameModel: any;
-    authorLastNameModel: any;
     authorAffiliationModel: any;
 
     // FormControl Parameters
-    authorName = new FormControl('', [Validators.required]);
-    authorLastName = new FormControl('', [Validators.required]);
+    authorName: FormControl
+    authorLastName: FormControl
     
     constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
          
-        private pubScreenService: PubScreenService, ) { }
+        private pubScreenService: PubScreenService,
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+        this.authorName = fb.control('', [Validators.required])
+        this.authorLastName = fb.control('', [Validators.required])
+    }
 
     ngOnInit() {
       
@@ -46,7 +48,7 @@ export class AuthorDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.pubScreenService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
+        this.pubScreenService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
        
     }
 

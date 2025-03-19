@@ -17,6 +17,6 @@
     
 }
 
-/deep/ .mat-tooltip {
+:host ::ng-deep .mat-tooltip {
     font-size: 15px !important;
 }

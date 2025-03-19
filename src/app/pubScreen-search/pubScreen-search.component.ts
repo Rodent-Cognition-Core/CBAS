@@ -1,16 +1,8 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { take, takeUntil } from 'rxjs/operators';
-import { ManageUserService } from '../services/manageuser.service';
-import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-import { IdentityService } from '../services/identity.service';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl } from '@angular/forms';
+import { ReplaySubject ,  Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { AuthenticationService } from '../services/authentication.service';
@@ -67,7 +59,7 @@ export class PubScreenSearchComponent implements OnInit {
     isFullDataAccess: boolean;
    
 
-    _pubSCreenSearch = new Pubscreen();
+    _pubSCreenSearch: Pubscreen;
 
     public authorMultiFilterCtrl: FormControl = new FormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -77,21 +69,32 @@ export class PubScreenSearchComponent implements OnInit {
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService, public dialogAuthor: MatDialog)
-    { }
+    {
+        this.isAdmin = false;
+        this.isFullDataAccess = false;
+        this._pubSCreenSearch = {
+            abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
+            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
+            strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
+            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+        }
+    }
 
     ngOnInit() {
 
         this.GetAuthorList();
-        this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
-        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
-        this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
-        this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
-        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; });
-        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; });
-        this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
-        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
+        this.pubScreenService.getPaperType().subscribe((data: any) => { this.paperTypeList = data; });
+        this.pubScreenService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.pubScreenService.getSpecie().subscribe((data: any) => { this.specieList = data; });
+        this.pubScreenService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.pubScreenService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.pubScreenService.getDisease().subscribe((data: any) => { this.diseaseList = data; });
+        this.pubScreenService.getRegion().subscribe((data: any) => { this.regionList = data; });
+        this.pubScreenService.getCellType().subscribe((data: any) => { this.cellTypeList = data; });
+        this.pubScreenService.getMethod().subscribe((data: any) => { this.methodList = data; });
+        this.pubScreenService.getNeurotransmitter().subscribe((data: any) => { this.neurotransmitterList = data; });
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
@@ -105,7 +108,7 @@ export class PubScreenSearchComponent implements OnInit {
     GetAuthorList() {
 
 
-        this.pubScreenService.getAuthor().subscribe(data => {
+        this.pubScreenService.getAuthor().subscribe((data: any) => {
             this.authorList = data;
 
             // load the initial expList
@@ -140,16 +143,16 @@ export class PubScreenSearchComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x : any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
-    selectedRegionChange(SelectedRegion) {
+    selectedRegionChange(SelectedRegion : any) {
 
-        this.pubScreenService.getRegionSubRegion().subscribe(data => {
+        this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
             this.regionSubregionList = data;
             //console.log(this.regionSubregionList);
-            var filtered = this.regionSubregionList.filter(function (item) {
+            var filtered = this.regionSubregionList.filter(function (item : any) {
                 return SelectedRegion.indexOf(item.rid) !== -1;
             });
 
@@ -166,7 +169,7 @@ export class PubScreenSearchComponent implements OnInit {
 
     }
 
-    openDialog(Publication): void {
+    openDialog(Publication : any): void {
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
             height: '900px',
             width: '1100px',

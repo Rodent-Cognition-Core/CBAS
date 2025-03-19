@@ -7,7 +7,7 @@
     <mat-dialog-content>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter your sub-experiment name" [formControl]="subExp" [(ngModel)]="subExpNameModel" required>
+            <input matInput placeholder="Enter your sub-experiment name" [formControl]="subExp" required>
             <mat-error *ngIf="subExp.invalid">{{getErrorMessage()}}</mat-error>
             <mat-error *ngIf="subExp.invalid">{{getErrorMessageTaken()}}</mat-error>
         </mat-form-field>
@@ -21,7 +21,7 @@
     </mat-form-field>-->
 
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the age range" [formControl]="ageInMonth" required [(ngModel)]="ageInMonthModel">
+            <mat-select placeholder="Select the age range" [formControl]="ageInMonth" required>
                 <mat-option *ngFor="let age of ageList" [value]="age.id">
                     {{age.ageInMonth}}
                 </mat-option>
@@ -34,7 +34,7 @@
         <div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">
 
             <mat-form-field class="full-width">
-                <mat-select [formControl]="imageInfo" placeholder="Select the images" [(ngModel)]="selectedImageVal" (selectionChange)="getSelectedImage(selectedImageVal)" multiple required>
+                <mat-select [formControl]="imageInfo" placeholder="Select the images" (selectionChange)="getSelectedImage(imageInfo.value)" multiple required>
                     <mat-option *ngFor="let image of imageList" [value]="image.id">
                         <img src="{{image.imagePath}}" width="30" height="30" style="margin-top:15px;" />
                     </mat-option>
@@ -50,7 +50,7 @@
             <mat-form-field class="full-width">
 
                 <textarea matInput placeholder="Please explain why more than the required number of images selected for the task"
-                          [(ngModel)]="imageDesModel" [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
+                          [formControl]="imageDescription" required matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5">
            
                 </textarea>
@@ -60,7 +60,7 @@
         </div>
 
         <!--Housing information-->
-        <mat-radio-group [formControl]="housing" [(ngModel)]="housingModel" required>
+        <mat-radio-group [formControl]="housing" required>
             <span style="font-size:small">How are the mice housed in your facility? </span> <br />
             <mat-radio-button style="font-size:small" value="Single-housed">Single-housed</mat-radio-button>
             <mat-radio-button style="font-size:small" value="Group-housed">Group-housed</mat-radio-button>
@@ -70,7 +70,7 @@
         <br /><br />
 
         <!--Light-Cycle information-->
-        <mat-radio-group [formControl]="lightCycle" [(ngModel)]="lightCycleModel" required>
+        <mat-radio-group [formControl]="lightCycle" required>
             <span style="font-size:small">How is the light cycle in your animal facility?</span> <br />
             <mat-radio-button style="font-size:small" value="Reversed light cycle">Reversed light cycle</mat-radio-button>
             <mat-radio-button style="font-size:small" value="Diurnal light cycle">Diurnal light cycle</mat-radio-button>
@@ -81,7 +81,7 @@
         <br /><br />
 
         <span style="font-size:small">- Each sub-experiment can include data either with or without intervention. Please indicate if the sub-experiment has intervention?</span>
-        <mat-radio-group [formControl]="intervention" [(ngModel)]="interventionModel" required>
+        <mat-radio-group [formControl]="intervention" required>
             <mat-radio-button value="0">No</mat-radio-button>
             <mat-radio-button value="1">Yes</mat-radio-button>
             <mat-error *ngIf="intervention.invalid">{{getErrorMessageIntervention()}}</mat-error>
@@ -90,8 +90,8 @@
         <br />
         <br />
 
-        <span style="font-size:small" *ngIf="interventionModel=='1'">- Please indicate if the intervention is medication/drug?</span>
-        <mat-radio-group [formControl]="isDrug" [(ngModel)]="isDrugModel" required *ngIf="interventionModel=='1'">
+        <span style="font-size:small" *ngIf="intervention.value=='1'">- Please indicate if the intervention is medication/drug?</span>
+        <mat-radio-group [formControl]="isDrug" required *ngIf="intervention.value=='1'">
             <mat-radio-button value="0">No</mat-radio-button>
             <mat-radio-button value="1">Yes</mat-radio-button>
             <mat-error *ngIf="isDrug.invalid">{{getErrorMessageIsDrug()}}</mat-error>
@@ -99,24 +99,24 @@
 
         <br />
 
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
-            <input matInput placeholder="Enter drug name" [formControl]="drug" [(ngModel)]="drugModel" required>
+        <mat-form-field class="full-width" *ngIf="isDrug.value=='1' && intervention.value=='1'">
+            <input matInput placeholder="Enter drug name" [formControl]="drug" required>
             <mat-error *ngIf="drug.invalid">{{getErrorMessageDrug()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1'&& interventionModel=='1'">
-            <input matInput placeholder="Enter drug quantity" [formControl]="drugQuantity" [(ngModel)]="drugQuantityModel" required>
+        <mat-form-field class="full-width" *ngIf="isDrug.value=='1'&& intervention.value=='1'">
+            <input matInput placeholder="Enter drug quantity" [formControl]="drugQuantity" required>
             <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatity()}}</mat-error>
             <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatityNumber()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="isDrugModel=='1' && interventionModel=='1'">
-            <input matInput placeholder="Enter drug unit" [formControl]="drugUnit" [(ngModel)]="drugUnitModel" required>
+        <mat-form-field class="full-width" *ngIf="isDrug.value=='1' && intervention.value=='1'">
+            <input matInput placeholder="Enter drug unit" [formControl]="drugUnit" required>
             <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageDrugUnit()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="interventionModel=='1' && isDrugModel=='0'">
-            <textarea matInput placeholder="Intervention Description" [formControl]="intDes" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
+        <mat-form-field class="full-width" *ngIf="intervention.value=='1' && isDrug.value=='0'">
+            <textarea matInput placeholder="Intervention Description" [formControl]="intDes" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5"></textarea>
             <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>
         </mat-form-field>

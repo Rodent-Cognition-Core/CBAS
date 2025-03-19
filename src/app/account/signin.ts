@@ -1,16 +1,13 @@
+import { Injectable } from '@angular/core'
 import { Router } from '@angular/router';
-
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { AuthenticationService } from '../services/authentication.service';
-
-import { IdentityService } from '../services/identity.service';
-
 import { ManageUserService } from '../services/manageuser.service';
 
 /**
  * Provides signin method to signin & signup components.
  */
+@Injectable()
 export class Signin {
 
     model: any = {};
@@ -24,16 +21,17 @@ export class Signin {
         protected router: Router,
         protected oAuthService: OAuthService,
         protected authenticationService: AuthenticationService,
-        protected manageuserService: ManageUserService) { }
+        protected manageuserService: ManageUserService) {
+
+        this.isEmailApproved = false;
+        this.isTermsConfirmed = false;
+    }
 
     signin(): void {
         this.oAuthService
             .fetchTokenUsingPasswordFlowAndLoadUserProfile(this.model.username, this.model.password)
             .then(() => {
                 this.authenticationService.init();
-
-                // Strategy for refresh token through a scheduler.
-                this.authenticationService.scheduleRefresh();
 
                 // Gets the redirect URL from authentication service.
                 // If no redirect has been set, uses the default.
@@ -57,7 +55,7 @@ export class Signin {
                         case "invalid_grant":
 
                             // call another api and find out if the user is not approved.
-                            this.manageuserService.GetEmailApprovalAndUserLockedStatus(this.model.username).subscribe(data => {
+                            this.manageuserService.GetEmailApprovalAndUserLockedStatus(this.model.username).subscribe((data) => {
                                 this.isEmailApproved = data.isUserApproved;
 
                                 if (this.isEmailApproved) {

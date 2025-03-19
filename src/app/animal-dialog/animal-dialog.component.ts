@@ -1,11 +1,12 @@
 import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
+//import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, NOTEXIST, SUCCESSFUL, TAKEN } from '../shared/messages';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { map, /*catchError*/ } from 'rxjs/operators'
+import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, TAKEN } from '../shared/messages';
 
 @Component({
     selector: 'app-animal-dialog',
@@ -15,13 +16,14 @@ import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, 
 })
 export class AnimalDialogComponent implements OnInit {
 
-    _animal = new Animal();
+    _animal: Animal;
     experimentId: number;
-    userAnimalIdModel: string;
-    genderModel: string;
-    strainModel: any;
-    genotypeModel: any;
     isTaken: boolean;
+
+    userAnimalId: FormControl;
+    gender: FormControl;
+    strain: FormControl;
+    genotype: FormControl;
 
     GenoList: any;
     StrainList: any;
@@ -29,7 +31,17 @@ export class AnimalDialogComponent implements OnInit {
 
 
     constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: Ng4LoadingSpinnerService) { }
+        @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: NgxSpinnerService,
+        private fb: FormBuilder
+    ) {
+        this.userAnimalId = fb.control('', [Validators.required])
+        this.gender = fb.control('', [Validators.required])
+        this.strain = fb.control('', [Validators.required])
+        this.genotype = fb.control('', [Validators.required])
+        this.experimentId = 0;
+        this.isTaken = false;
+        this._animal = { AnimalID: 0, ExpID: 0, Genotype: '', GID: 0, Sex: '', SID: 0, Strain: '', UserAnimalID: '' }
+    }
 
     ngOnInit() {
 
@@ -39,11 +51,11 @@ export class AnimalDialogComponent implements OnInit {
         // if it is the edit mode
         if (this.data.animalObj != null) {
             this.userAnimalLoadVal = this.data.animalObj.userAnimalID;
-            this.userAnimalIdModel = this.data.animalObj.userAnimalID;
-            this.genderModel = this.data.animalObj.sex;
-            this.strainModel = this.data.animalObj.sid;
+            this.userAnimalId.setValue(this.data.animalObj.userAnimalID);
+            this.gender.setValue(this.data.animalObj.sex);
+            this.strain.setValue(this.data.animalObj.sid);
             this.getGenoList(this.data.animalObj.sid);
-            this.genotypeModel = this.data.animalObj.gid;
+            this.genotype.setValue(this.data.animalObj.gid);
             
            
         }
@@ -54,15 +66,15 @@ export class AnimalDialogComponent implements OnInit {
     }
 
     // Getting Selected Strain ID and Pass it to get Genolist
-    selectedStrainChange(selectedStrainVal) {
+    selectedStrainChange(selectedStrainVal: number) {
 
-        this.genotypeModel = [];
+        this.genotype.setValue([]);
 
         this.getGenoList(selectedStrainVal);
 
     }
 
-    getGenoList(selected_StrainValue): any {
+    getGenoList(selected_StrainValue: number): any {
 
         this.animalService.getAllGeno(selected_StrainValue).subscribe(data => { this.GenoList = data; });
     }
@@ -71,11 +83,6 @@ export class AnimalDialogComponent implements OnInit {
 
         this.thisDialogRef.close('Cancel');
     }
-
-    userAnimalId = new FormControl('', [Validators.required]);
-    gender = new FormControl('', [Validators.required]);
-    strain = new FormControl('', [Validators.required]);
-    genotype = new FormControl('', [Validators.required]);
 
     getErrorMessageId() {
         return this.userAnimalId.hasError('required') ? FIELDISREQUIRED : '';
@@ -112,57 +119,61 @@ export class AnimalDialogComponent implements OnInit {
     onCloseSubmit(): void {
 
         this._animal.ExpID = this.data.experimentId;
-        this._animal.UserAnimalID = this.userAnimalIdModel;
-        this._animal.Sex = this.genderModel;
-        this._animal.SID = this.strainModel;
-        this._animal.GID = this.genotypeModel;
+        this._animal.UserAnimalID = this.userAnimalId.value;
+        this._animal.Sex = this.gender.value;
+        this._animal.SID = this.strain.value;
+        this._animal.GID = this.genotype.value;
 
         if (this.data.animalObj == null) {   // Insert Mode: Insert Animal
             this.isTaken = false;
 
-            this.animalService.createAnimal(this._animal).map(res => {
+            this.animalService.createAnimal(this._animal).pipe(map(res => {
                 if (res == TAKEN) {
                     this.isTaken = true;
                     this.userAnimalId.setErrors({ 'taken': true });
                 } else {
                     this.thisDialogRef.close(true);
                 }
-            }).subscribe();
+            })
+            ).subscribe();
 
         } else {  // Edit Mode: Edit Animal
 
             // Check If UserAnimalID has been edited
-            if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalIdModel.trim().toUpperCase()) {
+            if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) {
 
                 this._animal.AnimalID = this.data.animalObj.animalID;
-                this.animalService.updateAniaml(this._animal).map(res => {
+                this.animalService.updateAniaml(this._animal).pipe(map((res: {id: string}) => {
                     // close it so we can see the loading
                     this.thisDialogRef.close(true);
 
-                }).subscribe();
+                })
+             ).subscribe();
 
             }
             else {
 
                 // Check If edited UserAnimalID exist in Table Animal
-                this.animalService.IsUserAnimalIDExist(this.userAnimalIdModel.trim(), this.data.experimentId).map(res => {
-                    if (res == NOTEXIST) {
+                this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
+                    if (!res) {
                         alert("ERROR: " + ANIMALIDDOESNOTEXIST);
 
                     } else {
                         // Edit UserAnimalId based what exists in tbl Animal in Database
-                        this.animalService.EditUserAnimalID(this.userAnimalIdModel.trim(), this.data.animalObj.animalID, this.data.experimentId).map(res => {
+                        this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
                             // close it so we can see the loading
-                            if (res == SUCCESSFUL) {
+                            if (res) {
                                 this.thisDialogRef.close(false);
                             }
                             else {
                                 alert(CANNOTSAVEEDITS);
                             }
 
-                        }).subscribe();
+                        })
+                    ).subscribe();
                     }
-                }).subscribe();
+                })
+            ).subscribe();
             }
 
 

@@ -1,17 +1,19 @@
-import { Component, OnInit, NgModule, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AuthenticationService } from '../services/authentication.service';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ExperimentService } from '../services/experiment.service';
 import { UploadService } from '../services/upload.service';
 import { PagerService } from '../services/pager.service';
-import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { Location } from '@angular/common';
-import { Experiment } from '../models/experiment';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import * as _ from 'underscore';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CONFIRMDELETE } from '../shared/messages';
+import { map } from 'rxjs/operators';
+
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
 
 @Component({
     selector: 'app-experiment',
@@ -29,28 +31,32 @@ export class ExperimentComponent implements OnInit {
     pagerTblFile: any = {};
     pagedItems: any[];
     pagedItemsTblFile: any[];
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelExp: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefPostProcessingResult: MatDialogRef<GenericDialogComponent>;
     //@ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private experimentService: ExperimentService, public dialog: MatDialog,
-        private authenticationService: AuthenticationService, private location: Location,
+        private location: Location,
         private uploadService: UploadService,
-        private spinnerService: Ng4LoadingSpinnerService,
-        private pagerService: PagerService
-    ) { }
+        private spinnerService: NgxSpinnerService,
+        private pagerService: PagerService,
+        public dialogRefDelFile: MatDialog,
+        public dialogRefDelExp: MatDialog,
+        public dialogRefPostProcessingResult: MatDialog
+    ) {
+        this.pagedItems = [];
+        this.pagedItemsTblFile = [];
+
+    }
 
     ngOnInit() {
         // this.GetAllExp();
 
     }
 
-    GetUploadInfo(selectedSubExperimentID) {
+    GetUploadInfo(selectedSubExperimentID: number) {
 
         this.spinnerService.show();
 
-        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe(data => {
+        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
             this.UploadList = data;
             //console.log(this.UploadList);
             this.setPageTblFile(1);
@@ -59,7 +65,7 @@ export class ExperimentComponent implements OnInit {
             }, 500);
 
         },
-            error => {
+            (error : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
                 }, 500);
@@ -67,11 +73,11 @@ export class ExperimentComponent implements OnInit {
 
     }
 
-    SelectedExpChanged(experiment) {
+    SelectedExpChanged(experiment : any) {
         this.selectedSubExperiment = null;
     }
 
-    SelectedSubExpChanged(subExperiment) {
+    SelectedSubExpChanged(subExperiment : any) {
         this.selectedSubExperiment = subExperiment;
         if (subExperiment != null) {
             var subExpId = subExperiment.subExpID;
@@ -81,28 +87,29 @@ export class ExperimentComponent implements OnInit {
     }
 
     // Delete File Dialog
-    openConfirmationDialogDelFile(uploadID, subExpID) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+    openConfirmationDialogDelFile(uploadID : number, subExpID : number) {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).map(res => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadInfo(subExpID);
-                }).subscribe();
+                })).subscribe();
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            dialogRefDelFile.close();
         });
     }
 
 
     // Delete File 
-    deleteFile(uploadID, subExpID) {
+    deleteFile(uploadID : any, subExpID : any) {
         this.openConfirmationDialogDelFile(uploadID, subExpID);
     }
 
@@ -117,11 +124,12 @@ export class ExperimentComponent implements OnInit {
 
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(csvData, userFileName);
-                } else {
-                    csvURL = window.URL.createObjectURL(csvData);
-                }
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(csvData, userFileName);
+                //} else {
+                //    csvURL = window.URL.createObjectURL(csvData);
+                //}
+                csvURL = window.URL.createObjectURL(csvData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', userFileName);
@@ -155,9 +163,9 @@ export class ExperimentComponent implements OnInit {
         this.setPageTblFile(1);
     }
 
-    filterByString(data, s): any {
+    filterByString(data : any, s : string): any {
         s = s.trim();
-        return data.filter(e => e.userFileName.toLowerCase().includes(s.toLowerCase()) || e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase())); // || e.another.includes(s)
+        return data.filter((e : any) => e.userFileName.toLowerCase().includes(s.toLowerCase()) || e.userAnimalID.toLowerCase().includes(s.toLowerCase()) || e.sessionName.toLowerCase().includes(s.toLowerCase())); // || e.another.includes(s)
         //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
   

@@ -14,7 +14,7 @@
 
                     <!--Species dropDown-->
                     <mat-form-field>
-                        <mat-select placeholder="Select the Species" [formControl]="species" [(ngModel)]="selectedSpeciesvalue" (selectionChange)="selectedSpeciesChange()" required>
+                        <mat-select placeholder="Select the Species" [formControl]="species" (selectionChange)="selectedSpeciesChange()" required>
                             <mat-option *ngFor="let species of speciesList" [value]="species.id">
                                 <span matTooltip="{{species.species}}">{{species.species}}</span>
                             </mat-option>
@@ -23,8 +23,8 @@
                     </mat-form-field>
                     &nbsp; &nbsp;  &nbsp;
                     <!--Task dropDown-->
-                    <mat-form-field *ngIf="selectedSpeciesvalue!=null">
-                        <mat-select placeholder="Select the Task" [formControl]="task" [(ngModel)]="selectedTaskvalue" (selectionChange)="selectedTaskChange(selectedTaskvalue, selectedSpeciesvalue)" required>
+                    <mat-form-field *ngIf="species.value!=null">
+                        <mat-select placeholder="Select the Task" [formControl]="task" (selectionChange)="selectedTaskChange(task.value, species.value)" required>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
                             </mat-option>
@@ -38,14 +38,13 @@
                     <br /><br />
 
                     <!--Experiment dropDown-->
-                    <mat-form-field *ngIf="selectedTaskvalue!=null">
-                        <mat-select [formControl]="exp" placeholder="Select Experiments" [(ngModel)]="selectedExpvalue" [multiple]="true" (selectionChange)="selectedExpChange(selectedExpvalue)">
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="ExpMultiSelect" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
+                    <mat-form-field *ngIf="task.value!=null">
+                        <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
+                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
                             <mat-option disabled="disabled" class="filter-option">
                                 <button mat-raised-button
                                         class="mat-primary fill text-sm"
-                                        (click)="selectAllExperiments()"
-                                        [disabled]="ExpMultiSelect != undefined && ExpMultiSelect != ''">
+                                        (click)="selectAllExperiments()">
                                     Select All
                                 </button>
                                 <button mat-raised-button
@@ -63,8 +62,8 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--SubTask/Session dropDown-->
-                    <mat-form-field *ngIf="selectedExpvalue.length > 0">
-                        <mat-select [formControl]="subtask" placeholder="Select the Session" [(ngModel)]="selectedSubTaskValue" (selectionChange)="selectedSubTaskChange(selectedSubTaskValue, selectedExpvalue)" required>
+                    <mat-form-field *ngIf="exp.value.length > 0">
+                        <mat-select [formControl]="subtask" placeholder="Select the Session" (selectionChange)="selectedSubTaskChange(subtask.value, exp.value)" required>
                             <mat-option *ngFor="let subtask of subTakList" [value]="subtask.id">
                                 <span matTooltip="{{subtask.subTaskDescription}}">{{subtask.name}}</span>
                             </mat-option>
@@ -85,8 +84,8 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Static SessionInfo Features-->
-                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
-                        <mat-select [formControl]="sessioninfo" placeholder="Select key features" [(ngModel)]="selectedSessionInfoValue" multiple>
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
+                        <mat-select [formControl]="sessioninfo" placeholder="Select key features" multiple>
                             <mat-option *ngFor="let sessioninfo of sessionInfoFeature" [value]="sessioninfo.name">
                                 <span matTooltip="{{sessioninfo.name}}">{{sessioninfo.name}}</span>
                             </mat-option>
@@ -96,10 +95,10 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Dynamic markerInfo Features-->
-                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
-                        <mat-select [formControl]="markerinfo" placeholder="Select the required features" [(ngModel)]="selectedMarkerInfoValue" (selectionChange)="getAnimalInfo(selectedExpvalue)" multiple>
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
+                        <mat-select [formControl]="markerinfo" placeholder="Select the required features" (selectionChange)="getAnimalInfo(exp.value)" multiple>
 
-                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="MarkerInfoMultiSelect" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
+                            <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
 
                             <mat-option *ngFor="let markerinfo of filteredMarkerInfoList | async" [value]="markerinfo">
                                 <span matTooltip="{{markerinfo}}">{{markerinfo}}</span>
@@ -110,8 +109,8 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--List of Aggregation Function-->
-                    <mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null && !isTrialByTrial">
-                        <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function" [(ngModel)]="selectedAggFunction">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null && !isTrialByTrial">
+                        <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function">
                             <mat-option *ngFor="let agg of aggregationFunction" [value]="agg.name">
                                 {{agg.name}}
                             </mat-option>
@@ -122,16 +121,15 @@
 
                     <!--PISite Information-->
                     <!--<mat-form-field *ngIf="selectedExpvalue.length > 0 && selectedSubTaskValue!=null">
-                        <mat-select [formControl]="PISite" placeholder="Select PI and institution" [(ngModel)]="selectedPiSiteValue" multiple>
-                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.pusid">
-                                <span matTooltip="{{exp.piSiteUser}}">{{exp.piSiteUser}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    &nbsp; &nbsp; &nbsp;-->
-
+        <mat-select [formControl]="PISite" placeholder="Select PI and institution" [(ngModel)]="selectedPiSiteValue" multiple>
+            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.pusid">
+                <span matTooltip="{{exp.piSiteUser}}">{{exp.piSiteUser}}</span>
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    &nbsp; &nbsp; &nbsp;-->
                     <!--Show Intervention information if the selected experiments do have intervention-->
-                    <mat-form-field *ngIf="InterventionList.length>0 && selectedExpvalue.length > 0 && selectedSubTaskValue!=null ">
+                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!=null ">
                         <mat-select placeholder="Select Intervention" [(ngModel)]="selectedInterventionValue" multiple>
                             <mat-option *ngFor="let intervention of InterventionList" [value]="intervention.subExpID">
                                 <span matTooltip="{{ intervention.isDrug ? intervention.drugName : intervention.interventionDescription }}">{{ intervention.isDrug ? intervention.drugName + " " + intervention.drugQuantity + " " + intervention.drugUnit : intervention.interventionDescription }}</span>
@@ -145,7 +143,7 @@
 
                     <!--Adding Panel for Filtering Animal Information-->
 
-                    <mat-card *ngIf="selectedMarkerInfoValue.length > 0">
+                    <mat-card *ngIf="markerinfo.value.length > 0">
 
                         <mat-card-header>
                             <mat-card-title>
@@ -187,7 +185,7 @@
                             <!--Animal Strain-->
                             <mat-form-field>
 
-                                <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, selectedExpvalue)" multiple>
+                                <mat-select placeholder="Select Animal Strain" [(ngModel)]="selectedStrainValue" (selectionChange)="selectedStrainChange(selectedStrainValue, exp.value)" multiple>
                                     <mat-option *ngFor="let animal of AnimalInfoListStrain" [value]="animal.id">
                                         <span matTooltip="{{animal.strain}}">{{animal.strain}}, <a href="{{animal.link}}" target="_blank">Reference</a></span>
                                     </mat-option>
@@ -226,6 +224,7 @@
                     <button mat-raised-button (click)="GetData()" [disabled]="setDisabledVal()">Get Data</button>
 
 
+
                 </td>
             </tr>
         </tbody>
@@ -256,7 +255,7 @@
                             <tr *ngFor="let res of pagedItems; let i = index">
                                 <!--<tr *ngFor="let res of result">-->
                                 <td *ngFor="let col of colNames">
-                                    <span *ngIf="col=='Image' && (selectedTaskvalue==3||selectedTaskvalue==4 || selectedTaskvalue==11 )" [innerHTML]="res[col]"></span>
+                                    <span *ngIf="col=='Image' && (task.value==3||task.value==4 || task.value==11 )" [innerHTML]="res[col]"></span>
                                     <!--<span *ngIf="col=='Image_Description' && (selectedTaskvalue==3||selectedTaskvalue==4)">{{res[col]}}</span>-->
                                     <span *ngIf="col!='Image'">{{res[col]}}</span>
                                 </td>

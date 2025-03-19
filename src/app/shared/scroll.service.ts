@@ -2,8 +2,8 @@
 
 import { Injectable, Inject } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
-import { DOCUMENT } from '@angular/platform-browser';
-import { fromEvent } from 'rxjs/observable/fromEvent';
+import { DOCUMENT } from '@angular/common';
+import { fromEvent } from 'rxjs';
 
 export const topMargin = 16;
 /**
@@ -37,6 +37,8 @@ export class ScrollService {
         private location: PlatformLocation) {
         // On resize, the toolbar might change height, so "invalidate" the top offset.
         fromEvent(window, 'resize').subscribe(() => this._topOffset = null);
+        this._topOffset = 0;
+        this._topOfPageElement = this.document.querySelector('.top-of-page');
     }
 
     /**
@@ -69,8 +71,8 @@ export class ScrollService {
 
                 // If we are very close to the top (<20px), then scroll all the way up.
                 // (This can happen if `element` is at the top of the page, but has a small top-margin.)
-                if (window.pageYOffset < 20) {
-                    window.scrollBy(0, -window.pageYOffset);
+                if (window.scrollY < 20) {
+                    window.scrollBy(0, -window.scrollY);
                 }
             }
         }

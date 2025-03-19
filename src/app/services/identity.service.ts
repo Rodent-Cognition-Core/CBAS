@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from "rxjs";
 
 import { AuthenticationService } from './authentication.service';
 
@@ -40,13 +39,18 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public generatePasswordResetToken(email): any {
-
+    public generatePasswordResetToken(email: string): Observable<{ token: string }> {
         return this.http
-            .get("/api/identity/GeneratePasswordResetToken?email=" + email, {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            });
-    }
+            .get<{ token: string }>(`/api/identity/GeneratePasswordResetToken?email=${email}`, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json'),
+            })
+            .pipe(
+                catchError((error) => {
+                    console.error('Error generating password reset token', error);
+                    throw error;
+                })
+            );
+     }
 
     /**
      * Creates a new user.
@@ -57,14 +61,14 @@ import { AuthenticationService } from './authentication.service';
         const body: string = JSON.stringify(model);
 
         // Sends an authenticated request.
-        return this.http.post("/api/identity/Create", body, {
+        return this.http.post<any>("/api/identity/Create", body, {
             headers: new HttpHeaders().set('Content-Type', 'application/json')
         }).pipe(
-            map((response: Response) => {
+            map((response) => {
                 return response;
             }),
-            catchError((error: any) => {
-                return _throw(error);
+            catchError((error) => {
+                return throwError(error);
             }));
     }
 

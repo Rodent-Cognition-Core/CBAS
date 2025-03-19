@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 declare var spotfire: any;
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
-import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { filterQueryId } from '@angular/core/src/view/util';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-mb-dashboard',
@@ -13,16 +11,15 @@ import { filterQueryId } from '@angular/core/src/view/util';
 })
 export class MBDashboardComponent implements OnInit {
 
-    
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
 
    
     constructor(
         public dialog: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialog) {
 
     }
 
@@ -72,7 +69,7 @@ export class MBDashboardComponent implements OnInit {
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = '';
 
-        var onError = function (errorCode, description) {
+        var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
         var onOpenedfunction = function () {

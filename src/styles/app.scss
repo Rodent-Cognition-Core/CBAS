@@ -461,7 +461,6 @@ thead {
 
 
 
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 .all-wrap {
     min-height: 100vh;
@@ -554,5 +553,9 @@ section {
 
 .logoLessPadding{
     padding: 0 10px !important;
+}
+
+.naviMenu ul.top-nav-ul > li [hidden] {
+    display: none !important;
 }
 

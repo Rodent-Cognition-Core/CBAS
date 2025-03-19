@@ -1,11 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { Animal } from '../models/animal';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IdentityService } from '../services/identity.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
 
 @Component({
@@ -25,7 +21,8 @@ export class PasswordDialogComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<PasswordDialogComponent>,
 
         private identityService: IdentityService,
-        private snackBar: MatSnackBar,) { }
+        private snackBar: MatSnackBar,
+        @Inject(MAT_DIALOG_DATA) public data: any) { }
 
     ngOnInit() {
 
