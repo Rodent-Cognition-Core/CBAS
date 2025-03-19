@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DataExtractionService } from '../services/dataextraction.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { PagerService } from '../services/pager.service';
 
 declare var $: any;
@@ -24,12 +24,14 @@ export class DataLinkComponent implements OnInit {
 
     constructor(
         private dataExtractionService: DataExtractionService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
         private pagerService: PagerService,
     ) {
         this.description = "";
         this.colNames = [];
+        this.linkGuid = "";
+        this.pagedItems = [];
 
         this.route.queryParams.subscribe(params => {
             this.linkGuid = params['linkguid'];
@@ -39,7 +41,7 @@ export class DataLinkComponent implements OnInit {
     }
 
     @HostListener('window:resize', ['$event'])
-    onResize(event) {
+    onResize(event : any) {
         $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
     }
 
@@ -50,7 +52,7 @@ export class DataLinkComponent implements OnInit {
     GetDataByLinkGuid() {
         this.spinnerService.show();
 
-        this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe(data => {
+        this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe((data : any) => {
 
             //console.log(data);
 
@@ -92,7 +94,8 @@ export class DataLinkComponent implements OnInit {
     }
 
     DownloadCsv() {
-        let csv: '';
+        var csv: string;
+        csv = '';
 
         //var items = this.result;
         var items = this.result;
@@ -135,8 +138,9 @@ export class DataLinkComponent implements OnInit {
 
         var blob = new Blob([csv], { type: 'text/csv' });
         var filename = 'exported_' + new Date().toLocaleString() + '.csv';
-        if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveBlob(blob, filename);
+        const _win = window.navigator as any
+        if (_win.msSaveOrOpenBlob) {
+            _win.msSaveBlob(blob, filename);
         }
         else {
             var elem = window.document.createElement('a');

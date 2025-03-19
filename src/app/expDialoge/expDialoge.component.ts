@@ -1,19 +1,15 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Experiment } from '../models/experiment';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-//import { UploadService } from '../services/upload.service';
-import { SharedModule } from '../shared/shared.module';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { take, takeUntil } from 'rxjs/operators';
+import { ReplaySubject ,  Subject } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shared/messages';
 
 
@@ -27,18 +23,8 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
 })
 export class ExpDialogeComponent implements OnInit {
 
-    expNameModel: string;
-    sDateModel: Date;
-    eDateModel: Date;
-    taskDesModel: string;
     DOIModel: string;
-    statusModel: string;
     isTaken: boolean;
-    selectedvalue: any;
-    selectPISvalue: any;
-    speciesModel: any;
-    taskBatteryModel: any;
-    isMultipleSessionsModel: string;
     isRepoLink: any;
     repModel: any;
 
@@ -47,24 +33,55 @@ export class ExpDialogeComponent implements OnInit {
     speciesList: any;
     repList: any;
 
+    exp: FormControl;
+    sDate: FormControl;
+    eDate: FormControl;
+    task: FormControl;
+    species: FormControl;
+    piSite: FormControl;
+    status:FormControl;
+    expDescription: FormControl;
+    expBattery: FormControl;
+    isMultipleSessions: FormControl;
+
+
     public repMultiFilterCtrl: FormControl = new FormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    repMultiSelect: any;
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    private _experiment = new Experiment();
+    private _experiment: Experiment;
 
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
-        private piSiteService: PISiteService, private spinnerService: Ng4LoadingSpinnerService, private cogbytesService: CogbytesService) { }
+        private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
+        private fb: FormBuilder
+    ) {
+        this.DOIModel = '';
+        this.isTaken = false;
+        this.exp = fb.control('', [Validators.required])
+        this.sDate = fb.control('',[Validators.required])
+        this.eDate = fb.control('',[Validators.required])
+        this.task = fb.control('',[Validators.required])
+        this.species = fb.control('',[Validators.required])
+        this.piSite = fb.control('',[Validators.required])
+        this.status = fb.control('',[Validators.required])
+        this.expDescription = fb.control('',[Validators.required])
+        this.expBattery = fb.control('',[Validators.required])
+        this.isMultipleSessions = fb.control('', [Validators.required])
+        this._experiment = {
+            DOI: '', EndExpDate: new Date(), ExpID: 0, ExpName: '', ImageIds: [], ImageInfo: '', multipleSessions: true,
+            PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), Status: false,
+            TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: ''
+        }
+    }
 
     ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe(data => { this.taskList = data; /*console.log(this.taskList)*/; });
-        this.piSiteService.getPISitebyUserID().subscribe(data => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe(data => { this.speciesList = data; /*console.log(this.speciesList)*/; });
+        this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/; });
+        this.piSiteService.getPISitebyUserID().subscribe((data : any) => { this.piSiteList = data; });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/; });
         this.GetRepList();
 
         this.isRepoLink = '0';
@@ -72,17 +89,17 @@ export class ExpDialogeComponent implements OnInit {
         //console.log(this.data.experimentObj);
         // if it is an Edit model
         if (this.data.experimentObj != null) {
-            this.expNameModel = this.data.experimentObj.expName;
-            this.sDateModel = this.data.experimentObj.startExpDate;
-            this.eDateModel = this.data.experimentObj.endExpDate;
-            this.selectedvalue = this.data.experimentObj.taskID;
-            this.speciesModel = this.data.experimentObj.speciesID
-            this.taskDesModel = this.data.experimentObj.taskDescription;
-            this.taskBatteryModel = this.data.experimentObj.taskBattery;
-            this.selectPISvalue = this.data.experimentObj.pusid;
+            this.exp.setValue(this.data.experimentObj.expName);
+            this.sDate.setValue(this.data.experimentObj.startExpDate);
+            this.eDate.setValue(this.data.experimentObj.endExpDate);
+            this.task.setValue(this.data.experimentObj.taskID);
+            this.species.setValue(this.data.experimentObj.speciesID);
+            this.expDescription.setValue(this.data.experimentObj.taskDescription);
+            this.expBattery.setValue(this.data.experimentObj.taskBattery);
+            this.piSite.setValue(this.data.experimentObj.pusid);
             this.DOIModel = this.data.experimentObj.doi;
-            this.statusModel = this.data.experimentObj.status ? "1" : "0";
-            this.isMultipleSessionsModel = this.data.experimentObj.multipleSessions ? "1" : "0";
+            this.status.setValue(this.data.experimentObj.status ? "1" : "0");
+            this.isMultipleSessions.setValue(this.data.experimentObj.multipleSessions ? "1" : "0");
             if (this.data.experimentObj.repoGuid != "") {
                 this.isRepoLink = '1';
                 this.repModel = this.data.experimentObj.repoGuid;
@@ -92,7 +109,7 @@ export class ExpDialogeComponent implements OnInit {
 
     GetRepList() {
 
-        this.cogbytesService.getAllRepositories().subscribe(data => {
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => {
             this.repList = data;
 
             // load the initial expList
@@ -127,7 +144,7 @@ export class ExpDialogeComponent implements OnInit {
 
         // filter the rep
         this.filteredRepList.next(
-            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
+            this.repList.filter((x : any) => x.title.toLowerCase().indexOf(searchRep) > -1)
         );
     }
 
@@ -140,29 +157,26 @@ export class ExpDialogeComponent implements OnInit {
 
     onCloseSubmit(): void {
         this.spinnerService.show();
-
-        this._experiment.ExpName = this.expNameModel;
-        this._experiment.StartExpDate = this.sDateModel;
-        this._experiment.EndExpDate = this.eDateModel;
-        this._experiment.TaskID = this.getSelectedTask(this.selectedvalue).id; // should be readonly
-        this._experiment.SpeciesID = this.speciesModel;
-        this._experiment.TaskDescription = this.taskDesModel;
-        this._experiment.TaskBattery = this.taskBatteryModel;
-        this._experiment.PUSID = this.getSelectedPIS(this.selectPISvalue).pusid;
+        this._experiment.ExpName = this.exp.value;
+        this._experiment.StartExpDate = new Date(this.sDate.value);
+        this._experiment.EndExpDate = new Date(this.eDate.value);
+        this._experiment.TaskID = this.getSelectedTask(this.task.value).id; // should be readonly
+        this._experiment.SpeciesID = parseInt(this.species.value);
+        this._experiment.TaskDescription = this.expDescription.value;
+        this._experiment.TaskBattery = this.expBattery.value;
+        this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
         this._experiment.DOI = this.DOIModel;
-        this._experiment.Status = this.statusModel == "1" ? true : false;
-        this._experiment.multipleSessions = this.isMultipleSessionsModel == "1" ? true : false;
+        this._experiment.Status = this.status.value == "1" ? true : false;
+        this._experiment.multipleSessions = this.isMultipleSessions.value == "1" ? true : false;
         if (this.isRepoLink == '1') {
             this._experiment.repoGuid = this.repModel;
         }
-
-        //console.log(this._experiment.ImageIds);
 
         if (this.data.experimentObj == null) {
             // Insert Mode: Insert Experiment
             this.isTaken = false;
 
-            this.expDialogeService.create(this._experiment).map(res => {
+            this.expDialogeService.create(this._experiment).pipe(map((res : any) => {
                 if (res == "Taken") {
                     this.isTaken = true;
                     this.exp.setErrors({ 'taken': true });
@@ -170,7 +184,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe(data => {
+            })).subscribe((data : any) => {
 
                 setTimeout(() => {
                     this.spinnerService.hide();
@@ -184,7 +198,7 @@ export class ExpDialogeComponent implements OnInit {
 
             this.isTaken = false;
             this._experiment.ExpID = this.data.experimentObj.expID;
-            this.expDialogeService.updateExp(this._experiment).map(res => {
+            this.expDialogeService.updateExp(this._experiment).pipe(map((res : any) => {
 
 
 
@@ -195,7 +209,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            }).subscribe(data => {
+            })).subscribe((data : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
 
@@ -206,17 +220,6 @@ export class ExpDialogeComponent implements OnInit {
         }
 
     }
-
-    exp = new FormControl('', [Validators.required]);
-    sDate = new FormControl('', [Validators.required]);
-    eDate = new FormControl('', [Validators.required]);
-    task = new FormControl('', [Validators.required]);
-    species = new FormControl('', [Validators.required]);
-    piSite = new FormControl('', [Validators.required]);
-    status = new FormControl('', [Validators.required]);
-    expDescription = new FormControl('', [Validators.required]);
-    expBattery = new FormControl('', [Validators.required]);
-    isMultipleSessions = new FormControl('', [Validators.required]);
 
     getErrorMessage() {
 
@@ -309,12 +312,12 @@ export class ExpDialogeComponent implements OnInit {
         return false;
     }
 
-    getSelectedTask(selectedValue) {
-        return this.taskList.find(x => x.id === selectedValue);
+    getSelectedTask(selectedValue : any) {
+        return this.taskList.find((x : any) => x.id === selectedValue);
     }
 
-    getSelectedPIS(selectedVal) {
-        return this.piSiteList.find(x => x.pusid === selectedVal);
+    getSelectedPIS(selectedVal : any) {
+        return this.piSiteList.find((x : any) => x.pusid === selectedVal);
     }
 
 

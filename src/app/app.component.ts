@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, OnChanges, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
@@ -49,8 +49,9 @@ export class AppComponent implements OnInit {
     navItemsPubscreen: any[] = [
         { name: 'Searching Publications', route: 'pubScreen-search' }
     ];
-
     signedIn: Observable<boolean>;
+
+    // public signedIn!: Observable<boolean>;
 
     name: string;
     isAdmin: boolean;
@@ -67,6 +68,13 @@ export class AppComponent implements OnInit {
         private el: ElementRef,
         angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
     ) {
+        this.name = '';
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.showFooter = false;
+        this.signedIn = this.authenticationService.isSignedIn();
+
         if (this.oAuthService.hasValidAccessToken()) {
             this.authenticationService.init();
 
@@ -84,8 +92,6 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.title.setTitle('MouseBytes');
-
-        this.signedIn = this.authenticationService.isSignedIn();
 
         this.authenticationService.userChanged().subscribe(
             (user: User) => {
@@ -131,7 +137,7 @@ export class AppComponent implements OnInit {
         //https://www.google.ca/search?rlz=1C1CHBF_enCA773CA773&ei=mjY0W7SqI6mZjwSm_alQ&q=scrollintoview+behavior+smooth+chrome+workaround&oq=scrollintoview+behavior+smooth+chrome+workaround&gs_l=psy-ab.3...4370.6235.0.6330.10.10.0.0.0.0.142.930.8j2.10.0....0...1c.1.64.psy-ab..0.9.852...33i22i29i30k1j33i160k1j33i21k1.0.pMohbacSZr0
     }
 
-    navigateHomeAndScrollTo(element) {
+    navigateHomeAndScrollTo(element : any) {
         this.router.navigate(["/home"]).then(() => {
             this.scrollTo(element);
         });
@@ -179,7 +185,7 @@ export class AppComponent implements OnInit {
 
     }
 
-    onActivate(event) {
+    onActivate(event : any) {
 
         this.showHideFooter(this.router.url);
         //console.log(this.router.url);

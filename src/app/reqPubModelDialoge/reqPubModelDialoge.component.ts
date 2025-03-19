@@ -1,11 +1,9 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -18,33 +16,39 @@ import { SharedModule } from '../shared/shared.module';
 
 })
 export class ReqPubModelDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRodentModel: string;
-    reqDOIModel: string;
-    reqNewSubModel: string;
    
     modelList: any;
 
-    private _request = new Request();
+    private _request: Request;
 
     // FormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    rodentModel = new FormControl('', [Validators.required]);
-    newSubModel = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: FormControl;
+    email: FormControl;
+    rodentModel: FormControl;
+    newSubModel: FormControl;
+    doi: FormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubModelDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.rodentModel = fb.control('', [Validators.required]);
+        this.newSubModel = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
+    }
 
     ngOnInit() {
-        this.pubScreenService.getDisease().subscribe(data => { this.modelList = data; });
+        this.pubScreenService.getDisease().subscribe((data : any) => { this.modelList = data; });
 
     }
 
@@ -58,11 +62,11 @@ export class ReqPubModelDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.doi = this.reqDOIModel;
-        this._request.model = this.reqRodentModel;
-        this._request.subModel = this.reqNewSubModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        this._request.model = this.rodentModel.value;
+        this._request.subModel = this.newSubModel.value;
 
         // Submiting the request to server
         this.requestService.addPubSubModel(this._request).subscribe( this.thisDialogRef.close()); 

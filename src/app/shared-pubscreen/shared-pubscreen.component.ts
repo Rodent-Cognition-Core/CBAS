@@ -1,16 +1,9 @@
-import { Component, OnInit, Inject, NgModule, Input } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { take, takeUntil } from 'rxjs/operators';
-import { ManageUserService } from '../services/manageuser.service';
-//import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { ReplaySubject ,  Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
 import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
@@ -25,14 +18,7 @@ export class SharedPubscreenComponent implements OnInit {
 
 
     //Models Variables for adding Publication
-    authorModel: any;
-    titleModel: any;
-    abstractModel: any;
-    yearModel: any;
     keywordsModel: any;
-    doiModel: any;
-    paperTypeModel: any;
-    cognitiveTaskModel: any;
     specieModel: any;
     sexModel: any;
     strainModel: any;
@@ -40,18 +26,12 @@ export class SharedPubscreenComponent implements OnInit {
     regionModel: any;
     subRegionModel: any;
     cellTypeModel: any;
-    addingOptionModel: any;
     methodModel: any;
     neurotransmitterModel: any;
     authorMultiSelect: any;
-    doiKeyModel: any;
-    PubMedKeyModel: any;
     authorModel2: any;
     paperTypeModel2: any;
     referenceModel: any;
-    sourceOptionModel: any;
-    bioAddingOptionModel: any;
-    bioDoiKeyModel: any;
 
 
 
@@ -78,27 +58,28 @@ export class SharedPubscreenComponent implements OnInit {
     paperInfoFromDoiList: any;
 
     //Form Validation Variables for adding publications
-    author = new FormControl('', [Validators.required]);
-    title = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
-    doiKey = new FormControl('', [Validators.required]);
-    paperType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
+    author: FormControl;
+    title: FormControl;
+    abstract: FormControl;
+    doi: FormControl;
+    doiKey: FormControl;
+    paperType: FormControl;
+    cognitiveTask: FormControl;
     //specie = new FormControl('', [Validators.required]);
     //sex = new FormControl('', [Validators.required]);
-    addingOption = new FormControl('', [Validators.required]);
-    year = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    pubMedKey = new FormControl('', [Validators.required]);
-    sourceOption = new FormControl('', [Validators.required]);
-    bioAddingOption = new FormControl('', [Validators.required]);
-    doiKeyBio = new FormControl('', [Validators.required]);
+    addingOption: FormControl;
+    year: FormControl;
+    pubMedKey: FormControl;
+    sourceOption: FormControl;
+    bioAddingOption: FormControl;
+    doiKeyBio: FormControl;
 
 
     //onbj variable from Models
-    _pubscreen = new Pubscreen();
-    _pubSCreenSearch = new Pubscreen();
+    _pubscreen: Pubscreen;
+    _pubSCreenSearch: Pubscreen;
 
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: FormControl;
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -106,24 +87,55 @@ export class SharedPubscreenComponent implements OnInit {
     constructor(
         // private pagerService: PagerService,
         public dialog: MatDialog,
-        private pubScreenService: PubScreenService, public dialogAuthor: MatDialog) {
+        private pubScreenService: PubScreenService, public dialogAuthor: MatDialog,
+        private fb: FormBuilder) {
 
+        this.author = fb.control('', [Validators.required]);
+        this.title = fb.control('', [Validators.required]);
+        this.abstract = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+        this.doiKey = fb.control('', [Validators.required]);
+        this.paperType = fb.control('', [Validators.required]);
+        this.cognitiveTask = fb.control('', [Validators.required]);
+        this.addingOption = fb.control('', [Validators.required]);
+        this.year = fb.control('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+        this.pubMedKey = fb.control('', [Validators.required]);
+        this.sourceOption = fb.control('', [Validators.required]);
+        this.bioAddingOption = fb.control('', [Validators.required]);
+        this.doiKeyBio = fb.control('', [Validators.required]);
+        this.authorMultiFilterCtrl = fb.control('');
+        this._pubSCreenSearch = {
+            abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
+            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
+            strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
+            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+        }
+        this._pubscreen = {
+            abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
+            diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
+            neurotransOther: '', paperType: '', paperTypeID: 0, paperTypeIdSearch: [], reference: '', regionID: [],
+            search: '', sexID: [], source: '', specieID: [], specieOther: '', strainID: [], strainMouseOther: '',
+            strainRatOther: '', subMethodID: [], subModelID: [], subRegionID: [], subTaskID: [], taskID: [], taskOther: '',
+            title: '', transmitterID: [], year: '', yearFrom: 0, yearID: [], yearTo: 0
+        }
         this.resetFormVals();
     }
 
     ngOnInit() {
 
         //this.GetAuthorList();
-        this.pubScreenService.getPaperType().subscribe(data => { this.paperTypeList = data; });
-        this.pubScreenService.getTask().subscribe(data => { this.taskList = data; });
-        this.pubScreenService.getSpecie().subscribe(data => { this.specieList = data; });
-        this.pubScreenService.getSex().subscribe(data => { this.sexList = data; });
-        this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; });
-        this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; });
-        this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; });
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
-        this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; });
+        this.pubScreenService.getPaperType().subscribe((data : any) => { this.paperTypeList = data; });
+        this.pubScreenService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.pubScreenService.getSpecie().subscribe((data: any) => { this.specieList = data; });
+        this.pubScreenService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.pubScreenService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.pubScreenService.getDisease().subscribe((data: any) => { this.diseaseList = data; });
+        this.pubScreenService.getRegion().subscribe((data: any) => { this.regionList = data; });
+        this.pubScreenService.getCellType().subscribe((data: any) => { this.cellTypeList = data; });
+        this.pubScreenService.getMethod().subscribe((data: any) => { this.methodList = data; });
+        this.pubScreenService.getNeurotransmitter().subscribe((data: any) => { this.neurotransmitterList = data; });
 
         //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
@@ -156,7 +168,7 @@ export class SharedPubscreenComponent implements OnInit {
 
         this.resetFormVals();
 
-        this.pubScreenService.getAuthor().subscribe(data => {
+        this.pubScreenService.getAuthor().subscribe((data: any) => {
             this.authorList = data;
 
             // load the initial expList
@@ -175,7 +187,7 @@ export class SharedPubscreenComponent implements OnInit {
 
     // Getting list of all years  in database ???
     getAllYears() {
-        return this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; /*console.log(this.yearList);*/ });
+        return this.pubScreenService.getAllYears().subscribe((data: any) => { this.yearList = data; /*console.log(this.yearList);*/ });
     }
 
 
@@ -197,17 +209,17 @@ export class SharedPubscreenComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x : any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
 
-    selectedRegionChange(SelectedRegion) {
+    selectedRegionChange(SelectedRegion : any) {
 
-        this.pubScreenService.getRegionSubRegion().subscribe(data => {
+        this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
             this.regionSubregionList = data;
             //console.log(this.regionSubregionList);
-            var filtered = this.regionSubregionList.filter(function (item) {
+            var filtered = this.regionSubregionList.filter(function (item : any) {
                 return SelectedRegion.indexOf(item.rid) !== -1;
             });
 
@@ -277,36 +289,36 @@ export class SharedPubscreenComponent implements OnInit {
 
     setDisabledVal() {
 
-        if (this.authorModel == null && this.author.hasError('required')) {
+        if (this.author.value == null && this.author.hasError('required')) {
 
             return true;
         }
 
-        if (this.paperTypeModel == null && this.paperType.hasError('required')) {
+        if (this.paperType.value == null && this.paperType.hasError('required')) {
             return true;
         }
 
-        if (this.sourceOptionModel == 1 && this.addingOption.hasError('required')) {
-            return true;
-
-        }
-
-        if (this.sourceOptionModel == 2 && this.bioAddingOption.hasError('required')) {
+        if (this.sourceOption.value == 1 && this.addingOption.hasError('required')) {
             return true;
 
         }
 
-        if (this.addingOptionModel == 1 && this.doiKey.hasError('required')) {
+        if (this.sourceOption.value == 2 && this.bioAddingOption.hasError('required')) {
             return true;
 
         }
 
-        if (this.addingOptionModel == 2 && this.pubMedKey.hasError('required')) {
+        if (this.addingOption.value == 1 && this.doiKey.hasError('required')) {
             return true;
 
         }
 
-        if (this.bioAddingOptionModel == 1 && this.doiKeyBio.hasError('required')) {
+        if (this.addingOption.value == 2 && this.pubMedKey.hasError('required')) {
+            return true;
+
+        }
+
+        if (this.bioAddingOption.value == 1 && this.doiKeyBio.hasError('required')) {
             return true;
 
         }
@@ -353,9 +365,9 @@ export class SharedPubscreenComponent implements OnInit {
     }
 
     // Adding DOI's paper to get some paper's info from PubMed
-    addDOI(doi) {
+    addDOI(doi : any) {
 
-        this.pubScreenService.getPaparInfoFromDOI(doi).subscribe(data => {
+        this.pubScreenService.getPaparInfoFromDOI(doi).subscribe((data: any) => {
 
             /*console.log(data);
             console.log(data.result);*/
@@ -367,15 +379,15 @@ export class SharedPubscreenComponent implements OnInit {
             else {
 
                 this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
+                this.title.setValue(data.result.title);
+                this.abstract.setValue(data.result.abstract);
+                this.year.setValue(data.result.year);
                 this.keywordsModel = data.result.keywords;
-                this.doiModel = data.result.doi;
+                this.doi.setValue(data.result.doi);
                 this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+                this.paperType.setValue(data.result.paperType);
                 
             }
 
@@ -384,9 +396,9 @@ export class SharedPubscreenComponent implements OnInit {
     }
 
     // Adding pubmed key to get paper information from pubMed
-    addPubMedID(PubMedKey) {
+    addPubMedID(PubMedKey : any) {
 
-        this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe(data => {
+        this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe((data: any) => {
 
             //console.log(data);
             //console.log(data.result);
@@ -398,24 +410,24 @@ export class SharedPubscreenComponent implements OnInit {
             else {
 
                 this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
+                this.title.setValue(data.result.title);
+                this.abstract.setValue(data.result.abstract);
+                this.year.setValue(data.result.year);
                 this.keywordsModel = data.result.keywords;
-                this.doiModel = data.result.doi;
+                this.doi.setValue(data.result.doi);
                 this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+                this.paperType.setValue(data.result.paperType);
             }
 
         });
 
     }
 
-    addDOIBio(doi) {
+    addDOIBio(doi : any) {
 
-        this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe(data => {
+        this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe((data: any) => {
 
             //console.log(data);
             //console.log(data.result);
@@ -427,15 +439,15 @@ export class SharedPubscreenComponent implements OnInit {
             else {
 
                 this.authorModel2 = data.result.authorString;
-                this.titleModel = data.result.title;
-                this.abstractModel = data.result.abstract;
-                this.yearModel = data.result.year;
+                this.title.setValue(data.result.title);
+                this.abstract.setValue(data.result.abstract);
+                this.year.setValue(data.result.year);
                 this.keywordsModel = data.result.keywords;
-                this.doiModel = data.result.doi;
+                this.doi.setValue(data.result.doi);
                 this.paperTypeModel2 = data.result.paperType;
                 this.referenceModel = data.result.reference;
                 this.authorList2 = data.result.author;
-                this.paperTypeModel = data.result.paperType;
+                this.paperType.setValue(data.result.paperType);
 
             }
 
@@ -446,8 +458,8 @@ export class SharedPubscreenComponent implements OnInit {
     // Adding a new publication to DB by cliking on Submit button
     AddPublication() {
 
-        if (this.authorModel != null && this.authorModel.length != 0) {
-            this._pubscreen.authourID = this.authorModel;
+        if (this.author.value != null && this.author.value.length != 0) {
+            this._pubscreen.authourID = this.author.value;
             //console.log(this.authorModel)
         }
         else {
@@ -459,8 +471,8 @@ export class SharedPubscreenComponent implements OnInit {
 
         }
 
-        if (this.paperTypeModel != null) {
-            this._pubscreen.paperType = this.paperTypeModel;
+        if (this.paperType.value != null) {
+            this._pubscreen.paperType = this.paperType.value;
         }
         else {
             this._pubscreen.paperType = this.paperTypeModel2;
@@ -469,12 +481,12 @@ export class SharedPubscreenComponent implements OnInit {
             this._pubscreen.reference = this.referenceModel;
         }
 
-        this._pubscreen.title = this.titleModel;
-        this._pubscreen.abstract = this.abstractModel;
+        this._pubscreen.title = this.title.value;
+        this._pubscreen.abstract = this.abstract.value;
         this._pubscreen.keywords = this.keywordsModel;
-        this._pubscreen.doi = this.doiModel;
-        this._pubscreen.year = this.yearModel;
-        this._pubscreen.taskID = this.cognitiveTaskModel;
+        this._pubscreen.doi = this.doi.value;
+        this._pubscreen.year = this.year.value;
+        this._pubscreen.taskID = this.cognitiveTask.value;
         this._pubscreen.specieID = this.specieModel;
         this._pubscreen.sexID = this.sexModel;
         this._pubscreen.strainID = this.strainModel;
@@ -485,7 +497,7 @@ export class SharedPubscreenComponent implements OnInit {
         this._pubscreen.methodID = this.methodModel;
         this._pubscreen.transmitterID = this.neurotransmitterModel;
 
-        switch (this.sourceOptionModel) {
+        switch (this.sourceOption.value) {
 
             case 1 : {
                 this._pubscreen.source = 'pubMed';
@@ -514,15 +526,15 @@ export class SharedPubscreenComponent implements OnInit {
 
     resetFormVals() {
 
-        this.titleModel = '';
-        this.abstractModel = '';
+        this.title.setValue('');
+        this.abstract.setValue('');
         this.keywordsModel = '';
-        this.doiModel = '';
-        this.yearModel = '';
+        this.doi.setValue('');
+        this.year.setValue('');
         this.yearSearchModel = [];
-        this.authorModel = [];
-        this.paperTypeModel = '';
-        this.cognitiveTaskModel = [];
+        this.author.setValue([]);
+        this.paperType.setValue('');
+        this.cognitiveTask.setValue([]);
         this.specieModel = [];
         this.sexModel = [];
         this.strainModel = [];
@@ -532,12 +544,12 @@ export class SharedPubscreenComponent implements OnInit {
         this.cellTypeModel = [];
         this.methodModel = [];
         this.neurotransmitterModel = [];
-        this.doiKeyModel = '';
+        this.doiKey.setValue('');
         this.authorModel2 = '';
         this.paperTypeModel2 = '';
         this.referenceModel = '';
-        this.PubMedKeyModel = '';
-        this.bioDoiKeyModel = '';
+        this.pubMedKey.setValue('');
+        this.doiKeyBio.setValue('');
 
     }
 

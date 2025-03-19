@@ -10,11 +10,11 @@
             </span>
             <br /><br /><br />
             <!--<span style="color: #ceaafb">{{pubCount}}</span> Total Publications in Pubscreen-->
-            <span countUp [endVal]="pubCount" style="color: #663399; font-size:large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Total Publications in Pubscreen</span>
+            <span [countUp]="pubCount" style="color: #663399; font-size:large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Total Publications in Pubscreen</span>
             <br />
             <br />
             <!--<span style="color: #ceaafb">{{featureCount}}</span> Publications with Key Features Added-->
-            <span countUp [endVal]="featureCount" style="color: #663399; font-size: large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Publications with Key Features Added</span>
+            <span [countUp]="featureCount" style="color: #663399; font-size: large; font-weight:bold">0</span><span style="color: #4B0082; font-size:large;"> Publications with Key Features Added</span>
         </p>
 
     </div>
@@ -63,7 +63,7 @@
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
@@ -101,8 +101,8 @@
                             <!--Paper year To-->
                             <mat-form-field style="width:14%; padding-left:30px">
 
-                                <mat-select placeholder="Year To" [(ngModel)]="yearToSearchModel" [formControl]="yearTo"
-                                            (selectionChange)="selectYearToChange(yearFromSearchModel, yearToSearchModel)">
+                                <mat-select placeholder="Year To" [formControl]="yearTo"
+                                            (selectionChange)="selectYearToChange(yearFromSearchModel, yearTo.value)">
                                     <mat-option *ngFor="let val of yearList" [value]="val">
                                         {{val}}
                                     </mat-option>
@@ -161,7 +161,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Cognitive Task(s) " [(ngModel)]="subTaskModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subTaskMultiSelect" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subTaskMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let subTask of filteredSubTaskList | async" [value]="subTask.id">
                                         <span matTooltip="{{subTask.subTask}}">{{subTask.subTask}}</span>
@@ -183,7 +183,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Strain" [(ngModel)]="strainModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="strainMultiSelect" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="strainMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let strain of filteredStrainList | async" [value]="strain.id">
                                         <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
@@ -206,7 +206,7 @@
                             <mat-form-field style="width:15%">
                                 <mat-select placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="diseaseMultiSelect" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let disease of filteredDiseaseList | async" [value]="disease.id">
                                         <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
@@ -219,7 +219,7 @@
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subModelMultiSelect" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
                                             <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
@@ -231,7 +231,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="regionMultiSelect" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let region of filteredRegionList | async" [value]="region.id">
                                         <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
@@ -244,7 +244,7 @@
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subRegionMultiSelect" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
                                             <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
@@ -257,7 +257,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="cellTypeMultiSelect" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let cell of filteredCellTypeList | async" [value]="cell.id">
                                         <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
@@ -271,7 +271,7 @@
                             <mat-form-field style="width:15%">
                                 <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="methodMultiSelect" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let method of filteredMethodList | async" [value]="method.id">
                                         <span matTooltip="{{method.method}}">{{method.method}}</span>
@@ -284,7 +284,7 @@
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
 
-                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="subMethodMultiSelect" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
 
                                         <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
                                             <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
@@ -296,7 +296,7 @@
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
 
-                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [(ngModel)]="neurotransmitterMultiSelect" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
 
                                     <mat-option *ngFor="let neuro of filteredNeurotransmitterList | async" [value]="neuro.id">
                                         <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
@@ -358,22 +358,22 @@
 
                         <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
 
-                        <label>Task Category:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Task(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subTask =="") ?  "N/A" : (_pubSCreenSearch.subTaskID==Null || _pubSCreenSearch.subTaskID.lenght == 0 || _pubSCreenSearch.subTaskID == "") ? row.subTask  : "<b>" + row.subTask + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Specie(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sex:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task Category:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID.length == 0) ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subTask =="") ?  "N/A" : (_pubSCreenSearch.subTaskID.length == 0) ? row.subTask  : "<b>" + row.subTask + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Specie(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID.length == 0) ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sex:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID.length == 0) ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Strain(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> <br /><br /> <!--&nbsp; &nbsp; &nbsp;-->
-                        <label>Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID==Null || _pubSCreenSearch.subModelID.lenght == 0 || _pubSCreenSearch.subModelID == "") ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Strain(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID.length == 0) ? row.strain  : "<b>" + row.strain + "</b>"'></span> <br /><br /> <!--&nbsp; &nbsp; &nbsp;-->
+                        <label>Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID.length == 0) ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subModel =="") ?  "N/A" : (_pubSCreenSearch.subModelID.length == 0) ? row.subModel  : "<b>" + row.subModel + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
+                        <label>Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID.length == 0) ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID.length == 0) ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> <br /><br />
 
-                        <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subMethod =="") ?  "N/A" : (_pubSCreenSearch.subMethodID==Null || _pubSCreenSearch.subMethodID.lenght == 0 || _pubSCreenSearch.subMethodID == "") ? row.subMethod  : "<b>" + row.subMethod + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Neurochemical(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
+                        <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID.length == 0) ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID.length == 0) ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subMethod =="") ?  "N/A" : ( _pubSCreenSearch.subMethodID.length == 0) ? row.subMethod  : "<b>" + row.subMethod + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Neurochemical(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : ( _pubSCreenSearch.transmitterID.length == 0) ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br /><br />
 
                         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngIf="row.experiment.length>0">
                             <mat-expansion-panel-header>

@@ -1,10 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-//import { Request } from '../models/request';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
-import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -19,17 +16,21 @@ import { SharedModule } from '../shared/shared.module';
 export class CogbytesAuthorDialogueComponent implements OnInit {
 
     // Defining Models Parameters
-    authorNameModel: any;
-    authorLastNameModel: any;
     authorAffiliationModel: any;
 
     // FormControl Parameters
-    authorName = new FormControl('', [Validators.required]);
-    authorLastName = new FormControl('', [Validators.required]);
+    authorName: FormControl;
+    authorLastName: FormControl;
     
     constructor(public thisDialogRef: MatDialogRef<CogbytesAuthorDialogueComponent>,
          
-        private cogbytesService: CogbytesService, ) { }
+        private cogbytesService: CogbytesService,
+        private fb: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+        this.authorName = fb.control('', [Validators.required])
+        this.authorLastName = fb.control('', [Validators.required])
+    }
 
     ngOnInit() {
       
@@ -45,7 +46,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.cogbytesService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe(result => {
+        this.cogbytesService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe((result: any) => {
             if (result == 0) {
                 alert("Author already in database!");
             }

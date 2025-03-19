@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from "rxjs";
 import { Cogbytes } from '../models/cogbytes';
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesSearch } from '../models/cogbytesSearch'
@@ -219,7 +218,7 @@ import { AuthenticationService } from './authentication.service';
     }
 
 
-    downloadFile(path): Observable<Blob> {
+    downloadFile(path: string): Observable<Blob> {
 
         return this.http.get("/api/cogbytes/downloadFile?path=" + path,
             { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: "blob" });

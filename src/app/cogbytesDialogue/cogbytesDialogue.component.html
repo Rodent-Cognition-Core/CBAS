@@ -25,7 +25,7 @@
 
                             <!--Author-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" [(ngModel)]="authorModel" (openedChange)="GetAuthorList()" required multiple>
+                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" (openedChange)="GetAuthorList()" required multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -42,7 +42,7 @@
                             <!--PI-->
                             <!--PI-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="pi" placeholder="Select PI(s)" [(ngModel)]="piModel" (openedChange)="GetPIList()" required multiple>
+                                <mat-select [formControl]="pi" placeholder="Select PI(s)" (openedChange)="GetPIList()" required multiple>
 
                                     <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
 
@@ -62,7 +62,7 @@
                         <!--Paper Title-->
                         <mat-form-field style="width: 60%">
 
-                            <textarea matInput placeholder="Title" [formControl]="title" [(ngModel)]="titleModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
+                            <textarea matInput placeholder="Title" [formControl]="title" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="4" required>
                             </textarea>
                             <mat-error *ngIf="title.invalid">{{getErrorMessageTitle()}}</mat-error>
 
@@ -73,7 +73,7 @@
                         <mat-form-field style="width:30%; padding-left: 25px">
 
                             <!--<input matInput placeholder="Date" required>-->
-                            <input matInput placeholder="Date" [formControl]="date" [(ngModel)]="dateModel" [matDatepicker]="picker" required>
+                            <input matInput placeholder="Date" [formControl]="date" [matDatepicker]="picker" required>
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
                             <mat-error *ngIf="date.invalid">{{getErrorMessageDate()}}</mat-error>
@@ -127,7 +127,7 @@
 
                         <!--Privacy Status-->
                         <span>Privacy Status: </span>
-                        <mat-radio-group [formControl]="privacyStatus" [(ngModel)]="privacyStatusModel" required>
+                        <mat-radio-group [formControl]="privacyStatus" required>
                             <mat-radio-button value="false">Private</mat-radio-button>
                             <mat-radio-button value="true">Public</mat-radio-button>
                             <mat-error *ngIf="privacyStatus.invalid">{{getErrorMessagePrivacyStatus()}}</mat-error>

@@ -8,7 +8,6 @@ import { DataExtractionService } from '../services/dataextraction.service'
     imports: [
         DataVisualizationRoutingModule,
         SharedModule,
-        //MatSelectModule,
         
 
     ],
@@ -22,7 +21,7 @@ import { DataExtractionService } from '../services/dataextraction.service'
     ],
     bootstrap: [DataVisualizationComponent],
     
-
+    exports: [DataVisualizationComponent],
 })
 export class DataVisualizationModule { } 
 

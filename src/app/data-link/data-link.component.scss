@@ -55,6 +55,6 @@ td {
     background: red;
 }
 
-/deep/ .my-tooltip {
+:host ::ng-deep .my-tooltip {
     /*overflow: visible;*/
 }

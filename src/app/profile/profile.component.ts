@@ -1,14 +1,14 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
-import { SharedModule } from '../shared/shared.module';
 import { PISiteService } from '../services/piSite.service';
 import { ProfileService } from '../services/profile.service';
 import { IdentityService } from '../services/identity.service';
 import { User } from '../models/user';
 import { PasswordDialogComponent } from '../password-dialog/password-dialog.component';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/messages';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-profile',
@@ -18,8 +18,6 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS, SERVERERROR } from '../shared/mes
 export class ProfileComponent implements OnInit {
 
     //HTML Models Parameters
-    givenNameModel: string;
-    familyNameModel: string;
     email: string;
     
     selectePISiteModel: any
@@ -37,19 +35,24 @@ export class ProfileComponent implements OnInit {
 
 
     // FormControls Definition
-    givenName = new FormControl('', [Validators.required]);
-    familyName = new FormControl('', [Validators.required]);
+    givenName: FormControl;
+    familyName: FormControl;
 
 
     //model Variable
-    _user = new User();
+    _user: User;
 
     constructor(private piSiteService: PISiteService,
         private identityService: IdentityService,
         private profileService: ProfileService,
         private location: Location,
-        public dialog: MatDialog,) {
+        public dialog: MatDialog,
+        private fb: FormBuilder) {
 
+        this.email = '';
+        this.givenName = fb.control('',[Validators.required])
+        this.familyName = fb.control('', [Validators.required])
+        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }
 
     ngOnInit() {
@@ -78,7 +81,7 @@ export class ProfileComponent implements OnInit {
     // Get List of all PiSite by the user ID
     GetPISiteListByUserID() {
 
-        this.piSiteService.getPISitebyUserID().subscribe(data => {
+        this.piSiteService.getPISitebyUserID().subscribe((data : any) => {
             this.piSiteListByUserID = data;
             console.log(this.piSiteListByUserID);
 
@@ -93,9 +96,9 @@ export class ProfileComponent implements OnInit {
         var a = this.piSiteList;
         var b = this.piSiteListByUserID;
 
-        function comparer(otherArray) {
-            return function (current) {
-                return otherArray.filter(function (other) {
+        function comparer(otherArray : any) {
+            return function (current : any) {
+                return otherArray.filter(function (other : any) {
                     return other.psid == current.psid
                 }).length == 0;
             }
@@ -113,15 +116,15 @@ export class ProfileComponent implements OnInit {
     // Get User Info
     GetUserInfo() {
 
-        this.profileService.getUserInfo().subscribe(data => {
+        this.profileService.getUserInfo().subscribe((data : any) => {
 
 
 
             this.userInfo = data;
             console.log(this.userInfo);
 
-            this.givenNameModel = this.userInfo.givenName;
-            this.familyNameModel = this.userInfo.familyName;
+            this.givenName.setValue(this.userInfo.givenName);
+            this.familyName.setValue(this.userInfo.familyName);
             this.email = this.userInfo.email;
 
 
@@ -199,11 +202,11 @@ export class ProfileComponent implements OnInit {
     updateUserProfile(): void {
 
         
-        this._user.givenName = this.givenNameModel;
-        this._user.familyName = this.familyNameModel;
+        this._user.givenName = this.givenName.value;
+        this._user.familyName = this.familyName.value;
         this._user.selectedPiSiteIds = this.selectePISiteModel;
         //console.log(this._user);
-        this.profileService.updateProfile(this._user).map(res => {
+        this.profileService.updateProfile(this._user).pipe(map((res : any) => {
 
             //location.reload();
             this.GetUserInfo();
@@ -211,7 +214,7 @@ export class ProfileComponent implements OnInit {
             this.selectePISiteModel = [];
             
 
-        }).subscribe();
+        })).subscribe();
 
     }
 

@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { SharedModule } from '../shared/shared.module';
-import { OwlModule } from 'ngx-owl-carousel';
-import { Router, NavigationEnd } from '@angular/router';
 import { ScrollService } from '../shared/scroll.service';
 import { AnimalService } from '../services/animal.service';
 
@@ -29,6 +26,9 @@ export class HomeComponent {
         private animalService: AnimalService,
         private scrollService: ScrollService,
     ) {
+        this.showItem = false;
+        this.mouseCounter = 0;
+
     }
 
     ngAfterViewInit() {

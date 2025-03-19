@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map, concatMap } from 'rxjs/operators';
 
 import { AuthenticationService } from './authentication.service';
@@ -12,7 +12,9 @@ import { AuthenticationService } from './authentication.service';
 
     private signedIn: boolean;
 
-    constructor(private authenticationService: AuthenticationService, private router: Router) { }
+    constructor(private authenticationService: AuthenticationService, private router: Router) {
+        this.signedIn = false;
+    }
 
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
         return this.authenticationService.isSignedIn().pipe(
