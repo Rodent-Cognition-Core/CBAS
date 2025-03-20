@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
@@ -76,6 +76,9 @@ export class UploadComponent implements OnInit {
         this.isDrug = false;
         this.ageInMonth = '';
         this.expTask = '';
+        this.experimentID = null;
+        this.subExpID = null;
+        this.sessionNameVal = null;
         this.config.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
 
     }
@@ -158,12 +161,6 @@ export class UploadComponent implements OnInit {
                 break;
 
             }
-            case 13: { // Autoshaping
-
-                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
-                break;
-
-            }
             case 14: { //Extinction
                 this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 14));
                 break;
@@ -185,7 +182,7 @@ export class UploadComponent implements OnInit {
     }
     // *********************DropZone functions******************************
 
-    onAddedFile(data : any): void {
+    onAddedFile(_data : any): void {
 
         if (!this.uploadConfirmShowed) {
 
@@ -245,7 +242,7 @@ export class UploadComponent implements OnInit {
 
     }
 
-    onQueueComplete(args: any): void {
+    onQueueComplete(_args: any): void {
 
         if (this.uploadErrorServer != "") {
             alert(this.uploadErrorServer);
@@ -287,7 +284,7 @@ export class UploadComponent implements OnInit {
         //console.log('onUploadError:', args);
     }
 
-    public maxfilesexceeded(args: any) {
+    public maxfilesexceeded(_args: any) {
 
         //console.log('max exceeded!');
     }
@@ -299,7 +296,7 @@ export class UploadComponent implements OnInit {
         if (this.proceedUpload == true) {
 
 
-            let dialogref = this.dialog.open(UploadResultDialogComponent, {
+            let _dialogref = this.dialog.open(UploadResultDialogComponent, {
                 height: '900px',
                 width: '850px',
                 data: { uploadResult: args[1], experimentName: this.experimentName } // data.uploadResult  & data.experimentName should be sent to UploadResultDialogComponent 

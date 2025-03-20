@@ -15,7 +15,7 @@ import { FIELDISREQUIRED, SUBEXPERIEMENTWITHSAMECONDITIONS, SUBEXPERIMENTNAMETAK
 
 export class SubExpDialogeComponent implements OnInit {
 
-    subExpList: any;
+    subExpList: any[];
     isTakenSubExpName: boolean;
     isTakenAge: boolean;
     isTakenAgeSubExp: boolean;
@@ -52,6 +52,7 @@ export class SubExpDialogeComponent implements OnInit {
         this.isTakenSubExpName = false;
         this.isTakenAge = false;
         this.isTakenAgeSubExp = false;
+        this.subExpList = [];
         this.ageInMonth = fb.control('', [Validators.required]);
         this.subExp = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);

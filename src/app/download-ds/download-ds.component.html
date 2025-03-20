@@ -12,7 +12,7 @@
 </header>
 
 
-<table class="docs-markdown-table"  *ngIf="expObj!=null">
+<table class="docs-markdown-table"  *ngIf="expObj!==null">
     <thead>
         <tr>
             <th class="docs-markdown-th" colspan="2">Metadata for dataset: {{expObj.expName}}</th>
@@ -21,21 +21,21 @@
     <tbody class="docs-markdown-tbody">
         <tr>
             <td class="docs-markdown-td" style="vertical-align:top;">
-                <div  *ngIf="expObj!=null">
-                    <label>Experiment name:</label>&nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.expName}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Task:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.cognitiveTask}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Status:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.status}}</span>&nbsp; &nbsp;
-                    <label>Age:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.age}}</span>&nbsp; &nbsp; &nbsp;
+                <div  *ngIf="expObj!==null">
+                    <label>Experiment name:</label>&nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.expName}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Task:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.cognitiveTask}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Status:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.status}}</span>&nbsp; &nbsp;
+                    <label>Age:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.age}}</span>&nbsp; &nbsp; &nbsp;
                     <br /><br />
-                    <label>Strain:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.strain}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>Genotype:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.genotype}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>Experiment Description:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.taskDescription}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>Start date - End Date:</label>&nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.period}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>PI and Institution:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.piSiteName}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>Researcher:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.username}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
-                    <label>Email:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!=null">{{expObj.email}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Strain:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.strain}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Genotype:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.genotype}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Experiment Description:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.taskDescription}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Start date - End Date:</label>&nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.period}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>PI and Institution:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.piSiteName}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Researcher:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.username}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
+                    <label>Email:</label> &nbsp; <span style="color:#696d70;" *ngIf="expObj!==null">{{expObj.email}}</span>&nbsp; &nbsp; &nbsp;<br /><br />
                     <label>DOI:</label>&nbsp;&nbsp;
-                    <a href="{{'http://www.doi.org/' + expObj.doi}}" target="_blank" style="color:#696d70;" *ngIf="expObj!=null">{{expObj.doi}}</a>
+                    <a href="{{'http://www.doi.org/' + expObj.doi}}" target="_blank" style="color:#696d70;" *ngIf="expObj!==null">{{expObj.doi}}</a>
                 </div>
 
             </td>
@@ -43,10 +43,10 @@
         </tr>
         <tr>
             <td>
-                <div *ngIf="expObj!=null">
+                <div *ngIf="expObj!==null">
                     <br /><br />
-                    &nbsp; &nbsp; &nbsp;<button (click)="DownloadDsFile(expObj.expId)" mat-raised-button [disabled]="expObj.status == 'Private'">Download</button>&nbsp; &nbsp;
-                    <span style="color: red" *ngIf="expObj.status == 'Private'">
+                    &nbsp; &nbsp; &nbsp;<button (click)="DownloadDsFile(expObj.expId)" mat-raised-button [disabled]="expObj.status === 'Private'">Download</button>&nbsp; &nbsp;
+                    <span style="color: red" *ngIf="expObj.status === 'Private'">
                         This experiment is private. Please contact the owner of the data.
                     </span>
                     <br />

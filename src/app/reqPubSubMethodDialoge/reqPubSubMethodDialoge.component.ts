@@ -10,7 +10,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-reqPubSubMethodDialoge',
+    selector: 'app-req-pubsubmethod-dialoge',
     templateUrl: './reqPubSubMethodDialoge.component.html',
     styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
     providers: [RequestService, PubScreenService]

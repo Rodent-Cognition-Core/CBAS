@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
 import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
@@ -8,13 +8,13 @@ import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIR
 
 @Component({
 
-    selector: 'app-cogbytesPIDialoge',
+    selector: 'app-cogbytes-pi-dialoge',
     templateUrl: './cogbytesPIDialoge.component.html',
     styleUrls: ['./cogbytesPIDialoge.component.scss'],
     providers: [CogbytesService]
 
 })
-export class CogbytesPIDialogeComponent implements OnInit {
+export class CogbytesPIDialogeComponent {
 
            
     //private _request = new Request();
@@ -33,10 +33,6 @@ export class CogbytesPIDialogeComponent implements OnInit {
         this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")])
         this.piName = fb.control('', [Validators.required])
         this.institution = fb.control('', [Validators.required])
-    }
-
-    ngOnInit() {
-      
     }
 
     onCloseCancel(): void {

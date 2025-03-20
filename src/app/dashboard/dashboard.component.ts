@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DashboardService } from '../services/dashboard.service';
 import { UploadService } from '../services/upload.service';
@@ -18,7 +18,7 @@ import { map } from 'rxjs/operators'
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
     experimentName: string;
     experimentID: number;
@@ -44,11 +44,6 @@ export class DashboardComponent implements OnInit {
         this.experimentID = 0;
         this.pagedItems = [];
         this
-    }
-
-
-    ngOnInit() {
-
     }
 
     // Get list major errors
@@ -82,7 +77,7 @@ export class DashboardComponent implements OnInit {
     }
     
     // Delete Animal Dialog
-    openConfirmationDialogDelAnimal(animalID : number, expId : number) {
+    openConfirmationDialogDelAnimal(animalID : number, _expId : number) {
         const dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -90,7 +85,7 @@ export class DashboardComponent implements OnInit {
 
         dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
-                this.animalService.deleteAnimalbyID(animalID).pipe(map((res : any) => {
+                this.animalService.deleteAnimalbyID(animalID).pipe(map((_res : any) => {
                     //location.reload()
                     this.GetUploadLogList(this.experimentID);
                 })).subscribe();
@@ -160,7 +155,7 @@ export class DashboardComponent implements OnInit {
                 console.log('show spinner');
                 this.spinnerService.show();
 
-                this.uploadService.setUploadAsResolved(uploadId).subscribe((data : any) => {
+                this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
 
                     this.GetUploadLogList(this.experimentID);
 
@@ -230,7 +225,7 @@ export class DashboardComponent implements OnInit {
         dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
 
-                this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((res : any) => {
+                this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((_res : any) => {
                     //location.reload()
                     this.uploadErrorLogList = [];
                     this.GetUploadLogList(expID);
@@ -267,7 +262,7 @@ export class DashboardComponent implements OnInit {
         dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).pipe(map((res : any) => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((_res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadLogList(this.experimentID);

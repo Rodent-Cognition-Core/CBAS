@@ -206,7 +206,7 @@ export class ProfileComponent implements OnInit {
         this._user.familyName = this.familyName.value;
         this._user.selectedPiSiteIds = this.selectePISiteModel;
         //console.log(this._user);
-        this.profileService.updateProfile(this._user).pipe(map((res : any) => {
+        this.profileService.updateProfile(this._user).pipe(map((_res : any) => {
 
             //location.reload();
             this.GetUserInfo();

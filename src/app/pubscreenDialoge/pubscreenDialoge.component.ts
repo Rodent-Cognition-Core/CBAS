@@ -1,25 +1,20 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-//import { NgModel } from '@angular/forms';
-//import { Location } from '@angular/common';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-//import { UploadService } from '../services/upload.service';
-//import { SharedModule } from '../shared/shared.module';
 import { PubScreenService } from '../services/pubScreen.service';
 import { Pubscreen } from '../models/pubscreen';
-//import { IdentityService } from '../services/identity.service';
 import { Subject ,  ReplaySubject } from 'rxjs';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONEDITFAILED, PUBLICATIONEDITSUCCESSFULL, PUBLICATIONSUCESSFULLYADDED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID, YEARNOTVALID } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-pubscreenDialoge',
+    selector: 'app-pubscreen-dialoge',
     templateUrl: './pubscreenDialoge.component.html',
     styleUrls: ['./pubscreenDialoge.component.scss'],
     providers: [TaskAnalysisService,  PISiteService]
@@ -334,7 +329,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetAuthorList();
 

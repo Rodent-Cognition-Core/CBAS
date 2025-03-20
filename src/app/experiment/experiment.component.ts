@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExperimentService } from '../services/experiment.service';
 import { UploadService } from '../services/upload.service';
@@ -9,11 +9,6 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CONFIRMDELETE } from '../shared/messages';
 import { map } from 'rxjs/operators';
 
-//declare global {
-//    interface Navigator {
-//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
-//    }
-//}
 
 @Component({
     selector: 'app-experiment',
@@ -21,7 +16,7 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./experiment.component.scss'],
 
 })
-export class ExperimentComponent implements OnInit {
+export class ExperimentComponent {
 
     UploadList: any;
     selectedSubExperiment: any;
@@ -44,11 +39,7 @@ export class ExperimentComponent implements OnInit {
     ) {
         this.pagedItems = [];
         this.pagedItemsTblFile = [];
-
-    }
-
-    ngOnInit() {
-        // this.GetAllExp();
+        this.selectedSubExperiment = null;
 
     }
 
@@ -65,7 +56,7 @@ export class ExperimentComponent implements OnInit {
             }, 500);
 
         },
-            (error : any) => {
+            (_error : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
                 }, 500);
@@ -73,7 +64,7 @@ export class ExperimentComponent implements OnInit {
 
     }
 
-    SelectedExpChanged(experiment : any) {
+    SelectedExpChanged(_experiment : any) {
         this.selectedSubExperiment = null;
     }
 
@@ -96,7 +87,7 @@ export class ExperimentComponent implements OnInit {
         dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).pipe(map((res : any) => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((_res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadInfo(subExpID);

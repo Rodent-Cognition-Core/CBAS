@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
-    selector: 'app-cogbytesEdit',
+    selector: 'app-cogbytes-edit',
     templateUrl: './cogbytesEdit.component.html',
     styleUrls: ['./cogbytesEdit.component.scss']
 })

@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-generic-dialog',
     templateUrl: './generic-dialog.component.html',
     styleUrls: ['./generic-dialog.component.scss']
 })
-export class GenericDialogComponent implements OnInit {
+export class GenericDialogComponent {
 
     public title: string;
     public message: string;
@@ -18,8 +18,5 @@ export class GenericDialogComponent implements OnInit {
 
     }
 
-
-    ngOnInit() {
-    }
 
 }

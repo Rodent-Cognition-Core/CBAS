@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IdentityService } from '../services/identity.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,7 +10,7 @@ import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
     styleUrls: ['./password-dialog.component.scss'],
     providers: [IdentityService]
 })
-export class PasswordDialogComponent implements OnInit {
+export class PasswordDialogComponent {
 
     // Parameters Initialization
     model: any = {};
@@ -23,13 +23,6 @@ export class PasswordDialogComponent implements OnInit {
         private identityService: IdentityService,
         private snackBar: MatSnackBar,
         @Inject(MAT_DIALOG_DATA) public data: any) { }
-
-    ngOnInit() {
-
-
-
-
-    }
 
 
     onCloseCancel(): void {
@@ -62,9 +55,9 @@ export class PasswordDialogComponent implements OnInit {
                 }
 
             },
-            (error: any) => {
-                const errMsg = (error.message) ? error.message :
-                    error.status ? `${error.status} - ${error.statusText}` : "Server error";
+            (_error: any) => {
+                // const errMsg = (error.message) ? error.message :
+                //     error.status ? `${error.status} - ${error.statusText}` : "Server error";
                 //console.log(errMsg);
                 this.errorMessages.push({ description: "Server error. Try later." });
             });

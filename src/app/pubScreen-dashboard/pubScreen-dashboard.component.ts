@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+
+declare var spotfire: any;
 
 @Component({
     selector: 'app-ps-dashboard',
@@ -28,11 +29,6 @@ export class PSDashboardComponent implements OnInit {
         this.loadAnalysis("pubscreen_dashboard")
         
     }
-
-    ngAfterViewInit() {
-
-    }
-
     
     loadAnalysis(spotfireAnalysisName: string) {
 

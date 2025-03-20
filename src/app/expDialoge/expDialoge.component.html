@@ -31,7 +31,7 @@
 
         <!--Cognitive Task-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!=null">
+            <mat-select placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!==null">
                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                     {{task.name}}
                 </mat-option>
@@ -108,7 +108,7 @@
             <mat-radio-button value='1'>Yes</mat-radio-button>
         </mat-radio-group>
 
-        <div *ngIf="isRepoLink=='1'">
+        <div *ngIf="isRepoLink==='1'">
             <br />
             <label>Please select the associated repository.</label><br />
 

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject ,  Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 
 import { AuthenticationService } from './authentication.service';
@@ -40,14 +38,14 @@ import { AuthenticationService } from './authentication.service';
             .get("/api/upload/SetUploadAsResolved?uploadId=" + uploadId, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
-    };
+    }
 
     downloadFile(id: number): Observable<Blob> {
 
         return this.http.get("/api/upload/downloadFile?uploadId=" + id,
             { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
 
-    };
+    }
 
     public getSessionInfo(): any {
 
