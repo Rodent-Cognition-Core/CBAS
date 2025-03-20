@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject ,  Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { throwError } from "rxjs";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { User } from '../models/user';
 
 import { AuthenticationService } from './authentication.service';
@@ -23,7 +21,7 @@ export interface UserStatusResponse {
         private authenticationService: AuthenticationService) { }
 
 
-    public GetEmailApprovalAndUserLockedStatus(username: string): Observable<UserStatusResponse> {
+    public GetEmailApprovalAndUserLockedStatus(_username: string): Observable<UserStatusResponse> {
         const url = "/api/manageuser/IsEmailApproved?UserName=${username}";
         return this.http
             .get<UserStatusResponse>(url, {

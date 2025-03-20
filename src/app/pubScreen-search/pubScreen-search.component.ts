@@ -9,7 +9,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
 
 @Component({
-    selector: 'app-pubScreen-search',
+    selector: 'app-pubscreen-search',
     templateUrl: './pubScreen-search.component.html',
     styleUrls: ['./pubScreen-search.component.scss']
 })
@@ -177,7 +177,7 @@ export class PubScreenSearchComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
             //this.DialogResult = result;
             //this.GetExpSelect();

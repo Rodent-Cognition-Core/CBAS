@@ -10,7 +10,6 @@ import { PagerService } from '../services/pager.service';
     imports: [
         VideoTutorialRoutingModule,
         SharedModule,
-        //MatSelectModule,
         
 
     ],
@@ -20,7 +19,6 @@ import { PagerService } from '../services/pager.service';
     ],
     providers: [
         TaskAnalysisService,
-        //GenomicsService,
         PagerService,
         
     ],

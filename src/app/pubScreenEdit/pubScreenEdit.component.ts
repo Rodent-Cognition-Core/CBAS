@@ -10,7 +10,7 @@ import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.
 import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
-    selector: 'app-pubScreenEdit',
+    selector: 'app-pubscreen-edit',
     templateUrl: './pubScreenEdit.component.html',
     styleUrls: ['./pubScreenEdit.component.scss']
 })
@@ -96,7 +96,7 @@ export class PubScreenEditComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             console.log('the dialog was closed');
             //this.search();
         });

@@ -1,36 +1,3 @@
-//import { NgModule } from '@angular/core';
-//import {
-//    MatSidenavModule,
-//    MatToolbarModule,
-//    MatCardModule,
-//    MatListModule,
-//    MatInputModule,
-//    MatButtonModule,
-//    MatIconModule,
-//    MatTableModule,
-//    MatSelectModule,
-//    MatOptionModule
-//} from '@angular/material';
-//import { CdkTableModule } from '@angular/cdk/table';
-
-//const materialModules: any[] = [
-//    MatSidenavModule,
-//    MatToolbarModule,
-//    MatCardModule,
-//    MatListModule,
-//    MatInputModule,
-//    MatButtonModule,
-//    MatIconModule,
-//    MatTableModule,
-//    CdkTableModule,
-//    MatSelectModule,
-//    MatOptionModule
-//];
-
-//@NgModule({
-//    imports: materialModules,
-//    exports: materialModules
-//})
 import { NgModule } from '@angular/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatRippleModule } from '@angular/material/core'
@@ -73,9 +40,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatStepperModule } from '@angular/material/stepper';
 
-/**
- * NgModule that includes all Material modules that are required to serve the demo-app.
- */
+
 const materialModules: any[] = [
     MatAutocompleteModule,
     MatButtonModule,
@@ -86,7 +51,6 @@ const materialModules: any[] = [
     MatTableModule,
     MatDatepickerModule,
     MatDialogModule,
-    //MatDividerModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatGridListModule,

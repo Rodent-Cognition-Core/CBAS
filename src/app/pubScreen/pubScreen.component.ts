@@ -16,7 +16,7 @@ import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
 
 
 @Component({
-    selector: 'app-pubScreen',
+    selector: 'app-pubscreen',
     templateUrl: './pubScreen.component.html',
     styleUrls: ['./pubScreen.component.scss']
 })
@@ -741,7 +741,7 @@ export class PubScreenComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
             //this.DialogResult = result;
             this.GetAuthorList();
@@ -757,7 +757,7 @@ export class PubScreenComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
             this.search();
         });
@@ -833,7 +833,7 @@ export class PubScreenComponent implements OnInit {
 
                 console.log(pubID);
 
-                this.pubScreenService.deletePublicationById(pubID).pipe(map((res : any) => {
+                this.pubScreenService.deletePublicationById(pubID).pipe(map((_res : any) => {
 
 
                     this.spinnerService.hide();
@@ -859,7 +859,7 @@ export class PubScreenComponent implements OnInit {
     //Function Definition to open a dialog for adding new mouse line to the system
     openDialogGeneral(): void {
 
-        let dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
+        let _dialogref = this.dialogML.open(ReqGeneralDialogeComponent, {
             height: '600px',
             width: '700px',
             data: {}

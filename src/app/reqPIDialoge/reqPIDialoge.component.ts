@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
@@ -9,13 +9,13 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-reqPIDialoge',
+    selector: 'app-reqpi-dialoge',
     templateUrl: './reqPIDialoge.component.html',
     styleUrls: ['./reqPIDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqPIDialogeComponent implements OnInit {
+export class ReqPIDialogeComponent {
 
            
     private _request: Request;
@@ -46,9 +46,6 @@ export class ReqPIDialogeComponent implements OnInit {
         }
     }
 
-    ngOnInit() {
-      
-    }
 
     onCloseCancel(): void {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -11,7 +11,7 @@ declare var $: any;
     templateUrl: './data-link.component.html',
     styleUrls: ['./data-link.component.scss']
 })
-export class DataLinkComponent implements OnInit {
+export class DataLinkComponent {
 
     linkGuid: string;
     // dataSource: MatTableDataSource<Element[]>;
@@ -45,9 +45,6 @@ export class DataLinkComponent implements OnInit {
         $('.pane-vScroll').width($('.pane-hScroll').width() + $('.pane-hScroll').scrollLeft());
     }
 
-    ngOnInit() {
-
-    }
 
     GetDataByLinkGuid() {
         this.spinnerService.show();
@@ -68,7 +65,7 @@ export class DataLinkComponent implements OnInit {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (key) { return /*console.log(key)*/; });
+                Object.keys(a).forEach(function (_key : any) { return /*console.log(key)*/; });
                 for (var key in a) {
 
                     this.colNames.push(key);

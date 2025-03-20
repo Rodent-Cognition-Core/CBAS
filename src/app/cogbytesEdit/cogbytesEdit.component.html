@@ -28,13 +28,13 @@
                         <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{( repObj.author ==="") ?  "N/A" : repObj.author}}</span>&nbsp; &nbsp; &nbsp;
                         <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{( repObj.pi ==="") ?  "N/A" : repObj.pi}}</span><br /><br />
 
-                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( repObj.keywords =="") ?  "N/A" : repObj.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( repObj.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + repObj.doi + " target=_blank>" + repObj.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                        <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( repObj.date.slice(0, -12) =="") ?  "N/A" : repObj.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( repObj.keywords ==="") ?  "N/A" : repObj.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( repObj.doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + repObj.doi + " target=_blank>" + repObj.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                        <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( repObj.date.slice(0, -12) ==="") ?  "N/A" : repObj.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                         <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( repObj.link ==="") ?  "N/A" : repObj.link}}</span><br /><br />
                         <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( repObj.description ==="") ?  "N/A" : repObj.description}}</span><br /><br />
                         <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( repObj.additionalNotes ==="") ?  "N/A" : repObj.additionalNotes}}</span><br /><br />
-                        <label>Status:</label> &nbsp; <span style="color:#696d70;">{{repObj.privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
+                        <label>Status:</label> &nbsp; <span style="color:#696d70;">{{repObj.privacyStatus === true ? 'Public' : 'Private'}}</span> <br /><br />
 
                         <label><b>Uploads:</b></label><br /><br />
 
@@ -49,11 +49,11 @@
                         {{( upload.fileType ==="") ?  "N/A" : upload.fileType}}
                     </mat-panel-description>-->
                                     </mat-expansion-panel-header>
-                                    <label>Date added:</label> &nbsp; <span style="color:#696d70;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
+                                    <label>Date added:</label> &nbsp; <span style="color:#696d70;">{{( upload.dateUpload.slice(0, -12) ==="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
                                     <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.uploadDescription ==="") ?  "N/A" : upload.uploadDescription}}</span><br /><br />
                                     <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( upload.uploadAdditionalNotes ==="") ?  "N/A" : upload.uploadAdditionalNotes}}</span><br /><br />
 
-                                    <div *ngIf="upload.fileType != 'Software'">
+                                    <div *ngIf="upload.fileType !== 'Software'">
                                         <label style="font-weight:bold;">Key Features:</label><br /><br />
                                         <label>Tasks:</label> &nbsp; <span style="color:#696d70;">{{( upload.task ==="") ?  "N/A" : upload.task}}</span><br />
                                         <label>Species:</label> &nbsp; <span style="color:#696d70;">{{( upload.species ==="") ?  "N/A" : upload.species}}</span> &nbsp; &nbsp; &nbsp;
@@ -62,7 +62,7 @@
                                         <label>Strains:</label> &nbsp; <span style="color:#696d70;">{{( upload.strain ==="") ?  "N/A" : upload.strain}}</span><br />
                                         <label>Genotypes:</label> &nbsp; <span style="color:#696d70;">{{( upload.genoType ==="") ?  "N/A" : upload.genoType}}</span> &nbsp; &nbsp; &nbsp;
                                         <label>Age (in months):</label> &nbsp; <span style="color:#696d70;">{{( upload.age ==="") ?  "N/A" : upload.age}}</span><br />
-                                        <label>Intervention?</label> &nbsp; <span style="color:#696d70;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
+                                        <label>Intervention?</label> &nbsp; <span style="color:#696d70;">{{upload.isIntervention === true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
                                         <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
                                         <label>Housing:</label> &nbsp; <span style="color:#696d70;">{{( upload.housing ==="") ?  "N/A" : upload.housing}}</span> &nbsp; &nbsp; &nbsp;
                                         <label>Light Cycle:</label> &nbsp; <span style="color:#696d70;">{{( upload.lightCycle ==="") ?  "N/A" : upload.lightCycle}}</span><br />
@@ -119,7 +119,7 @@
                             </table>
 
                         </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="repObj.paper != null">
+                        <mat-expansion-panel *ngIf="repObj.paper !== null">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>

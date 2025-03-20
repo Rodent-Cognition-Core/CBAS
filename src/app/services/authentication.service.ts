@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable ,  BehaviorSubject, Subscription, timer } from 'rxjs';
-import { interval } from 'rxjs';
-
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { User } from '../models/user';
 
 /**
@@ -127,7 +124,7 @@ import { User } from '../models/user';
                 .then(() => {
                     this.scheduleRefresh();
                 })
-                .catch((error: any) => {
+                .catch((_error: any) => {
                     this.handleRefreshTokenError();
                 });
         });

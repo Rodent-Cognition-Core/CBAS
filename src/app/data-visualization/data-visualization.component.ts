@@ -63,10 +63,6 @@ export class DataVisualizationComponent implements OnInit {
 
     }
 
-    ngAfterViewInit() {
-
-    }
-
     selectCogTaskChange(reload : any) {
 
         this.spinnerService.show();
@@ -127,7 +123,7 @@ export class DataVisualizationComponent implements OnInit {
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
-        var configuration = 'mbusername=\"' + this.user.userName + '\";';
+        var configuration = 'mbusername="' + this.user.userName + '";';
 
         var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");

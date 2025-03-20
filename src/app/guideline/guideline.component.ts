@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-
-declare var $: any;
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 
 @Component({
     selector: 'app-guideline',
     templateUrl: './guideline.component.html',
     styleUrls: ['./guideline.component.scss']
 })
-export class GuidelineComponent implements OnInit {
+export class GuidelineComponent implements OnInit, AfterViewChecked {
 
     showItem: boolean = false;
     constructor() { }

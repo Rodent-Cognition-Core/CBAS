@@ -5,7 +5,7 @@ import { TaskAnalysis } from '../models/taskAnalysis';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 
 @Component({
-    selector: 'app-taskAnalysis',
+    selector: 'app-task-analysis',
     templateUrl: './taskAnalysis.component.html',
     styleUrls: ['./taskAnalysis.component.scss']
 })

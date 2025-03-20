@@ -61,7 +61,7 @@
                                     <!--<br />
                                     <a href="https://mousebytes.ca/download-ds?ds={{row.expId}}" target="_blank">https://mousebytes.ca/download-ds?ds={{row.expId}}</a>-->
                                     <!--<button mat-icon-button matTooltip="Copy Link" (click)="copyMessage("test")"><mat-icon>content_copy</mat-icon></button>-->
-                                    <a href="{{row.dataCiteURL}}" target="_blank" *ngIf="row.status.toLowerCase().trim() == 'public'">{{row.dataCiteURL}}</a>
+                                    <a href="{{row.dataCiteURL}}" target="_blank" *ngIf="row.status.toLowerCase().trim() === 'public'">{{row.dataCiteURL}}</a>
                                 </td>
 
                             </tr>

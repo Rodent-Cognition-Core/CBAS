@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
@@ -9,13 +9,13 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-reqMouseLineDialoge',
+    selector: 'app-reqmouseline-dialoge',
     templateUrl: './reqMouseLineDialoge.component.html',
     styleUrls: ['./reqMouseLineDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqMouseLineDialogeComponent implements OnInit {
+export class ReqMouseLineDialogeComponent {
 
     // Defining Models Parameters
 
@@ -64,10 +64,6 @@ export class ReqMouseLineDialogeComponent implements OnInit {
             method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
             subModel: '', taskCategory: '', taskName: '', type: ''
         }
-    }
-
-    ngOnInit() {
-      
     }
 
     onCloseCancel(): void {

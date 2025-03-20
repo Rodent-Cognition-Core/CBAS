@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -12,11 +12,11 @@ import { INVALIDYEAR } from '../shared/messages';
 
 
 @Component({
-    selector: 'app-cogbytesSearch',
+    selector: 'app-cogbytes-search',
     templateUrl: './cogbytesSearch.component.html',
     styleUrls: ['./cogbytesSearch.component.scss']
 })
-export class CogbytesSearchComponent implements OnInit {
+export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     readonly DATASET = 1;
 

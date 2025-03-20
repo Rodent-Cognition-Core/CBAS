@@ -1,10 +1,10 @@
 <div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title">
-    <h1 *ngIf="showAll != true">SEARCH MOUSEBYTES+ DATA</h1>
-    <h1 *ngIf="showAll == true">MOUSEBYTES+ REPOSITORIES</h1>
+    <h1 *ngIf="showAll !== true">SEARCH MOUSEBYTES+ DATA</h1>
+    <h1 *ngIf="showAll === true">MOUSEBYTES+ REPOSITORIES</h1>
 </div>
 
 <div>
-    <div class="content" *ngIf="showAll != true">
+    <div class="content" *ngIf="showAll !== true">
         <p style="padding-left:50px; line-height: 1.8;">
             Touchscreen datasets can be coupled with different neuro-technologies such as fiber photometry, miniscopes, optogenetics, MRI, PET, and OMICs analysis to evaluate the brain basis of behaviour.
             In this new feature of MouseBytes, users can upload processed datasets, scripts and codes related to these and other technologies and link them to cognitive data in MouseBytes and raw data in
@@ -17,7 +17,7 @@
 
     </div>
 
-    <div style="padding-top:0px" *ngIf="showAll != true">
+    <div style="padding-top:0px" *ngIf="showAll !== true">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
@@ -262,14 +262,14 @@
                             <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{getRepAuthorString(rep)}}</span>&nbsp; &nbsp; &nbsp;
                             <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(rep)}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords ==="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) ==="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
-                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
-                            <span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus === true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <span *ngIf="rep.privacyStatus === true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
                             <br /><br />
 
                             <label><b>Uploads:</b></label><br /><br />
@@ -285,7 +285,7 @@
                                                 {{getFileType(upload)}}
                                             </mat-panel-description>
                                         </mat-expansion-panel-header>
-                                        <label>Date added:</label> &nbsp; <span style="color:#696d70;">{{( upload.dateUpload.slice(0, -12) =="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
+                                        <label>Date added:</label> &nbsp; <span style="color:#696d70;">{{( upload.dateUpload.slice(0, -12) ==="") ?  "N/A" : upload.dateUpload.slice(0, -12)}}</span> <br /><br />
                                         <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.description ==="") ?  "N/A" : upload.description}}</span><br /><br />
                                         <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( upload.additionalNotes ==="") ?  "N/A" : upload.additionalNotes}}</span><br /><br />
 
@@ -298,7 +298,7 @@
                                             <label>Strains:</label> &nbsp; <span style="color:#696d70;">{{getUploadStrainString(upload)}}</span><br />
                                             <label>Genotypes:</label> &nbsp; <span style="color:#696d70;">{{getUploadGenoString(upload)}}</span> &nbsp; &nbsp; &nbsp;
                                             <label>Age (in months):</label> &nbsp; <span style="color:#696d70;">{{getUploadAgeString(upload)}}</span><br />
-                                            <label>Intervention?</label> &nbsp; <span style="color:#696d70;">{{upload.isIntervention == true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
+                                            <label>Intervention?</label> &nbsp; <span style="color:#696d70;">{{upload.isIntervention === true ? 'Yes' : 'No'}}</span> &nbsp; &nbsp; &nbsp;
                                             <span *ngIf="upload.isIntervention"><label>Intervention Description:</label> &nbsp; <span style="color:#696d70;">{{( upload.interventionDescription ==="") ?  "N/A" : upload.interventionDescription}}</span></span><br />
                                             <label>Housing:</label> &nbsp; <span style="color:#696d70;">{{upload.housing}}</span> &nbsp; &nbsp; &nbsp;
                                             <label>Light Cycle:</label> &nbsp; <span style="color:#696d70;">{{upload.lightCycle}}</span><br />
@@ -354,7 +354,7 @@
                                 </table>
 
                             </mat-expansion-panel>
-                            <mat-expansion-panel *ngIf="rep.paper != null">
+                            <mat-expansion-panel *ngIf="rep.paper !== null">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>
@@ -379,7 +379,7 @@
 
 
 
-    <div *ngIf="showAll == true">
+    <div *ngIf="showAll === true">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
@@ -395,15 +395,15 @@
                             <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( rep.title ==="") ?  "N/A" : rep.title}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{rep.authorString}}</span>&nbsp; &nbsp; &nbsp;
                             <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{rep.piString}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords =="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) =="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( rep.keywords ==="") ?  "N/A" : rep.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( rep.doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + rep.doi + " target=_blank>" + rep.doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( rep.date.slice(0, -12) ==="") ?  "N/A" : rep.date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( rep.link ==="") ?  "N/A" : rep.link}}</span><br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( rep.description ==="") ?  "N/A" : rep.description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( rep.additionalNotes ==="") ?  "N/A" : rep.additionalNotes}}</span><br /><br />
-                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus == true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus === true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
                             <!--<span *ngIf="rep.privacyStatus == true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>-->
-                            <span *ngIf="rep.dataCiteURL.trim() != ''"><label>Repository Link:</label>&nbsp; <a href="{{rep.dataCiteURL}}" style="color:#696d70;" target="_blank">{{rep.dataCiteURL}}</a></span>
+                            <span *ngIf="rep.dataCiteURL.trim() !== ''"><label>Repository Link:</label>&nbsp; <a href="{{rep.dataCiteURL}}" style="color:#696d70;" target="_blank">{{rep.dataCiteURL}}</a></span>
                             <br /><br />
 
 
