@@ -22,7 +22,8 @@
             "styles": [
                 "src/styles.scss",
                 "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css"
+                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+                "node_modules/ngx-spinner/animations/ball-spin-clockwise.css"
             ],
             "scripts": [],
             "aot": false,
@@ -103,7 +104,8 @@
             "styles": [
                 "src/styles.scss",
                 "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css"
+                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+                "node_modules/ngx-spinner/animations/ball-spin-clockwise.css"
             ],
             "assets": [
               "src/assets"
