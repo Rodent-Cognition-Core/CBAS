@@ -1,28 +1,32 @@
 {
   "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "ignorePatterns": [
     "projects/**/*"
   ],
+  "parser": "@typescript-eslint/parser",
   "overrides": [
     {
       "files": [
         "*.ts"
       ],
-        "parserOptions": {
-            "project": [
-                "tsconfig.json",
-                "e2e/tsconfig.json",
-                "src/tsconfig.app.json"
-            ],
-            "createDefaultProgram": true,
-            "extraFileExtensions": [ ".html" ]
-        },
-        "extends": [
-            "eslint:recommended",
-            "plugin:@angular-eslint/recommended",
-            "plugin:@angular-eslint/template/process-inline-templates"
+      "parserOptions": {
+        "project": [
+          "tsconfig.json"
         ],
+        "createDefaultProgram": true,
+        "extraFileExtensions": [".html"]
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
       "rules": {
+        "no-unused-vars": "off",
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -37,6 +41,17 @@
             "prefix": "app",
             "style": "camelCase",
             "type": "attribute"
+          }
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error", 
+          { 
+            "vars": "all",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true,
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "argsIgnorePattern": "^_|^(event|e)$|(private|protected|public) "
           }
         ]
       }
