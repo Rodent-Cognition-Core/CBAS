@@ -17,7 +17,7 @@ export class ForgotComponent extends Signin {
     model: any = {};
     showCheckYourEmail = false;
     //selectedPiSiteIds: any;
-    //PISite = new FormControl();
+    //PISite = new UntypedFormControl();
 
     constructor(
         protected router: Router,

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
@@ -22,19 +22,19 @@ export class ReqPubTaskDialogeComponent implements OnInit {
 
     private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name: FormControl;
-    email: FormControl;
-    taskCategory: FormControl;
-    newCategory: FormControl;
-    newTask: FormControl;
-    doi: FormControl;
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    taskCategory: UntypedFormControl;
+    newCategory: UntypedFormControl;
+    newTask: UntypedFormControl;
+    doi: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubTaskDialogeComponent>,
 
         private requestService: RequestService, private pubScreenService: PubScreenService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.name = fb.control('', [Validators.required]);

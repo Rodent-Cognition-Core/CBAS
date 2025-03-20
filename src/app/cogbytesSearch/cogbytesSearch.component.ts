@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
@@ -72,14 +72,14 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     isSearch: boolean;
     filteredSearchList: any;
 
-    //yearFrom = new FormControl('', []);
-    yearTo: FormControl;
+    //yearFrom = new UntypedFormControl('', []);
+    yearTo: UntypedFormControl;
 
-    public repMultiFilterCtrl: FormControl = new FormControl();
+    public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public piMultiFilterCtrl: FormControl = new FormControl();
+    public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     showAll: boolean;
@@ -94,7 +94,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         public dialogRef: MatDialog) {
 
         this._cogbytesSearch = {
