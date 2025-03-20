@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
@@ -19,7 +19,7 @@ import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
 })
 
 
-export class CogbytesComponent implements OnInit {
+export class CogbytesComponent implements OnInit, OnDestroy {
 
     readonly DATASET = 1;
     public uploadKey: number;
@@ -59,6 +59,7 @@ export class CogbytesComponent implements OnInit {
         this.isAdmin = false;
         this.isUser = false;
         this.isFullDataAccess = false;
+        this.repModel = null;
 
         this._cogbytesUpload = {
             additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
@@ -102,18 +103,18 @@ export class CogbytesComponent implements OnInit {
         //return this.repList;
     }
 
-    GetUploads(event?: any) {
+    GetUploads( _event? : any) {
         if (this.repModel != null) {
             let repID = this.getRep().id;
             this.cogbytesService.getUploads(repID).subscribe((data: any) => { this.uploadList = data; });
         }
     }
 
-    ClosePanel(event?: any) {
+    ClosePanel(_event? : any) {
         this.panelOpenState = false;
     }
 
-    NewUpload(event? : any) {
+    NewUpload(_event? : any) {
         this.GetUploads();
         this.ClosePanel();
     }
@@ -130,7 +131,7 @@ export class CogbytesComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
             this.repModel = null;
             this.GetRepositories();
@@ -149,14 +150,14 @@ export class CogbytesComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
             this.GetRepositories();
         });
     }
 
     // Delete File Dialog
-    deleteRepository(file?: any) {
+    deleteRepository(_file? : any) {
         const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
@@ -165,7 +166,7 @@ export class CogbytesComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.cogbytesService.deleteRepository(this.getRep().id).pipe(map((res: any) => {
+                this.cogbytesService.deleteRepository(this.getRep().id).pipe(map((_res: any) => {
 
                 })).subscribe();
                 this.spinnerService.hide();

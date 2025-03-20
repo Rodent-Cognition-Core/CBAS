@@ -40,7 +40,7 @@ export class SharedExperimentComponent implements OnInit {
     public Exps: any;
     DialogResult = "";
     expList: any;
-    subExpList: any
+    subExpList: any[];
     selectedImageResult: any;
     Math: any;
     imageDescriptionNotNullVal: boolean = false;
@@ -62,6 +62,22 @@ export class SharedExperimentComponent implements OnInit {
 
         this.hideSubExperiment = false;
         this.showSubExpTbl = false;
+        this.selectedExpValue = null;
+        this.subExpList = [];
+    }
+
+    ngOnInit() {
+        //this.imageDescriptionNotNull = false;
+        this.GetExpSelect();
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; /*console.log(this.repList);*/ });
+
+        if (this.hideSubExperiment == null) {
+            this.hideSubExperiment = false;
+        }
+        if (this.showSubExpTbl == null) {
+            this.showSubExpTbl = false;
+        }
+
     }
 
     getSelectedExp(selValue : any) {
@@ -128,7 +144,7 @@ export class SharedExperimentComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
 
             this.GetSubExpSelect(this.selectedExpValue);
@@ -147,7 +163,7 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.experimentService.deleteExperimentbyID(expID).pipe(map((res : any) => {
+                this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
 
                     
                     this.spinnerService.hide();
@@ -172,7 +188,7 @@ export class SharedExperimentComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((res : any) => {
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
                    // location.reload()
                     this.GetSubExpSelect(this.selectedExpValue);
                     this.spinnerService.hide();
@@ -183,21 +199,6 @@ export class SharedExperimentComponent implements OnInit {
             //this.dialogRef = null;
             dialogRef.close();
         });
-    }
-
-
-    ngOnInit() {
-        //this.imageDescriptionNotNull = false;
-        this.GetExpSelect();
-        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; /*console.log(this.repList);*/ });
-
-        if (this.hideSubExperiment == null) {
-            this.hideSubExperiment = false;
-        }
-        if (this.showSubExpTbl == null) {
-            this.showSubExpTbl = false;
-        }
-
     }
 
     // Get List of all Experiment

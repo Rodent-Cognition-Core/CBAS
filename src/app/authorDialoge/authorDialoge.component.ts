@@ -1,7 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
-//import { Request } from '../models/request';
 import { PubScreenService } from '../services/pubScreen.service';
 import { FIELDISREQUIRED } from '../shared/messages';
 
@@ -9,13 +8,13 @@ import { FIELDISREQUIRED } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-authorDialoge',
+    selector: 'app-author-dialoge',
     templateUrl: './authorDialoge.component.html',
     styleUrls: ['./authorDialoge.component.scss'],
     providers: [PubScreenService]
 
 })
-export class AuthorDialogeComponent implements OnInit {
+export class AuthorDialogeComponent {
 
     // Defining Models Parameters
     authorAffiliationModel: any;
@@ -32,10 +31,6 @@ export class AuthorDialogeComponent implements OnInit {
     ) {
         this.authorName = fb.control('', [Validators.required])
         this.authorLastName = fb.control('', [Validators.required])
-    }
-
-    ngOnInit() {
-      
     }
 
     onCloseCancel(): void {

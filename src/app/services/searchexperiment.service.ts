@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject ,  Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-//import { DataExtraction } from '../models/dataextraction';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from './authentication.service';
+import { Observable } from 'rxjs';
 
 @Injectable() export class SearchExperimentService {
 
@@ -39,7 +35,7 @@ import { AuthenticationService } from './authentication.service';
         return this.http.get("/api/searchexp/DownloadExpDs?expDsFileName=" + expDsFileName,
             { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: "blob" });
 
-    };
+    }
 
     
 }

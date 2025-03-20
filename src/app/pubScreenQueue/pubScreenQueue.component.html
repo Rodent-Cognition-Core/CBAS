@@ -45,7 +45,7 @@
         </thead>
 
         <tbody class="docs-markdown-tbody">
-            <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="pubmedQueue?.length == 0">
+            <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="pubmedQueue?.length === 0">
                 <td colspan="4"><i>Queue empty - all papers have been processed!</i></td>
             </tr>
             <tr style="border-bottom:1pt solid #8D8E90;" *ngFor="let row of pubmedQueue">

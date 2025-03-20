@@ -13,7 +13,7 @@ import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialo
 
 @Component({
 
-    selector: 'app-cogbytesDialogue',
+    selector: 'app-cogbytes-dialogue',
     templateUrl: './cogbytesDialogue.component.html',
     styleUrls: ['./cogbytesDialogue.component.scss'],
     providers: [TaskAnalysisService,  PISiteService]
@@ -131,7 +131,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetAuthorList();
 
@@ -147,7 +147,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetPIList();
         });
@@ -309,7 +309,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.cogbytesService.addRepository(this._cogbytes).subscribe((data : any) => {
+        this.cogbytesService.addRepository(this._cogbytes).subscribe((_data : any) => {
 
             this.thisDialogRef.close();
             setTimeout(() => {
@@ -337,12 +337,12 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.additionalNotes = this.additionalNotesModel;
         this._cogbytes.date = this.date.value.toISOString().split('T')[0];
 
-        let today = new Date();
+        // let today = new Date();
         //this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.cogbytesService.editRepository(this.repID, this._cogbytes).subscribe(data => {
+        this.cogbytesService.editRepository(this.repID, this._cogbytes).subscribe(_data => {
 
             this.thisDialogRef.close('Cancel');
             setTimeout(() => {

@@ -200,7 +200,6 @@ export class DataExtractionComponent implements OnInit {
 
         var isUser = this.authenticationService.isInRole("user");
         var isAdmin = this.authenticationService.isInRole("administrator");
-        var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
         this.subSessionList = [];
 
         if (isUser || isAdmin) {
@@ -441,7 +440,7 @@ export class DataExtractionComponent implements OnInit {
     }
 
     //To extract list of Genotypes
-    selectedStrainChange(selected_StrainVal : any, selected_ExpVal : string) {
+    selectedStrainChange(selected_StrainVal : any, _selected_ExpVal : string) {
         //console.log(selected_StrainVal);
         this.selectedGenotypeValue = [];
         // apply filtering to Genotype list based on what selected from Strain List
@@ -947,7 +946,7 @@ export class DataExtractionComponent implements OnInit {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (key) { return /*console.log(key)*/; });
+                Object.keys(a).forEach(function (_key : string) { return /*console.log(key)*/; });
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
@@ -998,7 +997,7 @@ export class DataExtractionComponent implements OnInit {
 
     DownloadCsv() {
 
-        this.dataExtractionService.IncreaseCounter().subscribe(data => {
+        this.dataExtractionService.IncreaseCounter().subscribe((_data : any) => {
             var csv: string;
             csv= '';
 

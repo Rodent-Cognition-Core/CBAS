@@ -6,7 +6,7 @@
         <!--Animal ID-->
         <mat-form-field class="full-width">
             <!--For Daniel-->  
-            <input matInput placeholder="Animal ID" [formControl]="userAnimalId" [readonly]="data.animalObj!=null" required>
+            <input matInput placeholder="Animal ID" [formControl]="userAnimalId" [readonly]="data.animalObj!==null" required>
             <!--<input matInput placeholder="Animal ID" [formControl]="userAnimalId" [(ngModel)]="userAnimalIdModel" required>-->
             <mat-error *ngIf="userAnimalId.invalid">{{getErrorMessageId()}}</mat-error>
             <mat-error *ngIf="userAnimalId.invalid">{{getErrorMessageIdTaken()}}</mat-error>

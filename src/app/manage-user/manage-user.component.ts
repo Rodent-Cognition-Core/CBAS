@@ -86,7 +86,7 @@ export class ManageUserComponent implements OnInit {
         this._user.Email = email;
         this._user.givenName = givenName;
         this._user.familyName = familyName;
-        this.manageruserService.approve(this._user).subscribe((data : any) => {
+        this.manageruserService.approve(this._user).subscribe((_data : any) => {
             this.getUserList();
         })
     }
@@ -94,7 +94,7 @@ export class ManageUserComponent implements OnInit {
     // Lock User
     lockUser(email: string) {
 
-        this.manageruserService.lock(email).subscribe((data : any) => {
+        this.manageruserService.lock(email).subscribe((_data : any) => {
             this.getUserList();
         })
 

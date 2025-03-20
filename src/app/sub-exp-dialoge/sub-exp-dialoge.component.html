@@ -31,7 +31,7 @@
         </mat-form-field>
 
         <!--Image Drop-down list if the selected task is PAL or PD-->
-        <div [hidden]="taskID != 3 && taskID != 4 && taskID != 11 && taskID!= 12">
+        <div [hidden]="taskID !== 3 && taskID !== 4 && taskID !== 11 && taskID!== 12">
 
             <mat-form-field class="full-width">
                 <mat-select [formControl]="imageInfo" placeholder="Select the images" (selectionChange)="getSelectedImage(imageInfo.value)" multiple required>
@@ -45,7 +45,7 @@
         </div>
 
         <!--providing description if for example more than 2 iamges selected for PD and more than 3 iamges selected for PAL-->
-        <div [hidden]="!((taskID==3 && selectedImageResult!=2) || (taskID==4 && selectedImageResult != 3) || (taskID==11 && selectedImageResult > 6) || (taskID==12 && selectedImageResult > 4))">
+        <div [hidden]="!((taskID===3 && selectedImageResult!==2) || (taskID===4 && selectedImageResult !== 3) || (taskID===11 && selectedImageResult > 6) || (taskID===12 && selectedImageResult > 4))">
 
             <mat-form-field class="full-width">
 
@@ -90,8 +90,8 @@
         <br />
         <br />
 
-        <span style="font-size:small" *ngIf="intervention.value=='1'">- Please indicate if the intervention is medication/drug?</span>
-        <mat-radio-group [formControl]="isDrug" required *ngIf="intervention.value=='1'">
+        <span style="font-size:small" *ngIf="intervention.value==='1'">- Please indicate if the intervention is medication/drug?</span>
+        <mat-radio-group [formControl]="isDrug" required *ngIf="intervention.value==='1'">
             <mat-radio-button value="0">No</mat-radio-button>
             <mat-radio-button value="1">Yes</mat-radio-button>
             <mat-error *ngIf="isDrug.invalid">{{getErrorMessageIsDrug()}}</mat-error>
@@ -99,23 +99,23 @@
 
         <br />
 
-        <mat-form-field class="full-width" *ngIf="isDrug.value=='1' && intervention.value=='1'">
+        <mat-form-field class="full-width" *ngIf="isDrug.value==='1' && intervention.value==='1'">
             <input matInput placeholder="Enter drug name" [formControl]="drug" required>
             <mat-error *ngIf="drug.invalid">{{getErrorMessageDrug()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="isDrug.value=='1'&& intervention.value=='1'">
+        <mat-form-field class="full-width" *ngIf="isDrug.value==='1'&& intervention.value==='1'">
             <input matInput placeholder="Enter drug quantity" [formControl]="drugQuantity" required>
             <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatity()}}</mat-error>
             <mat-error *ngIf="drugQuantity.invalid">{{getErrorMessageDrugQunatityNumber()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="isDrug.value=='1' && intervention.value=='1'">
+        <mat-form-field class="full-width" *ngIf="isDrug.value==='1' && intervention.value==='1'">
             <input matInput placeholder="Enter drug unit" [formControl]="drugUnit" required>
             <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageDrugUnit()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="full-width" *ngIf="intervention.value=='1' && isDrug.value=='0'">
+        <mat-form-field class="full-width" *ngIf="intervention.value==='1' && isDrug.value==='0'">
             <textarea matInput placeholder="Intervention Description" [formControl]="intDes" matTextareaAutosize matAutosizeMinRows="2"
                       matAutosizeMaxRows="5"></textarea>
             <mat-error *ngIf="drugUnit.invalid">{{getErrorMessageIntDesc()}}</mat-error>

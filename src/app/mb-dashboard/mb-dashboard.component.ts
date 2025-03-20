@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
+
+declare var spotfire: any;
 
 @Component({
     selector: 'app-mb-dashboard',
@@ -27,10 +28,6 @@ export class MBDashboardComponent implements OnInit {
 
         this.loadAnalysis("View_MB_Data")
         
-    }
-
-    ngAfterViewInit() {
-
     }
 
     

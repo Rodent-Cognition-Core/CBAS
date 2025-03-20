@@ -15,7 +15,7 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
 
 @Component({
 
-    selector: 'app-expDialoge',
+    selector: 'app-exp-dialoge',
     templateUrl: './ExpDialoge.component.html',
     styleUrls: ['./ExpDialoge.component.scss'],
     providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
@@ -79,9 +79,9 @@ export class ExpDialogeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/; });
+        this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/ });
         this.piSiteService.getPISitebyUserID().subscribe((data : any) => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/; });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/ });
         this.GetRepList();
 
         this.isRepoLink = '0';
@@ -184,7 +184,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            })).subscribe((data : any) => {
+            })).subscribe((_data : any) => {
 
                 setTimeout(() => {
                     this.spinnerService.hide();
@@ -209,7 +209,7 @@ export class ExpDialogeComponent implements OnInit {
                     this.thisDialogRef.close();
                 }
 
-            })).subscribe((data : any) => {
+            })).subscribe((_data : any) => {
                 setTimeout(() => {
                     this.spinnerService.hide();
 

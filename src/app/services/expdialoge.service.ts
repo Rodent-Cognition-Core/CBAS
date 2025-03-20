@@ -1,11 +1,7 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-//import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-//import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { throwError, Observable } from "rxjs";
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from "rxjs";
 import { Experiment } from '../models/experiment';
 import { AuthenticationService } from './authentication.service';
 

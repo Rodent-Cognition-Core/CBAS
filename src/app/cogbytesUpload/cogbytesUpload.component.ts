@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject, NgModule, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit, OnChanges, Inject, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { CogbytesUpload } from '../models/cogbytesUpload';
 import { CogbytesService } from '../services/cogbytes.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,22 +14,16 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { map } from 'rxjs/operators';
 import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
 
-//declare global {
-//    interface Navigator {
-//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
-//    }
-//}
-
 @Component({
 
-    selector: 'app-cogbytesUpload',
+    selector: 'app-cogbytes-upload',
     templateUrl: './cogbytesUpload.component.html',
     styleUrls: ['./cogbytesUpload.component.scss'],
     //providers: [CogbytesService],
 })
 
 
-export class CogbytesUploadComponent implements OnInit {
+export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     @Input() repID: number;
     @Input() isEditMode: boolean;
@@ -181,7 +175,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     ngOnChanges(changes: SimpleChanges) {
         for (const propName in changes) {
-            if (changes.hasOwnProperty(propName)) {
+            if (Object.prototype.hasOwnProperty.call(changes, propName)) {
                 if (propName === 'repID') {
                     this.resetFormVals();
                     this.repChange.emit(null);
@@ -369,7 +363,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     }
 
-    public onUploadSuccess(args: any) {
+    public onUploadSuccess(_args: any) {
 
         this.resetDropzoneUploads();
 
@@ -380,7 +374,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     }
 
-    onAddedFile(data : any): void {
+    onAddedFile(_data : any): void {
 
         //this.componentRef.directiveRef.dropzone().processQueue();
 
@@ -388,7 +382,7 @@ export class CogbytesUploadComponent implements OnInit {
         //this.dialogRefDelFile = null;
     }
 
-    onQueueComplete(args: any): void {
+    onQueueComplete(_args: any): void {
 
         if (this.uploadErrorServer != "") {
             alert(this.uploadErrorServer);
@@ -469,10 +463,10 @@ export class CogbytesUploadComponent implements OnInit {
                 }, 500);
 
                 let path = file.permanentFilePath + '\\' + file.sysFileName;
-                this.cogbytesService.deleteFile(file.expID, path).pipe(map((res : any) => {
+                this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
                 })).subscribe(
-                    (response : any) => { this.UpdateFileList(); });
+                    (_response : any) => { this.UpdateFileList(); });
 
                 //this.spinnerService.hide();
                 //this.filesUploaded.emit(null);
@@ -503,9 +497,9 @@ export class CogbytesUploadComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.cogbytesService.deleteUpload(this.uploadID).pipe(map((res : any) => {
+                this.cogbytesService.deleteUpload(this.uploadID).pipe(map((_res : any) => {
 
-                })).subscribe((result : any) => {
+                })).subscribe((_result : any) => {
                     this.filesUploaded.emit(null);
                     setTimeout(() => {
                         this.spinnerService.hide();

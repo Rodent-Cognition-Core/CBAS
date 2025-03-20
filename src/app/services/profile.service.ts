@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject ,  Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { throwError } from "rxjs";
+import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user';
 
 import { AuthenticationService } from './authentication.service';
