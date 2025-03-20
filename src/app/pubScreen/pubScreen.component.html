@@ -220,7 +220,7 @@
                             </mat-form-field>
 
                             <!--SubModel-->
-                            <span [hidden]="subSubModelList === null || subSubModelList === 'undefined' || subSubModelList.length === 0">
+                            <span [hidden]="subSubModelList.length === 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
                                         <mat-option>
@@ -247,7 +247,7 @@
                             </mat-form-field>
 
                             <!--SubRegion-->
-                            <span [hidden]="subSubRegionList === null || subSubRegionList === 'undefined' || subSubRegionList.length === 0">
+                            <span [hidden]="subSubRegionList.length === 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
                                         <mat-option>
@@ -290,7 +290,7 @@
                             </mat-form-field>
 
                             <!--SubMethod-->
-                            <span [hidden]="subSubMethodList === null || subSubMethodList === 'undefined' || subSubMethodList.length === 0">
+                            <span [hidden]="subSubMethodList.length === 0">
                                 <mat-form-field style="width:15%; padding-left:30px">
                                     <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
                                         <mat-option>
@@ -335,18 +335,18 @@
     <!--<div *ngIf="searchResultList? != null">
         <button mat-button>Having Trouble Finding What You Are Looking For?</button>
     </div>-->
-    <div *ngIf="searchResultList?.length === 0">
+    <div *ngIf="searchResultList.length === 0 && !firstSearch">
         <table class="docs-markdown-table">
             <tr><td style="text-align:center;"><button mat-raised-button (click)="openDialogGeneral()">Having Trouble Finding What You Are Looking For?</button></tr>
             <tr><td style="text-align:center;"><span style="color:red; font-size:large">No results found for search criteria!</span></td></tr>
         </table>
     </div>
-    <div *ngIf="searchResultList?.length > 0">
+    <div *ngIf="searchResultList.length > 0 && firstSearch">
         <!--<app-shared-experiment></app-shared-experiment>-->
         <table class="docs-markdown-table">
             <thead>
                 <tr>
-                    <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications ({{searchResultList?.length}} Results)</th>
+                    <th class="docs-markdown-th" style="background-color:#bab9b6">List of Publications ({{searchResultList.length}} Results)</th>
 
                 </tr>
             </thead>
