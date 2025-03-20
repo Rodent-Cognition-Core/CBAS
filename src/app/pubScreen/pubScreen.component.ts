@@ -688,31 +688,32 @@ export class PubScreenComponent implements OnInit {
         );
     }
 
-    selectedTaskChange(SelectedTask : string) {
+    selectedTaskChange(SelectedTask : number[]) {
         this.subTaskModel = [];
         this.subSubTaskList = this.subTaskList.filter((x : any) => SelectedTask.includes(x.taskID));
         this.filteredSubTaskList.next(this.subSubTaskList.slice());
     }
 
-    selectedSpeciesChange(SelectedSpecies : string) {
+    selectedSpeciesChange(SelectedSpecies: number[]) {
+        debugger;
         this.strainModel = [];
         this.subStrainList = this.strainList.filter((x: any) => SelectedSpecies.includes(x.speciesID));
         this.filteredStrainList.next(this.subStrainList.slice());
     }
 
-    selectedModelChange(SelectedModels: string) {
+    selectedModelChange(SelectedModels: number[]) {
         this.subModel = [];
         this.subSubModelList = this.subModelList.filter((x: any) => SelectedModels.includes(x.modelID));
         this.filteredSubModelList.next(this.subSubModelList.slice());
     }
 
-    selectedMethodChange(SelectedMethods : string) {
+    selectedMethodChange(SelectedMethods : number[]) {
         this.subMethodModel = [];
         this.subSubMethodList = this.subMethodList.filter((x: any) => SelectedMethods.includes(x.methodID));
         this.filteredSubMethodList.next(this.subSubMethodList.slice());
     }
 
-    selectedRegionChange(SelectedRegion : string) {
+    selectedRegionChange(SelectedRegion : number[]) {
         this.subRegionModel = [];
         this.subSubRegionList = this.subRegionList.filter((x: any) => SelectedRegion.includes(x.rid));
         this.filteredSubRegionList.next(this.subSubRegionList.slice());
