@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 //import { NgModel } from '@angular/forms';
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
@@ -20,10 +20,10 @@ export class AnimalDialogComponent implements OnInit {
     experimentId: number;
     isTaken: boolean;
 
-    userAnimalId: FormControl;
-    gender: FormControl;
-    strain: FormControl;
-    genotype: FormControl;
+    userAnimalId: UntypedFormControl;
+    gender: UntypedFormControl;
+    strain: UntypedFormControl;
+    genotype: UntypedFormControl;
 
     GenoList: any;
     StrainList: any;
@@ -32,7 +32,7 @@ export class AnimalDialogComponent implements OnInit {
 
     constructor(public thisDialogRef: MatDialogRef<AnimalDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, private animalService: AnimalService, private spinnerService: NgxSpinnerService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {
         this.userAnimalId = fb.control('', [Validators.required])
         this.gender = fb.control('', [Validators.required])
@@ -143,7 +143,7 @@ export class AnimalDialogComponent implements OnInit {
             if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) {
 
                 this._animal.AnimalID = this.data.animalObj.animalID;
-                this.animalService.updateAniaml(this._animal).pipe(map((res: {id: string}) => {
+                this.animalService.updateAniaml(this._animal).pipe(map((_res: {id: string}) => {
                     // close it so we can see the loading
                     this.thisDialogRef.close(true);
 

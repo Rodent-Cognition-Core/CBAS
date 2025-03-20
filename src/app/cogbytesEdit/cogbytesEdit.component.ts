@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { CogbytesService } from '../services/cogbytes.service'
 import { AuthenticationService } from '../services/authentication.service';
@@ -28,7 +28,7 @@ export class CogbytesEditComponent implements OnInit {
     panelOpenState: boolean;
     
    
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();

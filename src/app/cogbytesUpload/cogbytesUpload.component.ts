@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Inject, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesUpload } from '../models/cogbytesUpload';
 import { CogbytesService } from '../services/cogbytes.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -64,13 +64,13 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     public uploadFileList: any;
 
-    name: FormControl;
-    //date = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    //date = new UntypedFormControl('', [Validators.required]);
 
-    fileType: FormControl;
-    cognitiveTask: FormControl;
-    intervention: FormControl;
-    numSubjects: FormControl;
+    fileType: UntypedFormControl;
+    cognitiveTask: UntypedFormControl;
+    intervention: UntypedFormControl;
+    numSubjects: UntypedFormControl;
 
     _cogbytesUpload: CogbytesUpload;
 
@@ -107,7 +107,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         public dialogRefDelFile: MatDialog,
         @Inject(MAT_DIALOG_DATA) public data: any
 
