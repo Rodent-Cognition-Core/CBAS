@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { map } from 'rxjs/operators';
@@ -20,7 +20,7 @@ import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
     templateUrl: './pubScreen.component.html',
     styleUrls: ['./pubScreen.component.scss']
 })
-export class PubScreenComponent implements OnInit {
+export class PubScreenComponent implements OnInit, OnDestroy {
 
     pubCount: number;
     featureCount: number;
@@ -65,16 +65,17 @@ export class PubScreenComponent implements OnInit {
     neurotransmitterList: any;
     authorList: any;
     authorList2: any;
-    searchResultList: any;
+    searchResultList: any[];
     yearList: any;
     subTaskList: any;
     subSubTaskList: any;
     subStrainList: any;
-    subSubRegionList: any;
-    subSubModelList: any;
-    subSubMethodList: any;
+    subSubRegionList: any[];
+    subSubModelList: any[];
+    subSubMethodList: any[];
     paperInfoFromDoiList: any;
     checkYear: boolean;
+    firstSearch: boolean;
 
 
     isAdmin: boolean;
@@ -143,6 +144,11 @@ export class PubScreenComponent implements OnInit {
         this.isAdmin = false;
         this.isUser = false;
         this.isFullDataAccess = false;
+        this.firstSearch = false;
+        this.searchResultList = [];
+        this.subSubRegionList = [];
+        this.subSubMethodList = [];
+        this.subSubModelList = [];
         this.authorModel = [];
         this.titleModel = '';
         this.doiModel = '';
@@ -695,7 +701,6 @@ export class PubScreenComponent implements OnInit {
     }
 
     selectedSpeciesChange(SelectedSpecies: number[]) {
-        debugger;
         this.strainModel = [];
         this.subStrainList = this.strainList.filter((x: any) => SelectedSpecies.includes(x.speciesID));
         this.filteredStrainList.next(this.subStrainList.slice());
@@ -806,12 +811,12 @@ export class PubScreenComponent implements OnInit {
 
         console.log(this._pubSCreenSearch);
 
-        this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
+        this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe((data : any) => {
 
             this.searchResultList = data;
             this.spinnerService.hide();
         });
-
+        this.firstSearch = true;
     }
 
     // Deleting publication
