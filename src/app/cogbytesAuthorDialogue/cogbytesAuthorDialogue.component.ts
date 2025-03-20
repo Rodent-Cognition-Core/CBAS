@@ -7,7 +7,7 @@ import { CogbytesService } from '../services/cogbytes.service';
 
 @Component({
 
-    selector: 'app-cogbytesAuthorDialogue',
+    selector: 'app-cogbytes-author-dialogue',
     templateUrl: './cogbytesAuthorDialogue.component.html',
     styleUrls: ['./cogbytesAuthorDialogue.component.scss'],
     providers: [CogbytesService]
@@ -33,7 +33,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     }
 
     ngOnInit() {
-      
+      return
     }
 
     onCloseCancel(): void {

@@ -78,7 +78,7 @@
             </mat-form-field>
 
             <!--Number of Subjects-->
-            <mat-form-field *ngIf="speciesModel!=null&&speciesModel.length>0" style="width:10%; padding-left:30px">
+            <mat-form-field *ngIf="speciesModel!==null&&speciesModel.length>0" style="width:10%; padding-left:30px">
                 <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects">
                 <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
             </mat-form-field>
@@ -140,7 +140,7 @@
 
             <br />
 
-            <mat-form-field class="full-width" *ngIf="intervention.value=='true'">
+            <mat-form-field class="full-width" *ngIf="intervention.value==='true'">
                 <!--<mat-form-field class="full-width">-->
                 <textarea matInput placeholder="Intervention Description" [(ngModel)]="intDesModel" matTextareaAutosize matAutosizeMinRows="2"
                           matAutosizeMaxRows="5"></textarea>

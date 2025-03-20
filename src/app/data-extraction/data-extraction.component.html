@@ -23,7 +23,7 @@
                     </mat-form-field>
                     &nbsp; &nbsp;  &nbsp;
                     <!--Task dropDown-->
-                    <mat-form-field *ngIf="species.value!=null">
+                    <mat-form-field *ngIf="species.value!==null">
                         <mat-select placeholder="Select the Task" [formControl]="task" (selectionChange)="selectedTaskChange(task.value, species.value)" required>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
@@ -38,7 +38,7 @@
                     <br /><br />
 
                     <!--Experiment dropDown-->
-                    <mat-form-field *ngIf="task.value!=null">
+                    <mat-form-field *ngIf="task.value!==null">
                         <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
 
                             <mat-option>
@@ -87,7 +87,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Static SessionInfo Features-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null">
                         <mat-select [formControl]="sessioninfo" placeholder="Select key features" multiple>
                             <mat-option *ngFor="let sessioninfo of sessionInfoFeature" [value]="sessioninfo.name">
                                 <span matTooltip="{{sessioninfo.name}}">{{sessioninfo.name}}</span>
@@ -98,7 +98,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Dynamic markerInfo Features-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null">
                         <mat-select [formControl]="markerinfo" placeholder="Select the required features" (selectionChange)="getAnimalInfo(exp.value)" multiple>
                             <mat-option>
                                 <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
@@ -113,7 +113,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--List of Aggregation Function-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!=null && !isTrialByTrial">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null && !isTrialByTrial">
                         <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function">
                             <mat-option *ngFor="let agg of aggregationFunction" [value]="agg.name">
                                 {{agg.name}}
@@ -133,7 +133,7 @@
     </mat-form-field>
     &nbsp; &nbsp; &nbsp;-->
                     <!--Show Intervention information if the selected experiments do have intervention-->
-                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!=null ">
+                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!==null ">
                         <mat-select placeholder="Select Intervention" [(ngModel)]="selectedInterventionValue" multiple>
                             <mat-option *ngFor="let intervention of InterventionList" [value]="intervention.subExpID">
                                 <span matTooltip="{{ intervention.isDrug ? intervention.drugName : intervention.interventionDescription }}">{{ intervention.isDrug ? intervention.drugName + " " + intervention.drugQuantity + " " + intervention.drugUnit : intervention.interventionDescription }}</span>
@@ -259,9 +259,9 @@
                             <tr *ngFor="let res of pagedItems; let i = index">
                                 <!--<tr *ngFor="let res of result">-->
                                 <td *ngFor="let col of colNames">
-                                    <span *ngIf="col=='Image' && (task.value==3||task.value==4 || task.value==11 )" [innerHTML]="res[col]"></span>
+                                    <span *ngIf="col==='Image' && (task.value===3||task.value===4 || task.value===11 )" [innerHTML]="res[col]"></span>
                                     <!--<span *ngIf="col=='Image_Description' && (selectedTaskvalue==3||selectedTaskvalue==4)">{{res[col]}}</span>-->
-                                    <span *ngIf="col!='Image'">{{res[col]}}</span>
+                                    <span *ngIf="col!=='Image'">{{res[col]}}</span>
                                 </td>
                             </tr>
                             <tr>

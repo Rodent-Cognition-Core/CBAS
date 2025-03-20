@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 
 declare var $: any;
@@ -66,7 +65,6 @@ export class AppComponent implements OnInit {
         private authenticationService: AuthenticationService,
         private router: Router,
         private el: ElementRef,
-        angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
     ) {
         this.name = '';
         this.isAdmin = false;

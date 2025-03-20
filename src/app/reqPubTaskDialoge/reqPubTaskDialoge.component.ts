@@ -10,7 +10,7 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-reqPubTaskDialoge',
+    selector: 'app-req-pubtask-dialoge',
     templateUrl: './reqPubTaskDialoge.component.html',
     styleUrls: ['./reqPubTaskDialoge.component.scss'],
     providers: [RequestService, PubScreenService]

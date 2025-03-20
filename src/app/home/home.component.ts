@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { ScrollService } from '../shared/scroll.service';
 import { AnimalService } from '../services/animal.service';
 
-declare var $: any;
-
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',

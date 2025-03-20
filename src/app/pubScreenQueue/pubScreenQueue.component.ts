@@ -10,7 +10,7 @@ import { CONFIRMACCEPTPAPERTOPUBSCREEN, CONFIRMREJECTPAPER, PAPERREJECTED, SUCCE
 
 
 @Component({
-    selector: 'app-pubScreenQueue',
+    selector: 'app-pubscreen-queue',
     templateUrl: './pubScreenQueue.component.html',
     styleUrls: ['./pubScreenQueue.component.scss']
 })
@@ -81,7 +81,7 @@ export class PubScreenQueueComponent implements OnInit {
 
                 //console.log(pubmedID);
 
-                this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe(data => {
+                this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe((_data : any) => {
                     alert(SUCCESSFULLYADDEDPUBLICATION)
                     this.pubScreenService.getPubmedQueue().subscribe(
                         (data : any) => {
@@ -111,7 +111,7 @@ export class PubScreenQueueComponent implements OnInit {
 
                 //console.log(pubmedID);
 
-                this.pubScreenService.rejectQueuePaper(pubmedID, doi).subscribe((result : any) => {
+                this.pubScreenService.rejectQueuePaper(pubmedID, doi).subscribe((_result : any) => {
                     alert(PAPERREJECTED);
                     this.pubScreenService.getPubmedQueue().subscribe(
                         (data : any) => {

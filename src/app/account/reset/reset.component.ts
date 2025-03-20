@@ -56,9 +56,9 @@ export class ResetComponent extends Signin {
                 }
 
             },
-            (error: any) => {
-                const errMsg = (error.message) ? error.message :
-                    error.status ? `${error.status} - ${error.statusText}` : "Server error";
+            () => {
+                // const errMsg = (error.message) ? error.message :
+                //     error.status ? `${error.status} - ${error.statusText}` : "Server error";
                 //console.log(errMsg);
                 this.errorMessages.push({ description: "Server error. Try later." });
             });

@@ -5,7 +5,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { IdentityService } from '../../services/identity.service';
 import { Signin } from '../signin';
 import { ManageUserService } from '../../services/manageuser.service';
-import { map, catchError } from 'rxjs/operators'
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
     templateUrl: './forgot.component.html',
@@ -32,7 +32,7 @@ export class ForgotComponent extends Signin {
 
         this.identityService.generatePasswordResetToken(this.model.username)
             .pipe(
-                map((res: { token: string }) => {
+                map(() => {
                     this.showCheckYourEmail = true;
                 }),
                 catchError((error) => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
@@ -10,13 +10,13 @@ import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 @Component({
 
-    selector: 'app-reqTaskDialoge',
+    selector: 'app-req-task-dialoge',
     templateUrl: './reqTaskDialoge.component.html',
     styleUrls: ['./reqTaskDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqTaskDialogeComponent implements OnInit {
+export class ReqTaskDialogeComponent {
 
     faQuestionCircle = faQuestionCircle;
     // Defining Models Parameters
@@ -47,10 +47,6 @@ export class ReqTaskDialogeComponent implements OnInit {
             method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
             subModel: '', taskCategory: '', taskName: '', type: ''
         }
-    }
-
-    ngOnInit() {
-      
     }
 
     onCloseCancel(): void {

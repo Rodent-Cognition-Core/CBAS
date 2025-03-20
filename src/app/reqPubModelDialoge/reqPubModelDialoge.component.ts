@@ -9,7 +9,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 
 @Component({
 
-    selector: 'app-reqPubModelDialoge',
+    selector: 'app-req-pubmodel-dialoge',
     templateUrl: './reqPubModelDialoge.component.html',
     styleUrls: ['./reqPubModelDialoge.component.scss'],
     providers: [RequestService, PubScreenService]

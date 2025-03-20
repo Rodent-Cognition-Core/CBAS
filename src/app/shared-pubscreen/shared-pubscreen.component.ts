@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -14,7 +14,7 @@ import { DOINOTVALID, FIELDISREQUIRED, PUBLICATIONWITHSAMEDOI, PUBMEDKEYNOTVALID
     templateUrl: './shared-pubscreen.component.html',
     styleUrls: ['./shared-pubscreen.component.scss']
 })
-export class SharedPubscreenComponent implements OnInit {
+export class SharedPubscreenComponent implements OnInit, OnDestroy {
 
 
     //Models Variables for adding Publication
@@ -153,7 +153,7 @@ export class SharedPubscreenComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetAuthorList();
         });

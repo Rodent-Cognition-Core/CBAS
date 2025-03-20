@@ -1,5 +1,3 @@
-import { PubscreenAuthor } from "./pubscreenAuthor";
-
 export interface Cogbytes {
 
     id: number;

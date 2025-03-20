@@ -55,7 +55,7 @@
                         </div>
                     </td>
                     <td class="docs-markdown-td" style="vertical-align:top;">
-                        <div *ngIf="repModel != null">
+                        <div *ngIf="repModel !== null">
                             <div style="float:left; padding-top:10px;">
                                 <label style="color:#465563;">
                                     {{getRep().title}} Information
@@ -70,11 +70,11 @@
                             <label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
                             <label>Authors:</label> <span style="color:#696d70;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
                             <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(getRep())}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( getRep().keywords =="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( getRep().doi =="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( getRep().date.slice(0, -12) =="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( getRep().keywords ==="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( getRep().doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
+                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( getRep().date.slice(0, -12) ==="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
                             <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( getRep().link ==="") ?  "N/A" : getRep().link}}</span>&nbsp; &nbsp; &nbsp;
-                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{getRep().privacyStatus == true ? 'Public' : 'Private'}}</span> <br /><br />
+                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{getRep().privacyStatus === true ? 'Public' : 'Private'}}</span> <br /><br />
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
@@ -94,7 +94,7 @@
                                 </table>
 
                             </mat-expansion-panel>
-                            <mat-expansion-panel *ngIf="getRep().paper != null">
+                            <mat-expansion-panel *ngIf="getRep().paper !== null">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>
@@ -123,7 +123,7 @@
 
     <br />-->
 
-    <div *ngIf="repModel != null" style="padding-top:30px">
+    <div *ngIf="repModel !== null" style="padding-top:30px">
         <table class="docs-markdown-table">
             <thead>
                 <tr>
@@ -145,7 +145,7 @@
 
                             </mat-expansion-panel-header>
 
-                            <app-cogbytesUpload [repID]="getRep().id" [isEditMode]="false" (filesUploaded)="NewUpload($event)" (repChange)="ClosePanel($event)"></app-cogbytesUpload>
+                            <app-cogbytes-upload [repID]="getRep().id" [isEditMode]="false" (filesUploaded)="NewUpload($event)" (repChange)="ClosePanel($event)"></app-cogbytes-upload>
 
                         </mat-expansion-panel>
 
@@ -159,7 +159,7 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
 
-                                <app-cogbytesUpload [repID]="getRep().id" [isEditMode]="true" [uploadObj]="upload" (filesUploaded)="GetUploads($event)"></app-cogbytesUpload>
+                                <app-cogbytes-upload [repID]="getRep().id" [isEditMode]="true" [uploadObj]="upload" (filesUploaded)="GetUploads($event)"></app-cogbytes-upload>
 
                             </mat-expansion-panel>
                         </mat-accordion>
