@@ -779,7 +779,7 @@ export class PubScreenComponent implements OnInit {
 
     // Function definition for searching publications based on search criteria
     search() {
-
+        this.spinnerService.show();
         this._pubSCreenSearch.authourID = this.authorModel;
         this._pubSCreenSearch.title = this.titleModel;
         this._pubSCreenSearch.keywords = this.keywordsModel;
@@ -809,6 +809,7 @@ export class PubScreenComponent implements OnInit {
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
 
             this.searchResultList = data;
+            this.spinnerService.hide();
         });
 
     }
