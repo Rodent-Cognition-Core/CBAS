@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
@@ -26,13 +26,13 @@ export class ReqMouseLineDialogeComponent {
    // DEfining obj model parameters        
     private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name: FormControl;
-    email: FormControl;
-    strain: FormControl;
-    geneticModi: FormControl;
-    //control = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    strain: UntypedFormControl;
+    geneticModi: UntypedFormControl;
+    //control = new UntypedFormControl('', [Validators.required]);
     
 
     // List of GeneticModification for Mouse line
@@ -49,7 +49,7 @@ export class ReqMouseLineDialogeComponent {
     constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
          
         private requestService: RequestService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.reqGenoModel = '';

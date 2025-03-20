@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
@@ -24,7 +24,7 @@ declare var $: any;
     styleUrls: ['./data-extraction.component.scss']
 })
 export class DataExtractionComponent implements OnInit {
-    //private formBuilder = inject(FormBuilder);
+    //private formBuilder = inject(UntypedFormBuilder);
 
     taskList: any;
     expList: any;
@@ -54,14 +54,14 @@ export class DataExtractionComponent implements OnInit {
 
     // FormControls vars
     //dataextractionForm = new FormGroup({
-    task: FormControl;
-    subtask: FormControl;
-    exp: FormControl;
-    sessioninfo: FormControl;
-    markerinfo: FormControl;
-    PISite: FormControl;
-    aggFunc: FormControl;
-    species: FormControl;
+    task: UntypedFormControl;
+    subtask: UntypedFormControl;
+    exp: UntypedFormControl;
+    sessioninfo: UntypedFormControl;
+    markerinfo: UntypedFormControl;
+    PISite: UntypedFormControl;
+    aggFunc: UntypedFormControl;
+    species: UntypedFormControl;
     //});
 
     data : any
@@ -76,7 +76,7 @@ export class DataExtractionComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
 
-    dataextractionForm = FormControl;
+    dataextractionForm = UntypedFormControl;
 
     // SessionInfo Features' names
     public sessionInfoFeature: any[] = [
@@ -108,10 +108,10 @@ export class DataExtractionComponent implements OnInit {
     ];
 
     /** control for the selected experiments for multi-selection */
-    public expMultiCtrl: FormControl = new FormControl();
+    public expMultiCtrl: UntypedFormControl = new UntypedFormControl();
     /** control for the MatSelect filter keyword multi-selection */
-    public expMultiFilterCtrl: FormControl = new FormControl();
-    public MarkerInfoMultiFilterCtrl: FormControl = new FormControl();
+    public expMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
+    public MarkerInfoMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
 
     //dataSource: MatTableDataSource<Element[]>;
 
@@ -124,7 +124,7 @@ export class DataExtractionComponent implements OnInit {
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         public dialogRefLink: MatDialog
     ) {
         this.colNames = [];
@@ -233,7 +233,7 @@ export class DataExtractionComponent implements OnInit {
 
             this.subSessionList = data;
             this.selectedSubSessionValue = [];
-            //this.markerinfo = new FormControl('', [Validators.required]);
+            //this.markerinfo = new UntypedFormControl('', [Validators.required]);
 
             this.getMarkerInfo(selectedSubTaskVal, selectedExpVal);
             //console.log(selectedSubTaskVal)
