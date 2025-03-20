@@ -172,7 +172,7 @@
                             <!--Species-->
                             <mat-form-field style="width:15%; padding-left:30px">
                                 <mat-select placeholder="Select Specie(s)" [(ngModel)]="specieModel" (selectionChange)="selectedSpeciesChange(specieModel)" multiple>
-                                    <mat-option *ngFor="let specie of specieList" [value]="specie.id.toString()">
+                                    <mat-option *ngFor="let specie of specieList" [value]="specie.id">
                                         <span matTooltip="{{specie.species}}">{{specie.species}}</span>
                                     </mat-option>
                                 </mat-select>
