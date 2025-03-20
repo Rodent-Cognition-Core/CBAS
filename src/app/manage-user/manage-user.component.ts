@@ -51,7 +51,7 @@ export class ManageUserComponent implements OnInit {
         let filteredItems = this.userList;
 
         filteredItems = this.filterByString(this.userList, this.expfilter);
-        console.log(filteredItems);
+        //console.log(filteredItems);
 
         // get pager object from service
         this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
