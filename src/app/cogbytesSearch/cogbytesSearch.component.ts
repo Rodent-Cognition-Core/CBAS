@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
-import { ReplaySubject ,  Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { ReplaySubject ,  Subject, Subscription } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
 
@@ -84,6 +84,8 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     showAll: boolean;
 
+    private subscription: Subscription = new Subscription();
+
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -94,6 +96,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
+        private router: Router,
         private fb: UntypedFormBuilder,
         public dialogRef: MatDialog) {
 
@@ -149,13 +152,72 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this.isSearch = false;
 
-
+        this.subscription.add(
+            this.router.events
+              .pipe(filter(event => event instanceof NavigationEnd))
+              .subscribe(() => {
+                this.resetState();
+              })
+          );
 
     }
 
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
+    }
+
+    resetState(): void {
+        this._cogbytesSearch = {
+            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: 0, yearTo: 0
+        }
+        this.checkYear = false;
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.isSearch = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = [];
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.interventionModel = '';
+        this.panelOpenState = false;
+        this.yearTo.setValue('');
+        if (this.showAll == true) {
+            this.ShowRepositories();
+        } else {
+            this.GetRepositories();
+            this.GetAuthorList();
+            this.GetPIList();
+            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+            this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+        }
+
+
+
+        this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+        this.yearList = this.GetYear(1970).sort().reverse();
+
+        this.interventionModel = "All";
+
+        this.isSearch = false;
     }
 
     // Function definition to get list of years
