@@ -559,3 +559,15 @@ section {
     display: none !important;
 }
 
+.mat-tooltip {
+    margin: 0 !important;
+    clear: both;
+    transform: translateX(1px);
+}
+
+mat-tooltip-component {
+    position: inherit;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: max-content;
+}
