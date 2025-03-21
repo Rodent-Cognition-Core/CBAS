@@ -110,6 +110,17 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.isFullDataAccess = false;
         this.isSearch = false;
         this.showAll = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = undefined;
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
         this.doiModel = '';
         this.keywordsModel = '';
         this.interventionModel = '';
@@ -369,9 +380,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         if
             (
-            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == ''
-            && this.doiModel == '' && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
-            && this.strainModel == null && this.genoModel == null && this.ageModel == null
+            this.authorModel.length == 0 && this.piModel.length == 0 && this.titleModel.length == 0 && this.keywordsModel == ''
+            && this.doiModel == '' && this.cognitiveTaskModel.length == 0 && this.specieModel.length == 0 && this.sexModel.length == 0
+            && this.strainModel.length == 0 && this.genoModel.length == 0 && this.ageModel.length == 0
         ) {
             return true;
         }
