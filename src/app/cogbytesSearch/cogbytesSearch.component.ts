@@ -102,7 +102,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this._cogbytesSearch = {
             ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: 0, yearTo: 0
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
         }
         this.checkYear = false;
         this.isAdmin = false;
@@ -170,7 +170,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     resetState(): void {
         this._cogbytesSearch = {
             ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: 0, yearTo: 0
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
         }
         this.checkYear = false;
         this.isAdmin = false;
@@ -180,7 +180,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.authorModel= [];
         this.piModel = [];
         this.titleModel = [];
-        this.yearFromSearchModel = [];
+        this.yearFromSearchModel = undefined;
         this.fileTypeModel = [];
         this.cognitiveTaskModel = [];
         this.specieModel = [];
