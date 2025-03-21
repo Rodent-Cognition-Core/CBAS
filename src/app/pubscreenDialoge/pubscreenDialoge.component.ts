@@ -80,9 +80,9 @@ export class PubscreenDialogeComponent implements OnInit {
     subSubTaskList: any;
     //taskSubTaskList: any;
     subStrainList: any;
-    subSubModelList: any;
-    subSubMethodList: any;
-    subSubRegionList: any;
+    subSubModelList: any[];
+    subSubMethodList: any[];
+    subSubRegionList: any[];
     paperInfo: any;
     
 
@@ -195,6 +195,9 @@ export class PubscreenDialogeComponent implements OnInit {
         this.isEditMode = false;
         this.publicationId = 0;
         this.isPublicMode = false;
+        this.subSubModelList = [];
+        this.subSubRegionList = [];
+        this.subSubMethodList = [];
         this._pubSCreenSearch = {
             abstract: '', author: [], authorString: '', authourID: [], cellTypeID: [], celltypeOther: '',
             diseaseID: [], diseaseOther: '', doi: '', id: 0, keywords: '', methodID: [], methodOther: '',
