@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
@@ -58,28 +58,28 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
     paperInfoFromDoiList: any;
 
     //Form Validation Variables for adding publications
-    author: FormControl;
-    title: FormControl;
-    abstract: FormControl;
-    doi: FormControl;
-    doiKey: FormControl;
-    paperType: FormControl;
-    cognitiveTask: FormControl;
-    //specie = new FormControl('', [Validators.required]);
-    //sex = new FormControl('', [Validators.required]);
-    addingOption: FormControl;
-    year: FormControl;
-    pubMedKey: FormControl;
-    sourceOption: FormControl;
-    bioAddingOption: FormControl;
-    doiKeyBio: FormControl;
+    author: UntypedFormControl;
+    title: UntypedFormControl;
+    abstract: UntypedFormControl;
+    doi: UntypedFormControl;
+    doiKey: UntypedFormControl;
+    paperType: UntypedFormControl;
+    cognitiveTask: UntypedFormControl;
+    //specie = new UntypedFormControl('', [Validators.required]);
+    //sex = new UntypedFormControl('', [Validators.required]);
+    addingOption: UntypedFormControl;
+    year: UntypedFormControl;
+    pubMedKey: UntypedFormControl;
+    sourceOption: UntypedFormControl;
+    bioAddingOption: UntypedFormControl;
+    doiKeyBio: UntypedFormControl;
 
 
     //onbj variable from Models
     _pubscreen: Pubscreen;
     _pubSCreenSearch: Pubscreen;
 
-    public authorMultiFilterCtrl: FormControl;
+    public authorMultiFilterCtrl: UntypedFormControl;
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -88,7 +88,7 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
         // private pagerService: PagerService,
         public dialog: MatDialog,
         private pubScreenService: PubScreenService, public dialogAuthor: MatDialog,
-        private fb: FormBuilder) {
+        private fb: UntypedFormBuilder) {
 
         this.author = fb.control('', [Validators.required]);
         this.title = fb.control('', [Validators.required]);

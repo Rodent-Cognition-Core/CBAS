@@ -22,7 +22,8 @@
             "styles": [
                 "src/styles.scss",
                 "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css"
+                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+                "node_modules/ngx-spinner/animations/ball-spin-clockwise.css"
             ],
             "scripts": [],
             "aot": false,
@@ -97,14 +98,14 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [ ],
             "styles": [
                 "src/styles.scss",
                 "src/thirdparties/owl.carousel-modified.css",
-                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css"
+                "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+                "node_modules/ngx-spinner/animations/ball-spin-clockwise.css"
             ],
             "assets": [
               "src/assets"
@@ -137,12 +138,13 @@
       }
     }
   },
-  "defaultProject": "angular-spaweb-api",
   "cli": {
     "warnings": {
       "typescriptMismatch": false
     },
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   },
   "schematics": {
     "@schematics/angular:component": {

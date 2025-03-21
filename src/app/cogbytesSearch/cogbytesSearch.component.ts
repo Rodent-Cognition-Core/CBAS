@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormBuilder } from '@angular/forms';
-import { ReplaySubject ,  Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
+import { ReplaySubject ,  Subject, Subscription } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
 
@@ -72,17 +72,19 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     isSearch: boolean;
     filteredSearchList: any;
 
-    //yearFrom = new FormControl('', []);
-    yearTo: FormControl;
+    //yearFrom = new UntypedFormControl('', []);
+    yearTo: UntypedFormControl;
 
-    public repMultiFilterCtrl: FormControl = new FormControl();
+    public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public piMultiFilterCtrl: FormControl = new FormControl();
+    public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     showAll: boolean;
+
+    private subscription: Subscription = new Subscription();
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -94,12 +96,13 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
-        private fb: FormBuilder,
+        private router: Router,
+        private fb: UntypedFormBuilder,
         public dialogRef: MatDialog) {
 
         this._cogbytesSearch = {
             ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: 0, yearTo: 0
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
         }
         this.checkYear = false;
         this.isAdmin = false;
@@ -107,6 +110,17 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.isFullDataAccess = false;
         this.isSearch = false;
         this.showAll = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = undefined;
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
         this.doiModel = '';
         this.keywordsModel = '';
         this.interventionModel = '';
@@ -149,13 +163,72 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this.isSearch = false;
 
-
+        this.subscription.add(
+            this.router.events
+              .pipe(filter(event => event instanceof NavigationEnd))
+              .subscribe(() => {
+                this.resetState();
+              })
+          );
 
     }
 
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
+    }
+
+    resetState(): void {
+        this._cogbytesSearch = {
+            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
+        }
+        this.checkYear = false;
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.isSearch = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = undefined;
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.interventionModel = '';
+        this.panelOpenState = false;
+        this.yearTo.setValue('');
+        if (this.showAll == true) {
+            this.ShowRepositories();
+        } else {
+            this.GetRepositories();
+            this.GetAuthorList();
+            this.GetPIList();
+            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+            this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+        }
+
+
+
+        this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+        this.yearList = this.GetYear(1970).sort().reverse();
+
+        this.interventionModel = "All";
+
+        this.isSearch = false;
     }
 
     // Function definition to get list of years
@@ -307,9 +380,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         if
             (
-            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == ''
-            && this.doiModel == '' && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
-            && this.strainModel == null && this.genoModel == null && this.ageModel == null
+            this.authorModel.length == 0 && this.piModel.length == 0 && this.titleModel.length == 0 && this.keywordsModel == ''
+            && this.doiModel == '' && this.cognitiveTaskModel.length == 0 && this.specieModel.length == 0 && this.sexModel.length == 0
+            && this.strainModel.length == 0 && this.genoModel.length == 0 && this.ageModel.length == 0
         ) {
             return true;
         }

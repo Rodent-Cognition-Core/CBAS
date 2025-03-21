@@ -38,7 +38,7 @@ const routes: Routes = [
     { path: 'pubScreen', loadChildren: () => import('./pubScreen/pubScreen.module').then(m => m.PubScreenModule) },
     { path: 'pubScreen-search', loadChildren: () => import('./pubScreen-search/pubScreen-search.module').then(m => m.PubScreenSearchModule) },
     { path: 'comp', loadChildren: () => import('./cogbytes/cogbytes.module').then(m => m.CogbytesModule) },
-    { path: 'comp-search', loadChildren: () => import('./cogbytesSearch/cogbytesSearch.module').then(m => m.CogbytesSearchModule) },
+    { path: 'comp-search', loadChildren: () => import('./cogbytesSearch/cogbytesSearch.module').then(m => m.CogbytesSearchModule),  runGuardsAndResolvers: 'paramsOrQueryParamsChange',  data: { reloadOnQueryParamsChange: true }},
     { path: 'pubScreen-queue', loadChildren: () => import('./pubScreenQueue/pubScreenQueue.module').then(m => m.PubScreenQueueModule) },
     { path: 'pubScreen-edit', loadChildren: () => import('./pubScreenEdit/pubScreenEdit.module').then(m => m.PubScreenEditModule) },
     { path: 'comp-edit', loadChildren: () => import('./cogbytesEdit/cogbytesEdit.module').then(m => m.CogbytesEditModule) },
@@ -49,7 +49,7 @@ const routes: Routes = [
     imports: [
         RouterModule.forRoot(routes, {
             preloadingStrategy: PreloadAllModules,
-            relativeLinkResolution: 'corrected'
+            relativeLinkResolution: 'corrected',
         })
     ],
     exports: [RouterModule]

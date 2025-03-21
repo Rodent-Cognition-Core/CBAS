@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
@@ -20,17 +20,17 @@ export class ReqAgeDialogeComponent {
            
     private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name: FormControl;
-    email: FormControl;
-    age: FormControl;
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    age: UntypedFormControl;
     
 
     constructor(public thisDialogRef: MatDialogRef<ReqAgeDialogeComponent>,
          
         private requestService: RequestService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         this.name = fb.control('', [Validators.required]);

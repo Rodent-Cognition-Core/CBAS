@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -82,42 +82,42 @@ export class PubScreenComponent implements OnInit, OnDestroy {
     isUser: boolean;
     isFullDataAccess: boolean;
 
-    //yearFrom = new FormControl('', []);
-    yearTo = new FormControl('', []);
+    //yearFrom = new UntypedFormControl('', []);
+    yearTo = new UntypedFormControl('', []);
 
     _pubSCreenSearch: Pubscreen;
 
-    public authorMultiFilterCtrl: FormControl;
+    public authorMultiFilterCtrl: UntypedFormControl;
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public strainMultiFilterCtrl: FormControl;
+    public strainMultiFilterCtrl: UntypedFormControl;
     public filteredStrainList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subTaskMultiFilterCtrl: FormControl;
+    public subTaskMultiFilterCtrl: UntypedFormControl;
     public filteredSubTaskList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public diseaseMultiFilterCtrl: FormControl;
+    public diseaseMultiFilterCtrl: UntypedFormControl;
     public filteredDiseaseList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subModelMultiFilterCtrl: FormControl;
+    public subModelMultiFilterCtrl: UntypedFormControl;
     public filteredSubModelList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public regionMultiFilterCtrl: FormControl;
+    public regionMultiFilterCtrl: UntypedFormControl;
     public filteredRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subRegionMultiFilterCtrl: FormControl;
+    public subRegionMultiFilterCtrl: UntypedFormControl;
     public filteredSubRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public cellTypeMultiFilterCtrl: FormControl;
+    public cellTypeMultiFilterCtrl: UntypedFormControl;
     public filteredCellTypeList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public methodMultiFilterCtrl: FormControl;
+    public methodMultiFilterCtrl: UntypedFormControl;
     public filteredMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public subMethodMultiFilterCtrl: FormControl;
+    public subMethodMultiFilterCtrl: UntypedFormControl;
     public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public neurotransmitterMultiFilterCtrl: FormControl;
+    public neurotransmitterMultiFilterCtrl: UntypedFormControl;
     public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     /** Subject that emits when the component has been destroyed. */
@@ -133,7 +133,7 @@ export class PubScreenComponent implements OnInit, OnDestroy {
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         public dialogML: MatDialog,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         //public dialogRef: MatDialogRef<DeleteConfirmDialogComponent>,
         public dialogRef: MatDialog,
         public dialogRefLink: MatDialog) { 

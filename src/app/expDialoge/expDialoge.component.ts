@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Experiment } from '../models/experiment';
 import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
@@ -33,19 +33,19 @@ export class ExpDialogeComponent implements OnInit {
     speciesList: any;
     repList: any;
 
-    exp: FormControl;
-    sDate: FormControl;
-    eDate: FormControl;
-    task: FormControl;
-    species: FormControl;
-    piSite: FormControl;
-    status:FormControl;
-    expDescription: FormControl;
-    expBattery: FormControl;
-    isMultipleSessions: FormControl;
+    exp: UntypedFormControl;
+    sDate: UntypedFormControl;
+    eDate: UntypedFormControl;
+    task: UntypedFormControl;
+    species: UntypedFormControl;
+    piSite: UntypedFormControl;
+    status:UntypedFormControl;
+    expDescription: UntypedFormControl;
+    expBattery: UntypedFormControl;
+    isMultipleSessions: UntypedFormControl;
 
 
-    public repMultiFilterCtrl: FormControl = new FormControl();
+    public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     /** Subject that emits when the component has been destroyed. */
@@ -57,7 +57,7 @@ export class ExpDialogeComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
         private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {
         this.DOIModel = '';
         this.isTaken = false;

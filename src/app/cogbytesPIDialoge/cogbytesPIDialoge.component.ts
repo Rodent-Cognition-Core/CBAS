@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
 import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
 
@@ -19,16 +19,16 @@ export class CogbytesPIDialogeComponent {
            
     //private _request = new Request();
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    emailPI: FormControl;
-    piName: FormControl;
-    institution: FormControl;
+    emailPI: UntypedFormControl;
+    piName: UntypedFormControl;
+    institution: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
          
         private cogbytesService: CogbytesService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any) {
         this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")])
         this.piName = fb.control('', [Validators.required])

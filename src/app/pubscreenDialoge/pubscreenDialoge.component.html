@@ -29,7 +29,7 @@
                         <br /> <br />
 
                         <!--Adding Paper option for pubmed-->
-                        <mat-radio-group [formControl]="addingOption" required *ngIf="sourceOption.value === 1">
+                        <mat-radio-group [formControl]="addingOption" required *ngIf="sourceOption.value === '1'">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-radio-button value="2" (change)="resetFormVals()">PubMedID</mat-radio-button>
@@ -37,14 +37,14 @@
                         </mat-radio-group>
 
                         <!--Adding Paper option for bioRxiv-->
-                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value === 2">
+                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value === '2'">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
                         </mat-radio-group>
 
                         <!--Adding Paper option for crossRef-->
-                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value === 3">
+                        <mat-radio-group [formControl]="bioAddingOption" required *ngIf="sourceOption.value === '3'">
                             <span>Please indicate which of the following options you want to use for adding the paper:</span>
                             <mat-radio-button value="1" (change)="resetFormVals()">DOI</mat-radio-button>
                             <mat-error style="font-size:small" *ngIf="bioAddingOption.invalid">{{getErrorMessagePaperOptionBio()}}</mat-error>
@@ -317,7 +317,7 @@
                     </span>
 
                     <!--SubRodent Model----------------------------------->
-                    <span [hidden]="subSubModelList === null || subSubModelList === 'undefined' || subSubModelList.length === 0">
+                    <span [hidden]="subSubModelList.length === 0">
                         <mat-form-field style="width:15%; padding-left:30px">
                             <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
                                 <mat-option>
@@ -344,7 +344,7 @@
                     </mat-form-field>
 
                     <!--SubRegion-->
-                    <span [hidden]="subSubRegionList === null || subSubRegionList === 'undefined' || subSubRegionList.length === 0">
+                    <span [hidden]="subSubRegionList.length === 0">
                         <mat-form-field style="width:15%; padding-left:30px">
                             <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
                                 <mat-option>
@@ -409,7 +409,7 @@
                     </span>-->
 
                     <!--SubMethod Model----------------------------------->
-                    <span [hidden]="subSubMethodList === null || subSubMethodList === 'undefined' || subSubMethodList.length === 0">
+                    <span [hidden]="subSubMethodList.length === 0">
                         <mat-form-field style="width:15%; padding-left:30px">
                             <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
                                 <mat-option>

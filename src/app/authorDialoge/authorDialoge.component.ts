@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { PubScreenService } from '../services/pubScreen.service';
 import { FIELDISREQUIRED } from '../shared/messages';
 
@@ -19,14 +19,14 @@ export class AuthorDialogeComponent {
     // Defining Models Parameters
     authorAffiliationModel: any;
 
-    // FormControl Parameters
-    authorName: FormControl
-    authorLastName: FormControl
+    // UntypedFormControl Parameters
+    authorName: UntypedFormControl
+    authorLastName: UntypedFormControl
     
     constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
          
         private pubScreenService: PubScreenService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.authorName = fb.control('', [Validators.required])

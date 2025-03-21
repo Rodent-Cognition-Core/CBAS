@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { SubExperiment } from '../models/subexperiment';
 import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { map } from 'rxjs/operators'
@@ -27,19 +27,19 @@ export class SubExpDialogeComponent implements OnInit {
     selectedImageResult: any; 
 
     // formControl vars
-    ageInMonth: FormControl;
-    subExp: FormControl;
-    intervention: FormControl;
-    isDrug: FormControl;
-    drug: FormControl;
-    //drugQuantity = new FormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
-    drugQuantity: FormControl;
-    drugUnit: FormControl;
-    intDes: FormControl;
-    imageInfo: FormControl;
-    imageDescription: FormControl;
-    housing: FormControl;
-    lightCycle: FormControl;
+    ageInMonth: UntypedFormControl;
+    subExp: UntypedFormControl;
+    intervention: UntypedFormControl;
+    isDrug: UntypedFormControl;
+    drug: UntypedFormControl;
+    //drugQuantity = new UntypedFormControl('', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/)]);
+    drugQuantity: UntypedFormControl;
+    drugUnit: UntypedFormControl;
+    intDes: UntypedFormControl;
+    imageInfo: UntypedFormControl;
+    imageDescription: UntypedFormControl;
+    housing: UntypedFormControl;
+    lightCycle: UntypedFormControl;
     
 
     private _subexperiment: SubExperiment;
@@ -47,7 +47,7 @@ export class SubExpDialogeComponent implements OnInit {
 
     constructor(public thisDialogRef: MatDialogRef<SubExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, private subexpDialogeService: SubExpDialogeService,
-        private fb: FormBuilder) {
+        private fb: UntypedFormBuilder) {
 
         this.isTakenSubExpName = false;
         this.isTakenAge = false;

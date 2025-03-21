@@ -18,7 +18,7 @@ export class ResetComponent extends Signin {
     token: string;
     showSuccess = false;
     //selectedPiSiteIds: any;
-    //PISite = new FormControl();
+    //PISite = new UntypedFormControl();
 
     constructor(
         protected router: Router,

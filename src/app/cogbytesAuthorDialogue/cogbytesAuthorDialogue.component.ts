@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
 
 
@@ -18,14 +18,14 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     // Defining Models Parameters
     authorAffiliationModel: any;
 
-    // FormControl Parameters
-    authorName: FormControl;
-    authorLastName: FormControl;
+    // UntypedFormControl Parameters
+    authorName: UntypedFormControl;
+    authorLastName: UntypedFormControl;
     
     constructor(public thisDialogRef: MatDialogRef<CogbytesAuthorDialogueComponent>,
          
         private cogbytesService: CogbytesService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.authorName = fb.control('', [Validators.required])
