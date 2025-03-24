@@ -11,6 +11,7 @@
     justify-content: center;
     padding-top: 20px;
     //padding-left: 50px;
+    /*TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
     mat-card {
         width: 1200px;
         //height: 500px;
@@ -21,7 +22,7 @@
     background-color: #795D9C;
 }
 
-.mat-raised-button.mat-accent {
+.mat-mdc-raised-button.mat-accent {
     background-color: #bab9b6;
 }
 
