@@ -34,13 +34,10 @@ import { NotificationDialogComponent } from './notification-dialog/notification-
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { CarouselModule } from 'ngx-owl-carousel-o';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollService } from './shared/scroll.service';
 import { CountUpModule } from 'ngx-countup';
 import { DropzoneModule } from 'ngx-dropzone-wrapper'
-import { Angulartics2Module } from 'angulartics2';
 
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
@@ -55,12 +52,9 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
         SharedModule,
         OAuthModule.forRoot(),
         NgxSpinnerModule,
-        FlexLayoutModule,
-        CarouselModule,
         CountUpModule,
         FontAwesomeModule,
         DropzoneModule,
-        Angulartics2Module.forRoot(),
 
 
     ],
