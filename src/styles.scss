@@ -7,3 +7,37 @@
 .mat-tab-label {
     font-weight: bold;
 }
+
+.mat-mdc-option {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1000;
+}
+
+.mat-mdc-select-panel {
+    width: fit-content !important;
+    min-width: fit-content !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+}
+
+.mat-mdc-select {
+    font-size: 16px !important;
+    font-family: 'Arial', sans-serif !important;
+    width: 100% !important;
+}
+
+.cdk-overlay-pane {
+    min-width: fit-content !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+.mat-mdc-select-search-input {
+    position: sticky !important;
+    top: 0;
+    z-index: 1500 !important;
+    background: white; 
+}
