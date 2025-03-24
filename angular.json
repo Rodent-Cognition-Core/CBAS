@@ -24,7 +24,10 @@
                 "src/thirdparties/owl.carousel-modified.css",
                 "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
                 "node_modules/ngx-spinner/animations/ball-spin-clockwise.css",
-                "./themes/material.css"
+                "node_modules/@swimlane/ngx-datatable/index.css",
+                "node_modules/@swimlane/ngx-datatable/themes/material.css",
+                "node_modules/@swimlane/ngx-datatable/themes/dark.css",
+                "node_modules/@swimlane/ngx-datatable/themes/bootstrap.css"
             ],
             "scripts": [],
             "aot": false,
@@ -107,7 +110,10 @@
                 "src/thirdparties/owl.carousel-modified.css",
                 "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
                 "node_modules/ngx-spinner/animations/ball-spin-clockwise.css",
-                "./themes/material.css"
+                "node_modules/@swimlane/ngx-datatable/index.css",
+                "node_modules/@swimlane/ngx-datatable/themes/material.css",
+                "node_modules/@swimlane/ngx-datatable/themes/dark.css",
+                "node_modules/@swimlane/ngx-datatable/themes/bootstrap.css"
             ],
             "assets": [
               "src/assets"
