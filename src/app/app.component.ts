@@ -1,4 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
@@ -59,12 +60,17 @@ export class AppComponent implements OnInit {
     key: any;
     showFooter: boolean;
 
+    isMobile: boolean = false;
+    isTablet: boolean = false;
+    isDesktop: boolean = false;
+
     constructor(
         public title: Title,
         private oAuthService: OAuthService,
         private authenticationService: AuthenticationService,
         private router: Router,
         private el: ElementRef,
+        private breakpointObserver: BreakpointObserver
     ) {
         this.name = '';
         this.isAdmin = false;
@@ -89,6 +95,25 @@ export class AppComponent implements OnInit {
    }
 
     ngOnInit() {
+
+        this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: any) => {
+            this.isMobile = result.matches;
+            this.isTablet = false;
+            this.isDesktop = false;
+        });
+
+        this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe((result: any) => {
+            this.isTablet = result.matches;
+            this.isMobile = false;
+            this.isDesktop = false;
+        });
+
+        this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result: any) => {
+            this.isDesktop = result.matches;
+            this.isMobile = false;
+            this.isTablet = false;
+        });
+
         this.title.setTitle('MouseBytes');
 
         this.authenticationService.userChanged().subscribe(
