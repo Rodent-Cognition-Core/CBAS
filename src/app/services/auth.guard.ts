@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, concatMap } from 'rxjs/operators';
 
@@ -8,7 +8,7 @@ import { AuthenticationService } from './authentication.service';
 /**
  * Decides if a route can be activated.
  */
-@Injectable() export class AuthGuard implements CanActivate {
+@Injectable() export class AuthGuard {
 
     private signedIn: boolean;
 
