@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -17,6 +17,73 @@ declare const gtag: Function;
     templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
+
+    navigationSections = [
+        {
+            title: 'TOUCHSCREEN DATA',
+            items:  [
+                {name: 'Dashboard', route: '/mb-dashboard'},
+                { name: 'Data Lab', route: '/data-extraction' },
+                { name: 'Data Visualization', route: '/data-visualization' },
+                { name: 'Search', route: '/search-experiment' },
+                { name: 'Experiment', route: '/experiment', visibilityCondition: () => this.isAdmin || this.isUser},
+                { name: 'Upload', route: '/upload', visibilityCondition: () => this.isAdmin || this.isUser},
+                { name: 'Animal', route: '/animal-info', visibilityCondition: () => this.isAdmin || this.isUser},
+                { name: "Upload Log", route: '/dashboard', visibilityCondition: () => this.isAdmin || this.isUser},
+                { name: "User Management", route:'/manage-user', visibilityCondition: () => this.isAdmin}
+            ]
+        },
+        {
+            title: 'MOUSEBYTES+',
+            items:  [
+                {name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
+                { name: 'Search Repositories', route: '/comp-search' },
+                { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} }
+            ]
+        },
+        {
+            title: 'PUBSCREEN',
+            items:  [
+                {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
+                { name: 'Add/Search Publications', route: '/pubScreen' },
+                { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+            ]
+        },
+        {
+            title: 'TUTORIALS',
+            items:  [
+                { name: 'Guidelines', route: 'guideline' },
+                { name: 'Video Tutorials', route: 'video-tutorial' }
+            ]
+        },
+        {
+            title: 'RESOURCES',
+            items:  [
+                { name: 'Contact US', route: 'contact-us' },
+                { name: 'Forms', route: 'forms' },
+                { name: 'Terms of Service', route: 'terms' },
+            ]
+        }
+    ]
+
+    externalLinks = [{
+        title: 'TSC ECOSYSTEM',
+        items: [
+            { 
+                name: 'TOUCHSCREEN COGNITION', 
+                url: 'https://touchscreencognition.org/' 
+              },
+              { 
+                  name: 'TOUCHSCREEN COMMUNITY', 
+                  url: 'https://touchscreencognition.org/forums' 
+              },
+              { 
+                  name: 'MOUSETRAP', 
+                  url: 'https://mouse-trap.org/' 
+              }
+            ]
+        }
+    ];
 
     navItems: any[] = [
         //{ name: 'Home', route: 'home' },
@@ -78,6 +145,7 @@ export class AppComponent implements OnInit {
         this.isFullDataAccess = false;
         this.showFooter = false;
         this.signedIn = this.authenticationService.isSignedIn();
+        this.checkDeviceType();
 
         if (this.oAuthService.hasValidAccessToken()) {
             this.authenticationService.init();
@@ -96,23 +164,23 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
 
-        this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: any) => {
-            this.isMobile = result.matches;
-            this.isTablet = false;
-            this.isDesktop = false;
-        });
+        // this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: any) => {
+        //     this.isMobile = result.matches;
+        //     this.isTablet = false;
+        //     this.isDesktop = false;
+        // });
 
-        this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe((result: any) => {
-            this.isTablet = result.matches;
-            this.isMobile = false;
-            this.isDesktop = false;
-        });
+        // this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe((result: any) => {
+        //     this.isTablet = result.matches;
+        //     this.isMobile = false;
+        //     this.isDesktop = false;
+        // });
 
-        this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result: any) => {
-            this.isDesktop = result.matches;
-            this.isMobile = false;
-            this.isTablet = false;
-        });
+        // this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result: any) => {
+        //     this.isDesktop = result.matches;
+        //     this.isMobile = false;
+        //     this.isTablet = false;
+        // });
 
         this.title.setTitle('MouseBytes');
 
@@ -226,5 +294,153 @@ export class AppComponent implements OnInit {
         //    }
         //}, 16);
     }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event : any) {
+        this.checkDeviceType();
+     }
+
+    private checkDeviceType() {
+        // Implement responsive detection
+        const width = window.innerWidth;
+        this.isMobile = width < 600;
+        this.isTablet = width >= 600 && width < 1024;
+        this.isDesktop = width >= 1024;
+        if(this.isDesktop) {
+            this.navigationSections = [
+                {
+                    title: 'TOUCHSCREEN DATA',
+                    items:  [
+                        {name: 'Dashboard', route: '/mb-dashboard'},
+                        { name: 'Data Lab', route: '/data-extraction' },
+                        { name: 'Data Visualization', route: '/data-visualization' },
+                        { name: 'Search', route: '/search-experiment' },
+                        { name: 'Experiment', route: '/experiment', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Upload', route: '/upload', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Animal', route: '/animal-info', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: "Upload Log", route: '/dashboard', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: "User Management", route:'/manage-user', visibilityCondition: () => this.isAdmin}
+                    ]
+                },
+                {
+                    title: 'MOUSEBYTES+',
+                    items:  [
+                        {name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Search Repositories', route: '/comp-search' },
+                        { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} }
+                    ]
+                },
+                {
+                    title: 'PUBSCREEN',
+                    items:  [
+                        {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
+                        { name: 'Add/Search Publications', route: '/pubScreen' },
+                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                    ]
+                },
+                {
+                    title: 'TUTORIALS',
+                    items:  [
+                        { name: 'Guidelines', route: 'guideline' },
+                        { name: 'Video Tutorials', route: 'video-tutorial' }
+                    ]
+                },
+                {
+                    title: 'RESOURCES',
+                    items:  [
+                        { name: 'Contact US', route: 'contact-us' },
+                        { name: 'Forms', route: 'forms' },
+                        { name: 'Terms of Service', route: 'terms' },
+                    ]
+                }
+            ]
+            this.externalLinks = [{
+                title: 'TSC ECOSYSTEM',
+                items: [
+                    { 
+                        name: 'TOUCHSCREEN COGNITION', 
+                        url: 'https://touchscreencognition.org/' 
+                      },
+                      { 
+                          name: 'TOUCHSCREEN COMMUNITY', 
+                          url: 'https://touchscreencognition.org/forums' 
+                      },
+                      { 
+                          name: 'MOUSETRAP', 
+                          url: 'https://mouse-trap.org/' 
+                      }
+                    ]
+                }
+            ];
+        } else if (this.isTablet) {
+            this.navigationSections = [
+                {
+                    title: 'DATA',
+                    items:  [
+                        {name: 'Dashboard', route: '/mb-dashboard'},
+                        { name: 'Data Lab', route: '/data-extraction' },
+                        { name: 'Data Visualization', route: '/data-visualization' },
+                        { name: 'Search', route: '/search-experiment' },
+                        { name: 'Experiment', route: '/experiment', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Upload', route: '/upload', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Animal', route: '/animal-info', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: "Upload Log", route: '/dashboard', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: "User Management", route:'/manage-user', visibilityCondition: () => this.isAdmin}
+                    ]
+                },
+                {
+                    title: 'MB+',
+                    items:  [
+                        {name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Search Repositories', route: '/comp-search' },
+                        { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} }
+                    ]
+                },
+                {
+                    title: 'PUBSCREEN',
+                    items:  [
+                        {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
+                        { name: 'Add/Search Publications', route: '/pubScreen' },
+                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                    ]
+                },
+                {
+                    title: 'TUTORIALS',
+                    items:  [
+                        { name: 'Guidelines', route: 'guideline' },
+                        { name: 'Video Tutorials', route: 'video-tutorial' }
+                    ]
+                },
+                {
+                    title: 'RESOURCES',
+                    items:  [
+                        { name: 'Contact US', route: 'contact-us' },
+                        { name: 'Forms', route: 'forms' },
+                        { name: 'Terms of Service', route: 'terms' },
+                    ]
+                }
+            ]
+
+            this.externalLinks = [{
+                title: 'TSC',
+                items: [
+                    { 
+                        name: 'TOUCHSCREEN COG', 
+                        url: 'https://touchscreencognition.org/' 
+                      },
+                      { 
+                          name: 'COMMUNITY', 
+                          url: 'https://touchscreencognition.org/forums' 
+                      },
+                      { 
+                          name: 'MOUSETRAP', 
+                          url: 'https://mouse-trap.org/' 
+                      }
+                    ]
+                }
+            ];
+             
+        }
+      }
 
 }
