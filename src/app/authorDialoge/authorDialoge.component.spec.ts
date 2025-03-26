@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitforAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AuthorDialogeComponent } from './authorDialoge.component';
 
@@ -6,7 +6,7 @@ describe('AuthorDialogeComponent', () => {
     let component: AuthorDialogeComponent;
     let fixture: ComponentFixture<AuthorDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitforAsync(() => {
     TestBed.configureTestingModule({
         declarations: [AuthorDialogeComponent ]
     })
