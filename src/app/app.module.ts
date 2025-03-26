@@ -1,6 +1,7 @@
 import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthGuard } from './services/auth.guard';
@@ -103,6 +104,7 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
         PISiteService,
         ManageUserService,
         ScrollService,
+        provideHttpClient()
 
     ],
     bootstrap: [AppComponent]
