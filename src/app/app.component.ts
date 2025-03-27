@@ -274,7 +274,7 @@ export class AppComponent implements OnInit {
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
-                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                        { name: 'Queue', route: '/pubScreen-queue', visibilityCondition: () => this.isAdmin}
                     ]
                 },
                 {
@@ -340,7 +340,7 @@ export class AppComponent implements OnInit {
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
-                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                        { name: 'Queue', route: '/pubScreen-queue', visibilityCondition: () => this.isAdmin}
                     ]
                 },
                 {
