@@ -1,10 +1,11 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
 import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
 import { DataExtraction } from '../models/dataextraction';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelect } from '@angular/material/select';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
@@ -76,6 +77,9 @@ export class DataExtractionComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
 
+    isAllExpChecked: boolean;
+    isExpIndeterminate: boolean;
+
     dataextractionForm = UntypedFormControl;
 
     // SessionInfo Features' names
@@ -114,6 +118,16 @@ export class DataExtractionComponent implements OnInit {
     public MarkerInfoMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
 
     //dataSource: MatTableDataSource<Element[]>;
+    /** list of experiments filtered by search keyword for multi-selection */
+    public filteredExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    private filteredExpCache: any[];
+
+    /** Subject that emits when the component has been destroyed. */
+    private _onDestroy = new Subject<void>();
+
+    @ViewChild('multiSelect', {static: false}) multiSelect!: MatSelect;
 
     constructor(
         public dialog: MatDialog,
@@ -130,7 +144,10 @@ export class DataExtractionComponent implements OnInit {
         this.colNames = [];
         this.showGeneratedLink = false;
         this.termsChecked = false;
+        this.isAllExpChecked = false;
+        this.isExpIndeterminate = false;
         this.pagedItems = [];
+        this.filteredExpCache = [];
         this._geno = { Description: '', Genotype: '', ID: 0, Link: '' }
         this._dataExtractionObj = {
             ageVals: [], aggNames: '', expIDs: [], genotypeVals: [], isTrialByTrials: false, markerInfoNames: [], pisiteIDs: [],
@@ -163,13 +180,6 @@ export class DataExtractionComponent implements OnInit {
         this.selectedSubSessionValue = [];
 
     }
-
-    /** list of experiments filtered by search keyword for multi-selection */
-    public filteredExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-
-    /** Subject that emits when the component has been destroyed. */
-    private _onDestroy = new Subject<void>();
 
     @HostListener('window:resize', ['$event'])
     onResize(event : any) {
@@ -336,7 +346,16 @@ export class DataExtractionComponent implements OnInit {
                 .pipe(takeUntil(this._onDestroy))
                 .subscribe(() => {
                     this.filterExpMulti();
+                    this.setToggleAllExp();
                 });
+
+            this.expMultiCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+                this.setToggleAllExp();
+            })
+
+            this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+                this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
+            });
 
         });
 
@@ -1064,20 +1083,53 @@ export class DataExtractionComponent implements OnInit {
 
     }
 
-    selectAllExperiments() {
-        this.exp.setValue([]);
+    selectAllExperiments(selectAll: boolean) {
+        // this.exp.setValue([]);
 
-        //// in future if we want to enable select all with filter follow this:
-        //this.filteredExpMulti.subscribe(value => {
-        //    for (let filteredItem of value) {
-        //        console.log(filteredItem.expID);
-        //    }
-        //})
+        // //// in future if we want to enable select all with filter follow this:
+        // //this.filteredExpMulti.subscribe(value => {
+        // //    for (let filteredItem of value) {
+        // //        console.log(filteredItem.expID);
+        // //    }
+        // //})
 
-        for (let exp of this.expList) {
-            this.exp.value.push(exp.expID);
+        // for (let expitem of this.expList) {
+        //     this.exp.value.push(expitem.expID);
+        // }
+        // this.selectedExpChange(this.exp.value);
+        this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy))
+        .subscribe((val: any) => {
+            if (selectAll) {
+                this.expMultiCtrl.patchValue(val);
+            } else {
+                this.expMultiCtrl.patchValue([]);
+            }
+        })
+    }
+
+    setToggleAllExp() {
+        let filterLength = 0;
+        if (this.expMultiCtrl && this.expMultiCtrl.value) {
+            this.filteredExpCache.forEach(expcache => {
+                if (this.expMultiCtrl.value.indexOf(expcache) > -1) {
+                    filterLength ++;
+                }
+            });
+            this.isAllExpChecked = filterLength > 0 && filterLength == this.filteredExpCache.length;
+            this.isExpIndeterminate = filterLength > 0 && filterLength === this.filteredExpCache.length;
         }
-        this.selectedExpChange(this.exp.value);
+    }
+
+    onToggleSingle() {
+        this.checkToggleAll();
+    }
+
+    checkToggleAll() {
+        if(this.expList.length === this.expMultiCtrl.value.length) {
+            this.isAllExpChecked = true;
+        } else {
+            this.isAllExpChecked = false;
+        }
     }
 
     deselectAllExperiments() {
