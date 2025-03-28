@@ -1084,40 +1084,32 @@ export class DataExtractionComponent implements OnInit {
     }
 
     selectAllExperiments(selectAll: boolean) {
-        // this.exp.setValue([]);
-
-        // //// in future if we want to enable select all with filter follow this:
-        // //this.filteredExpMulti.subscribe(value => {
-        // //    for (let filteredItem of value) {
-        // //        console.log(filteredItem.expID);
-        // //    }
-        // //})
-
-        // for (let expitem of this.expList) {
-        //     this.exp.value.push(expitem.expID);
-        // }
-        // this.selectedExpChange(this.exp.value);
         this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy))
         .subscribe((val: any) => {
+            var allExpIds: any[] = [];
             if (selectAll) {
-                this.expMultiCtrl.patchValue(val);
+                allExpIds = val.map((exp : any) => exp.expID);
+                this.exp.setValue(allExpIds);
             } else {
-                this.expMultiCtrl.patchValue([]);
+                this.exp.setValue([]);
             }
+
+            if (allExpIds && allExpIds.length > 0) {
+                this.selectedExpChange(this.exp.value);
+              }
         })
     }
 
     setToggleAllExp() {
-        let filterLength = 0;
-        if (this.expMultiCtrl && this.expMultiCtrl.value) {
-            this.filteredExpCache.forEach(expcache => {
-                if (this.expMultiCtrl.value.indexOf(expcache) > -1) {
-                    filterLength ++;
-                }
-            });
-            this.isAllExpChecked = filterLength > 0 && filterLength == this.filteredExpCache.length;
-            this.isExpIndeterminate = filterLength > 0 && filterLength === this.filteredExpCache.length;
-        }
+        if (!this.expMultiCtrl || !this.expMultiCtrl.value) return;
+
+        this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe((filteredExperiments: any[]) => {
+            const selectedCount = this.expMultiCtrl.value.length;
+            const totalFilteredCount = filteredExperiments.length;
+
+            this.isAllExpChecked = selectedCount === totalFilteredCount;
+            this.isExpIndeterminate = selectedCount > 0 && selectedCount < totalFilteredCount;
+  });
     }
 
     onToggleSingle() {
