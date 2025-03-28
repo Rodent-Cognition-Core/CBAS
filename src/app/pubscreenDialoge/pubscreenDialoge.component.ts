@@ -173,7 +173,7 @@ export class PubscreenDialogeComponent implements OnInit {
         this.author = fb.control('', [Validators.required]);
         this.title = fb.control('', [Validators.required]);
         this.abstract = fb.control('', [Validators.required]);
-        this.doi = fb.control('', [Validators.required]);
+        this.doi = fb.control('');
         this.doiKey = fb.control('', [Validators.required]);
         this.paperType = fb.control('', [Validators.required]);
         this.cognitiveTask = fb.control('', [Validators.required]);
