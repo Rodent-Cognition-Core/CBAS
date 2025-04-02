@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitforAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SharedPubscreenComponent } from './shared-pubscreen.component';
 
@@ -6,7 +6,7 @@ describe('PubScreenComponent', () => {
     let component: SharedPubscreenComponent;
     let fixture: ComponentFixture<SharedPubscreenComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitforAsync(() => {
     TestBed.configureTestingModule({
         declarations: [SharedPubscreenComponent ]
     })

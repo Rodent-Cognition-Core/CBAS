@@ -42,10 +42,14 @@
                         <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
 
                             <mat-option>
-                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" 
+                                [showToggleAllCheckbox]="true"
+                                [toggleAllCheckboxChecked]="isAllExpChecked"
+                                [toggleAllCheckboxIndeterminate]="isExpIndeterminate"
+                                (toggleAll)="selectAllExperiments($event)"
+                                [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
                             </mat-option>
-                            <mat-option disabled="disabled" class="filter-option">
-                                <button mat-raised-button
+                                <!-- <button mat-raised-button
                                         class="mat-primary fill text-sm"
                                         (click)="selectAllExperiments()">
                                     Select All
@@ -54,9 +58,8 @@
                                         class="mat-accent fill text-sm"
                                         (click)="deselectAllExperiments()">
                                     Deselect All
-                                </button>
-                            </mat-option>
-                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID">
+                                </button> -->
+                            <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID" (onSelectionChange)="onToggleSingle()">
                                 <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
                             </mat-option>
                         </mat-select>

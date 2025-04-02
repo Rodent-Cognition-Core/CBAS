@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitforAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReqPubSubMethodDialogeComponent } from './reqPubSubMethodDialoge.component';
 
@@ -6,7 +6,7 @@ describe('ReqGeneralDialogeComponent', () => {
     let component: ReqPubSubMethodDialogeComponent;
     let fixture: ComponentFixture<ReqPubSubMethodDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitforAsync(() => {
     TestBed.configureTestingModule({
         declarations: [ReqPubSubMethodDialogeComponent]
     })

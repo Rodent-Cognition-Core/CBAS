@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
             items:  [
                 {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                 { name: 'Add/Search Publications', route: '/pubScreen' },
-                { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                { name: 'Queue', route: '/pubScreen-queue', visibilityCondition: () => this.isAdmin}
             ]
         },
         {
@@ -83,38 +83,6 @@ export class AppComponent implements OnInit {
               }
             ]
         }
-    ];
-
-    navItems: any[] = [
-        //{ name: 'Home', route: 'home' },
-        //{ name: 'Resources', route: 'resources' },
-        { name: 'Data Lab', route: 'data-extraction' },
-        { name: 'Data Visualization', route: 'data-visualization' },
-        //{ name: 'MouseBytes Dashborad', route: 'mb-dashboard' },
-        { name: 'Search', route: 'search-experiment' },
-    ];
-
-    navItemsTutorials: any[] = [
-
-        { name: 'Guidelines', route: 'guideline' },
-        { name: 'Video Tutorials', route: 'video-tutorial' },
-
-    ];
-
-    navItemsResources: any[] = [
-
-        { name: 'Contact US', route: 'contact-us' },
-        { name: 'Forms', route: 'forms' },
-        { name: 'Terms of Service', route: 'terms' },
-    ];
-
-    navItemsIntegration: any[] = [
-        { name: 'Imaging', route: 'imaging' },
-        { name: 'Genomics', route: 'genomics' }
-    ];
-
-    navItemsPubscreen: any[] = [
-        { name: 'Searching Publications', route: 'pubScreen-search' }
     ];
     signedIn: Observable<boolean>;
 
@@ -163,25 +131,6 @@ export class AppComponent implements OnInit {
    }
 
     ngOnInit() {
-
-        // this.breakpointObserver.observe([Breakpoints.Handset]).subscribe((result: any) => {
-        //     this.isMobile = result.matches;
-        //     this.isTablet = false;
-        //     this.isDesktop = false;
-        // });
-
-        // this.breakpointObserver.observe([Breakpoints.Tablet]).subscribe((result: any) => {
-        //     this.isTablet = result.matches;
-        //     this.isMobile = false;
-        //     this.isDesktop = false;
-        // });
-
-        // this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result: any) => {
-        //     this.isDesktop = result.matches;
-        //     this.isMobile = false;
-        //     this.isTablet = false;
-        // });
-
         this.title.setTitle('MouseBytes');
 
         this.authenticationService.userChanged().subscribe(
@@ -234,15 +183,6 @@ export class AppComponent implements OnInit {
         });
     }
 
-    //@HostListener('document:keydown', ['$event'])
-    //handleKeyboardEvent(event: KeyboardEvent) {
-    //    let x = event.keyCode;
-    //    if (x === 40) {
-    //        console.log(2);
-    //        this.scrollTo('about');
-    //    }
-    //}
-
     showHideFooter(routerUrl: string) {
         if (routerUrl.toUpperCase() === '' ||
             routerUrl.toUpperCase() === '/home'.toUpperCase() ||
@@ -265,7 +205,6 @@ export class AppComponent implements OnInit {
             routerUrl.toUpperCase() === '/pubScreen-queue'.toUpperCase() ||
             routerUrl.toUpperCase() === '/pubScreen-edit'.toUpperCase() ||
             routerUrl.toUpperCase() === '/comp-edit'.toUpperCase() ||
-            //routerUrl.toUpperCase() === '/comp'.toUpperCase() ||
             routerUrl.toUpperCase() === '/comp-search'.toUpperCase() 
 
         ) {
@@ -335,7 +274,7 @@ export class AppComponent implements OnInit {
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
-                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                        { name: 'Queue', route: '/pubScreen-queue', visibilityCondition: () => this.isAdmin}
                     ]
                 },
                 {
@@ -401,7 +340,7 @@ export class AppComponent implements OnInit {
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
-                        { name: 'Queue', route: '/comp-search', visibilityCondition: () => this.isAdmin}
+                        { name: 'Queue', route: '/pubScreen-queue', visibilityCondition: () => this.isAdmin}
                     ]
                 },
                 {
