@@ -168,7 +168,7 @@
                     <!--Paper DOI-->
                     <mat-form-field style="width:30%; padding-left:35px">
 
-                        <input matInput placeholder="Paper's DOI" [formControl]="doi" [readonly]="data.publicationObj!==null" required>
+                        <input matInput placeholder="Paper's DOI/Link" [formControl]="doi" [readonly]="data.publicationObj!==null">
                         <mat-error *ngIf="doi.invalid">{{getErrorMessageDOI()}}</mat-error>
 
                     </mat-form-field>
