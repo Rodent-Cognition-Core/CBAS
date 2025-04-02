@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitforAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PubscreenDialogeComponent } from './pubscreenDialoge.component';
 
@@ -6,7 +6,7 @@ describe('PubscreenDialogeComponent', () => {
     let component: PubscreenDialogeComponent;
     let fixture: ComponentFixture<PubscreenDialogeComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitforAsync(() => {
         TestBed.configureTestingModule({
             declarations: [PubscreenDialogeComponent]
         })

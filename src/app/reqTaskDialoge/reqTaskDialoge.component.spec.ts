@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitforAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReqTaskDialogeComponent } from './reqTaskDialoge.component';
 
@@ -6,7 +6,7 @@ describe('ReqTaskDialogeComponent', () => {
     let component: ReqTaskDialogeComponent;
     let fixture: ComponentFixture<ReqTaskDialogeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitforAsync(() => {
     TestBed.configureTestingModule({
         declarations: [ReqTaskDialogeComponent ]
     })

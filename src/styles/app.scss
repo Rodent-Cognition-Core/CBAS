@@ -755,19 +755,6 @@ footer {
     color: #d7d7d7;
   }
 
-  .auth-links ng-container a {
-    min-width: 40px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    min-height: 20px;
-    vertical-align: top;
-    font-size: x-small;
-    padding: 0 0;
-    margin: 0;
-    color: white
-  }
-
   .logo-container {
     display: flex;
     align-items: center;
@@ -813,6 +800,31 @@ footer {
     width: 180px; /* Adjust as needed */
     vertical-align: middle;
   }
+
+  .auth-links .mat-mdc-button-base{
+    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: middle;
+    font-size: x-small;
+    padding: 0 0;
+    margin: 0 5px;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+  }
+  .auth-links .user-greeting {
+    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: middle;
+    font-size: small;
+    padding: 0 0;
+    margin: 0;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+  }
   
   /* Responsive adjustments */
   @media (max-width: 599px) {
@@ -822,9 +834,6 @@ footer {
   }
 
   @media (min-width: 600px) and (max-width: 1023px) {
-    .auth-links ng-container a {
-        font-size: 14px;
-    }
     .desktop-nav .logo img {
         width: 130px;
     }
@@ -858,9 +867,6 @@ footer {
     }
   }
   @media (min-width: 1024px) and (max-width: 1350px) {
-    .auth-links ng-container a {
-        font-size: 16px;
-    }
     .desktop-nav .logo img {
         width: 150px;
     }

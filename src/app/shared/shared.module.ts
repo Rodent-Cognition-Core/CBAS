@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { SharedExperimentComponent } from '../shared-experiment/shared-experiment.component';
 import { SharedPubscreenComponent } from '../shared-pubscreen/shared-pubscreen.component';
@@ -11,7 +10,6 @@ const sharedModules: any[] = [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     MaterialModule,
     NgxMatSelectSearchModule,
 
