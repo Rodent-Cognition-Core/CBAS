@@ -732,7 +732,7 @@ export class PubScreenComponent implements OnInit, OnDestroy {
 
     // Opening Dialog for adding a new publication.
     openDialogAddPublication(Publication?: any): void {
-        if (Publication == 'undefined') {
+        if (Publication == undefined) {
             Publication = null;
         }
         let dialogref = this.dialog.open(PubscreenDialogeComponent, {
