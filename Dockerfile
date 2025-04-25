@@ -3,7 +3,7 @@
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 
 # Stage 1: Build the Angular app
-FROM node:12.22.12 AS build_node
+FROM node:22.14.0  AS build_node
 WORKDIR /app
 copy . .
 RUN rm -rf node_modules
