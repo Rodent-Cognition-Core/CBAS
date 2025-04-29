@@ -104,11 +104,11 @@
 
         <label>Do you have a complementary data repository in MouseBytes+ associated with the experiment?</label><br />
         <mat-radio-group [(ngModel)]="isRepoLink">
-            <mat-radio-button value='0'>No</mat-radio-button>
-            <mat-radio-button value='1'>Yes</mat-radio-button>
+            <mat-radio-button value=0>No</mat-radio-button>
+            <mat-radio-button value=1>Yes</mat-radio-button>
         </mat-radio-group>
 
-        <div *ngIf="isRepoLink==='1'">
+        <div *ngIf="isRepoLink==1">
             <br />
             <label>Please select the associated repository.</label><br />
 
