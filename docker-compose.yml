@@ -1,0 +1,19 @@
+
+# version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - "5000:80"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
+
+version: '3.8'
+
