@@ -63,13 +63,13 @@ export class CogbytesEditComponent implements OnInit {
         this.spinnerService.show();
 
         this.cogbytesService.getDataByLinkGuid(repoLinkGuid).subscribe((data : any) => {
-
-            this.repObj = data[0];
             this.repoList = data;
-            //console.log(this.repObj);
-            //console.log(this.repoList);
 
         });
+
+        this.cogbytesService.getMetaDataByLinkGuid(repoLinkGuid).subscribe((data: any) => {
+            this.repObj = data[0];
+        })
 
         this.spinnerService.hide();
 
