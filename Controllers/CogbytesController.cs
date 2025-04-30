@@ -322,6 +322,15 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [AllowAnonymous]
+        [HttpGet("GetMetaDataByLinkGuid")]
+        public IActionResult GetMetaDataByLinkGuid(Guid repoLinkGuid)
+        {
+             // extract data from database to show in the client
+            return new JsonResult(_cogbytesService.GetMetaDataFromCogbytesByLinkGuid(repoLinkGuid));
+
+        }
+
         // Function Definition to get repo's Guid based on Repo ID
         [AllowAnonymous]
         [HttpGet("GetGuidByRepID")]
