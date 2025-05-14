@@ -16,7 +16,7 @@ The database schema can be found in file <b>mb_script_schemaOnly.sql</b>.
 1. Clone git repository (https://github.com/Rodent-Cognition-Core/CBAS.git) to device.
 2. Using a terminal application, navigate to project folder and install frontend dependencies using command "npm install"
 
-#Local Testing:
+# Local Testing:
 
 ## VSCode:
 1. Navigate to Run and Debug
@@ -24,7 +24,7 @@ The database schema can be found in file <b>mb_script_schemaOnly.sql</b>.
 3. Application will begin launcher
 4. Access the MouseBytes web page with http://localhost:4200
 
-##V isual Studio:
+## Visual Studio:
 1. Select AngularSPAWebAPI_dev and launch
 2. Access the MouseBytes web page with http://localhost:4200
 
