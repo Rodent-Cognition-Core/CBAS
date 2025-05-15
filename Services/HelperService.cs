@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,11 @@ namespace CBAS.Helpers
             }
             catch (Exception ex)
             {
+                Log.Error("Failed to Send email with the following error: " + ex.Message.ToString());
+                if (ex.InnerException != null)
+                {
+                    Log.Error("The following innerexception " + ex.InnerException.Message.ToString());
+                }
                 return false;
             }
 
