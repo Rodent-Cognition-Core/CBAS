@@ -599,7 +599,10 @@ export class DataExtractionComponent implements OnInit {
             }
 
             if (selected_StrainVal.indexOf(26) > -1) {
-                this.genoIDList.push(35);
+                this.genoIDList.push(72);
+                this.genoIDList.push(73);
+                this.genoIDList.push(74);
+                this.genoIDList.push(75);
             }
 
             if (selected_StrainVal.indexOf(27) > -1) {
