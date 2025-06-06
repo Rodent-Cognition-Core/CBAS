@@ -1,28 +1,32 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: Merge Dev into Staging (Based on Production)
 
 on:
   push:
-    branches: [ "developing" ]
-  pull_request:
-    branches: [ "developing" ]
+    branches:
+      - develop
 
 jobs:
-  build:
-
-    runs-on: windows-latest
-
+  update-staging:
+    if: github.event.head_commit.message != 'sync: dev into staging'
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.204
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for full history and merging
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create staging from master and merge dev
+        run: |
+          git fetch origin
+          git checkout origin/master -b staging-temp
+          git merge origin/develop --no-ff -m "sync: dev into staging"
+          git push origin staging-temp:staging --force
+
