@@ -90,9 +90,9 @@ namespace AngularSPAWebAPI
             services.AddSerilog();
 
             // Uncomment this line for publuishing
-            //services.AddIdentityServer(options =>
-            //         options.PublicOrigin = "https://mousebytes.ca")
-            services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+                     options.PublicOrigin = "https://staging.mousebytes.ca")
+            //services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
@@ -110,7 +110,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "http://localhost:5000/";
+                        options.Authority = "https://staging.mousebytes.ca/";
                         options.RequireHttpsMetadata = false;
 
                         options.ApiName = "WebAPI";
@@ -121,7 +121,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = "https://staging.mousebytes.ca/";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "WebAPI";
@@ -133,7 +133,7 @@ namespace AngularSPAWebAPI
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins("https://staging.mousebytes.ca")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -141,7 +141,7 @@ namespace AngularSPAWebAPI
 
                 options.AddPolicy("ProductionCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("https://mousebytes.ca") // Production origins
+                    builder.WithOrigins("https://staging.mousebytes.ca") // Production origins
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -178,7 +178,7 @@ namespace AngularSPAWebAPI
             }
            
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
 

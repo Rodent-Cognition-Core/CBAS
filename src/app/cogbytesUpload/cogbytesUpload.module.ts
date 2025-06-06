@@ -12,7 +12,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 
 const COGUPLOAD_DROPZONE_CONFIG: DropzoneConfigInterface = {
     // Change this to your upload POST address:
-    url: 'http://localhost:5000/api/cogbytes/AddFiles',
+    url: 'https://staging.mousebytes.ca/api/cogbytes/AddFiles',
     maxFilesize: 10000,
     //acceptedFiles: '.*',
     // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },

@@ -10,7 +10,7 @@ export const oAuthDevelopmentConfig: AuthConfig = {
     clientId: "AngularCBAS",
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
-    issuer: "http://localhost:5000",
+    issuer: "https://staging.mousebytes.ca",
     requireHttps: false,
     waitForTokenInMsec: 0
 
@@ -21,7 +21,7 @@ export const oAuthProductionConfig: AuthConfig = {
     clientId: "AngularCBAS",
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
-    issuer: "http://localhost:5000",
+    issuer: "https://staging.mousebytes.ca",
     requireHttps: false,
     waitForTokenInMsec: 0
 
