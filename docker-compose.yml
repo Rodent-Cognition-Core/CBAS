@@ -1,0 +1,26 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    user: root
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    networks:
+      - app-network
+    volumes:
+      - /home/ubuntu/https:/https/:rw
+      - /cephfs/staging/TempUpload:/app/TempUpload:rw
+      - /cephfs/staging/UPLOAd:/app/UPLOAD:rw
+      - /cephfs/staging/COGBYTES_FILES:/app/COGBYTES_FILES:rw
+networks:
+  app-network:
+    driver: bridge
+
