@@ -31,7 +31,7 @@ import { MatButtonModule } from '@angular/material/button'
             provide: DROPZONE_CONFIG,
             useValue: {
                 // Change this to your upload POST address:
-                url: 'http://localhost:5000/api/upload/UploadFiles',
+                url: 'https://staging.mousebytes.ca/api/upload/UploadFiles',
                 // maxFilesize: 50,
                 acceptedFiles: '.xml',
                 // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },

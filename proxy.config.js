@@ -1,12 +1,12 @@
 module.exports = {
     "/api": {
-        target: "http://localhost:5000",
+        target: "https://staging.mousebytes.ca",
         secure: false,
         changeOrigin: true,
         logLevel: "debug"
     },
     "/connect": {
-        target: "http://localhost:5000", 
+        target: "https://staging.mousebytes.ca", 
         secure: false,
         changeOrigin: true,
         logLevel: "debug"

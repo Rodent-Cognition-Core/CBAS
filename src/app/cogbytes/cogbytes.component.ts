@@ -236,14 +236,14 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
             const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            dialogRefLink.componentInstance.message = "http://localhost:4200/comp-edit?repolinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "https://staging.mousebytes.ca/comp-edit?repolinkguid=" + guid;
 
         });
 
     }
 
     getLinkURL() {
-        return "http://localhost:4200/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
+        return "https://staging.mousebytes.ca/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
     }
 
 }
