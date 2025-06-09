@@ -288,6 +288,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getMetaDataByLinkGuid(repoLinkGuid: any): any {
+        return this.http
+            .get("/api/Cogbytes/GetMetaDataByLinkGuid?repoLinkGuid=" + repoLinkGuid, {
+                // headers: this.authenticationService.getAuthorizationHeader()
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
 
     public getGuidByRepID(repID: number): any {
 
