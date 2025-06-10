@@ -1,23 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/Observable';
-
+import { Observable } from 'rxjs';
 import { TaskAnalysis } from '../models/taskAnalysis';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 
 @Component({
-    selector: 'app-taskAnalysis',
+    selector: 'app-task-analysis',
     templateUrl: './taskAnalysis.component.html',
     styleUrls: ['./taskAnalysis.component.scss']
 })
 export class TaskAnalysisComponent implements OnInit {
 
     displayedColumns = ['id', 'taskname', 'originalname'];
-    dataSource: TaskAnalysisDataSource;
 
-    private _taskAnalysis = new TaskAnalysis();
+    private _taskAnalysis: TaskAnalysis;
 
-    constructor(private taskAnalysisService: TaskAnalysisService) { }
+    constructor(private taskAnalysisService: TaskAnalysisService,
+        public dataSource: TaskAnalysisDataSource) {
+        this._taskAnalysis = { ID: 0, Name: '', OriginalName: '', TaskDescription: '' }
+
+    }
 
     ngOnInit() {
         this.taskAnalysisService.getAll();

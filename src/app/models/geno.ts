@@ -1,9 +1,9 @@
-export class Geno {
+export interface Geno {
 
-    public ID: number;
-    public Genotype: string;
-    public Link: string;
-    public Description: string;
+     ID: number;
+     Genotype: string;
+     Link: string;
+     Description: string;
     
     
 

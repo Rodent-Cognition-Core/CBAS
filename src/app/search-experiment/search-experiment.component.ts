@@ -1,11 +1,15 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { SearchExperimentService } from '../services/searchexperiment.service';
 import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { IdentityService } from '../services/identity.service';
 
 declare var $: any;
+
+//declare global {
+//    interface Navigator {
+//        msSaveBlob: (blobOrBase64: Blob | string, filename: string) => void
+//    }
+//}
 
 @Component({
     selector: 'app-search-experiment',
@@ -21,11 +25,14 @@ export class SearchExperimentComponent implements OnInit {
 
     constructor(private pagerService: PagerService,
         public dialog: MatDialog,
-        private searchexperimentService: SearchExperimentService,) { }
+        private searchexperimentService: SearchExperimentService,) {
+
+        this.pagedItems = [];
+    }
 
     ngOnInit() {
 
-        this.searchexperimentService.GetSearchList().subscribe(data => {
+        this.searchexperimentService.GetSearchList().subscribe((data : any) => {
             this.searchList = data;
             this.setPage(1);
             //console.log(this.searchList);
@@ -64,9 +71,9 @@ export class SearchExperimentComponent implements OnInit {
         }, 500);
     }
 
-    filterByString(data, s): any {
+    filterByString(data: any, s: string): any {
         s = s.trim();
-        return data.filter(e => e.expName.toUpperCase().includes(s.toUpperCase()) || e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) || e.strain.toUpperCase().includes(s.toUpperCase())
+        return data.filter((e : any) => e.expName.toUpperCase().includes(s.toUpperCase()) || e.cognitiveTask.toUpperCase().includes(s.toUpperCase()) || e.age.toUpperCase().includes(s.toUpperCase()) || e.strain.toUpperCase().includes(s.toUpperCase())
             || e.status.toUpperCase().includes(s.toUpperCase()) || e.genotype.toUpperCase().includes(s.toUpperCase()) || e.age.includes(s) ||
             e.username.toUpperCase().includes(s.toUpperCase()) || e.period.toUpperCase().includes(s.toUpperCase())); 
 
@@ -84,11 +91,12 @@ export class SearchExperimentComponent implements OnInit {
 
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
-                } else {
-                    csvURL = window.URL.createObjectURL(fileData);
-                }
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
+                //} else {
+                //    csvURL = window.URL.createObjectURL(fileData);
+                //}
+                csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', path + '.csv');

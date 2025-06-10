@@ -27,11 +27,6 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
 
         [HttpGet("GetPISite")]
         [AllowAnonymous]
@@ -41,12 +36,12 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("GetPISitebyUserID")]
-        public IActionResult GetPISitebyUserID()
+        public async Task<IActionResult> GetPISitebyUserID()
         {
-            var user = GetCurrentUser();
-            var userID = user.Result.Id;
-
-            return new JsonResult(_piSiteService.GetPISitebyUserID(userID));
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userID = user.Id;
+            var res = await _piSiteService.GetPISitebyUserIDAsync(userID);
+            return new JsonResult(res);
         }
 
 

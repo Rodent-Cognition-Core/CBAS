@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { PubScreenSearchComponent } from './pubScreen-search.component';
 
-import { AuthGuard } from '../services/auth.guard';
 
 const routes: Routes = [
     { path: '', component: PubScreenSearchComponent, pathMatch: 'full' }

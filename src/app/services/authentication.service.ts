@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { interval } from 'rxjs/observable/interval';
-import { timer } from 'rxjs/observable/timer';
-
+import { Observable ,  BehaviorSubject, Subscription, timer } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { User } from '../models/user';
 
 /**
  * ROPC Authentication service.
  */
-@Injectable() export class AuthenticationService {
+@Injectable({ 
+    providedIn: 'root',
+ }) export class AuthenticationService {
 
     // As in OAuthConfig.
     public storage: Storage = localStorage;
@@ -26,23 +23,32 @@ import { User } from '../models/user';
     /**
      * Behavior subjects of the user's status & data.
      */
-    private signinStatus = new BehaviorSubject<boolean>(false);
-    private user = new BehaviorSubject<User>(new User());
+    private _user: User = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
 
     /**
      * Scheduling of the refresh token.
      */
-    private refreshSubscription: any;
+    private refreshSubscription: Subscription | undefined;
 
     /**
      * Offset for the scheduling to avoid the inconsistency of data on the client.
      */
-    private offsetSeconds: number = 30;
+    private offsetSeconds: number = 60;
+
+    private signinStatus = new BehaviorSubject<boolean>(false);
+
+    public signinStatus$ = this.signinStatus.asObservable();
+
+    private user = new BehaviorSubject<User>(this._user);
+
+    public user$ = this.user.asObservable();
 
     constructor(
         private router: Router,
         private oAuthService: OAuthService
-    ) { }
+    ) {
+        this.redirectUrl = "";
+    }
 
     public init(): void {
         // Tells all the subscribers about the new status & data.
@@ -53,11 +59,12 @@ import { User } from '../models/user';
     public signout(): void {
         this.oAuthService.logOut(true);
 
-        this.redirectUrl = null;
+        this.redirectUrl = "";
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
-        this.user.next(new User());
+        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' };
+        this.user.next(this._user);
 
         // Unschedules the refresh token.
         this.unscheduleRefresh();
@@ -69,9 +76,8 @@ import { User } from '../models/user';
         headers = headers.append('Accept', 'application/json');
 
         const token: string = this.oAuthService.getAccessToken();
-        if (token !== '') {
-            const tokenValue: string = 'Bearer ' + token;
-            headers = headers.append('Authorization', tokenValue);
+        if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
         }
         return headers;
     }
@@ -91,7 +97,7 @@ import { User } from '../models/user';
     }
 
     public getUser(): User {
-        const user: User = new User();
+        const user: User = this._user;
         if (this.oAuthService.hasValidAccessToken()) {
             const userInfo: any = this.oAuthService.getIdentityClaims();
 
@@ -108,16 +114,17 @@ import { User } from '../models/user';
      * Will schedule a refresh at the appropriate time.
      */
     public scheduleRefresh(): void {
-        const source: Observable<number> = interval(
-            this.calcDelay(this.getAuthTime())
-        );
+        this.unscheduleRefresh();
+        const expiresAt: number = this.oAuthService.getAccessTokenExpiration();
+        const delay = this.calcDelay(expiresAt);
+        const source: Observable<number> = timer(delay);
 
         this.refreshSubscription = source.subscribe(() => {
             this.oAuthService.refreshToken()
                 .then(() => {
-                    // Scheduler works.
+                    this.scheduleRefresh();
                 })
-                .catch((error: any) => {
+                .catch((_error: any) => {
                     this.handleRefreshTokenError();
                 });
         });
@@ -128,18 +135,7 @@ import { User } from '../models/user';
      */
     public startupTokenRefresh(): void {
         if (this.oAuthService.hasValidAccessToken()) {
-            const source: Observable<number> = timer(this.calcDelay(new Date().valueOf()));
-
-            // Once the delay time from above is reached, gets a new access token and schedules additional refreshes.
-            source.subscribe(() => {
-                this.oAuthService.refreshToken()
-                    .then(() => {
-                        this.scheduleRefresh();
-                    })
-                    .catch((error: any) => {
-                        this.handleRefreshTokenError();
-                    });
-            });
+            this.scheduleRefresh();
         }
     }
 
@@ -160,7 +156,7 @@ import { User } from '../models/user';
 
         // Tells all the subscribers about the new status & data.
         this.signinStatus.next(false);
-        this.user.next(new User());
+        this.user.next(this._user);
 
         // Unschedules the refresh token.
         this.unscheduleRefresh();
@@ -170,13 +166,19 @@ import { User } from '../models/user';
     }
 
     private calcDelay(time: number): number {
-        const expiresAt: number = this.oAuthService.getAccessTokenExpiration();
-        const delay: number = expiresAt - time - this.offsetSeconds * 1000;
-        return delay > 0 ? delay : 0;
+        const now = new Date().valueOf();
+        const delay: number = time - now - (this.offsetSeconds * 1000);
+        return delay > 0 ? delay : 1000;
     }
 
     private getAuthTime(): number {
-        return parseInt(this.storage.getItem('access_token_stored_at'), 10);
+        const storageitem: any = this.storage.getItem('access_token_stored_at');
+        if(storageitem != null) {
+            return parseInt(storageitem, 10);
+        } else {
+            return 0;
+        }
+
     }
 
 }

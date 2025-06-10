@@ -1,24 +1,15 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatDialogModule, MatInputModule, MatFormFieldModule } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-//import { MatDividerModule } from '@angular/material/divider';
-//import { MatFileUploadModule } from 'angular-material-fileupload';
-
+import { provideHttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
-
 import { AuthGuard } from './services/auth.guard';
-import { AuthenticationService } from './services/authentication.service';
 import { IdentityService } from './services/identity.service';
 import { PISiteService } from './services/piSite.service';
 import { ManageUserService } from './services/manageuser.service';
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { OAuthConfig } from './oauth.config';
 import { ExpDialogeComponent } from './expDialoge/expDialoge.component';
@@ -36,68 +27,23 @@ import { ReqPubSubMethodDialogeComponent } from './reqPubSubMethodDialoge/reqPub
 import { AuthorDialogeComponent } from './authorDialoge/authorDialoge.component'
 import { TermsDialogeComponent } from './termsDialoge/termsDialoge.component';
 import { CogbytesDialogueComponent } from './cogbytesDialogue/cogbytesDialogue.component'
-import { CogbytesUploadComponent } from './cogbytesUpload/cogbytesUpload.component'
 import { CogbytesAuthorDialogueComponent } from './cogbytesAuthorDialogue/cogbytesAuthorDialogue.component'
 import { CogbytesPIDialogeComponent } from './cogbytesPIDialoge/cogbytesPIDialoge.component'
-import { CogbytesSearchComponent } from './cogbytesSearch/cogbytesSearch.component'
-
-
 import { UploadResultDialogComponent } from './upload-result-dialog/upload-result-dialog.component';
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
 import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
-
-
-import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { NgxSpinnerModule } from 'ngx-spinner'
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
-//import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { OwlModule } from 'ngx-owl-carousel';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollService } from './shared/scroll.service';
-import { CountUpModule } from 'countup.js-angular2';
+import { CountUpModule } from 'ngx-countup';
+import { DropzoneModule } from 'ngx-dropzone-wrapper'
 
-import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
-import { RouterModule, Routes } from '@angular/router'
-import { GuidelineComponent } from './guideline/guideline.component';
-import { GuidelineDataLabComponent } from './guidelineDataLab/guidelineDataLab.component';
-import { DataExtractionComponent } from './data-extraction/data-extraction.component';
-import { DataLinkComponent } from './data-link/data-link.component';
-import { DataVisualizationComponent } from './data-visualization/data-visualization.component';
-import { MBDashboardComponent } from './mb-dashboard/mb-dashboard.component';
-import { PSDashboardComponent } from './pubScreen-dashboard/pubScreen-dashboard.component';
-import { GenomicsComponent } from './genomics/genomics.component';
-import { VideoTutorialComponent } from './video-tutorial/video-tutorial.component';
-import { ContactUsComponent } from './contact-us/contact-us.component';
-import { DownloadDsComponent } from './download-ds/download-ds.component';
-import { FormsComponent } from './forms/forms.component';
-import { TermsComponent } from './terms/terms.component';
-import { SearchExperimentComponent } from './search-experiment/search-experiment.component';
-import { PubScreenComponent } from './pubScreen/pubScreen.component';
 
 export function initOAuth(oAuthConfig: OAuthConfig): Function {
     return () => oAuthConfig.load();
 }
-
-const ROUTES: Routes = [
-    { path: '', component: HomeComponent },
-    { path: 'guidline', component: GuidelineComponent },
-    { path: 'guidline', component: GuidelineDataLabComponent },
-    { path: 'guidline', component: DataExtractionComponent },
-    { path: 'guidline', component: DataLinkComponent },
-    { path: 'guidline', component: DataVisualizationComponent },
-    { path: 'guidline', component: MBDashboardComponent },
-    { path: 'guidline', component: GenomicsComponent },
-    { path: 'guidline', component: VideoTutorialComponent },
-    { path: 'guidline', component: ContactUsComponent },
-    { path: 'guidline', component: DownloadDsComponent },
-    { path: 'guidline', component: FormsComponent },
-    { path: 'guidline', component: TermsComponent },
-    { path: 'guidline', component: SearchExperimentComponent },
-    { path: 'guidline', component: PubScreenComponent },
-];
 
 @NgModule({
     imports: [
@@ -106,20 +52,10 @@ const ROUTES: Routes = [
         BrowserAnimationsModule,
         SharedModule,
         OAuthModule.forRoot(),
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        Ng4LoadingSpinnerModule.forRoot(),
-        //MatSelectModule,
-        MatFormFieldModule,
-        //NgxMatSelectSearchModule,
-        FlexLayoutModule,
-        OwlModule,
+        NgxSpinnerModule,
         CountUpModule,
-        RouterModule.forRoot(ROUTES),
-        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+        FontAwesomeModule,
+        DropzoneModule,
 
 
     ],
@@ -148,13 +84,12 @@ const ROUTES: Routes = [
         CogbytesDialogueComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
-        //CogbytesUploadComponent,
-       
 
     ],
     exports: [
 
      ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         Title,
         OAuthConfig,
@@ -165,38 +100,12 @@ const ROUTES: Routes = [
             multi: true
         },
         AuthGuard,
-        AuthenticationService,
         IdentityService,
         PISiteService,
         ManageUserService,
         ScrollService,
+        provideHttpClient()
 
-    ],
-    entryComponents: [
-        ExpDialogeComponent,
-        PubscreenDialogeComponent,
-        AnimalDialogComponent,
-        PasswordDialogComponent,
-        UploadResultDialogComponent,
-        DeleteConfirmDialogComponent,
-        GenericDialogComponent,
-        SubExpDialogeComponent,
-        NotificationDialogComponent,
-        ReqTaskDialogeComponent,
-        ReqPIDialogeComponent,
-        ReqAgeDialogeComponent,
-        ReqGeneralDialogeComponent,
-        ReqPubTaskDialogeComponent,
-        ReqPubModelDialogeComponent,
-        ReqPubSubMethodDialogeComponent,
-        TermsDialogeComponent,
-        ReqMouseLineDialogeComponent,
-        AuthorDialogeComponent,
-        CogbytesDialogueComponent,
-        CogbytesUploadComponent,
-        CogbytesAuthorDialogueComponent,
-        CogbytesPIDialogeComponent,
-        CogbytesSearchComponent,
     ],
     bootstrap: [AppComponent]
 })

@@ -32,8 +32,9 @@
 
                             <mat-form-field>
                                 <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
-
-                                    <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect"></ngx-mat-select-search>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect"></ngx-mat-select-search>
+                                    </mat-option>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
                                         {{author.firstName}}-{{author.lastName}}
@@ -235,27 +236,27 @@
                         <br /><br />
 
                         <label>Title:</label> &nbsp; <span style="color:#696d70;">{{( row.title ==="") ?  "N/A" : row.title}}</span><br /><br />
-                        <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{( row.author =="") ?  "N/A" : row.author}}</span><br /><br />
-                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( row.keywords =="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>DOI:</label>&nbsp; <span style="color:#696d70;">{{( row.doi =="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;
-                        <label>Year:</label> &nbsp; <span style="color:#696d70;">{{( row.year =="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
-                        <label>Paper Type:</label> &nbsp; <span style="color:#696d70;">{{( row.paperType =="") ?  "N/A" : row.paperType}}</span><br /><br />
+                        <label>Authors:</label> &nbsp; <span style="color:#696d70;">{{( row.author ==="") ?  "N/A" : row.author}}</span><br /><br />
+                        <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( row.keywords ==="") ?  "N/A" : row.keywords}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>DOI:</label>&nbsp; <span style="color:#696d70;">{{( row.doi ==="") ?  "N/A" : row.doi}}</span>&nbsp; &nbsp; &nbsp;
+                        <label>Year:</label> &nbsp; <span style="color:#696d70;">{{( row.year ==="") ?  "N/A" : row.year}}</span> &nbsp; &nbsp; &nbsp;
+                        <label>Paper Type:</label> &nbsp; <span style="color:#696d70;">{{( row.paperType ==="") ?  "N/A" : row.paperType}}</span><br /><br />
 
                         <label style="color:#8D8E90"><b>Key Features:</b></label> <br /><br />
 
-                        <label>Task(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.task =="") ?  "N/A" : (_pubSCreenSearch.taskID==Null || _pubSCreenSearch.taskID.lenght == 0 || _pubSCreenSearch.taskID == "") ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Specie(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.species =="") ?  "N/A" : (_pubSCreenSearch.specieID==Null || _pubSCreenSearch.specieID.lenght == 0 || _pubSCreenSearch.specieID == "") ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sex:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.sex =="") ?  "N/A" : (_pubSCreenSearch.sexID==Null || _pubSCreenSearch.sexID.lenght == 0 || _pubSCreenSearch.sexID == "") ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Task(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.task ==="") ?  "N/A" : (_pubSCreenSearch.taskID.length === 0 ) ? row.task  : "<b>" + row.task + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Specie(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.species ==="") ?  "N/A" : (_pubSCreenSearch.specieID.length === 0 ) ? row.species  : "<b>" + row.species + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sex:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.sex ==="") ?  "N/A" : (_pubSCreenSearch.sexID.length === 0) ? row.sex  : "<b>" + row.sex + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Strain(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.strain =="") ?  "N/A" : (_pubSCreenSearch.strainID==Null || _pubSCreenSearch.strainID.lenght == 0 || _pubSCreenSearch.strainID == "") ? row.strain  : "<b>" + row.strain + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Disease Model(S):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.diseaseModel =="") ?  "N/A" : (_pubSCreenSearch.diseaseID==Null || _pubSCreenSearch.diseaseID.lenght == 0 || _pubSCreenSearch.diseaseID == "") ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> <br /><br />
+                        <label>Strain(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.strain ==="") ?  "N/A" : (_pubSCreenSearch.strainID.length === 0) ? row.strain  : "<b>" + row.strain + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Disease Model(S):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.diseaseModel ==="") ?  "N/A" : (_pubSCreenSearch.diseaseID.length === 0) ? row.diseaseModel  : "<b>" + row.diseaseModel + "</b>"'></span> <br /><br />
 
-                        <label>Brain Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.brainRegion =="") ?  "N/A" : (_pubSCreenSearch.regionID==Null || _pubSCreenSearch.regionID.lenght == 0 || _pubSCreenSearch.regionID == "") ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Sub-brain Region(S):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subRegion =="") ?  "N/A" : (_pubSCreenSearch.subRegionID==Null || _pubSCreenSearch.subRegionID.lenght == 0 || _pubSCreenSearch.subRegionID == "") ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Brain Region(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.brainRegion ==="") ?  "N/A" : (_pubSCreenSearch.regionID.length === 0) ? row.brainRegion  : "<b>" + row.brainRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Sub-brain Region(S):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.subRegion ==="") ?  "N/A" : (_pubSCreenSearch.subRegionID.length === 0) ? row.subRegion  : "<b>" + row.subRegion + "</b>"'></span> &nbsp; &nbsp; &nbsp;
 
-                        <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.cellType =="") ?  "N/A" : (_pubSCreenSearch.cellTypeID==Null || _pubSCreenSearch.cellTypeID.lenght == 0 || _pubSCreenSearch.cellTypeID == "") ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.method =="") ?  "N/A" : (_pubSCreenSearch.methodID==Null || _pubSCreenSearch.methodID.lenght == 0 || _pubSCreenSearch.methodID == "") ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
-                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.neuroTransmitter =="") ?  "N/A" : (_pubSCreenSearch.transmitterID==Null || _pubSCreenSearch.transmitterID.lenght == 0 || _pubSCreenSearch.transmitterID == "") ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br />
+                        <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.cellType ==="") ?  "N/A" : (_pubSCreenSearch.cellTypeID.length === 0) ? row.cellType  : "<b>" + row.cellType + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Method(s):</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.method ==="") ?  "N/A" : (_pubSCreenSearch.methodID.length === 0) ? row.method  : "<b>" + row.method + "</b>"'></span> &nbsp; &nbsp; &nbsp;
+                        <label>Neuro Transmitter:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='(row.neuroTransmitter ==="") ?  "N/A" : (_pubSCreenSearch.transmitterID.length === 0) ? row.neuroTransmitter  : "<b>" + row.neuroTransmitter + "</b>"'></span> <br />
 
                     </td>
                 </tr>

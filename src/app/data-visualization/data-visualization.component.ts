@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 declare var spotfire: any;
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
-import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../services/authentication.service';
 import { User } from '../models/user'
-import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
     selector: 'app-data-visualization',
@@ -16,7 +14,6 @@ import { filterQueryId } from '@angular/core/src/view/util';
 export class DataVisualizationComponent implements OnInit {
 
     selectedCogTaskValue: any = '';
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
     user: User;
 
@@ -45,10 +42,11 @@ export class DataVisualizationComponent implements OnInit {
     constructor(
         public dialog: MatDialog,
         private authenticationService: AuthenticationService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private router: Router,
         private route: ActivatedRoute) {
 
+        this.user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     }
 
     ngOnInit() {
@@ -65,11 +63,7 @@ export class DataVisualizationComponent implements OnInit {
 
     }
 
-    ngAfterViewInit() {
-
-    }
-
-    selectCogTaskChange(reload) {
+    selectCogTaskChange(reload : any) {
 
         this.spinnerService.show();
 
@@ -129,9 +123,9 @@ export class DataVisualizationComponent implements OnInit {
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
-        var configuration = 'mbusername=\"' + this.user.userName + '\";';
+        var configuration = 'mbusername="' + this.user.userName + '";';
 
-        var onError = function (errorCode, description) {
+        var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
         var onOpenedfunction = function () {

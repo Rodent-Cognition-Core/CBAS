@@ -1,310 +1,162 @@
-<ng4-loading-spinner [threshold]="300"> </ng4-loading-spinner>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)"
+             size="medium"
+             color="#fff"
+             type="ball-spin-clockwise"
+             [fullScreen]="true">
+</ngx-spinner>
 
-<mat-sidenav-container class="all-wrap" fullscreen>
+<mat-sidenav-container class="app-container">
+    <!-- Sidebar Navigation -->
+    <mat-sidenav #sidenav class="app-sidebar">
+        <div class="sidebar-logo">
+            <a routerLink="/home">
+                <img 
+                    src="../assets/images/MouseBytes Logo Positive - TEMP.png" 
+                    alt="Mousebytes Logo" 
+                    class="logo">
+            </a>
+        </div>
 
-    <mat-sidenav #sidenav style="background-color: #EDEDEE; ">
-        <div style="padding:10px;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 130px; "></a></div>
+        <nav class="sidebar-nav">
+            <!-- Main Navigation Sections -->
+            <ng-container *ngFor="let section of navigationSections">
+                <div class="nav-section">
+                    <h3>{{ section.title }}</h3>
+                    <ul>
+                        <li *ngFor="let item of section.items" [hidden]="item.visibilityCondition ? !item.visibilityCondition() : false">
+                            <a 
+                                [routerLink]="item.route" 
+                                [queryParams]="item.queryParams"
+                                [hidden]="item.visibilityCondition ? !item.visibilityCondition() : false">
+                                {{ item.name }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
 
-        <ul class="top-nav-ul" style="padding: 20px; line-height: 2; color: #354248; font-size: 14px; font-weight: 200%;">
-
-            <li><a style="text-decoration: underline;" routerLink="/home">Home</a></li>
-
-            <li>
-                <br />
-                <b>TOUCHSCREEN DATA</b>
+            <!-- External Links Section -->
+            <div class="nav-section ecosystem">
+                <h3>TSC ECOSYSTEM</h3>
                 <ul>
-                    <li><a style="color: #354248;" routerLink="/mb-dashboard">Dashboard</a></li>
-                    <li *ngFor="let navItem of navItems">
-                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                    </li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/experiment">Experiment</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/upload">Upload</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/animal-info">Animal</a></li>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" routerLink="/dashboard">Upload Log</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" routerLink="/manage-user">User Management</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <br />
-                <b>MOUSEBYTES+</b>
-                <ul>
-                    <li *ngIf="isAdmin || isUser"><a style="color: #354248;" href="/comp">Your Repositories</a></li>
-                    <li><a style="color: #354248;" href="/comp-search">Search Repositories</a></li>
-                    <li><a style="color: #354248;" href="/comp-search?showall=true">Repositories</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <br />
-                <b>PUBSCREEN</b>
-                <ul>
-                    <li><a style="color: #354248;" href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                    <li><a style="color: #354248;" href="/pubScreen">Add/Search Publications</a></li>
-                    <li *ngIf="isAdmin"><a style="color: #354248;" href="/pubScreen-queue">Queue</a></li>
-                </ul>
-            </li>
-
-            <li>
-                <br />
-                <b>TUTORIALS</b>
-                <ul>
-
-                    <li *ngFor="let navItem of navItemsTutorials">
-                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                    </li>
-
-                </ul>
-            </li>
-
-            <li>
-                <br />
-                <b>RESOURCES</b>
-                <ul>
-                    <li *ngFor="let navItem of navItemsResources">
-                        <a style="color: #354248;" [routerLink]="[navItem.route]">{{ navItem.name }}</a>
+                    <li *ngFor="let link of externalLinks">
+                        <a [href]="link.url" target="_blank">{{ link.name }}</a>
                     </li>
                 </ul>
-            </li>
-
-            <li>
-                <br />
-                <b>TSC ECOSYSTEM</b>
-                <ul>
-                    <li><a style="color: #354248;" href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-                    <li><a style="color: #354248;" href="https://touchscreencognition.org/forums" target="_blank">TOUCHSCREEN COMMUNITY</a></li>
-                    <li><a style="color: #354248;" href="https://mouse-trap.org/" target="_blank">MOUSETRAP</a></li>
-                </ul>
-
-            </li>
-        </ul>
-
+            </div>
+        </nav>
     </mat-sidenav>
 
-    <div class="page-wrap">
-        <header role="banner">
-            <mat-toolbar style="min-height:130px; background-color: white; z-index: 1000; position: fixed;">
-                <mat-toolbar-row class="top-bar" style="font-size: small; height: 30px; background-color: #8F55E0; color: white; padding-right: 30px; ">
-                    <div fxHide fxShow.xs="true">
-                        <button type="button"
-                                mat-icon-button
-                                (click)="sidenav.open()"
-                                title="Open sidenav">
-                            <mat-icon>menu</mat-icon>
-                        </button>
+    <div class="page-content">
+        <!-- Header -->
+        <header>
+            <mat-toolbar class="top-toolbar" style="background-color: #8F55E0; height: 30px;">
+                <!-- Mobile Menu Toggle -->
+                <div class="mobile-menu-toggle" *ngIf="isMobile">
+                    <button 
+                        mat-icon-button 
+                        (click)="sidenav.open()" 
+                        aria-label="Open navigation menu">
+                        <mat-icon>menu</mat-icon>
+                    </button>
+                </div>
+                <span class="fill-remaining-space"></span>
+                <!-- User Authentication Links -->
+                <div class="auth-links">
+                    <ng-container *ngIf="(signedIn | async) === false">
+                        <a mat-button routerLink="/account/signin" style="color: white;">Sign in</a>
+                        <a mat-button routerLink="/account/signup" style="color: white;">Sign up</a>
+                    </ng-container>
+                    <ng-container *ngIf="signedIn | async">
+                        <span class="user-greeting" style="color: white;">Hi {{ name }}!</span>
+                        <a mat-button routerLink="/profile" style="color: white;">Profile</a>
+                        <a mat-button (click)="signout()" style="color: white;">Sign out</a>
+                    </ng-container>
+                </div>
+            </mat-toolbar>
+
+            <!-- Responsive Logo and Navigation -->
+            <mat-toolbar class="logo-toolbar" style="height:100px;">
+                <div class="logo-container" [ngSwitch]="true">
+                    <!-- Mobile Logo -->
+                    <div *ngSwitchCase="isMobile" class="mobile-logo">
+                        <a routerLink="/home" class="logo">
+                            <img 
+                                src="../assets/images/MouseBytes Logo Positive - TEMP.png" 
+                                alt="Mousebytes Logo"
+                                style="width: 180px; vertical-align:middle">
+                        </a>
                     </div>
-                    <span class="fill-remaining-space"></span>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signin" *ngIf="(signedIn | async) === false">Sign in</a>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/account/signup" *ngIf="(signedIn | async) === false">Sign up</a>
-                    <span *ngIf="!!name" style="color: white">Hi {{ name }}!&nbsp;&nbsp;</span>
-                    <a mat-button class="mat-small" style="color: white" routerLink="/profile" *ngIf="signedIn | async">Profile</a>
-                    <a mat-button class="mat-small" style="color: white" (click)="signout()" *ngIf="signedIn | async">Sign out</a>
-                </mat-toolbar-row>
-                <mat-toolbar-row style="height: 100px; background-color: #EDEDEE; white-space: normal;">
-                    <!--xs menu-->
-                    <div fxLayout="row" fxHide.gt-xs="true" fxShow.xs="true" style="width: 100%;">
-                        <ul class="top-nav-ul" style="width: 100%; text-align: center;">
-                            <span><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 200px; vertical-align:middle"></a></span>
-                        </ul>
+                    <!-- Desktop Logo and Navigation -->
+                    <div *ngSwitchCase="isDesktop || isTablet" class="desktop-nav">
+                        <a routerLink="/home" class="logo">
+                            <img 
+                                src="../assets/images/MouseBytes Logo Positive - TEMP.png" 
+                                alt="Mousebytes Logo"
+                                style="vertical-align:middle">
+                        </a>
+                        <!-- Desktop Horizontal Navigation -->
+                        <nav class="horizontal-nav">
+                            <ng-container *ngFor="let section of navigationSections">
+                                <div class="nav-dropdown">
+                                    <span>{{ section.title }}</span>
+                                    <ul>
+                                        <li *ngFor="let item of section.items" [hidden]="item.visibilityCondition ? !item.visibilityCondition() : false">
+                                            <a 
+                                                [routerLink]="item.route"
+                                                [queryParams]="item.queryParams"
+                                                [hidden]="item.visibilityCondition ? !item.visibilityCondition() : false">
+                                                {{ item.name }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+                            <div class="nav-dropdown">
+                                <ng-container *ngFor="let section of externalLinks">
+                                    <span style="cursor: pointer; border: 0">{{ section.title }}</span>
+                                    <ul>
+                                        <li *ngFor="let link of section.items">
+                                            <a [href]="link.url" target="_blank">{{ link.name }}</a>
+                                        </li>
+                                    </ul>
+                                </ng-container>
+                            </div>
+                        </nav>
                     </div>
-                    <!--sm menu-->
-                    <div class="naviMenu" fxLayout="row" fxHide.gt-sm="true" fxHide.lt-sm="true" fxShow.sm="true" fxShow.md="true" style="display: flex; align-items: center;">
-                        <ul class="top-nav-ul-sm" style="float: left; padding: 0 30px 0 0;">
-                            <span style="padding:0 0 0 0;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png"  alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 120px; vertical-align:middle;"></a></span>
-                        </ul>
-
-                        <ul class="top-nav-ul-sm" style="float: left;">
-
-                            <li>
-                                Touchscreen Data
-                                <ul>
-                                    <li><a routerLink="/mb-dashboard">Dashboard</a></li>
-                                    <li *ngFor="let navItem of navItems">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                    <!--<li *ngIf="isAdmin"><a routerLink="/pubScreen">PUBSCREEN</a></li>-->
-                                </ul>
-                            </li>
-
-                            <li>
-                                MOUSEBYTES+
-                                <ul>
-                                    <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
-                                    <li><a routerLink="/comp-search">Search Repositories</a></li>
-                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <br />
-                                <b>PUBSCREEN</b>
-                                <ul>
-                                    <li><a href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                TUTORIALS
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsTutorials">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                RESOURCES
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsResources">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                TSC ECOSYSTEM
-                                <ul>
-                                    <li><a href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-                                    <li><a href="https://touchscreencognition.org/forums" target="_blank">TOUCHSCREEN COMMUNITY</a></li>
-                                    <li><a href="https://mouse-trap.org/" target="_blank">MOUSETRAP</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </div>
-
-                    <!--other sizes menu-->
-                    <div class="naviMenu menuDiv" ngClass.lg="menuDivLessPadding" fxHide.sm="true" fxHide.xs="true" fxHide.md="true" style="display: flex; align-items: center;">
-                        <ul class="top-nav-ul" style="float: left;">
-                            <span style="padding:0 30px 0 0;"><a routerLink="/home" style="cursor: pointer; border: 0"><img src="../assets/images/MouseBytes Logo Positive - TEMP.png" alt="Mousebytes Logo" title="Mousebytes Logo" style="width: 180px; vertical-align:middle"></a></span>
-                        </ul>
-                        <ul class="top-nav-ul" style="float: left;" fxLayout="row">
-
-                            <li>
-                                Touchscreen Data
-                                <ul>
-                                    <li><a routerLink="/mb-dashboard">Dashboard</a></li>
-                                    <li *ngFor="let navItem of navItems">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/experiment">Experiment</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/upload">Upload</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a href="/animal-info">Animal</a></li>
-                                    <li *ngIf="isAdmin || isUser"><a routerLink="/dashboard">Upload Log</a></li>
-                                    <li *ngIf="isAdmin"><a routerLink="/manage-user">User Management</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                MOUSEBYTES+
-                                <ul>
-                                    <li *ngIf="isAdmin || isUser"><a href="/comp">Your Repositories</a></li>
-                                    <li><a routerLink="/comp-search">Search Repositories</a></li>
-                                    <li><a routerLink="/comp-search" [queryParams]="{showall: 'true'}">Repositories</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                PUBSCREEN
-                                <ul>
-                                    <li><a href="/pubScreen-dashboard">PubScreen Dashboard</a></li>
-                                    <li><a href="/pubScreen">Add/Search Publications</a></li>
-                                    <li *ngIf="isAdmin"><a href="/pubScreen-queue">Queue</a></li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                TUTORIALS
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsTutorials">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                RESOURCES
-                                <ul>
-                                    <li *ngFor="let navItem of navItemsResources">
-                                        <a [routerLink]="[navItem.route]">{{ navItem.name }}</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
-                            <li>
-                                TSC ECOSYSTEM
-                                <ul>
-                                    <li><a href="https://touchscreencognition.org/" target="_blank">TOUCHSCREEN COGNITION</a></li>
-                                    <li><a href="https://touchscreencognition.org/forums" target="_blank">TOUCHSCREEN COMMUNITY</a></li>
-                                    <li><a href="https://mouse-trap.org/" target="_blank">MOUSETRAP</a></li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </div>
-                </mat-toolbar-row>
-
+                </div>
             </mat-toolbar>
         </header>
-        <main id="contentMain" class="content inner-sidenav-content">
+
+        <!-- Main Content Area -->
+        <main id="contentMain" class="main-content">
             <router-outlet (activate)="onActivate($event)"></router-outlet>
         </main>
-        <footer *ngIf="showFooter" class="footer" style="background-image:url(../assets/images/western_overlay.jpg); border-top: 1px solid grey;background-size: cover;">
-            <div style="text-align: center;">
-                <br />
-                <br />
-                <!--<span><img src="../assets/images/western.png" style="min-width: 300px; width: 300px; margin-left: 20px;"></span>-->
 
-                <p class="footer-text" style="text-align:center; color: #d7d7d7; font-size: 90%; line-height: 20pt;">
-                    <span>
-                        Tim Bussey and Lisa Saksida have established a series of targeted cognitive tests for animals, administered via touchscreen within a custom environment
-                        known as the "Bussey-Saksida touchscreen chamber". Cambridge Enterprise, the technology transfer office of the University of Cambridge, supported
-                        commercialization of the Bussey-Saksida chamber, culminating in a license to Campden Instruments. Any financial compensation received from
-                        commercialization of the technology is fully invested in further touchscreen development and/or maintenance.
-                    </span>
-
+        <!-- Footer -->
+        <footer *ngIf="showFooter" class="app-footer" style="background-image:url(../assets/images/western_overlay.jpg); border-top: 1px solid grey;background-size: cover;">
+            <div class="footer-content">
+                <p class="about-text">
+                    Tim Bussey and Lisa Saksida have established a series of targeted cognitive tests for animals, 
+                    administered via touchscreen within a custom environment known as the "Bussey-Saksida touchscreen chamber". 
+                    Cambridge Enterprise, the technology transfer office of the University of Cambridge, supported 
+                    commercialization of the Bussey-Saksida chamber, culminating in a license to Campden Instruments. 
+                    Any financial compensation received from commercialization of the technology is fully invested 
+                    in further touchscreen development and/or maintenance.
                 </p>
-                <br />
-                <br />
-                <br />
-                <!--<br />
-                <br />-->
-                <!--<br />
-                <br />
-                <br />
-                <br />
-                <br />-->
+
+                <div class="footer-links">
+                    <p>
+                        &copy; 2018 Western University | 
+                        <a href="https://mousebytes.ca/terms" target="_blank">Terms of Service</a>
+                    </p>
+                    <p>
+                        Research data is distributed under 
+                        <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 license</a>
+                    </p>
+                </div>
             </div>
-
-            <p style="padding-left: 20px; color: #d7d7d7; text-align:center">
-                <span>
-
-                    &copy; 2018 Western University | <a style="color: #3498DB" href="https://mousebytes.ca/terms" target="_blank">Terms of Service</a> <br />
-                    Research data is distributed under Creative Commons license | <a style="color: #3498DB" href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 license</a>
-
-                </span>
-            </p>
-            <br />
-
         </footer>
-
-
-        <!--<span *ngIf="router.url != '/home'">
-            <br />
-            <br />
-            <br />
-        </span>-->
     </div>
 </mat-sidenav-container>
 

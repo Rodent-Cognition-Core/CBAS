@@ -1,22 +1,15 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/Observable';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { AuthenticationService } from '../services/authentication.service';
-import { AnimalService } from '../services/animal.service';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { UploadService } from '../services/upload.service';
-
 import { ViewChild } from '@angular/core'
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
-import { SubExperiment } from '../models/subexperiment';
-import { Services } from '@angular/core/src/view';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
 
 @Component({
@@ -26,6 +19,9 @@ import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from 
 
 })
 export class UploadComponent implements OnInit {
+
+    @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent;
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective;
 
     //selectedExpValue: string;
     experimentName: string;
@@ -47,46 +43,53 @@ export class UploadComponent implements OnInit {
 
     uploadConfirmShowed: boolean = false;
 
-    // DropZone
-    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent;
-    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective;
+
 
     //fileToUpload: File = null;
     public type: string = 'component';
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
 
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
-
-    //DropZone
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
-        autoReset: null,
-        errorReset: null,
-        cancelReset: null,
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
         timeout: 36000000,
-        headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+        headers: { }
     };
 
     constructor(
         private oAuthService: OAuthService,
-        private authenticationService: AuthenticationService,
         public dialog: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
+        public dialogRefDelFile: MatDialog
 
     ) {
+        this.experimentName = '';
+        this.subExpName = '';
+        this.drugName = '';
+        this.interventionDescription = '';
+        this.isIntervention = false;
+        this.isDrug = false;
+        this.ageInMonth = '';
+        this.expTask = '';
+        this.experimentID = null;
+        this.subExpID = null;
+        this.sessionNameVal = null;
+        this.config.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
 
     }
 
     ngOnInit() {
 
-        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
 
     }
 
-    SelectedExpChanged(experiment) {
+    SelectedExpChanged(experiment : any) {
 
         //console.log(experiment);
         this.experimentName = experiment.expName;
@@ -94,13 +97,13 @@ export class UploadComponent implements OnInit {
         this.expTask = experiment.taskName;
         this.expTaskID = experiment.taskID;
 
-        this.uploadService.getSessionInfo().subscribe(data => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
         this.subExpID = null;
         this.sessionNameVal = null;
 
     }
 
-    SelectedSubExpChanged(subExperiment) {
+    SelectedSubExpChanged(subExperiment : any) {
         //console.log(subExperiment);
         this.subExpID = subExperiment.subExpID;
         this.drugName = subExperiment.drugName;
@@ -115,62 +118,56 @@ export class UploadComponent implements OnInit {
 
         switch (this.expTaskID) {
             case 2: { // 5-choice
-                this.SessionList = this.SessionList.filter((x => x.taskID === 1 || x.taskID === 2));
+                this.SessionList = this.SessionList.filter(((x : any) => x.taskID === 1 || x.taskID === 2));
                 //console.log(this.SessionList);
                 break;
 
             }
             case 3: { // PD
-                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 3);
+                this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 3);
                 break;
             }
             case 4: { // PAL
-                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 4);
+                this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 4);
                 break;
             }
             case 5: {  // LD
-                this.SessionList = this.SessionList.filter(x => x.taskID === 1 || x.taskID === 5);
+                this.SessionList = this.SessionList.filter((x: any) => x.taskID === 1 || x.taskID === 5);
                 break;
             }
             case 9: { //PR
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 9) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 9) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
             case 10: { //PRL
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 10) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 10) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
             case 11: { //CPT
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 11) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
             case 12: { //VMCL
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 12));
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 12));
                 break;
 
             }
             case 13: { // Autoshaping
 
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
-                break;
-
-            }
-            case 13: { // Autoshaping
-
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 13) && x.sessionName != 'Initial_Touch' && x.sessionName != 'Must_Touch' && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
             case 14: { //Extinction
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 14));
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 14));
                 break;
 
             }
             case 15: { //Long Sequence
-                this.SessionList = this.SessionList.filter(x => (x.taskID === 1 || x.taskID === 15) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
+                this.SessionList = this.SessionList.filter((x: any) => (x.taskID === 1 || x.taskID === 15) && x.sessionName != 'Must_Initiate' && x.sessionName != 'Punish_Incorrect');
                 break;
 
             }
@@ -185,14 +182,14 @@ export class UploadComponent implements OnInit {
     }
     // *********************DropZone functions******************************
 
-    onAddedFile(data): void {
+    onAddedFile(_data : any): void {
 
         if (!this.uploadConfirmShowed) {
 
 
             this.uploadConfirmShowed = true;
 
-            this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+            const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
                 width: '700px',
                 disableClose: true
             });
@@ -200,20 +197,20 @@ export class UploadComponent implements OnInit {
             // Based on Subexp features, generate the confirmation message
             if (this.isIntervention && this.isDrug) {
 
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.drugName + "</b>?";
             }
 
             if (this.isIntervention && !this.isDrug) {
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.interventionDescription + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b> and intervention <b> " + this.interventionDescription + "</b>?";
             }
 
             if (!this.isIntervention && !this.isDrug) {
-                this.dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b>?";
+                dialogRefDelFile.componentInstance.confirmMessage = "Are you sure you want to upload <b>" + this.sessionNameVal + "</b> XML files to sub-exp <b>" + this.subExpName + "</b> with age: <b>" + this.ageInMonth + "</b>?";
             }
 
 
 
-            this.dialogRefDelFile.afterClosed().subscribe(result => {
+            dialogRefDelFile.afterClosed().subscribe(result => {
                 if (result) {
 
                     if (this.uploadErrorFileType != "") {
@@ -226,13 +223,18 @@ export class UploadComponent implements OnInit {
                     }
                     this.uploadErrorFileType = "";
 
-                    this.componentRef.directiveRef.dropzone().processQueue();
+                    if (this.componentRef?.directiveRef?.dropzone) {
+                        this.componentRef.directiveRef.dropzone().processQueue();
+                    }
                 } else {
-                    this.componentRef.directiveRef.dropzone().removeAllFiles();
+                    if (this.componentRef?.directiveRef?.dropzone) {
+                        this.componentRef.directiveRef.dropzone().removeAllFiles();
+                    }
                 }
 
                 this.uploadConfirmShowed = false;
-                this.dialogRefDelFile = null;
+                //this.dialogRefDelFile = null;
+                dialogRefDelFile.close();
             });
 
 
@@ -240,7 +242,7 @@ export class UploadComponent implements OnInit {
 
     }
 
-    onQueueComplete(args: any): void {
+    onQueueComplete(_args: any): void {
 
         if (this.uploadErrorServer != "") {
             alert(this.uploadErrorServer);
@@ -262,7 +264,9 @@ export class UploadComponent implements OnInit {
         if (this.type === 'directive') {
             this.directiveRef.reset();
         } else {
-            this.componentRef.directiveRef.reset();
+            if (this.componentRef?.directiveRef?.reset) {
+                this.componentRef.directiveRef.reset();
+            }
         }
 
     }
@@ -280,7 +284,7 @@ export class UploadComponent implements OnInit {
         //console.log('onUploadError:', args);
     }
 
-    public maxfilesexceeded(args: any) {
+    public maxfilesexceeded(_args: any) {
 
         //console.log('max exceeded!');
     }
@@ -292,7 +296,7 @@ export class UploadComponent implements OnInit {
         if (this.proceedUpload == true) {
 
 
-            let dialogref = this.dialog.open(UploadResultDialogComponent, {
+            let _dialogref = this.dialog.open(UploadResultDialogComponent, {
                 height: '900px',
                 width: '850px',
                 data: { uploadResult: args[1], experimentName: this.experimentName } // data.uploadResult  & data.experimentName should be sent to UploadResultDialogComponent 
@@ -308,13 +312,13 @@ export class UploadComponent implements OnInit {
     }
 
 
-    onSending(data): void {
+    onSending(data : any): void {
 
         this.proceedUpload = true;
         this.spinnerService.show();
 
 
-        var obj = this.SessionList.filter(x => x.sessionName === this.sessionNameVal);
+        var obj = this.SessionList.filter((x : any) => x.sessionName === this.sessionNameVal);
         var sessionID = obj[0].id
 
 

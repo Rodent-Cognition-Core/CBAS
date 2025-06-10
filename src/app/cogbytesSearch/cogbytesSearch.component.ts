@@ -1,31 +1,22 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subject } from 'rxjs/Subject';
-import { take, takeUntil } from 'rxjs/operators';
-import { ManageUserService } from '../services/manageuser.service';
-import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
-import { AuthorDialogeComponent } from '../authorDialoge/authorDialoge.component';
-import { IdentityService } from '../services/identity.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
+import { ReplaySubject ,  Subject, Subscription } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
-import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.component';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
 
 
 @Component({
-    selector: 'app-cogbytesSearch',
+    selector: 'app-cogbytes-search',
     templateUrl: './cogbytesSearch.component.html',
     styleUrls: ['./cogbytesSearch.component.scss']
 })
-export class CogbytesSearchComponent implements OnInit {
+export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     readonly DATASET = 1;
 
@@ -46,12 +37,10 @@ export class CogbytesSearchComponent implements OnInit {
     interventionModel: any;
 
     yearFromSearchModel: any;
-    yearToSearchModel: any;
-    authorMultiSelect: any;
 
     fileTypeModel: any;
 
-    panelOpenState = false;
+    panelOpenState: boolean;
 
     // Definiing List Variables
     repList: any;
@@ -79,35 +68,64 @@ export class CogbytesSearchComponent implements OnInit {
     isUser: boolean;
     isFullDataAccess: boolean;
 
-    _cogbytesSearch = new CogbytesSearch;
+    _cogbytesSearch: CogbytesSearch;
     isSearch: boolean;
     filteredSearchList: any;
 
-    //yearFrom = new FormControl('', []);
-    yearTo = new FormControl('', []);
+    //yearFrom = new UntypedFormControl('', []);
+    yearTo: UntypedFormControl;
 
-    public repMultiFilterCtrl: FormControl = new FormControl();
+    public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    public piMultiFilterCtrl: FormControl = new FormControl();
+    public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    piMultiSelect: any;
-    repMultiSelect: any;
 
     showAll: boolean;
+
+    private subscription: Subscription = new Subscription();
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
-    dialogRef: MatDialogRef<DeleteConfirmDialogComponent>;
 
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
-        private route: ActivatedRoute, ) {
+        private spinnerService: NgxSpinnerService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private fb: UntypedFormBuilder,
+        public dialogRef: MatDialog) {
+
+        this._cogbytesSearch = {
+            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
+        }
+        this.checkYear = false;
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.isSearch = false;
+        this.showAll = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = undefined;
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.interventionModel = '';
+        this.panelOpenState = false;
+        this.yearTo = fb.control('')
         this.route.queryParams.subscribe(params => {
             this.showAll = false;
             if (params['showall'] != null && params['showall'] == 'true') {
@@ -125,13 +143,13 @@ export class CogbytesSearchComponent implements OnInit {
             this.GetRepositories();
             this.GetAuthorList();
             this.GetPIList();
-            this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
-            this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
-            this.cogbytesService.getSpecies().subscribe(data => { this.specieList = data; });
-            this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
-            this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
-            this.cogbytesService.getGenos().subscribe(data => { this.genoList = data; });
-            this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+            this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
         }
 
 
@@ -145,7 +163,13 @@ export class CogbytesSearchComponent implements OnInit {
 
         this.isSearch = false;
 
-
+        this.subscription.add(
+            this.router.events
+              .pipe(filter(event => event instanceof NavigationEnd))
+              .subscribe(() => {
+                this.resetState();
+              })
+          );
 
     }
 
@@ -154,8 +178,61 @@ export class CogbytesSearchComponent implements OnInit {
         this._onDestroy.complete();
     }
 
+    resetState(): void {
+        this._cogbytesSearch = {
+            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
+        }
+        this.checkYear = false;
+        this.isAdmin = false;
+        this.isUser = false;
+        this.isFullDataAccess = false;
+        this.isSearch = false;
+        this.authorModel= [];
+        this.piModel = [];
+        this.titleModel = [];
+        this.yearFromSearchModel = undefined;
+        this.fileTypeModel = [];
+        this.cognitiveTaskModel = [];
+        this.specieModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genoModel = [];
+        this.ageModel = [];
+        this.doiModel = '';
+        this.keywordsModel = '';
+        this.interventionModel = '';
+        this.panelOpenState = false;
+        this.yearTo.setValue('');
+        if (this.showAll == true) {
+            this.ShowRepositories();
+        } else {
+            this.GetRepositories();
+            this.GetAuthorList();
+            this.GetPIList();
+            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+            this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+        }
+
+
+
+        this.isAdmin = this.authenticationService.isInRole("administrator");
+        this.isUser = this.authenticationService.isInRole("user");
+        this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+        this.yearList = this.GetYear(1970).sort().reverse();
+
+        this.interventionModel = "All";
+
+        this.isSearch = false;
+    }
+
     // Function definition to get list of years
-    GetYear(startYear) {
+    GetYear(startYear: number) {
         var currentYear = new Date().getFullYear(), years = [];
         startYear = startYear || 1980;
         while (startYear <= currentYear) {
@@ -166,7 +243,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     GetRepositories() {
 
-        this.cogbytesService.getAllRepositories().subscribe(data => {
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => {
             this.repList = data;
 
             // load the initial expList
@@ -210,7 +287,7 @@ export class CogbytesSearchComponent implements OnInit {
 
         // filter the rep
         this.filteredRepList.next(
-            this.repList.filter(x => x.title.toLowerCase().indexOf(searchRep) > -1)
+            this.repList.filter((x : any) => x.title.toLowerCase().indexOf(searchRep) > -1)
         );
     }
 
@@ -218,7 +295,7 @@ export class CogbytesSearchComponent implements OnInit {
     GetAuthorList() {
 
 
-        this.cogbytesService.getAuthor().subscribe(data => {
+        this.cogbytesService.getAuthor().subscribe((data: any) => {
             this.authorList = data;
 
             // load the initial expList
@@ -238,7 +315,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe(data => {
+        this.cogbytesService.getPI().subscribe((data: any) => {
             this.piList = data;
 
             // load the initial expList
@@ -273,7 +350,7 @@ export class CogbytesSearchComponent implements OnInit {
 
         // filter the PI
         this.filteredPIList.next(
-            this.piList.filter(x => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+            this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
         );
     }
 
@@ -295,7 +372,7 @@ export class CogbytesSearchComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
@@ -303,9 +380,9 @@ export class CogbytesSearchComponent implements OnInit {
 
         if
             (
-            this.authorModel == null && this.piModel == null && this.titleModel == null && this.keywordsModel == null
-            && this.doiModel == null && this.cognitiveTaskModel == null && this.specieModel == null && this.sexModel == null
-            && this.strainModel == null && this.genoModel == null && this.ageModel == null
+            this.authorModel.length == 0 && this.piModel.length == 0 && this.titleModel.length == 0 && this.keywordsModel == ''
+            && this.doiModel == '' && this.cognitiveTaskModel.length == 0 && this.specieModel.length == 0 && this.sexModel.length == 0
+            && this.strainModel.length == 0 && this.genoModel.length == 0 && this.ageModel.length == 0
         ) {
             return true;
         }
@@ -314,7 +391,7 @@ export class CogbytesSearchComponent implements OnInit {
 
     }
 
-    selectYearToChange(yearFromVal, yearToVal) {
+    selectYearToChange(yearFromVal : number, yearToVal : number) {
         //console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
 
@@ -352,13 +429,13 @@ export class CogbytesSearchComponent implements OnInit {
         this._cogbytesSearch.ageID = this.ageModel;
 
         this._cogbytesSearch.yearFrom = this.yearFromSearchModel;
-        this._cogbytesSearch.yearTo = this.yearToSearchModel;
+        this._cogbytesSearch.yearTo = (this.yearTo.value === '') ? undefined : +this.yearTo.value
 
         this._cogbytesSearch.intervention = this.interventionModel;
 
         this._cogbytesSearch.fileTypeID = this.fileTypeModel;
 
-        //console.log(this._cogbytesSearch);
+        console.log(this._cogbytesSearch);
 
         this.cogbytesService.searchRepositories(this._cogbytesSearch).subscribe(data => {
 
@@ -370,15 +447,15 @@ export class CogbytesSearchComponent implements OnInit {
 
     // Function to filter search list based on repository
     getFilteredSearchList(repID: number) {
-        return this.searchResultList.filter(x => x.repID == repID);
+        return this.searchResultList.filter((x: any) => x.repID == repID);
     }
 
     // Function for getting string of repository authors
     getRepAuthorString(rep: any) {
         let authorString: string = "";
         for (let id of rep.authourID) {
-            let firstName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].firstName;
-            let lastName: string = this.authorList[this.authorList.map(function (x) { return x.id }).indexOf(id)].lastName;
+            let firstName: string = this.authorList[this.authorList.map(function (x: any) { return x.id }).indexOf(id)].firstName;
+            let lastName: string = this.authorList[this.authorList.map(function (x: any) { return x.id }).indexOf(id)].lastName;
             authorString += firstName + "-" + lastName + ", ";
         }
         return authorString.slice(0, -2);
@@ -388,13 +465,13 @@ export class CogbytesSearchComponent implements OnInit {
     getRepPIString(rep: any) {
         let PIString: string = "";
         for (let id of rep.piid) {
-            PIString += this.piList[this.piList.map(function (x) { return x.id }).indexOf(id)].piFullName + ", ";
+            PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].piFullName + ", ";
         }
         return PIString.slice(0, -2);
     }
 
     getFileType(upload: any) {
-        let fileType: string = this.fileTypeList[this.fileTypeList.map(function (x) { return x.id }).indexOf(upload.fileTypeID)].fileType;
+        let fileType: string = this.fileTypeList[this.fileTypeList.map(function (x: any) { return x.id }).indexOf(upload.fileTypeID)].fileType;
         return fileType;
     }
 
@@ -402,7 +479,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadTaskString(upload: any) {
         let taskString: string = "";
         for (let id of upload.taskID) {
-            taskString += this.taskList[this.taskList.map(function (x) { return x.id }).indexOf(id)].task + ", ";
+            taskString += this.taskList[this.taskList.map(function (x: any) { return x.id }).indexOf(id)].task + ", ";
         }
         return taskString.slice(0, -2);
     }
@@ -411,7 +488,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadSpeciesString(upload: any) {
         let speciesString: string = "";
         for (let id of upload.specieID) {
-            speciesString += this.specieList[this.specieList.map(function (x) { return x.id }).indexOf(id)].species + ", ";
+            speciesString += this.specieList[this.specieList.map(function (x: any) { return x.id }).indexOf(id)].species + ", ";
         }
         return speciesString.slice(0, -2);
     }
@@ -420,7 +497,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadSexString(upload: any) {
         let sexString: string = "";
         for (let id of upload.sexID) {
-            sexString += this.sexList[this.sexList.map(function (x) { return x.id }).indexOf(id)].sex + ", ";
+            sexString += this.sexList[this.sexList.map(function (x: any) { return x.id }).indexOf(id)].sex + ", ";
         }
         return sexString.slice(0, -2);
     }
@@ -429,7 +506,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadStrainString(upload: any) {
         let strainString: string = "";
         for (let id of upload.strainID) {
-            strainString += this.strainList[this.strainList.map(function (x) { return x.id }).indexOf(id)].strain + ", ";
+            strainString += this.strainList[this.strainList.map(function (x: any) { return x.id }).indexOf(id)].strain + ", ";
         }
         return strainString.slice(0, -2);
     }
@@ -438,7 +515,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadGenoString(upload: any) {
         let genoString: string = "";
         for (let id of upload.genoID) {
-            genoString += this.genoList[this.genoList.map(function (x) { return x.id }).indexOf(id)].genotype + ", ";
+            genoString += this.genoList[this.genoList.map(function (x: any) { return x.id }).indexOf(id)].genotype + ", ";
         }
         return genoString.slice(0, -2);
     }
@@ -447,7 +524,7 @@ export class CogbytesSearchComponent implements OnInit {
     getUploadAgeString(upload: any) {
         let ageString: string = "";
         for (let id of upload.ageID) {
-            ageString += this.ageList[this.ageList.map(function (x) { return x.id }).indexOf(id)].ageInMonth + ", ";
+            ageString += this.ageList[this.ageList.map(function (x: any) { return x.id }).indexOf(id)].ageInMonth + ", ";
         }
         return ageString.slice(0, -2);
     }
@@ -464,8 +541,9 @@ export class CogbytesSearchComponent implements OnInit {
 
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                const _win = window.navigator as any
+                if (_win.msSaveBlob) {
+                    csvURL = _win.msSaveBlob(fileData, file.userFileName);
                 } else {
                     csvURL = window.URL.createObjectURL(fileData);
                 }
@@ -485,7 +563,7 @@ export class CogbytesSearchComponent implements OnInit {
                 });
     }
 
-    getLinkURL(rep) {
+    getLinkURL(rep : any) {
         return "http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid;
     }
 }

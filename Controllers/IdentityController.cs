@@ -30,9 +30,6 @@ namespace AngularSPAWebAPI.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
-
-
-
         public IdentityController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
@@ -97,7 +94,7 @@ namespace AngularSPAWebAPI.Controllers
             {
                 await addToRole(model.username, "user");
                 await addClaims(model.username);
-                _piSiteService.InsertPiSiteIds(user.Id, model.selectedPiSiteIds);
+                await _piSiteService.InsertPiSiteIdsAsync(user.Id, model.selectedPiSiteIds);
 
                 // here should be a good place to send email.
                 var strBody = $@"Hi Admin, <br /><br />
@@ -144,24 +141,6 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(result);
             
         }
-
-        //[HttpPost("ChangePassword")]
-        //public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
-        //{
-        //    var user = GetCurrentUser();
-        //    var userEmail = user.Result.UserName;
-        //    // var userID = user.Result.Id;
-
-        //    var appUser = await _userManager.FindByNameAsync(userEmail);
-        //    if (appUser == null)
-        //    {
-        //        return new JsonResult("Invalid Email!");
-        //    }
-        //    var result = await _userManager.ChangePasswordAsync(appUser, model.currentPassword, model.newPassword);
-
-        //    return new JsonResult(result);
-
-        //}
 
         /// <summary>
         /// Deletes a user.

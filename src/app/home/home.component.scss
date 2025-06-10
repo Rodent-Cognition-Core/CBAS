@@ -3,10 +3,11 @@
 .home-card-container {
     display: flex;
     justify-content: center;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
     mat-card {
         width: 500px;
-
+        /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
         mat-card-title {
             text-align: center;
             color: $blue;
@@ -190,131 +191,6 @@ header.section-header {
 .thumbnail-image{
     width: 300px;
     height: 100px;
-}
-
-/* 
- * 	Core Owl Carousel CSS File
- *	v1.3.3
- */
-
-/* clearfix */
-.owl-carousel .owl-wrapper:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
-/* display none until init */
-.owl-carousel {
-    display: none;
-    position: relative;
-    width: 100%;
-    -ms-touch-action: pan-y;
-}
-
-.owl-carousel .owl-wrapper {
-    display: none;
-    position: relative;
-    -webkit-transform: translate3d(0px, 0px, 0px);
-}
-
-.owl-carousel .owl-wrapper-outer {
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.owl-carousel .owl-wrapper-outer.autoHeight {
-    -webkit-transition: height 500ms ease-in-out;
-    -moz-transition: height 500ms ease-in-out;
-    -ms-transition: height 500ms ease-in-out;
-    -o-transition: height 500ms ease-in-out;
-    transition: height 500ms ease-in-out;
-}
-
-.owl-carousel .owl-item {
-    float: left;
-}
-
-.owl-nav .owl-page,
-.owl-nav div {
-    cursor: pointer;
-}
-
-.owl-nav {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-
-/* fix */
-.owl-carousel .owl-wrapper,
-.owl-carousel .owl-item {
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -ms-backface-visibility: hidden;
-    -webkit-transform: translate3d(0,0,0);
-    -moz-transform: translate3d(0,0,0);
-    -ms-transform: translate3d(0,0,0);
-}
-
-.arrow-up-left {
-    position: relative;
-    top: -15px;
-    left: -5px;
-}
-
-.arrow-up-right {
-    position: relative;
-    top: -18px;
-    left: 0px;
-}
-
-
-.owl-theme .owl-nav div {
-    padding: 5px 9px;
-}
-
-.owl-theme i {
-    margin-top: 2px;
-}
-
-.owl-theme .owl-nav {
-    position: absolute !important;
-    border-radius: 50%;
-    border-style: solid;
-    border-width: 2px;
-    display: block;
-    font-size: 40px !important;
-    height: 28px;
-    line-height: 28px;
-    padding: 20px;
-    text-align: center;
-    width: 28px;
-    border-color: #f29100;
-    color: #f29100 !important;
-    background-color: transparent;
-}
-
-.owl-carousel .owl-nav button.owl-prev
- {
-    left: 0px;
-    top: 200px;
-    width: 50px;
-    height: 50px;
-}
-
-.owl-carousel .owl-nav button.owl-next {
-    right: 0px;
-    top: 200px;
-    width: 50px;
-    height: 50px;
 }
 
 .circle_orange {

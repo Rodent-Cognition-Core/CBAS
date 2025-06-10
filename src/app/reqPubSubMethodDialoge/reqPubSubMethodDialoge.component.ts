@@ -1,51 +1,55 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqPubSubMethodDialoge',
+    selector: 'app-req-pubsubmethod-dialoge',
     templateUrl: './reqPubSubMethodDialoge.component.html',
     styleUrls: ['./reqPubSubMethodDialoge.component.scss'],
     providers: [RequestService, PubScreenService]
 
 })
 export class ReqPubSubMethodDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameMethod: string;
-    reqEmailMethod: string;
-    reqMethod: string;
-    reqDOIMethod: string;
-    reqNewSubMethod: string;
    
     methodList: any;
 
-    private _request = new Request();
+    private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    method = new FormControl('', [Validators.required]);
-    newSubMethod = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    method: UntypedFormControl;
+    newSubMethod: UntypedFormControl;
+    doi: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubSubMethodDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.method = fb.control('', [Validators.required]);
+        this.newSubMethod = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
+    }
 
     ngOnInit() {
-        this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; });
+        this.pubScreenService.getMethod().subscribe((data : any) => { this.methodList = data; });
 
     }
 
@@ -59,11 +63,11 @@ export class ReqPubSubMethodDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameMethod;
-        this._request.email = this.reqEmailMethod;
-        this._request.doi = this.reqDOIMethod;
-        this._request.method = this.reqMethod;
-        this._request.subMethod = this.reqNewSubMethod;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        this._request.method = this.method.value;
+        this._request.subMethod = this.newSubMethod.value;
 
         // Submiting the request to server
         this.requestService.addPubSubMethod(this._request).subscribe( this.thisDialogRef.close()); 

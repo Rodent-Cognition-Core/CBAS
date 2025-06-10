@@ -1,46 +1,38 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-//import { Request } from '../models/request';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { CogbytesService } from '../services/cogbytes.service';
-import { SharedModule } from '../shared/shared.module';
 import { INVALIDEMAILADDRESS, PIALRADYEXISTS, PISUCCESSFULLYADDED, FIELDISREQUIRED } from '../shared/messages';
-import { INVALID } from '@angular/forms/src/model';
 
 
 
 @Component({
 
-    selector: 'app-cogbytesPIDialoge',
+    selector: 'app-cogbytes-pi-dialoge',
     templateUrl: './cogbytesPIDialoge.component.html',
     styleUrls: ['./cogbytesPIDialoge.component.scss'],
     providers: [CogbytesService]
 
 })
-export class CogbytesPIDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqPINameModel: string;
-    reqPIEmailModel: string;
-    reqInsNameModel: string;
+export class CogbytesPIDialogeComponent {
 
            
     //private _request = new Request();
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    emailPI = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    piName = new FormControl('', [Validators.required]);
-    institution = new FormControl('', [Validators.required]);
+    emailPI: UntypedFormControl;
+    piName: UntypedFormControl;
+    institution: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
          
-        private cogbytesService: CogbytesService, ) { }
-
-    ngOnInit() {
-      
+        private cogbytesService: CogbytesService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")])
+        this.piName = fb.control('', [Validators.required])
+        this.institution = fb.control('', [Validators.required])
     }
 
     onCloseCancel(): void {
@@ -53,7 +45,7 @@ export class CogbytesPIDialogeComponent implements OnInit {
     onCloseSubmit(): void {      
 
         // Submiting the request to server
-        this.cogbytesService.addPI(this.reqPINameModel, this.reqInsNameModel, this.reqPIEmailModel).subscribe(result => {
+        this.cogbytesService.addPI(this.piName.value, this.institution.value, this.emailPI.value).subscribe((result : any) => {
             if (result == 0) {
                 alert(PIALRADYEXISTS);
             }

@@ -191,6 +191,7 @@ ClientBin/
 # *.pfx
 *.publishsettings
 node_modules/
+.angular/
 orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components
@@ -356,3 +357,4 @@ Thumbs.db
 /yarn.lock
 /package - backup mar 29 2023.json
 /.npmignore
+

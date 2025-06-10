@@ -1,21 +1,18 @@
-import { Component, Input } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-    selector: 'message-dialog',
+    selector: 'app-message-dialog',
     templateUrl: './notification-dialog.component.html',
 })
 export class NotificationDialogComponent {
-    constructor(public dialogRef: MatDialogRef<NotificationDialogComponent>) { }
 
     public message: string;
+    constructor(public dialogRef: MatDialogRef<NotificationDialogComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.message = '';
+    }
 
-    //copyToClipboard() {
-
-    //    navigator.clipboard.writeText(this.message);
-
-
-    //}
     copyMessage(val: string) {
         const selBox = document.createElement('textarea');
         selBox.style.position = 'fixed';

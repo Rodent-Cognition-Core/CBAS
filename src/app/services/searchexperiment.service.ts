@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
-//import { DataExtraction } from '../models/dataextraction';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationService } from './authentication.service';
+import { Observable } from 'rxjs';
 
 @Injectable() export class SearchExperimentService {
 
@@ -26,7 +21,7 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    public GetSearchByExpID(expID): any {
+    public GetSearchByExpID(expID : any): any {
 
         return this.http
             .get("/api/searchexp/GetSearchByExpID?expID=" + expID, {
@@ -35,12 +30,12 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    downloadExpDs(expDsFileName): Observable<Blob> {
+    downloadExpDs(expDsFileName : any): Observable<Blob> {
 
         return this.http.get("/api/searchexp/DownloadExpDs?expDsFileName=" + expDsFileName,
             { headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: "blob" });
 
-    };
+    }
 
     
 }

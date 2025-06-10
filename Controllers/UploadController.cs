@@ -37,13 +37,7 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         // The main Upload function for uploading multiple files
-        [EnableCors("CorsPolicy")]
         [HttpPost("UploadFiles")]
         [RequestSizeLimit(900_000_000)]
         public async Task<IActionResult> UploadFiles()
@@ -54,13 +48,13 @@ namespace AngularSPAWebAPI.Controllers
             string SessionName = HttpContext.Request.Form["sessionName"][0];
             int sessionID = Int16.Parse(HttpContext.Request.Form["sessionID"][0]);
 
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
-            var userID = user.Result.Id;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
 
-            string TaskName = _uploadService.GetTaskName(expID);
-            int TaskID = _uploadService.GetTaskID(expID);
-            string ExpName = _uploadService.GetExpName(expID);
+            string TaskName = await _uploadService.GetTaskNameAsync(expID);
+            int TaskID = await _uploadService.GetTaskIDAsync(expID);
+            string ExpName = await _uploadService.GetExpNameAsync(expID);
 
             List<FileUploadResult> result = await _uploadService.UploadFiles(files, TaskName, expID, subExpId, ExpName, userEmail, userID, SessionName, TaskID, sessionID);
 
@@ -84,14 +78,14 @@ namespace AngularSPAWebAPI.Controllers
         }
 
         [HttpGet("SetUploadAsResolved")]
-        public IActionResult SetUploadAsResolved(int uploadId)
+        public async Task<IActionResult> SetUploadAsResolved(int uploadId)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
-            var userID = user.Result.Id;
-            // Console.WriteLine("it is here!!!" + DateTime.Now.ToString("hh:mm:ss"));
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
+            var res = await _uploadService.SetUploadAsResolvedAsync(uploadId, userID);
 
-            return new JsonResult(_uploadService.SetUploadAsResolved(uploadId, userID));
+            return new JsonResult(res);
         }
 
         //Uploadinfo for Experiment page
@@ -106,7 +100,7 @@ namespace AngularSPAWebAPI.Controllers
         public async Task<IActionResult> DownloadFile(int uploadId)
         {
 
-            var fur = _uploadService.GetUploadByUploadID(uploadId);
+            var fur = await _uploadService.GetUploadByUploadIDAsync(uploadId);
             var path = fur.PermanentFilePath + "\\" + fur.SysFileName;
 
             var memory = new MemoryStream();

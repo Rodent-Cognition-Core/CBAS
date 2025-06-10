@@ -135,19 +135,20 @@ namespace AngularSPAWebAPI.Controllers
 
         [AllowAnonymous]
         [HttpGet("GetDataByLinkGuid")]
-        public IActionResult GetDataByLinkGuid(Guid linkGuid)
+        public async Task<IActionResult> GetDataByLinkGuid(Guid linkGuid)
         {
             // extract data from database to show in the client
-            return new JsonResult(_DataExtractionService.GetDataFromDbByLinkGuid(linkGuid));
+            var result = await _DataExtractionService.GetDataFromDbByLinkGuid(linkGuid);
+            return new JsonResult(result);
 
         }
 
         //function definition when Generate Link button is clicked
         [AllowAnonymous]
         [HttpGet("SaveLink")]
-        public IActionResult SaveLink(Guid linkGuid)
+        public async Task<IActionResult> SaveLink(Guid linkGuid)
         {
-            return new JsonResult(_DataExtractionService.MarkLinkAsSaved(linkGuid));
+            return new JsonResult(await _DataExtractionService.MarkLinkAsSaved(linkGuid));
         }
 
         //function definition to increase counter when data is downloaded

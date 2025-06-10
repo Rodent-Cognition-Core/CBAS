@@ -1,31 +1,19 @@
-import {
-    Component, OnInit, Inject, NgModule,
-    ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef
-} from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { Location } from '@angular/common';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-//import { UploadService } from '../services/upload.service';
-import { SharedModule } from '../shared/shared.module';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service';
-import { Pubscreen } from '../models/pubscreen';
 import { Cogbytes } from '../models/cogbytes'
-import { CogbytesUploadComponent } from '../cogbytesUpload/cogbytesUpload.component'
-import { IdentityService } from '../services/identity.service';
-import { Subject } from 'rxjs/Subject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialoge.component'
-//import { CogbytesService } from '../services/cogbytes.service';
 
 @Component({
 
-    selector: 'app-cogbytesDialogue',
+    selector: 'app-cogbytes-dialogue',
     templateUrl: './cogbytesDialogue.component.html',
     styleUrls: ['./cogbytesDialogue.component.scss'],
     providers: [TaskAnalysisService,  PISiteService]
@@ -34,18 +22,13 @@ import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialo
 export class CogbytesDialogueComponent implements OnInit {
 
     //Models Variables for adding Publication
-    authorModel: any;
-    titleModel: any;
-    dateModel: any;
     keywordsModel: any;
     doiModel: any;
     authorMultiSelect: any;
     isEditMode: boolean;
-    privacyStatusModel: any;
     descriptionModel: any;
     additionalNotesModel: any;
     linkModel: any;
-    piModel: any;
     piMultiSelect: any;
 
     // Definiing List Variables 
@@ -58,17 +41,24 @@ export class CogbytesDialogueComponent implements OnInit {
 
     repID: any;
 
-    private form: FormGroup;
+    //private form: FormGroup;
+
+    //Form Validation Variables for adding publications
+    author: UntypedFormControl;
+    pi: UntypedFormControl;
+    title: UntypedFormControl;
+    date: UntypedFormControl;
+    privacyStatus: UntypedFormControl;
 
 
 
     //onbj variable from Models
-    _cogbytes = new Cogbytes();
+    _cogbytes: Cogbytes;
 
-    public authorMultiFilterCtrl: FormControl = new FormControl();
+    public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
-    public piMultiFilterCtrl: FormControl = new FormControl();
+    public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
@@ -76,16 +66,27 @@ export class CogbytesDialogueComponent implements OnInit {
     constructor(
         public thisDialogRef: MatDialogRef<CogbytesDialogueComponent>,
         // private pagerService: PagerService,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
+        public fb: UntypedFormBuilder,
 
         //private resolver: ComponentFactoryResolver,
         
         @Inject(MAT_DIALOG_DATA) public data: any,) {
 
+        this.isEditMode = false;
+        this.author = fb.control('', [Validators.required])
+        this.pi = fb.control('', [Validators.required])
+        this.title = fb.control('', [Validators.required])
+        this.date = fb.control('', [Validators.required])
+        this.privacyStatus = fb.control('', [Validators.required])
+        this._cogbytes = {
+            additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
+            doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: ''
+        }
         this.resetFormVals();
     }
 
@@ -104,16 +105,16 @@ export class CogbytesDialogueComponent implements OnInit {
 
             this.isEditMode = true;
             this.repID = this.data.repObj.id;
-            this.titleModel = this.data.repObj.title;
-            this.dateModel = new Date(this.data.repObj.date);
+            this.title.setValue(this.data.repObj.title);
+            this.date.setValue(new Date(this.data.repObj.date));
             this.keywordsModel = this.data.repObj.keywords;
             this.doiModel = this.data.repObj.doi;
             this.linkModel = this.data.repObj.link;
-            this.privacyStatusModel = this.data.repObj.privacyStatus ? "true" : "false";
+            this.privacyStatus.setValue(this.data.repObj.privacyStatus ? "true" : "false");
             this.descriptionModel = this.data.repObj.description;
             this.additionalNotesModel = this.data.repObj.additionalNotes;
-            this.authorModel = this.data.repObj.authourID;
-            this.piModel = this.data.repObj.piid;
+            this.author.setValue(this.data.repObj.authourID);
+            this.pi.setValue(this.data.repObj.piid);
         }
 
 
@@ -130,7 +131,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetAuthorList();
 
@@ -146,7 +147,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe(result => {
+        dialogref.afterClosed().subscribe((_result : any) => {
 
             this.GetPIList();
         });
@@ -159,7 +160,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
     GetAuthorList() {
 
-        this.cogbytesService.getAuthor().subscribe(data => {
+        this.cogbytesService.getAuthor().subscribe((data : any) => {
             this.authorList = data;
 
             // load the initial AuthorList
@@ -195,14 +196,14 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter(x => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x : any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe(data => {
+        this.cogbytesService.getPI().subscribe((data : any) => {
             this.piList = data;
 
             // load the initial expList
@@ -237,16 +238,9 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the PI
         this.filteredPIList.next(
-            this.piList.filter(x => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+            this.piList.filter((x : any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
         );
     }
-
-    //Form Validation Variables for adding publications
-    author = new FormControl('', [Validators.required]);
-    pi = new FormControl('', [Validators.required]);
-    title = new FormControl('', [Validators.required]);
-    date = new FormControl('', [Validators.required]);
-    privacyStatus = new FormControl('', [Validators.required]);
 
     // Handling Error for the required fields
     getErrorMessageAuthor() {
@@ -280,7 +274,7 @@ export class CogbytesDialogueComponent implements OnInit {
             this.pi.hasError('required') ||
             this.privacyStatus.hasError('required') ||
             this.date.hasError('required') ||
-            ((this.titleModel == null || this.titleModel == "") && this.title.hasError('required'))
+            ((this.title.value == null || this.title.value == "") && this.title.hasError('required'))
 
         ) {
 
@@ -299,23 +293,23 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.spinnerService.show();
 
-        this._cogbytes.authourID = this.authorModel;
-        this._cogbytes.title = this.titleModel;
+        this._cogbytes.authourID = this.author.value;
+        this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.piModel;
+        this._cogbytes.piID = this.pi.value;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false; 
+        this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
+        this._cogbytes.date = this.date.value.toISOString().split('T')[0];
 
         let today = new Date();
         this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.cogbytesService.addRepository(this._cogbytes).subscribe(data => {
+        this.cogbytesService.addRepository(this._cogbytes).subscribe((_data : any) => {
 
             this.thisDialogRef.close();
             setTimeout(() => {
@@ -332,23 +326,23 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.spinnerService.show();
 
-        this._cogbytes.authourID = this.authorModel;
-        this._cogbytes.title = this.titleModel;
+        this._cogbytes.authourID = this.author.value;
+        this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.piModel;
+        this._cogbytes.piID = this.pi.value;
         this._cogbytes.link = this.linkModel;
-        this._cogbytes.privacyStatus = this.privacyStatusModel == "true" ? true : false;
+        this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false;
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
-        this._cogbytes.date = this.dateModel.toISOString().split('T')[0];
+        this._cogbytes.date = this.date.value.toISOString().split('T')[0];
 
-        let today = new Date();
+        // let today = new Date();
         //this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
 
         // ADD LINK TO COGBYTES DATABASE HERE
 
-        this.cogbytesService.editRepository(this.repID, this._cogbytes).subscribe(data => {
+        this.cogbytesService.editRepository(this.repID, this._cogbytes).subscribe(_data => {
 
             this.thisDialogRef.close('Cancel');
             setTimeout(() => {
@@ -362,23 +356,23 @@ export class CogbytesDialogueComponent implements OnInit {
 
     resetFormVals() {
 
-        this.titleModel = '';
+        this.title.setValue('');
         this.keywordsModel = '';
         this.doiModel = '';
-        this.dateModel = '';
-        this.authorModel = [];
+        this.date.setValue('');
+        this.author.setValue([]);
         this.descriptionModel = '';
         this.additionalNotesModel = '';
         this.linkModel = '';
-        this.piModel = [];
+        this.pi.setValue([]);
     }
 
 
-    processList(data, item, propertyName) {
+    processList(data : any, item : any, propertyName : any) {
 
-        const ret = data.filter(row => (row[propertyName] === item));
+        const ret = data.filter((row : any) => (row[propertyName] === item));
         if (ret.length > 0) {
-            data.splice(data.findIndex(row => (row[propertyName] === item)), 1);
+            data.splice(data.findIndex((row: any) => (row[propertyName] === item)), 1);
             data.push(ret[0])
         }
         

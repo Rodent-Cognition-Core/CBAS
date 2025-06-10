@@ -1,53 +1,57 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqPubTaskDialoge',
+    selector: 'app-req-pubtask-dialoge',
     templateUrl: './reqPubTaskDialoge.component.html',
     styleUrls: ['./reqPubTaskDialoge.component.scss'],
     providers: [RequestService, PubScreenService]
 
 })
 export class ReqPubTaskDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqTaskCategoryModel: string;
-    reqNewCategoryModel: string;
-    reqDOIModel: string;
-    reqNewTaskModel: string;
    
     taskCategoryList: any;
 
-    private _request = new Request();
+    private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    taskCategory = new FormControl('', [Validators.required]);
-    newCategory = new FormControl('', [Validators.required]);
-    newTask = new FormControl('', [Validators.required]);
-    doi = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    taskCategory: UntypedFormControl;
+    newCategory: UntypedFormControl;
+    newTask: UntypedFormControl;
+    doi: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPubTaskDialogeComponent>,
 
-        private requestService: RequestService, private pubScreenService: PubScreenService) { }
+        private requestService: RequestService, private pubScreenService: PubScreenService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
+
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.taskCategory = fb.control('', [Validators.required]);
+        this.newCategory = fb.control('', [Validators.required]);
+        this.newTask = fb.control('', [Validators.required]);
+        this.doi = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
+    }
 
     ngOnInit() {
-        this.pubScreenService.getTask().subscribe(data => { this.taskCategoryList = data; });
+        this.pubScreenService.getTask().subscribe((data : any) => { this.taskCategoryList = data; });
 
     }
 
@@ -61,16 +65,16 @@ export class ReqPubTaskDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.doi = this.reqDOIModel;
-        if (this.reqTaskCategoryModel != 'None') {
-            this._request.taskCategory = this.reqTaskCategoryModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.doi = this.doi.value;
+        if (this.taskCategory.value != 'None') {
+            this._request.taskCategory = this.taskCategory.value;
         }
         else {
-            this._request.taskCategory = "NEW: " + this.reqNewCategoryModel;
+            this._request.taskCategory = "NEW: " + this.newCategory.value;
         }
-        this._request.taskName = this.reqNewTaskModel;
+        this._request.taskName = this.newTask.value;
 
         // Submiting the request to server
         this.requestService.addPubTask(this._request).subscribe( this.thisDialogRef.close()); 
@@ -135,7 +139,7 @@ export class ReqPubTaskDialogeComponent implements OnInit {
             this.newTask.hasError('required') ||
             this.doi.hasError('required') ||
             this.taskCategory.hasError('required') ||
-            (this.newCategory.hasError('required') && this.reqTaskCategoryModel == 'None')
+            (this.newCategory.hasError('required') && this.taskCategory.value == 'None')
             
             
         )

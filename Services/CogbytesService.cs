@@ -20,6 +20,7 @@ using Remotion.Linq.Clauses;
 using Microsoft.AspNetCore.Http;
 using Nest;
 using CBAS.Models;
+using Serilog;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -29,6 +30,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
         private readonly IElasticClient _elasticClient;
+
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
@@ -80,9 +82,7 @@ namespace AngularSPAWebAPI.Services
                     SpecieList.Add(new PubScreenSpecie
                     {
                         ID = Int32.Parse(dr["SpeciesID"].ToString()),
-                        Species = Convert.ToString(dr["Species"].ToString()),
-
-
+                        Species = Convert.ToString(dr["Species"].ToString())
                     });
                 }
             }
@@ -763,8 +763,8 @@ namespace AngularSPAWebAPI.Services
         public void DeleteRepository(int repID)
         {
             // Delete RepGuidLink from Experiments linked to the repository
-            Cogbytes rep = GetGuidByRepID(repID);
-            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.RepoLinkGuid}'");
+            var rep = GetGuidByRepID(repID);
+            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.Result.RepoLinkGuid}'");
 
             using (DataTable dt = Dal.GetDataTableCog($@"Select UploadID From Upload Where RepID = {repID}"))
             {
@@ -1163,35 +1163,44 @@ namespace AngularSPAWebAPI.Services
         //// Function Definition to extract all repositories 
         public List<Cogbytes> GetAllRepositories()
         {
+            Log.Information("GetAllRepositories started.");
             List<Cogbytes> RepList = new List<Cogbytes>();
-            //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+                using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
                 {
-                    int repID = Int32.Parse(dr["RepID"].ToString());
-                    string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenSearch publication = GetPubScreenPaper(doi);
-                    RepList.Add(new Cogbytes
+                    Log.Information("Data fetched successfully from the UserRepository.");
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        ID = repID,
-                        RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        Date = Convert.ToString(dr["Date"].ToString()),
-                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        DOI = doi,
-                        Link = Convert.ToString(dr["Link"].ToString()),
-                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
-                        Description = Convert.ToString(dr["Description"].ToString()),
-                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
-                        AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
-                        Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
-                        Paper = publication
-                    });
+                        int repID = Int32.Parse(dr["RepID"].ToString());
+                        string doi = Convert.ToString(dr["DOI"].ToString());
+                        PubScreenSearch publication = GetPubScreenPaper(doi);
+                        RepList.Add(new Cogbytes
+                        {
+                            ID = repID,
+                            RepoLinkGuid = Guid.Parse(dr["repoLinkGuid"].ToString()),
+                            Title = Convert.ToString(dr["Title"].ToString()),
+                            Date = Convert.ToString(dr["Date"].ToString()),
+                            Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                            DOI = doi,
+                            Link = Convert.ToString(dr["Link"].ToString()),
+                            PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                            Description = Convert.ToString(dr["Description"].ToString()),
+                            AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                            AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
+                            PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                            Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
+                            Paper = publication
+                        });
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetAllRepositories.");
+            }
+            Log.Information("GetAllRepositories completed.");
             return RepList;
         }
 
@@ -1332,24 +1341,20 @@ namespace AngularSPAWebAPI.Services
         }
 
 
-        public Cogbytes GetGuidByRepID(int repID)
+
+        public async Task<Cogbytes> GetGuidByRepID(int repID)
         {
-            Cogbytes cogbytesRepo = new Cogbytes();
-            string sql = $"Select * From UserRepository Where RepID = {repID} ";
-            using (IDataReader dr = Dal.GetReaderCog(CommandType.Text, sql, null))
+            //Cogbytes cogbytesRepo = new Cogbytes();
+            string sql = $"Select * From UserRepository Where RepID = @repID ";
+            var parameters = new List<SqlParameter>() ;
+            parameters.Add(new SqlParameter("@repID", repID));
+
+            var cogbytesRepo = await Dal.GetReaderCogAsync(sql, reader => new Cogbytes
             {
-                if (dr.Read())
-                {
-                    cogbytesRepo.RepoLinkGuid = Guid.Parse(dr["RepoLinkGuid"].ToString());
+                RepoLinkGuid = reader.GetGuid(reader.GetOrdinal("RepoLinkGuid"))
+            }, parameters);
 
-                }
-
-            }
-
-            return cogbytesRepo;
+            return cogbytesRepo.FirstOrDefault();
         }
-
-
     }
-
 }

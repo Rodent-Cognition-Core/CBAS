@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,16 +52,19 @@ namespace CBAS.Helpers
             try
             {
                 MailMessage mail = new MailMessage();
-                SmtpClient SmtpServer = new SmtpClient("smtp.office365.com");
+                var emailHost = Environment.GetEnvironmentVariable("EMAIL_HOST");
+                var password = Environment.GetEnvironmentVariable("EMAIL_PASS");
+                var emailUser = Environment.GetEnvironmentVariable("EMAIL_USER");
+                SmtpClient SmtpServer = new SmtpClient(emailHost);
 
                 if (fromEmailAddress == "")
                 {
-                    fromEmailAddress = "mousebytes@uwo.ca";
+                    fromEmailAddress = emailUser;
                 }
 
                 if(toEmailAddress == "")
                 {
-                    toEmailAddress = "mousebytes@uwo.ca";
+                    toEmailAddress = emailUser;
                 }
                 
                 mail.From = new MailAddress(fromEmailAddress);
@@ -71,7 +75,7 @@ namespace CBAS.Helpers
 
                 SmtpServer.Port = 587;
 
-                SmtpServer.Credentials = new System.Net.NetworkCredential("mousebyt@uwo.ca", "");
+                SmtpServer.Credentials = new System.Net.NetworkCredential(emailUser, password);
 
                 SmtpServer.EnableSsl = true;
 
@@ -81,6 +85,11 @@ namespace CBAS.Helpers
             }
             catch (Exception ex)
             {
+                Log.Error("Failed to Send email with the following error: " + ex.Message.ToString());
+                if (ex.InnerException != null)
+                {
+                    Log.Error("The following innerexception " + ex.InnerException.Message.ToString());
+                }
                 return false;
             }
 
@@ -202,7 +211,10 @@ namespace CBAS.Helpers
                     lstGenoID.Add(34);
                     break;
                 case 26:
-                    lstGenoID.Add(35);
+                    lstGenoID.Add(72);
+                    lstGenoID.Add(73);
+                    lstGenoID.Add(74);
+                    lstGenoID.Add(75);
                     break;
                 case 27:
                     lstGenoID.Add(36);

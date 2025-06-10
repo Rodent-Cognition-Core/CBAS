@@ -1,7 +1,7 @@
 <!--<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>User Profile</h1></div>-->
 
 <div class="account-card-container2">
-    <mat-card>
+    <mat-card appearance="outlined">
         <mat-toolbar color="primary">User Profile</mat-toolbar>
         <mat-card-content>
 
@@ -11,13 +11,13 @@
                 <br />
                 <span style="color: #666;"><b>Name:</b></span>
                 <mat-form-field style="width:40%;">
-                    <input matInput style="text-align:center" [formControl]="givenName" [(ngModel)]="givenNameModel" required>
+                    <input matInput style="text-align:center" [formControl]="givenName" required>
 
                 </mat-form-field>
 
                 &nbsp;&nbsp;<span style="color: #666;"><b>Last Name:</b></span>
                 <mat-form-field style="width:40%;">
-                    <input matInput style="text-align:center" [formControl]="familyName" [(ngModel)]="familyNameModel" required>
+                    <input matInput style="text-align:center" [formControl]="familyName" required>
 
                 </mat-form-field>
                 <br />
@@ -67,7 +67,7 @@
 
 <div class="account-card-container" style="margin-top: 50px;" *ngIf=false>
 
-    <mat-card>
+    <mat-card appearance="outlined">
         <mat-toolbar color="primary">Change Password</mat-toolbar>
         <mat-card-content>
             <form name="form" #f="ngForm" (ngSubmit)="f.form.valid && changePassword()" novalidate>

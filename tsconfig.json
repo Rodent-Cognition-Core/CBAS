@@ -2,18 +2,35 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "./dist/out-tsc",
-        "sourceMap": true,
-        "declaration": false,
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "target": "es5",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
-        "lib": [
-            "es2017",
-            "dom"
-        ]
-    }
+      "sourceMap": true,
+      "declaration": false,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "target": "ES2022",
+      "typeRoots": [
+        "node_modules/@types"
+      ],
+      "lib": [
+        "es2017",
+        "dom"
+      ],
+      "module": "esnext",
+      "baseUrl": "./",
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictPropertyInitialization": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "extendedDiagnostics": true,
+      "disableSizeLimit": true,
+      "useDefineForClassFields": false
+    },
+    "angularCompilerOptions": {
+        "fullTemplateTypeCheck": true
+    },
+    "include": [ "src/**/*.ts", "**/*.spec.ts", "src/**/*.html" ],
+    "exclude":  ["node_modules", "dist", "test.ts"]
 }

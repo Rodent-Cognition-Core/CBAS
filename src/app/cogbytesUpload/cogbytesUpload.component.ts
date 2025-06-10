@@ -1,10 +1,9 @@
-import { Component, OnInit, Inject, NgModule, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component'
-import { CogbytesUpload } from '../models/cogbytesUpload'
-import { CogbytesService } from '../services/cogbytes.service'
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { Component, OnInit, OnChanges, Inject, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
+import { CogbytesUpload } from '../models/cogbytesUpload';
+import { CogbytesService } from '../services/cogbytes.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
@@ -12,19 +11,19 @@ import {
 import { ViewChild } from '@angular/core'
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component'
 import { OAuthService } from 'angular-oauth2-oidc';
+import { map } from 'rxjs/operators';
 import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
-
 
 @Component({
 
-    selector: 'app-cogbytesUpload',
+    selector: 'app-cogbytes-upload',
     templateUrl: './cogbytesUpload.component.html',
     styleUrls: ['./cogbytesUpload.component.scss'],
     //providers: [CogbytesService],
 })
 
 
-export class CogbytesUploadComponent implements OnInit {
+export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     @Input() repID: number;
     @Input() isEditMode: boolean;
@@ -40,12 +39,9 @@ export class CogbytesUploadComponent implements OnInit {
 
     //public parentRef: CogbytesDialogueComponent;
 
-    public nameModel: any;
     //public dateModel: any;
-    public fileTypeModel: any;
     public descriptionModel: any;
     public additionalNotesModel: any;
-    public cognitiveTaskModel: any;
     public speciesModel: any;
     public sexModel: any;
     public strainModel: any;
@@ -53,11 +49,9 @@ export class CogbytesUploadComponent implements OnInit {
     public ageModel: any;
     public housingModel: any;
     public lightModel: any;
-    public interventionModel: any;
     public intDesModel: any;
     public imgDesModel: any;
     public taskBatteryModel: any;
-    public numSubjectsModel: string;
 
     // Definiing List Variables 
     public fileTypeList: any;
@@ -70,11 +64,19 @@ export class CogbytesUploadComponent implements OnInit {
 
     public uploadFileList: any;
 
-    _cogbytesUpload = new CogbytesUpload();
+    name: UntypedFormControl;
+    //date = new UntypedFormControl('', [Validators.required]);
+
+    fileType: UntypedFormControl;
+    cognitiveTask: UntypedFormControl;
+    intervention: UntypedFormControl;
+    numSubjects: UntypedFormControl;
+
+    _cogbytesUpload: CogbytesUpload;
 
     // DropZone
-    @ViewChild(DropzoneComponent) componentRef: DropzoneComponent;
-    @ViewChild(DropzoneDirective) directiveRef: DropzoneDirective;
+    @ViewChild(DropzoneComponent, { static: false }) componentRef!: DropzoneComponent
+    @ViewChild(DropzoneDirective, { static: false }) directiveRef!: DropzoneDirective
 
     //fileToUpload: File = null;
     public type: string = 'component';
@@ -86,54 +88,71 @@ export class CogbytesUploadComponent implements OnInit {
 
     uploadConfirmShowed: boolean = false;
 
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
-
     //DropZone
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
         maxFilesize: 10000,
-        autoReset: null,
-        errorReset: null,
-        cancelReset: null,
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
         timeout: 36000000,
-        headers: { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() }
+        headers: {}
     };
     
 
     constructor(
         private oAuthService: OAuthService,
         //public thisDialogRef: MatDialogRef<CogbytesUploadComponent>,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        private fb: UntypedFormBuilder,
+        public dialogRefDelFile: MatDialog,
+        @Inject(MAT_DIALOG_DATA) public data: any
+
     )
     {
+        this.repID = 0;
+        this.isEditMode = false;
+        this.uploadID = 0;
+        this._cogbytesUpload = {
+            additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
+            housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
+            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
+        }
+
+        this.name = fb.control('', [Validators.required]);
+        this.fileType = fb.control('', [Validators.required]);
+        this.cognitiveTask = fb.control('', [Validators.required]);
+        this.intervention = fb.control('', [Validators.required]);
+        this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
+        this.config.headers = { 'Authorization': 'Bearer ' + this.oAuthService.getAccessToken() };
+
         this.resetFormVals();
     }
         
     
     ngOnInit() {
 
-        this.cogbytesService.getFileTypes().subscribe(data => { this.fileTypeList = data; });
-        this.cogbytesService.getTask().subscribe(data => { this.taskList = data; });
-        this.cogbytesService.getSpecies().subscribe(data => { this.speciesList = data; });
-        this.cogbytesService.getSex().subscribe(data => { this.sexList = data; });
-        this.cogbytesService.getStrain().subscribe(data => { this.strainList = data; });
-        this.cogbytesService.getGenos().subscribe(data => { this.genosList = data; });
-        this.cogbytesService.getAges().subscribe(data => { this.ageList = data; });
+        this.cogbytesService.getFileTypes().subscribe((data : any) => { this.fileTypeList = data; });
+        this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe((data: any) => { this.speciesList = data; });
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genosList = data; });
+        this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
 
         if (this.isEditMode) {
 
             this.isUploadAdded = true;
 
             this.uploadID = this.uploadObj.id;
-            this.nameModel = this.uploadObj.name;
-            this.fileTypeModel = this.uploadObj.fileTypeID;
+            this.name.setValue(this.uploadObj.name);
+            this.fileType.setValue(this.uploadObj.fileTypeID);
             this.descriptionModel = this.uploadObj.description;
             this.additionalNotesModel = this.uploadObj.additionalNotes;
-            this.cognitiveTaskModel = this.uploadObj.taskID;
+            this.cognitiveTask.setValue(this.uploadObj.taskID);
             this.speciesModel = this.uploadObj.specieID;
             this.sexModel = this.uploadObj.sexID;
             this.strainModel = this.uploadObj.strainID;
@@ -141,12 +160,12 @@ export class CogbytesUploadComponent implements OnInit {
             this.ageModel = this.uploadObj.ageID;
             this.housingModel = this.uploadObj.housing;
             this.lightModel = this.uploadObj.lightCycle;
-            this.interventionModel = this.uploadObj.isIntervention ? "true" : "false";
+            this.intervention.setValue(this.uploadObj.isIntervention ? "true" : "false");
             this.intDesModel = this.uploadObj.interventionDescription;
             this.imgDesModel = this.uploadObj.imageDescription;
             this.taskBatteryModel = this.uploadObj.taskBattery;
             if (this.uploadObj.numSubjects != null) {
-                this.numSubjectsModel = this.uploadObj.numSubjects.toString();
+                this.numSubjects.setValue(this.uploadObj.numSubjects.toString());
             }
             this.uploadFileList = this.uploadObj.uploadFileList;
             // this.UpdateFileList();
@@ -156,7 +175,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     ngOnChanges(changes: SimpleChanges) {
         for (const propName in changes) {
-            if (changes.hasOwnProperty(propName)) {
+            if (Object.prototype.hasOwnProperty.call(changes, propName)) {
                 if (propName === 'repID') {
                     this.resetFormVals();
                     this.repChange.emit(null);
@@ -164,15 +183,6 @@ export class CogbytesUploadComponent implements OnInit {
             }
         }
     }
-
-
-    name = new FormControl('', [Validators.required]);
-    //date = new FormControl('', [Validators.required]);
-
-    fileType = new FormControl('', [Validators.required]);
-    cognitiveTask = new FormControl('', [Validators.required]);
-    intervention = new FormControl('', [Validators.required]);
-    numSubjects = new FormControl('', [Validators.pattern('[0-9]*')]);
 
     getErrorMessageFileType() {
         return this.fileType.hasError('required') ? FIELDISREQUIRED : '';
@@ -209,7 +219,7 @@ export class CogbytesUploadComponent implements OnInit {
             return true;
         }
 
-        if (this.fileTypeModel >= 1 && this.fileTypeModel <= 5) {
+        if (this.fileType.value >= 1 && this.fileType.value <= 5) {
             if (this.cognitiveTask.hasError('required') || this.intervention.hasError('required') || this.numSubjects.hasError('pattern')) {
                 return true;
             }
@@ -222,11 +232,11 @@ export class CogbytesUploadComponent implements OnInit {
 
     resetFormVals() {
 
-        this.fileTypeModel = null;
-        this.nameModel = '';
+        this.fileType.setValue(null);
+        this.name.setValue('');
         this.descriptionModel = '';
         this.additionalNotesModel = '';
-        this.cognitiveTaskModel = [];
+        this.cognitiveTask.setValue([]);
         this.speciesModel = [];
         this.sexModel = [];
         this.strainModel = [];
@@ -237,7 +247,7 @@ export class CogbytesUploadComponent implements OnInit {
         this.intDesModel = '';
         this.imgDesModel = '';
         this.taskBatteryModel = '';
-        this.interventionModel = null;
+        this.intervention.setValue(null);
 
         if (!this.isEditMode) this.isUploadAdded = false;
     }
@@ -245,13 +255,13 @@ export class CogbytesUploadComponent implements OnInit {
     AddUpload() {
 
         this._cogbytesUpload.repId = this.repID;
-        this._cogbytesUpload.fileTypeId = this.fileTypeModel;
-        this._cogbytesUpload.name = this.nameModel;
+        this._cogbytesUpload.fileTypeId = this.fileType.value;
+        this._cogbytesUpload.name = this.name.value;
         let today = new Date();
         this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
         this._cogbytesUpload.description = this.descriptionModel;
         this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-        this._cogbytesUpload.isIntervention = this.interventionModel == "true" ? true : false;
+        this._cogbytesUpload.isIntervention = this.intervention.value == "true" ? true : false;
         this._cogbytesUpload.interventionDescription = this.intDesModel;
         // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
         this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -259,16 +269,16 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.lightCycle = this.lightModel;
         this._cogbytesUpload.taskBattery = this.taskBatteryModel;
 
-        this._cogbytesUpload.taskID = this.cognitiveTaskModel;
+        this._cogbytesUpload.taskID = this.cognitiveTask.value;
         this._cogbytesUpload.specieID = this.speciesModel;
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
-        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
-        this.cogbytesService.addUpload(this._cogbytesUpload).subscribe(data => {
+        this.cogbytesService.addUpload(this._cogbytesUpload).subscribe((data: any) => {
 
             if (data === null) {
                 alert(FEATURESUPLOADFAILED);
@@ -284,13 +294,13 @@ export class CogbytesUploadComponent implements OnInit {
     EditUpload() {
 
         this._cogbytesUpload.repId = this.repID;
-        this._cogbytesUpload.fileTypeId = this.fileTypeModel;
-        this._cogbytesUpload.name = this.nameModel;
+        this._cogbytesUpload.fileTypeId = this.fileType.value;
+        this._cogbytesUpload.name = this.name.value;
         let today = new Date();
         this._cogbytesUpload.dateUpload = today.toISOString().split('T')[0];
         this._cogbytesUpload.description = this.descriptionModel;
         this._cogbytesUpload.additionalNotes = this.additionalNotesModel;
-        this._cogbytesUpload.isIntervention = this.interventionModel == "true" ? true : false;
+        this._cogbytesUpload.isIntervention = this.intervention.value == "true" ? true : false;
         this._cogbytesUpload.interventionDescription = this.intDesModel;
         // IMAGE IDS TO BE IMPLEMENTED LATERthis._cogbytesUpload.imageIds =
         this._cogbytesUpload.imageDescription = this.imgDesModel;
@@ -298,14 +308,14 @@ export class CogbytesUploadComponent implements OnInit {
         this._cogbytesUpload.lightCycle = this.lightModel;
         this._cogbytesUpload.taskBattery = this.taskBatteryModel;
 
-        this._cogbytesUpload.taskID = this.cognitiveTaskModel;
+        this._cogbytesUpload.taskID = this.cognitiveTask.value;
         this._cogbytesUpload.specieID = this.speciesModel;
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
         this._cogbytesUpload.ageID = this.ageModel;
 
-        this._cogbytesUpload.numSubjects = parseInt(this.numSubjectsModel);
+        this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
         this.cogbytesService.editUpload(this.uploadObj.id, this._cogbytesUpload).subscribe(data => {
 
@@ -322,7 +332,9 @@ export class CogbytesUploadComponent implements OnInit {
         if (this.type === 'directive') {
             this.directiveRef.reset();
         } else {
-            this.componentRef.directiveRef.reset();
+            if (this.componentRef?.directiveRef?.reset) {
+                this.componentRef.directiveRef.reset();
+            }
         }
 
     }
@@ -340,7 +352,7 @@ export class CogbytesUploadComponent implements OnInit {
         console.log('onUploadError:', args);
     }
 
-    onSending(data): void {
+    onSending(data : any): void {
 
         this.proceedUpload = true;
         this.spinnerService.show();
@@ -351,7 +363,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     }
 
-    public onUploadSuccess(args: any) {
+    public onUploadSuccess(_args: any) {
 
         this.resetDropzoneUploads();
 
@@ -362,7 +374,7 @@ export class CogbytesUploadComponent implements OnInit {
 
     }
 
-    onAddedFile(data): void {
+    onAddedFile(_data : any): void {
 
         //this.componentRef.directiveRef.dropzone().processQueue();
 
@@ -370,7 +382,7 @@ export class CogbytesUploadComponent implements OnInit {
         //this.dialogRefDelFile = null;
     }
 
-    onQueueComplete(args: any): void {
+    onQueueComplete(_args: any): void {
 
         if (this.uploadErrorServer != "") {
             alert(this.uploadErrorServer);
@@ -408,12 +420,13 @@ export class CogbytesUploadComponent implements OnInit {
                 //window.open(url);
 
                 var fileData = new Blob([result]);
-                var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
-                } else {
-                    csvURL = window.URL.createObjectURL(fileData);
-                }
+                var csvURL = '';
+                //if (navigator.msSaveBlob) {
+                //    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
+                //} else {
+                //    csvURL = window.URL.createObjectURL(fileData);
+                //}
+                csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', file.userFileName);
@@ -431,18 +444,18 @@ export class CogbytesUploadComponent implements OnInit {
     }
 
     // Delete File 
-    deleteFile(file) {
+    deleteFile(file : any) {
         this.openConfirmationDialogDelFile(file);
     }
 
     // Delete File Dialog
-    openConfirmationDialogDelFile(file) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+    openConfirmationDialogDelFile(file : any) {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
                 setTimeout(() => {
@@ -450,22 +463,23 @@ export class CogbytesUploadComponent implements OnInit {
                 }, 500);
 
                 let path = file.permanentFilePath + '\\' + file.sysFileName;
-                this.cogbytesService.deleteFile(file.expID, path).map(res => {
+                this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
-                }).subscribe(
-                    response => { this.UpdateFileList(); });
+                })).subscribe(
+                    (_response : any) => { this.UpdateFileList(); });
 
                 //this.spinnerService.hide();
                 //this.filesUploaded.emit(null);
 
                 //this.UpdateFileList();
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            dialogRefDelFile.close();
         });
     }
 
     UpdateFileList() {
-        this.cogbytesService.getUploadFiles(this.uploadID).subscribe(data => { this.uploadFileList = data });
+        this.cogbytesService.getUploadFiles(this.uploadID).subscribe((data : any) => { this.uploadFileList = data });
     }
 
     DeleteUpload() {
@@ -474,25 +488,26 @@ export class CogbytesUploadComponent implements OnInit {
 
     // Delete Upload Dialog
     openConfirmationDialogDelUpload() {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
 
-                this.cogbytesService.deleteUpload(this.uploadID).map(res => {
+                this.cogbytesService.deleteUpload(this.uploadID).pipe(map((_res : any) => {
 
-                }).subscribe(result => {
+                })).subscribe((_result : any) => {
                     this.filesUploaded.emit(null);
                     setTimeout(() => {
                         this.spinnerService.hide();
                     }, 500);
                 });
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            dialogRefDelFile.close();
         });
     }
     //remove() {

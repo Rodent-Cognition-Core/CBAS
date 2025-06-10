@@ -5,11 +5,11 @@
 
 <br /><br />
 
-<div *ngIf="selectedSubExperiment!=null">
+<div *ngIf="selectedSubExperiment!==null">
     <div style="float: left; margin-left: 10%; width: 80%;">
-        <mat-input-container class="md-icon-float full-width">
+        <mat-form-field class="md-icon-float full-width">
             <input matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
-        </mat-input-container>
+        </mat-form-field>
     </div>
     <div style="float: left">
         <button mat-icon-button (click)="search()"><mat-icon>search</mat-icon></button>
@@ -44,19 +44,19 @@
                 <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.dateUpload | date:'yyyy-MM-dd HH:mm:ss'}}</td>
                 <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userAnimalID}}</td>
 
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded==true">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded===true">
                     <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded==false">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isUploaded===false">
                     <mat-icon color="warn">clear</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==true">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession===true">
                     <mat-icon style="color:#2ECC71;">check_circle</mat-icon>
                 </td>
 
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession==false">
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td" *ngIf="row.isDuplicateSession===false">
                 </td>
 
                 <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><button mat-icon-button (click)="DownloadFile(row.uploadID, row.userFileName)"><mat-icon>get_app</mat-icon></button></td>

@@ -44,39 +44,54 @@ body {
         }*/
     }
 
-    .mat-toolbar {
-        .mat-icon {
-            cursor: pointer;
-        }
-
-        .app-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-left: 24px;
-            margin-right: 8px;
-
-            @media ($xsmall) {
-                margin-left: 16px;
-                margin-right: 0px;
-            }
-        }
-    }
-
-    .footer-text {
-        padding: 0 150px;
+    .about-text {
+        padding: 0 60px;
+        font-size: 14px;
 
         @media only screen and (min-width: 1px) and (max-width: 320px) {
-            padding: 0 20px;
+            padding: 0 10px;
+            font-size: 6px;
         }
 
         @media only screen and (min-width: 321px) and (max-width: 621px) {
-            padding: 0 40px;
+            padding: 0 15px;
+            font-size: 8px;
         }
 
         @media only screen and (min-width: 620px) and (max-width: 1023px) {
-            padding: 0 80px;
+            padding: 0 30px;
+            font-size: 10px;
+        }
+
+        @media (min-width: 1024px) and (max-width: 1350px) {
+            padding: 0 40px;
+            font-size: 12px;
+        }
+    }
+
+    .footer-links p {
+        padding: 0 60px;
+        font-size: 12px;
+        bottom: 0px;
+
+        @media only screen and (min-width: 1px) and (max-width: 320px) {
+            padding: 0 10px;
+            font-size: 6px;
+        }
+
+        @media only screen and (min-width: 321px) and (max-width: 621px) {
+            padding: 0 15px;
+            font-size: 8px;
+        }
+
+        @media only screen and (min-width: 620px) and (max-width: 1023px) {
+            padding: 0 30px;
+            font-size: 12px;
+        }
+
+        @media (min-width: 1024px) and (max-width: 1350px) {
+            padding: 0 40px;
+            font-size: 12px;
         }
     }
 
@@ -276,6 +291,13 @@ thead {
 }
 
 // top nav menu ------------------------------------------
+// .naviMenu-mobile { @media screen and (min-width: 600px) { display: none; } }
+
+// .tabMenu div.naviMenu { @media screen and (min-width: 960px) { display: none; } }
+
+// .desktopMenu div.naviMenu { @media screen and (max-width: 959px) { display: none; } }
+
+// .mobile-button { @media screen and (min-width: 600px) { display: none; } }
 
 .naviMenu a {
     text-decoration: none;
@@ -461,13 +483,12 @@ thead {
 
 
 
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 .all-wrap {
     min-height: 100vh;
 }
 
-.page-wrap {
+.page-content {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -481,6 +502,7 @@ thead {
 main {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 
     > *:not(router-outlet) {
         flex: 1;
@@ -488,12 +510,20 @@ main {
     }
 }
 
-footer {
-    background-color: #48395a;
+header {
+    min-height: 15vh;
 }
 
-section {
+footer {
+    background-color: #48395a;
+    //max-height: 15vh;
+    //min-height: 15vh;
+    height: 120px;
 }
+// main {
+//     display: flex;
+//     flex-grow: 1;
+// }
 
 .hideIt{
     display: none;
@@ -556,3 +586,336 @@ section {
     padding: 0 10px !important;
 }
 
+.naviMenu ul.top-nav-ul > li [hidden] {
+    display: none !important;
+}
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+.app-sidebar {
+  width: 250px;
+  background-color: #EDEDEE;
+  padding: 20px;
+}
+
+.sidebar-logo img {
+  max-width: 150px;
+}
+
+.top-toolbar {
+  background-color: #8F55E0;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.logo-toolbar {
+  background-color: #EDEDEE;
+}
+
+.horizontal-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-content {
+  text-align: center;
+  color: #d7d7d7;
+}
+
+.horizontal-nav {
+    display: flex;
+    align-items: center;
+    float: left;
+    flex-direction: row;
+    /* You might want to adjust the padding as needed */
+    padding: 0 30px;
+  }
+  
+  /* Style for each navigation section (dropdown) */
+  .horizontal-nav .nav-dropdown {
+    position: relative;
+    margin-right: 20px; /* Adjust spacing between sections */
+  }
+  
+  /* Style for the main title of each section */
+  .horizontal-nav .nav-dropdown > span {
+    color: #354248; /* Same as the naviMenu link color */
+    font-size: 18px; /* Same as the naviMenu link font size */
+    font-weight: bold; /* Same as the naviMenu link font weight */
+    font-family: "Raleway", sans-serif; /* Same as the naviMenu font family */
+    letter-spacing: 0px; /* Same as the naviMenu link letter spacing */
+    text-transform: uppercase; /* Same as the naviMenu link text transform */
+    display: inline-block;
+    cursor: pointer; /* Indicate it's clickable */
+    padding: 10px 0; /* Add some vertical padding for better touch area */
+  }
+  
+  /* Hover state for the main title */
+  .horizontal-nav .nav-dropdown > span:hover {
+    color: #8F55E0; /* Same as the naviMenu link hover color */
+    border-bottom: 5px solid #354248; /* Same as the naviMenu link hover bottom border */
+    /* Keep the same font styles on hover */
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  /* Style for the dropdown list */
+  .horizontal-nav .nav-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: transparentize(#000000, 0.1); /* Similar background as naviMenu */
+    min-width: 250px; /* Adjust as needed, similar to naviMenu */
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out, visibility 0s linear 0.2s; /* Transition for smooth show/hide */
+  }
+  
+  /* Style for each item in the dropdown list */
+  .horizontal-nav .nav-dropdown ul li {
+    text-align: left;
+    white-space: nowrap;
+    padding: 0 .1em;
+    border-bottom: 1px solid #bcbcbc; /* Similar border as naviMenu */
+    text-decoration: none;
+    overflow:hidden;
+  }
+  
+  /* Style for the links within the dropdown */
+  .horizontal-nav .nav-dropdown ul li a {
+    color: white; /* Similar color as naviMenu dropdown links */
+    display: block;
+    padding: 5px 0; /* Adjust padding for better spacing */
+    font-size: 16px; /* Similar font size as naviMenu dropdown links */
+    font-weight: bold;
+    font-family: "Raleway", sans-serif;
+    text-decoration: none;
+  }
+  
+  /* Hover state for the dropdown links */
+  .horizontal-nav .nav-dropdown ul li a:hover {
+    color: #8F55E0; /* Same as naviMenu dropdown link hover color */
+    border-bottom: none; /* Remove border on hover for dropdown links */
+    font-size: 18px; /* Same font size as main nav links on hover */
+    font-weight: bold; /* Same font weight as main nav links on hover */
+    font-family: "Raleway", sans-serif; /* Same font family */
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 5px 0; /* Keep the padding */
+    cursor: pointer;
+  }
+  
+  /* Show the dropdown on hover */
+  .horizontal-nav .nav-dropdown:hover ul {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s; /* Remove delay on visibility */
+  }
+  
+  /* Optional: Adjust spacing for the first section to accommodate the logo */
+  .horizontal-nav .nav-dropdown:first-child {
+    margin-left: 0; /* Or adjust as needed */
+  }
+  
+  /* You might need to add specific styling for the logo if it's part of the horizontal-nav */
+  .horizontal-nav span a img {
+    width: 180px; /* Match the logo width */
+    vertical-align: middle; /* Align with the text */
+    margin-right: 30px; /* Match the old padding */
+  }
+
+.app-sidebar {
+    width: 250px;
+    background-color: #EDEDEE;
+    padding: 20px;
+  }
+  
+  .sidebar-logo img {
+    max-width: 150px;
+  }
+  
+  .footer-content {
+    text-align: center;
+    color: #d7d7d7;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Take full width to center on mobile */
+    justify-content: start; /* Center the logo by default */
+  }
+  
+  /* Mobile Logo */
+  .mobile-logo {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .mobile-logo a img {
+    width: 200px; /* Adjust as needed */
+    vertical-align: middle;
+  }
+  
+  /* Tablet Logo */
+  .tablet-logo {
+    margin-right: 20px; /* Space between logo and menu */
+    float: left
+  }
+  
+  .tablet-logo a img {
+    width: 120px; /* Adjust as needed */
+    vertical-align: middle;
+  }
+  
+  /* Desktop Logo and Navigation */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    float: left;
+    flex-direction: row
+  }
+  
+  .desktop-nav .logo {
+    margin-right: 30px; /* Space between logo and menu */
+  }
+  
+  .desktop-nav .logo img {
+    width: 180px; /* Adjust as needed */
+    vertical-align: middle;
+  }
+
+  .auth-links .mat-mdc-button-base{
+    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: middle;
+    font-size: x-small;
+    padding: 0 0;
+    margin: 0 5px;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+  }
+  .auth-links .user-greeting {
+    min-width: 40px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    min-height: 20px;
+    vertical-align: middle;
+    font-size: small;
+    padding: 0 0;
+    margin: 0;
+    font-family: Roboto, Helvetica Neue, sans-serif;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 599px) {
+    .horizontal-nav {
+        display: none;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 1023px) {
+    .desktop-nav .logo img {
+        width: 130px;
+    }
+    .desktop-nav .logo {
+        margin-right: 10px;
+    }
+    .tablet-logo .logo {
+        margin-right: 2px;
+    }
+    .horizontal-nav {
+        padding: 0 2px;
+        gap: 5px;
+    }
+    .horizontal-nav .nav-dropdown {
+        margin-right: 2px;
+    }
+    .horizontal-nav .nav-dropdown > span {
+        font-size: 12px;
+    }
+    .horizontal-nav .nav-dropdown > span:hover {
+        font-size: 12px;
+    }
+    .horizontal-nav .nav-dropdown ul {
+        min-width: 100px;
+    }
+    .horizontal-nav .nav-dropdown ul li a {
+        font-size: 10px;
+    }
+    .horizontal-nav .nav-dropdown ul li a:hover {
+        font-size: 12px;
+    }
+  }
+  @media (min-width: 1024px) and (max-width: 1350px) {
+    .desktop-nav .logo img {
+        width: 150px;
+    }
+    .desktop-nav .logo {
+        margin-right: 10px;
+    }
+    .tablet-logo .logo {
+        margin-right: 10px;
+    }
+    .horizontal-nav {
+        padding: 0 2px;
+        gap: 5px;
+    }
+    .horizontal-nav .nav-dropdown {
+        margin-right: 2px;
+    }
+    .horizontal-nav .nav-dropdown > span {
+        font-size: 14px;
+    }
+    .horizontal-nav .nav-dropdown > span:hover {
+        font-size: 14px;
+    }
+    .horizontal-nav .nav-dropdown ul {
+        min-width: 100px;
+    }
+    .horizontal-nav .nav-dropdown ul li a {
+        font-size: 12px;
+    }
+    .horizontal-nav .nav-dropdown ul li a:hover {
+        font-size: 14px;
+    }
+  }
+
+  .mat-toolbar {
+    .mat-icon {
+        cursor: pointer;
+    }
+
+    .app-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-left: 24px;
+        margin-right: 8px;
+
+        @media ($xsmall) {
+            margin-left: 16px;
+            margin-right: 0px;
+        }
+    }
+}

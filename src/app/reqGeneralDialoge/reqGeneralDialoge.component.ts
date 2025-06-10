@@ -1,46 +1,45 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqGeneralDialoge',
+    selector: 'app-req-general-dialoge',
     templateUrl: './reqGeneralDialoge.component.html',
     styleUrls: ['./reqGeneralDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqGeneralDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqRequestModel: string;
-   
+export class ReqGeneralDialogeComponent {
            
-    private _request = new Request();
+    private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    request = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    request: UntypedFormControl;
     
 
     constructor(public thisDialogRef: MatDialogRef<ReqGeneralDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    ngOnInit() {
-      
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.request = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
     }
 
     onCloseCancel(): void {
@@ -53,9 +52,9 @@ export class ReqGeneralDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.generalRequest = this.reqRequestModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.generalRequest = this.request.value;
       
         
 

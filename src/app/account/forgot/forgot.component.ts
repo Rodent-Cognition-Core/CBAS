@@ -1,17 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-//import { FormControl } from '@angular/forms';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { AuthenticationService } from '../../services/authentication.service';
 import { IdentityService } from '../../services/identity.service';
 import { Signin } from '../signin';
-import { PISiteService } from '../../services/piSite.service';
 import { ManageUserService } from '../../services/manageuser.service';
-import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
     templateUrl: './forgot.component.html',
@@ -23,7 +17,7 @@ export class ForgotComponent extends Signin {
     model: any = {};
     showCheckYourEmail = false;
     //selectedPiSiteIds: any;
-    //PISite = new FormControl();
+    //PISite = new UntypedFormControl();
 
     constructor(
         protected router: Router,
@@ -36,18 +30,17 @@ export class ForgotComponent extends Signin {
 
     forgot(): void {
 
-        this.identityService.generatePasswordResetToken(this.model.username).map(res => {
-            this.showCheckYourEmail = true;
-
-
-            //if (res == "resetDone!") {
-            //    this.showCheckYourEmail = true;
-                
-            //} else {
-            //    return;
-            //}
-
-        }).subscribe();
+        this.identityService.generatePasswordResetToken(this.model.username)
+            .pipe(
+                map(() => {
+                    this.showCheckYourEmail = true;
+                }),
+                catchError((error) => {
+                    console.error('Error processing password reset request', error);
+                    return [];
+                })
+            )
+            .subscribe();
 
     }
 

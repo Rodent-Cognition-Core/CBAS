@@ -28,78 +28,72 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
         [HttpGet("GetAnimalInfoByExpID")]
-        public IActionResult GetAnimalInfoByExpID(int expId)
+        public async Task<IActionResult> GetAnimalInfoByExpID(int expId)
         {
-            var user = GetCurrentUser();
-            var userID = user.Result.Id;
-
-            return new JsonResult(_animalService.GetAnimalByExpID(expId));
+            var res = await _animalService.GetAnimalByExpIDAsync(expId);
+            return new JsonResult(res);
         }
 
         [HttpPost("CreateAnimal")]
-        public IActionResult CreateAnimal([FromBody]Animal animal)
+        public async Task<IActionResult> CreateAnimal([FromBody]Animal animal)
         {
 
             // throw new Exception("This Experiment Name was already taken!");
-            if (_animalService.DoesAnimalIDExist(animal.UserAnimalID, animal.ExpID))
+            if (await _animalService.DoesAnimalIDExistAsync(animal.UserAnimalID, animal.ExpID))
             {
                 return new JsonResult("Taken");
             }
             else
             {
-                return new JsonResult(_animalService.InsertAnimal(animal));
+                return new JsonResult(await _animalService.InsertAnimalAsync(animal));
             }
         }
 
         [HttpPost("UpdateAnimal")]
-        public IActionResult UpdateAnimal([FromBody]Animal animal)
+        public async Task<IActionResult> UpdateAnimal([FromBody]Animal animal)
         {
 
-            _animalService.UpdateAnimal(animal);
+            await _animalService.UpdateAnimalAsync(animal);
             return new JsonResult("Done!");
 
         }
 
         [HttpDelete("DeleteAnimalById")]
-        public IActionResult DeleteAnimalById(int animalID)
+        public async Task<IActionResult> DeleteAnimalById(int animalID)
         {
-            _animalService.DeleteAnimalByAnimalID(animalID);
+            await _animalService.DeleteAnimalByAnimalIDAsync(animalID);
             return new JsonResult("Done!");
 
         }
 
         [HttpGet("GetAllStrain")]
-        public IActionResult GetAllStrain()
+        public async Task<IActionResult> GetAllStrain()
         {
-
-            return new JsonResult(_animalService.GetStrainList());
+            var res = await _animalService.GetStrainListAsync();
+            return new JsonResult(res);
         }
 
         [HttpGet("GetAllGenoByStrainID")]
-        public IActionResult GetAllGenoByStrainID(int ID)
+        public async Task<IActionResult> GetAllGenoByStrainID(int ID)
         {
-
-            return new JsonResult(_animalService.GetGenoList(ID));
+            var res = await _animalService.GetGenoListAsync(ID);
+            return new JsonResult(res);
         }
 
         [HttpGet("GetCountOfAnimals")]
         [AllowAnonymous]
-        public IActionResult GetCountOfAnimals()
+        public async Task<IActionResult> GetCountOfAnimals()
         {
-            return new JsonResult(_animalService.GetCountOfAnimals());
+            var res = await _animalService.GetCountOfAnimalsAsync();
+            return new JsonResult(res);
         }
 
         [HttpGet("UserAnimalIDExist")]
-        public IActionResult UserAnimalIDExist(string UserAnimalID, int ExpID)
+        public async Task<IActionResult> UserAnimalIDExist(string UserAnimalID, int ExpID)
         {
 
-            bool flag = _animalService.IsUserAnimalIDExist(UserAnimalID, ExpID);
+            bool flag = await _animalService.IsUserAnimalIDExistAsync(UserAnimalID, ExpID);
             if (flag == true)
             {
                 return new JsonResult("Exist");
@@ -113,22 +107,18 @@ namespace AngularSPAWebAPI.Controllers
 
 
         [HttpGet("EditUserAnimalID")]
-        public IActionResult EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
+        public async Task<IActionResult> EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
         {
-            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = _animalService.GetAnimalIDByUserAnimalIdAndExpId(EditedUserAnimalId, ExpId);
+            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = await _animalService.GetAnimalIDByUserAnimalIdAndExpIdAsync(EditedUserAnimalId, ExpId);
 
-            bool updated = _animalService.ReplaceAnimalId(OldAnimalId, ExistingAnimalIdToUse);
-
+            bool updated = await _animalService.ReplaceAnimalIdAsync(OldAnimalId, ExistingAnimalIdToUse);
             if (isAnimalInfocompleted)
             {
-                var user = GetCurrentUser();
-                var userID = user.Result.Id;
-
+                var user = await _manager.GetUserAsync(HttpContext.User);
+                var userID = user.Id;
                 UploadService uploadService = new UploadService();
-                uploadService.SetAsResolvedForEditedAnimalId(ExistingAnimalIdToUse, userID);
-
+                await uploadService.SetAsResolvedForEditedAnimalIdAsync(ExistingAnimalIdToUse, userID);
             }
-
             if (updated == true)
             {
                 return new JsonResult("Successful");
@@ -137,12 +127,7 @@ namespace AngularSPAWebAPI.Controllers
             {
                 return new JsonResult("Failed");
             }
-
         }
-
-
-
-
 
     }
 }

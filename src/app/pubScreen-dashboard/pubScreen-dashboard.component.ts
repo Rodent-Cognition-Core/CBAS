@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+
 declare var spotfire: any;
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { ParamMap, Router, ActivatedRoute } from '@angular/router';
-import { MatTableDataSource, MatDialogRef, MatDialog } from '@angular/material';
-import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { filterQueryId } from '@angular/core/src/view/util';
 
 @Component({
     selector: 'app-ps-dashboard',
@@ -13,16 +12,15 @@ import { filterQueryId } from '@angular/core/src/view/util';
 })
 export class PSDashboardComponent implements OnInit {
 
-    
-    dialogRefLink: MatDialogRef<NotificationDialogComponent>;
     app: any;
 
    
     constructor(
         public dialog: MatDialog,
-        private spinnerService: Ng4LoadingSpinnerService,
+        private spinnerService: NgxSpinnerService,
         private router: Router,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        public dialogRefLink: MatDialog) {
 
     }
 
@@ -31,11 +29,6 @@ export class PSDashboardComponent implements OnInit {
         this.loadAnalysis("pubscreen_dashboard")
         
     }
-
-    ngAfterViewInit() {
-
-    }
-
     
     loadAnalysis(spotfireAnalysisName: string) {
 
@@ -72,7 +65,7 @@ export class PSDashboardComponent implements OnInit {
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
         var configuration = '';
 
-        var onError = function (errorCode, description) {
+        var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
         var onOpenedfunction = function () {

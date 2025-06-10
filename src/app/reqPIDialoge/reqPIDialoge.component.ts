@@ -1,50 +1,51 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqPIDialoge',
+    selector: 'app-reqpi-dialoge',
     templateUrl: './reqPIDialoge.component.html',
     styleUrls: ['./reqPIDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqPIDialogeComponent implements OnInit {
-
-    // Defining Models Parameters
-
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqPINameModel: string;
-    reqPIEmailModel: string;
-    reqInsNameModel: string;
+export class ReqPIDialogeComponent {
 
            
-    private _request = new Request();
+    private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    emailPI = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    piName = new FormControl('', [Validators.required]);
-    institution = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    emailPI: UntypedFormControl;
+    piName: UntypedFormControl;
+    institution: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<ReqPIDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    ngOnInit() {
-      
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.piName = fb.control('', [Validators.required]);
+        this.institution = fb.control('', [Validators.required]);
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
     }
+
 
     onCloseCancel(): void {
 
@@ -56,11 +57,11 @@ export class ReqPIDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.piFullName = this.reqPINameModel;
-        this._request.piEmail = this.reqPIEmailModel;
-        this._request.piInstitution = this.reqInsNameModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.piFullName = this.piName.value;
+        this._request.piEmail = this.emailPI.value;
+        this._request.piInstitution = this.institution.value;
         
 
         // Submiting the request to server

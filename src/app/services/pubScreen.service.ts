@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Pubscreen } from '../models/pubscreen';
 
 
@@ -318,12 +314,10 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
-    // Get count of number of papers in Pubscreen and number of papers with key features added
     public getPubCount(): any {
-        return this.http
-            .get("/api/pubScreen/GetPubCount", {
-                headers: new HttpHeaders().set('Content-Type', 'application/json')
-            });
+        return this.http.get<{ pubCount: number, featureCount: number }>("/api/pubScreen/GetPubCount", {
+            headers: new HttpHeaders().set('Content-Type', 'application/json')
+        });
     }
 
     public addCSVPapers(): any {

@@ -1,10 +1,7 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-//import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-//import { Observable } from 'rxjs/Observable';
-import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 //import { Experiment } from '../models/experiment';
 import { SubExperiment } from '../models/subexperiment';
@@ -38,7 +35,7 @@ import { AuthenticationService } from './authentication.service';
     }
 
     // Adding subexperiment
-    public createSubExp(subexperiment: SubExperiment): any {
+    public createSubExp(subexperiment: SubExperiment): Observable<any> {
 
         const body: string = JSON.stringify(subexperiment);
             

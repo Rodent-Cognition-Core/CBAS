@@ -29,27 +29,21 @@ namespace AngularSPAWebAPI.Controllers
             _manager = manager;
         }
 
-        private async Task<ApplicationUser> GetCurrentUser()
-        {
-            return await _manager.GetUserAsync(HttpContext.User);
-        }
-
-
         
         [HttpGet("GetUserInfo")]
-        public IActionResult GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
-            var user = GetCurrentUser();
-            var userID = user.Result.Id;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userID = user.Id;
 
             return new JsonResult(_profileService.GetUserInfoByID(userID));
         }
 
         [HttpPost("UpdateProfile")]
-        public IActionResult UpdateProfile ([FromBody]CreateViewModel UserModel)
+        public async Task<IActionResult> UpdateProfile ([FromBody]CreateViewModel UserModel)
         {
-            var user = GetCurrentUser();
-            var userID = user.Result.Id;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userID = user.Id;
             _profileService.UpdateProfile(UserModel, userID);
             return new JsonResult("Done!");
         }
@@ -57,9 +51,8 @@ namespace AngularSPAWebAPI.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordModel model)
         {
-            var user = GetCurrentUser();
-            var userEmail = user.Result.UserName;
-            // var userID = user.Result.Id;
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
 
             var appUser = await _manager.FindByNameAsync(userEmail);
             if (appUser == null)
@@ -69,9 +62,7 @@ namespace AngularSPAWebAPI.Controllers
             var result = await _manager.ChangePasswordAsync(appUser, model.currentPassword, model.newPassword);
 
             return new JsonResult(result);
-
         }
-
 
     }
 }

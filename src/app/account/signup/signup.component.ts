@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-//import { FormControl } from '@angular/forms';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
-
 import { AuthenticationService } from '../../services/authentication.service';
 import { IdentityService } from '../../services/identity.service';
 import { Signin } from '../signin';
@@ -21,7 +18,7 @@ export class SignupComponent extends Signin {
 
     piSiteList: any;
     //selectedPiSiteIds: any;
-    //PISite = new FormControl();
+    //PISite = new UntypedFormControl();
 
     constructor(
         protected router: Router,
@@ -37,7 +34,7 @@ export class SignupComponent extends Signin {
     // Get the list of PISite
     GetPISiteList() {
 
-        this.piSiteService.getPISite().subscribe(data => {
+        this.piSiteService.getPISite().subscribe((data) => {
             this.piSiteList = data;
             //console.log(this.piSiteList);
         });
@@ -77,9 +74,9 @@ export class SignupComponent extends Signin {
                             this.errorMessages = res.errors;
                         }
                     },
-                    (error: any) => {
-                        const errMsg = (error.message) ? error.message :
-                            error.status ? `${error.status} - ${error.statusText}` : "Server error";
+                    () => {
+                        // const errMsg = (error.message) ? error.message :
+                        //     error.status ? `${error.status} - ${error.statusText}` : "Server error";
                         //console.log(errMsg);
                         this.errorMessages.push({ description: "Server error. Try later." });
                     });

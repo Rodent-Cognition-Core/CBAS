@@ -1,39 +1,36 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-//import { Request } from '../models/request';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { PubScreenService } from '../services/pubScreen.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-authorDialoge',
+    selector: 'app-author-dialoge',
     templateUrl: './authorDialoge.component.html',
     styleUrls: ['./authorDialoge.component.scss'],
     providers: [PubScreenService]
 
 })
-export class AuthorDialogeComponent implements OnInit {
+export class AuthorDialogeComponent {
 
     // Defining Models Parameters
-    authorNameModel: any;
-    authorLastNameModel: any;
     authorAffiliationModel: any;
 
-    // FormControl Parameters
-    authorName = new FormControl('', [Validators.required]);
-    authorLastName = new FormControl('', [Validators.required]);
+    // UntypedFormControl Parameters
+    authorName: UntypedFormControl
+    authorLastName: UntypedFormControl
     
     constructor(public thisDialogRef: MatDialogRef<AuthorDialogeComponent>,
          
-        private pubScreenService: PubScreenService, ) { }
-
-    ngOnInit() {
-      
+        private pubScreenService: PubScreenService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+        this.authorName = fb.control('', [Validators.required])
+        this.authorLastName = fb.control('', [Validators.required])
     }
 
     onCloseCancel(): void {
@@ -46,7 +43,7 @@ export class AuthorDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // Submiting the request to server
-        this.pubScreenService.addAuthor(this.authorNameModel, this.authorLastNameModel, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
+        this.pubScreenService.addAuthor(this.authorName.value, this.authorLastName.value, this.authorAffiliationModel).subscribe( this.thisDialogRef.close() );
        
     }
 

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from "rxjs";
 import { AuthenticationService } from './authentication.service';
+
+export interface getPISiteResponse {
+    PISite: string;
+}
 
 @Injectable() export class PISiteService {
 
@@ -15,18 +18,18 @@ import { AuthenticationService } from './authentication.service';
         private authenticationService: AuthenticationService) { }
 
 
-    public getPISite(): any {
-
+    public getPISite(): Observable<getPISiteResponse> {
+        const url = "/api/PISite/GetPISite"
         return this.http
-            .get("/api/PISite/GetPISite", {
+            .get<getPISiteResponse>(url, {
                 //headers: this.authenticationService.getAuthorizationHeader()
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             }).pipe(
-            map((response: Response) => {
+            map((response) => {
                 return response;
             }),
-            catchError((error: any) => {
-                return _throw(error);
+            catchError((error) => {
+                return throwError(error);
             }));
     }
 

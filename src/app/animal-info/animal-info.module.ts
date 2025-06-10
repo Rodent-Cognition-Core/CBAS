@@ -4,8 +4,8 @@ import { SharedModule } from '../shared/shared.module';
 import { MatSelectModule } from '@angular/material/select';
 import { AnimalInfoComponent } from './animal-info.component';
 import { AnimalService } from '../services/animal.service';
-import { AuthenticationService } from '../services/authentication.service';
-import { MatDialogModule, MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button'
 import { PagerService } from '../services/pager.service';
 
 @NgModule({
@@ -22,7 +22,6 @@ import { PagerService } from '../services/pager.service';
         
     ],
     providers: [
-        AuthenticationService,
         AnimalService,
         PagerService,
         

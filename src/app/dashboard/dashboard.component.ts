@@ -1,15 +1,15 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AuthenticationService } from '../services/authentication.service';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { DashboardService } from '../services/dashboard.service';
 import { UploadService } from '../services/upload.service';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { PagerService } from '../services/pager.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { AnimalService } from '../services/animal.service';
 import { ExperimentService } from '../services/experiment.service';
 import { CONFIRMDELETE } from '../shared/messages';
+import { map } from 'rxjs/operators'
 
 
 
@@ -18,7 +18,7 @@ import { CONFIRMDELETE } from '../shared/messages';
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
     experimentName: string;
     experimentID: number;
@@ -27,24 +27,28 @@ export class DashboardComponent implements OnInit {
     pager: any = {};
     pagedItems: any[];
     expfilter: any = '';
-    dialogRefDelErrorList: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelAnimal: MatDialogRef<DeleteConfirmDialogComponent>;
-    dialogRefDelFile: MatDialogRef<DeleteConfirmDialogComponent>;
+
 
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
         private uploadService: UploadService,
-        private authenticationService: AuthenticationService, private pagerService: PagerService,
-        private spinnerService: Ng4LoadingSpinnerService, private animalService: AnimalService,
-        public dialog: MatDialog) { }
+        private pagerService: PagerService,
+        private spinnerService: NgxSpinnerService, private animalService: AnimalService,
+        public dialog: MatDialog,
+        public dialogRefDelErrorList: MatDialog,
+        public dialogRefDelAnimal: MatDialog,
+        public dialogRefDelFile: MatDialog
 
+    ) {
 
-    ngOnInit() {
-
+        this.experimentName = '';
+        this.experimentID = 0;
+        this.pagedItems = [];
+        this
     }
 
     // Get list major errors
-    GetUploadLogList(selectedExperimentID) {
-        this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe(data => {
+    GetUploadLogList(selectedExperimentID: number) {
+        this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe((data : any) => {
             this.uploadLogList = data;
             this.setPage(1);
 
@@ -56,15 +60,15 @@ export class DashboardComponent implements OnInit {
     }
 
     // Get list of minor errors
-    GetUploadErrorLogList(selectedExperimentID) {
-        this.dashboardService.getUploadErrorLogById(selectedExperimentID).subscribe(data => {
+    GetUploadErrorLogList(selectedExperimentID: number) {
+        this.dashboardService.getUploadErrorLogById(selectedExperimentID).subscribe((data : any) => {
             this.uploadErrorLogList = data;
 
         });
 
     }
 
-    SelectedExpChanged(experiment) {
+    SelectedExpChanged(experiment : any) {
         this.GetUploadLogList(experiment.expID);
         this.GetUploadErrorLogList(experiment.expID);
         this.experimentName = experiment.expName;
@@ -73,26 +77,27 @@ export class DashboardComponent implements OnInit {
     }
     
     // Delete Animal Dialog
-    openConfirmationDialogDelAnimal(animalID, expId) {
-        this.dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
+    openConfirmationDialogDelAnimal(animalID : number, _expId : number) {
+        const dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelAnimal.afterClosed().subscribe(result => {
+        dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
-                this.animalService.deleteAnimalbyID(animalID).map(res => {
+                this.animalService.deleteAnimalbyID(animalID).pipe(map((_res : any) => {
                     //location.reload()
                     this.GetUploadLogList(this.experimentID);
-                }).subscribe();
+                })).subscribe();
             }
-            this.dialogRefDelAnimal = null;
+            //this.dialogRefDelAnimal = null;
+            dialogRefDelAnimal.close();
         });
     }
 
 
     // Delete animal 
-    delAnimal(animalID, expId) {
+    delAnimal(animalID : number, expId : number) {
         this.openConfirmationDialogDelAnimal(animalID, expId);
     }
     
@@ -107,11 +112,7 @@ export class DashboardComponent implements OnInit {
 
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
-                if (navigator.msSaveBlob) {
-                    csvURL = navigator.msSaveBlob(csvData, userFileName);
-                } else {
-                    csvURL = window.URL.createObjectURL(csvData);
-                }
+                csvURL = window.URL.createObjectURL(csvData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', userFileName);
@@ -154,7 +155,7 @@ export class DashboardComponent implements OnInit {
                 console.log('show spinner');
                 this.spinnerService.show();
 
-                this.uploadService.setUploadAsResolved(uploadId).subscribe(data => {
+                this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
 
                     this.GetUploadLogList(this.experimentID);
 
@@ -166,7 +167,7 @@ export class DashboardComponent implements OnInit {
                     //For updating dashboards, all the files with the same animal ID & Same error should get disapeared from the uploadLogList
 
                 },
-                    error => {
+                    (error : any) => {
                         if (error.error instanceof Error) {
                             console.log('An error occurred:', error.error.message);
                         } else {
@@ -207,38 +208,39 @@ export class DashboardComponent implements OnInit {
         this.setPage(1);
     }
 
-    filterByString(data, s): any {
+    filterByString(data : any, s : string): any {
         s = s.trim();
-        return data.filter(e => e.userFileName.includes(s) || e.userAnimalID.includes(s)); // || e.another.includes(s)
+        return data.filter((e: any) => e.userFileName.includes(s) || e.userAnimalID.includes(s)); // || e.another.includes(s)
         //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
 
     //****************Clear uploadErrorLogList********************************************
 
-    openConfirmationDialogDelErrorList(expID) {
-        this.dialogRefDelErrorList = this.dialog.open(DeleteConfirmDialogComponent, {
+    openConfirmationDialogDelErrorList(expID : number) {
+        const dialogRefDelErrorList = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelErrorList.componentInstance.confirmMessage = CONFIRMDELETE
+        dialogRefDelErrorList.componentInstance.confirmMessage = CONFIRMDELETE
 
-        this.dialogRefDelErrorList.afterClosed().subscribe(result => {
+        dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
 
-                this.dashboardService.clearUploadLogTblbyExpID(expID).map(res => {
+                this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((_res : any) => {
                     //location.reload()
                     this.uploadErrorLogList = [];
                     this.GetUploadLogList(expID);
 
-                }).subscribe();
+                })).subscribe();
 
             }
-            this.dialogRefDelErrorList = null;
+            //this.dialogRefDelErrorList = null;
+            dialogRefDelErrorList.close();
         });
     }
 
     // ******************Clear UploadErrorList Table*****************
 
-    ClearUploadErrorLogList(expID) {
+    ClearUploadErrorLogList(expID : number) {
 
         this.openConfirmationDialogDelErrorList(expID);
 
@@ -246,27 +248,28 @@ export class DashboardComponent implements OnInit {
 
     // ****************** Delete file for both QC error and missing animal info ***************
     // Delete File 
-    deleteFile(uploadID) {
+    deleteFile(uploadID : number) {
         this.openConfirmationDialogDelFile(uploadID);
     }
 
     // Delete File Dialog
-    openConfirmationDialogDelFile(uploadID) {
-        this.dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
+    openConfirmationDialogDelFile(uploadID : number) {
+        const dialogRefDelFile = this.dialog.open(DeleteConfirmDialogComponent, {
             disableClose: false
         });
-        this.dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
+        dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE;
 
-        this.dialogRefDelFile.afterClosed().subscribe(result => {
+        dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.experimentService.deleteFilebyID(uploadID).map(res => {
+                this.experimentService.deleteFilebyID(uploadID).pipe(map((_res : any) => {
                     this.spinnerService.hide();
                     //location.reload()
                     this.GetUploadLogList(this.experimentID);
-                }).subscribe();
+                })).subscribe();
             }
-            this.dialogRefDelFile = null;
+            //this.dialogRefDelFile = null;
+            dialogRefDelFile.close();
         });
     }
 

@@ -1,44 +1,38 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { Request } from '../models/request';
 import { RequestService } from '../services/request.service';
-import { SharedModule } from '../shared/shared.module';
 import { FIELDISREQUIRED, INVALIDEMAILADDRESS } from '../shared/messages';
 
 
 
 @Component({
 
-    selector: 'app-reqMouseLineDialoge',
+    selector: 'app-reqmouseline-dialoge',
     templateUrl: './reqMouseLineDialoge.component.html',
     styleUrls: ['./reqMouseLineDialoge.component.scss'],
     providers: [RequestService]
 
 })
-export class ReqMouseLineDialogeComponent implements OnInit {
+export class ReqMouseLineDialogeComponent {
 
     // Defining Models Parameters
 
-    reqNameModel: string;
-    reqEmailModel: string;
-    reqStrainModel: string;
     reqGenoModel: string;
-    geneticModificationModel: string
     refModel: string
     controlModel: string
    
    // DEfining obj model parameters        
-    private _request = new Request();
+    private _request: Request;
 
-    // FormControl Parameters
+    // UntypedFormControl Parameters
 
-    name = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.pattern("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")]);
-    strain = new FormControl('', [Validators.required]);
-    geneticModi = new FormControl('', [Validators.required]);
-    //control = new FormControl('', [Validators.required]);
+    name: UntypedFormControl;
+    email: UntypedFormControl;
+    strain: UntypedFormControl;
+    geneticModi: UntypedFormControl;
+    //control = new UntypedFormControl('', [Validators.required]);
     
 
     // List of GeneticModification for Mouse line
@@ -54,10 +48,22 @@ export class ReqMouseLineDialogeComponent implements OnInit {
 
     constructor(public thisDialogRef: MatDialogRef<ReqMouseLineDialogeComponent>,
          
-        private requestService: RequestService, ) { }
+        private requestService: RequestService,
+        private fb: UntypedFormBuilder,
+        @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    ngOnInit() {
-      
+        this.reqGenoModel = '';
+        this.refModel = '';
+        this.controlModel = '';
+        this.name = fb.control('', [Validators.required]);
+        this.email = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);
+        this.strain = fb.control('', [Validators.required]);
+        this.geneticModi = fb.control('', [Validators.required])
+        this._request = {
+            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
+            subModel: '', taskCategory: '', taskName: '', type: ''
+        }
     }
 
     onCloseCancel(): void {
@@ -70,11 +76,11 @@ export class ReqMouseLineDialogeComponent implements OnInit {
     onCloseSubmit(): void {
 
         // building request object
-        this._request.fullName = this.reqNameModel;
-        this._request.email = this.reqEmailModel;
-        this._request.mouseStrain = this.reqStrainModel;
+        this._request.fullName = this.name.value;
+        this._request.email = this.email.value;
+        this._request.mouseStrain = this.strain.value;
         this._request.genotype = this.reqGenoModel;
-        this._request.geneticModification = this.geneticModificationModel;
+        this._request.geneticModification = this.geneticModi.value;
         this._request.strainReference = this.refModel;
         this._request.controlSuggestion = this.controlModel;
 

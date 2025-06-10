@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject ,  Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { throwError } from 'rxjs';
 
 import { TaskAnalysis } from '../models/taskAnalysis';
 
@@ -47,23 +46,31 @@ import { AuthenticationService } from './authentication.service';
     }
 
 
-    public create(taskAnalysis: TaskAnalysis): void {
+    public create(taskAnalysis: TaskAnalysis): Observable<any> {
 
         const body: string = JSON.stringify(taskAnalysis);
 
-        this.http.post("/api/taskAnalysis/CreateTaskAnalysis", body ,{
+        return this.http.post("/api/taskAnalysis/CreateTaskAnalysis", body ,{
             headers: this.authenticationService.getAuthorizationHeader()
-        })
-            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
+        }).pipe(
+            map((res: any) => { /*console.log(res);*/return res; }));
 
     }
 
-    public getTaskAnalysisByID(taskAnalysisID: number): void {
+    public getTaskAnalysisByID(taskAnalysisID: number): Observable<any> {
 
-        this.http.post("/api/taskAnalysis/GetTaskAnalysisByID", taskAnalysisID, {
+        return this.http.post("/api/taskAnalysis/GetTaskAnalysisByID", taskAnalysisID, {
             headers: this.authenticationService.getAuthorizationHeader()
-        })
-            .map((res: Response) => { /*console.log(res);*/ }).subscribe();
+        }).pipe(
+            map((res: any) => {
+                //console.log('TaskAnalysis created successfully:', res);
+                return res; // Return response for further processing if needed
+            }),
+            catchError((error: any) => {
+                //console.error('Error creating TaskAnalysis:', error);
+                return throwError(() => error); // Rethrow the error for the caller to handle
+            })
+        );
 
     }
 

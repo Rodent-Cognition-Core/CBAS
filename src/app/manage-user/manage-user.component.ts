@@ -1,8 +1,7 @@
-import { Component, OnInit, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ManageUserService } from '../services/manageuser.service';
 import { PagerService } from '../services/pager.service';
-import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { IdentityService } from '../services/identity.service';
 import { User } from '../models/user';
 
@@ -19,7 +18,7 @@ export class ManageUserComponent implements OnInit {
     userList: any;
     expfilter: any = '';
     pager: any = {};
-    _user = new User();
+    _user: User;
 
 
     constructor(
@@ -27,6 +26,9 @@ export class ManageUserComponent implements OnInit {
         public dialog: MatDialog,
         private manageruserService: ManageUserService,
         private identityService: IdentityService) {
+
+        this.pagedItems = [];
+        this._user = { Email: '', familyName: '', givenName: '', roles: [], selectedPiSiteIds: [], termsConfirmed: false, userName: '' }
     } 
 
     ngOnInit() {
@@ -36,7 +38,7 @@ export class ManageUserComponent implements OnInit {
 
     getUserList() {
 
-        this.manageruserService.GetAllUser().subscribe(data => {
+        this.manageruserService.GetAllUser().subscribe((data : any) => {
             this.userList = data;
             this.setPage(1);
             //console.log(this.userList);
@@ -46,9 +48,10 @@ export class ManageUserComponent implements OnInit {
 
     // Function defintion to add pagination to tabl Uploadlist (minor errors)
     setPage(page: number) {
-        var filteredItems = this.userList;
+        let filteredItems = this.userList;
 
         filteredItems = this.filterByString(this.userList, this.expfilter);
+        //console.log(filteredItems);
 
         // get pager object from service
         this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
@@ -66,12 +69,12 @@ export class ManageUserComponent implements OnInit {
         this.setPage(1);
     }
 
-    filterByString(data, s): any {
+    filterByString(data: any, s: string): any {
         s = s.trim();
-        //console.log(s.toString());
-        return data.filter(e => e.email.includes(s) || e.familyName.includes(s) || e.givenName.includes(s) || e.emailConfirmed.toString().includes(s)); // || e.another.includes(s)
-        //.sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
-    }
+        return data.filter((e: any) => e.email.includes(s) || e.familyName.includes(s) ||
+              e.givenName.includes(s) || e.emailConfirmed.toString().includes(s));
+      }
+    
 
     // Delete User
     deleteUser(username: string) {
@@ -83,7 +86,7 @@ export class ManageUserComponent implements OnInit {
         this._user.Email = email;
         this._user.givenName = givenName;
         this._user.familyName = familyName;
-        this.manageruserService.approve(this._user).subscribe(data => {
+        this.manageruserService.approve(this._user).subscribe((_data : any) => {
             this.getUserList();
         })
     }
@@ -91,7 +94,7 @@ export class ManageUserComponent implements OnInit {
     // Lock User
     lockUser(email: string) {
 
-        this.manageruserService.lock(email).subscribe(data => {
+        this.manageruserService.lock(email).subscribe((_data : any) => {
             this.getUserList();
         })
 

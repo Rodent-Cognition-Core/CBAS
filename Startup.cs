@@ -13,7 +13,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Nest;
+using Serilog;
+using Serilog.Exceptions;
 
 namespace AngularSPAWebAPI
 {
@@ -23,8 +26,11 @@ namespace AngularSPAWebAPI
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+
             Configuration = configuration;
+
             currentEnvironment = env;
+            Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -32,12 +38,14 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // By setting EnableEndpointRouting to false, you can continue using the traditional MVC routing setup
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             //// SQLite & Identity.
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Environment.GetEnvironmentVariable("DEF_CONN")));
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("PubScreenConnection")));
@@ -78,6 +86,8 @@ namespace AngularSPAWebAPI
             //services.Add(ServiceDescriptor.Transient<IElasticClient, EmailSender>());
             services.AddElasticSearch(Configuration);
 
+            //Adds serilog to 
+            services.AddSerilog();
 
             // Uncomment this line for publuishing
             //services.AddIdentityServer(options =>
@@ -109,23 +119,33 @@ namespace AngularSPAWebAPI
             else
             {
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = "http://localhost:5000/";
-                        options.RequireHttpsMetadata = false;
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000/";
+                    options.RequireHttpsMetadata = false;
 
-                        options.ApiName = "WebAPI";
-                    });
+                    options.ApiName = "WebAPI";
+                });
             }
 
 
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
+                options.AddPolicy("LocalCorsPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
+
+                options.AddPolicy("ProductionCorsPolicy", builder =>
+                {
+                    builder.WithOrigins("https://mousebytes.ca") // Production origins
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
             });
 
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
@@ -142,16 +162,24 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSerilogRequestLogging(); // To enable Serilog request logging
             if (env.IsDevelopment())
             {
+                app.UseCors("LocalCorsPolicy");
                 app.UseDeveloperExceptionPage();
-
                 // Starts "npm start" command using Shell extension.
                 app.Shell("npm start");
             }
+            else
+            {
+                app.UseCors("ProductionCorsPolicy");
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+           
 
-            app.UseCors("CorsPolicy");
-
+            app.UseHttpsRedirection();
+            app.UseRouting();
 
 
             // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
@@ -214,20 +242,8 @@ namespace AngularSPAWebAPI
             // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
             // Uses default files as index.html.
             app.UseDefaultFiles();
-            // Uses static file for the current path.
+            // this should always be the last middleware
             app.UseStaticFiles();
-
-            //var forwardOptions = new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-            //    RequireHeaderSymmetry = false
-            //};
-
-            //forwardOptions.KnownNetworks.Clear();
-            //forwardOptions.KnownProxies.Clear();
-
-
-            //app.UseForwardedHeaders(forwardOptions);
 
 
         }

@@ -1,11 +1,7 @@
-import { Component, OnInit, Inject, NgModule } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormControl, Validators, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import { Animal } from '../models/animal';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IdentityService } from '../services/identity.service';
-import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
 
 @Component({
@@ -14,7 +10,7 @@ import { PASSWORDSUCCESSFULLYCHANGED } from '../shared/messages';
     styleUrls: ['./password-dialog.component.scss'],
     providers: [IdentityService]
 })
-export class PasswordDialogComponent implements OnInit {
+export class PasswordDialogComponent {
 
     // Parameters Initialization
     model: any = {};
@@ -25,14 +21,8 @@ export class PasswordDialogComponent implements OnInit {
     constructor(public thisDialogRef: MatDialogRef<PasswordDialogComponent>,
 
         private identityService: IdentityService,
-        private snackBar: MatSnackBar,) { }
-
-    ngOnInit() {
-
-
-
-
-    }
+        private snackBar: MatSnackBar,
+        @Inject(MAT_DIALOG_DATA) public data: any) { }
 
 
     onCloseCancel(): void {
@@ -65,9 +55,9 @@ export class PasswordDialogComponent implements OnInit {
                 }
 
             },
-            (error: any) => {
-                const errMsg = (error.message) ? error.message :
-                    error.status ? `${error.status} - ${error.statusText}` : "Server error";
+            (_error: any) => {
+                // const errMsg = (error.message) ? error.message :
+                //     error.status ? `${error.status} - ${error.statusText}` : "Server error";
                 //console.log(errMsg);
                 this.errorMessages.push({ description: "Server error. Try later." });
             });
