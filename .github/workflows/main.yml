@@ -1,36 +1,44 @@
-name: Approve and Merge PR
+name: Merge Dev to Staging and Deploy via Docker
 
+# Trigger this workflow when code is pushed to the dev branch
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - dev
 
 jobs:
-  approve-and-merge:
-    runs-on: ubuntu-latest
+  merge-and-deploy:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
-    - name: Get PR Author Username
-      id: get_pr_author
-      run: |
-        PR_AUTHOR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.user.login')
-        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
+      # Step 1: Checkout the full repository including all branches
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required to access all branches for merging
 
-    - name: Debug PR Author Username
-      run: |
-        echo "PR_AUTHOR: ${{ env.PR_AUTHOR }}"
+      # Step 2: Set up Git user for committing the merge
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-    - name: Check PR Author Username
-      env:
-        PR_AUTHOR: ${{ env.PR_AUTHOR }}
-      run: |
-        if [[ "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
-          echo "PR author is not allowed to merge."
-          exit 1
-        fi
+      # Step 3: Merge dev into staging and push the changes
+      - name: Merge dev into staging
+        run: |
+          git checkout staging                      # Switch to staging branch
+          git merge origin/dev --no-ff -m "Auto-merge dev into staging"  # Merge dev
+          git push origin staging                   # Push updated staging branch
 
-    - name: Merge PR
-      if: success()
-      run: |
-        gh pr merge ${{ github.event.pull_request.number }} --merge
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Step 4: SSH into the server and deploy using Docker
+      - name: Deploy to self-hosted server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}             # Server IP or domain
+          username: ${{ secrets.SSH_USER }}         # SSH username
+          key: ${{ secrets.SSH_KEY }}               # SSH private key
+          script: |
+            cd /path/to/your/app                    # Navigate to app directory
+            git pull origin staging                 # Pull latest code from staging
+            docker compose down                     # Stop running containers
+            docker compose up -d --build            # Rebuild and start containers in detached mode
