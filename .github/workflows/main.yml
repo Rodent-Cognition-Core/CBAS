@@ -9,6 +9,7 @@ on:
 jobs:
   merge-and-deploy:
     runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    environment: staging
 
     steps:
       # Step 1: Checkout the full repository including all branches
