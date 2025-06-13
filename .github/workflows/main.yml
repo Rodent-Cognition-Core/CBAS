@@ -98,14 +98,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: staging
-
-      # Stop and remove existing Docker containers
+          
+      - name: Copy code to staging directory
+        run: |
+          rsync -av --delete . /cephfs/staging/cbas/
+          
+        # Stop and remove existing Docker containers
       - name: Stop and remove existing containers
         run: |
           docker-compose down
-
+       
       # Pull latest images (if using image tags) and rebuild containers
       - name: Pull latest images and start containers
+        working-directory: /cephfs/staging/cbas
         run: |
           docker-compose pull
           docker-compose up -d --build  # Rebuild and start containers in detached mode
