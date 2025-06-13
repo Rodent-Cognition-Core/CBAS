@@ -4,7 +4,7 @@ name: Merge Dev to Staging and Deploy via Docker
 on:
   push:
     branches:
-      - dev
+      - develop
 
 jobs:
   merge-and-deploy:
@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}         # SSH username
           key: ${{ secrets.SSH_KEY }}               # SSH private key
           script: |
-            cd /path/to/your/app                    # Navigate to app directory
+            cd /cephfs/staging/CBAS                    # Navigate to app directory
             git pull origin staging                 # Pull latest code from staging
             docker compose down                     # Stop running containers
             docker compose up -d --build            # Rebuild and start containers in detached mode
