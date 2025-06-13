@@ -1,45 +1,111 @@
-name: Merge Dev to Staging and Deploy via Docker
+# name: Merge Dev to Staging and Deploy via Docker
 
-# Trigger this workflow when code is pushed to the dev branch
+# # Trigger this workflow when code is pushed to the dev branch
+# on:
+#   push:
+#     branches:
+#       - develop
+
+# jobs:
+#   merge-and-deploy:
+#     runs-on: self-hosted  # Use the latest Ubuntu runner
+#     #environment: staging
+
+#     steps:
+#       # Step 1: Checkout the full repository including all branches
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Required to access all branches for merging
+
+#       # Step 2: Set up Git user for committing the merge
+#       - name: Set up Git
+#         run: |
+#           git config user.name "github-actions"
+#           git config user.email "github-actions@github.com"
+
+#       # Step 3: Merge dev into staging and push the changes
+#       - name: Merge dev into staging
+#         run: |
+#           git checkout staging                      # Switch to staging branch
+#           git merge origin/develop --no-ff -m "Auto-merge dev into staging"  # Merge dev
+#           git push origin staging                   # Push updated staging branch
+
+#       # Step 4: SSH into the server and deploy using Docker
+#       - name: Deploy to self-hosted server via SSH
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host: ${{ secrets.SSH_HOST }}             # Server IP or domain
+#           username: ${{ secrets.SSH_USER }}         # SSH username
+#           key: ${{ secrets.SSH_KEY }}               # SSH private key
+#           script: |
+#             cd /cephfs/staging/CBAS                    # Navigate to app directory
+#             git pull origin staging                 # Pull latest code from staging
+#             docker compose down                     # Stop running containers
+#             docker compose up -d --build            # Rebuild and start containers in detached mode
+
+name: Merge Dev to Staging and Deploy with Docker Compose
+
+# Trigger this workflow when code is pushed to the 'dev' branch
 on:
   push:
     branches:
       - develop
 
 jobs:
-  merge-and-deploy:
-    runs-on: self-hosted  # Use the latest Ubuntu runner
-    environment: staging
+  merge-to-staging:
+    name: Merge dev into staging
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the full repository including all branches
-      - name: Checkout code
+      # Checkout the repository with full history
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required to access all branches for merging
+          fetch-depth: 0
 
-      # Step 2: Set up Git user for committing the merge
-      - name: Set up Git
+      # Configure Git user for automated commits
+      - name: Configure Git
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 3: Merge dev into staging and push the changes
+      # Fetch all remote branches
+      - name: Fetch all branches
+        run: git fetch origin
+
+      # Switch to the staging branch
+      - name: Checkout staging
+        run: git checkout staging
+
+      # Merge the latest changes from dev into staging
       - name: Merge dev into staging
-        run: |
-          git checkout staging                      # Switch to staging branch
-          git merge origin/develop --no-ff -m "Auto-merge dev into staging"  # Merge dev
-          git push origin staging                   # Push updated staging branch
+        run: git merge origin/dev --no-ff -m "Auto-merged dev into staging"
 
-      # Step 4: SSH into the server and deploy using Docker
-      - name: Deploy to self-hosted server via SSH
-        uses: appleboy/ssh-action@v1.0.0
+      # Push the updated staging branch back to the remote
+      - name: Push to staging
+        run: git push origin staging
+
+  deploy-to-staging:
+    name: Deploy to Staging Site with Docker Compose
+    needs: merge-to-staging
+    runs-on: self-hosted  # This job runs on your self-hosted runner (staging server)
+    if: github.ref == 'refs/heads/dev'
+
+    steps:
+      # Checkout the updated staging branch
+      - name: Checkout staging branch
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.SSH_HOST }}             # Server IP or domain
-          username: ${{ secrets.SSH_USER }}         # SSH username
-          key: ${{ secrets.SSH_KEY }}               # SSH private key
-          script: |
-            cd /cephfs/staging/CBAS                    # Navigate to app directory
-            git pull origin staging                 # Pull latest code from staging
-            docker compose down                     # Stop running containers
-            docker compose up -d --build            # Rebuild and start containers in detached mode
+          ref: staging
+
+      # Stop and remove existing Docker containers
+      - name: Stop and remove existing containers
+        run: |
+          docker-compose down
+
+      # Pull latest images (if using image tags) and rebuild containers
+      - name: Pull latest images and start containers
+        run: |
+          docker-compose pull
+          docker-compose up -d --build  # Rebuild and start containers in detached mode
