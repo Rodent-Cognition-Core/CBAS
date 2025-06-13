@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}             # Server IP or domain
           username: ${{ secrets.SSH_USER }}         # SSH username
           key: ${{ secrets.SSH_KEY }}               # SSH private key
-          run: |
+          script: |
             cd /cephfs/staging/CBAS                    # Navigate to app directory
             git pull origin staging                 # Pull latest code from staging
             docker compose down                     # Stop running containers
