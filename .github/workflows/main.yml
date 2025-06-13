@@ -101,7 +101,7 @@ jobs:
           
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete . /cephfs/staging/cbas/
+          rsync -av --delete . /cephfs/staging/CBAS/
           
         # Stop and remove existing Docker containers
       - name: Stop and remove existing containers
@@ -110,7 +110,7 @@ jobs:
        
       # Pull latest images (if using image tags) and rebuild containers
       - name: Pull latest images and start containers
-        working-directory: /cephfs/staging/cbas
+        working-directory: /cephfs/staging/CBAS
         run: |
           docker-compose pull
           docker-compose up -d --build  # Rebuild and start containers in detached mode
