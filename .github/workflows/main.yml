@@ -9,7 +9,7 @@ on:
 jobs:
   merge-and-deploy:
     runs-on: self-hosted  # Use the latest Ubuntu runner
-    #environment: staging
+    environment: staging
 
     steps:
       # Step 1: Checkout the full repository including all branches
