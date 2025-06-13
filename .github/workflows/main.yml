@@ -80,7 +80,7 @@ jobs:
 
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
-        run: git merge origin/dev --no-ff -m "Auto-merged dev into staging"
+        run: git merge origin/develop --no-ff -m "Auto-merged dev into staging"
 
       # Push the updated staging branch back to the remote
       - name: Push to staging
@@ -90,7 +90,7 @@ jobs:
     name: Deploy to Staging Site with Docker Compose
     needs: merge-to-staging
     runs-on: self-hosted  # This job runs on your self-hosted runner (staging server)
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/develop'
 
     steps:
       # Checkout the updated staging branch
