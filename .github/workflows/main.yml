@@ -27,7 +27,7 @@ jobs:
       - name: Merge dev into staging
         run: |
           git checkout staging                      # Switch to staging branch
-          git merge origin/dev --no-ff -m "Auto-merge dev into staging"  # Merge dev
+          git merge origin/develop --no-ff -m "Auto-merge dev into staging"  # Merge dev
           git push origin staging                   # Push updated staging branch
 
       # Step 4: SSH into the server and deploy using Docker
