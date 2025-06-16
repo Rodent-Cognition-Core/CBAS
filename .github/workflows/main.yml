@@ -72,18 +72,22 @@ jobs:
 
       # Fetch all remote branches
       - name: Fetch all branches
+        working-directory: /cephfs/staging/CBAS
         run: git fetch origin
 
       # Switch to the staging branch
       - name: Checkout staging
+        working-directory: /cephfs/staging/CBAS
         run: git checkout staging
 
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
+        working-directory: /cephfs/staging/CBAS
         run: git merge origin/develop --no-ff -m "Auto-merged dev into staging"
 
       # Push the updated staging branch back to the remote
       - name: Push to staging
+        working-directory: /cephfs/staging/CBAS
         run: git push origin staging
 
   deploy-to-staging:
