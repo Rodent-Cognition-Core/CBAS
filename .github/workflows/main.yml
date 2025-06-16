@@ -105,6 +105,7 @@ jobs:
           
         # Stop and remove existing Docker containers
       - name: Stop and remove existing containers
+        working-directory: /cephfs/staging/CBAS
         run: |
           docker-compose down
        
