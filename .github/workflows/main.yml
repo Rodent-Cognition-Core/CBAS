@@ -99,9 +99,10 @@ jobs:
         with:
           ref: staging
           
-      # - name: Copy code to staging directory
-      #   run: |
-      #     rsync -av --delete . /cephfs/staging/CBAS/
+      - name: Copy code to staging directory
+        run: |
+          rsync -av --delete --exclude='.env' . /cephfs/staging/CBAS/
+
           
         # Stop and remove existing Docker containers
       - name: Stop and remove existing containers
