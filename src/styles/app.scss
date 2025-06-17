@@ -900,34 +900,13 @@ footer {
     }
 }
 
-.mat-toolbar {
-    .mat-icon {
-        cursor: pointer;
-    }
 
-    .app-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        margin-left: 24px;
-        margin-right: 8px;
-
-        @media ($xsmall) {
-            margin-left: 16px;
-            margin-right: 0px;
-        }
-    }
-    .mat-tooltip {
-        margin: 0 !important;
-        clear: both;
-        transform: translateX(1px);
-    }
-
-    mat-tooltip-component {
-        position: inherit;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: max-content;
-    }
+.mdc-tooltip {
+    display:absolute;
+    width:auto;
+    padding-left:10px;
+    padding:0;
+    clear:both;
+    margin:0;
+    left:50%;
 }
