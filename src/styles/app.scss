@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     box-sizing: border-box;
     height: 100%;
     margin: 0;
@@ -126,7 +127,7 @@ body {
     vertical-align: middle;
     text-transform: uppercase;
     font-size: 14px;
-    letter-spacing: 0.025em
+    letter-spacing: 0.025em;
 }
 
 .top-nav-ul li {
@@ -176,7 +177,7 @@ body {
     margin: 0px auto;
     //margin: 0 0 32px 0;
     width: 90%;
-    box-shadow: 0 2px 2px rgba(0,0,0,.24), 0 0 2px rgba(0,0,0,.12);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
 }
 
 table {
@@ -197,7 +198,8 @@ th {
     //text-align: internal-center;
 }
 
-td, th {
+td,
+th {
     display: table-cell;
     vertical-align: inherit;
 }
@@ -234,7 +236,7 @@ thead {
 }
 
 .docs-markdown-td {
-    border: 1px solid rgba(0,0,0,.03);
+    border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .top-menu-title {
@@ -274,7 +276,7 @@ thead {
 }
 
 .pagination-custom a {
-    color: #85929E;
+    color: #85929e;
     float: left;
     padding: 8px 16px;
     text-decoration: none;
@@ -315,7 +317,7 @@ thead {
 }
 
 .naviMenu ul.top-nav-ul li a:hover {
-    color: #8F55E0;
+    color: #8f55e0;
     border-bottom: 5px solid #354248;
     font-size: 18px;
     font-weight: bold;
@@ -347,8 +349,8 @@ thead {
     opacity: 0;
     top: 100%;
     left: 0;
-    -webkit-transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
-    transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    -webkit-transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
+    transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
     display: block;
     background-color: transparentize($color: #000000, $amount: 0.1);
     padding-left: 0px;
@@ -364,7 +366,7 @@ thead {
 .naviMenu ul.top-nav-ul > li > ul > li {
     text-align: left;
     white-space: nowrap;
-    padding: 0 .2em;
+    padding: 0 0.2em;
 }
 
 .naviMenu ul.top-nav-ul > li > ul > li > a {
@@ -376,7 +378,7 @@ thead {
 
 .naviMenu ul.top-nav-ul > li > ul > li > a:hover {
     border-bottom: none;
-    color: #8F55E0;
+    color: #8f55e0;
     font-size: 18px;
     font-weight: bold;
     font-family: "Raleway", sans-serif;
@@ -388,7 +390,7 @@ thead {
 }
 
 .naviMenu ul.top-nav-ul > li > ul li {
-    border-bottom: 1px solid #bcbcbc
+    border-bottom: 1px solid #bcbcbc;
 }
 
 .naviMenu ul.top-nav-ul-sm li a {
@@ -403,8 +405,8 @@ thead {
 }
 
 .naviMenu ul.top-nav-ul-sm li a:hover {
-    color: #8F55E0;
-    border-bottom: 5px solid #8F55E0;
+    color: #8f55e0;
+    border-bottom: 5px solid #8f55e0;
     font-size: 12px;
     font-weight: bold;
     font-family: "Raleway", sans-serif;
@@ -435,8 +437,8 @@ thead {
     opacity: 0;
     top: 100%;
     left: 0;
-    -webkit-transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
-    transition: max-height .6s ease-in-out,opacity .2s ease-in-out;
+    -webkit-transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
+    transition: max-height 0.6s ease-in-out, opacity 0.2s ease-in-out;
     display: block;
     background-color: transparentize($color: #000000, $amount: 0.1);
     padding-left: 0px;
@@ -452,7 +454,7 @@ thead {
 .naviMenu ul.top-nav-ul-sm > li > ul > li {
     text-align: left;
     white-space: nowrap;
-    padding: 0 .2em;
+    padding: 0 0.2em;
 }
 
 .naviMenu ul.top-nav-ul-sm > li > ul > li > a {
@@ -464,7 +466,7 @@ thead {
 
 .naviMenu ul.top-nav-ul-sm > li > ul > li > a:hover {
     border-bottom: none;
-    color: #8F55E0;
+    color: #8f55e0;
     font-size: 12px;
     font-weight: bold;
     font-family: "Raleway", sans-serif;
@@ -476,13 +478,10 @@ thead {
 }
 
 .naviMenu ul.top-nav-ul-sm > li > ul li {
-    border-bottom: 1px solid #bcbcbc
+    border-bottom: 1px solid #bcbcbc;
 }
 
 // top nav menu end ------------------------------------------
-
-
-
 
 .all-wrap {
     min-height: 100vh;
@@ -497,7 +496,6 @@ thead {
 .content {
     flex: 1;
 }
-
 
 main {
     display: flex;
@@ -525,7 +523,7 @@ footer {
 //     flex-grow: 1;
 // }
 
-.hideIt{
+.hideIt {
     display: none;
 }
 
@@ -535,12 +533,12 @@ footer {
 
 .bgRow {
     background-size: 100% 100%;
-    padding:5% 8%;
+    padding: 5% 8%;
     box-sizing: border-box;
     position: relative;
     background-repeat: no-repeat;
     background-position: center;
-    height:400px;
+    height: 400px;
 }
 
 .bgRowXs {
@@ -552,7 +550,6 @@ footer {
     background-position: center;
     height: 400px;
 }
-
 
 .topImage {
     background-size: 100% 100%;
@@ -582,7 +579,7 @@ footer {
     padding: 0 10px;
 }
 
-.logoLessPadding{
+.logoLessPadding {
     padding: 0 10px !important;
 }
 
@@ -594,38 +591,38 @@ footer {
     height: 100vh;
     display: flex;
     flex-direction: column;
-  }
+}
 
 .app-sidebar {
-  width: 250px;
-  background-color: #EDEDEE;
-  padding: 20px;
+    width: 250px;
+    background-color: #ededee;
+    padding: 20px;
 }
 
 .sidebar-logo img {
-  max-width: 150px;
+    max-width: 150px;
 }
 
 .top-toolbar {
-  background-color: #8F55E0;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  height: 30px;
+    background-color: #8f55e0;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
 }
 
 .logo-toolbar {
-  background-color: #EDEDEE;
+    background-color: #ededee;
 }
 
 .horizontal-nav {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 
 .footer-content {
-  text-align: center;
-  color: #d7d7d7;
+    text-align: center;
+    color: #d7d7d7;
 }
 
 .horizontal-nav {
@@ -635,16 +632,16 @@ footer {
     flex-direction: row;
     /* You might want to adjust the padding as needed */
     padding: 0 30px;
-  }
-  
-  /* Style for each navigation section (dropdown) */
-  .horizontal-nav .nav-dropdown {
+}
+
+/* Style for each navigation section (dropdown) */
+.horizontal-nav .nav-dropdown {
     position: relative;
     margin-right: 20px; /* Adjust spacing between sections */
-  }
-  
-  /* Style for the main title of each section */
-  .horizontal-nav .nav-dropdown > span {
+}
+
+/* Style for the main title of each section */
+.horizontal-nav .nav-dropdown > span {
     color: #354248; /* Same as the naviMenu link color */
     font-size: 18px; /* Same as the naviMenu link font size */
     font-weight: bold; /* Same as the naviMenu link font weight */
@@ -654,11 +651,11 @@ footer {
     display: inline-block;
     cursor: pointer; /* Indicate it's clickable */
     padding: 10px 0; /* Add some vertical padding for better touch area */
-  }
-  
-  /* Hover state for the main title */
-  .horizontal-nav .nav-dropdown > span:hover {
-    color: #8F55E0; /* Same as the naviMenu link hover color */
+}
+
+/* Hover state for the main title */
+.horizontal-nav .nav-dropdown > span:hover {
+    color: #8f55e0; /* Same as the naviMenu link hover color */
     border-bottom: 5px solid #354248; /* Same as the naviMenu link hover bottom border */
     /* Keep the same font styles on hover */
     font-size: 18px;
@@ -668,36 +665,39 @@ footer {
     text-transform: uppercase;
     display: inline-block;
     cursor: pointer;
-  }
-  
-  /* Style for the dropdown list */
-  .horizontal-nav .nav-dropdown ul {
+}
+
+/* Style for the dropdown list */
+.horizontal-nav .nav-dropdown ul {
     list-style: none;
     padding: 0;
     margin: 0;
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: transparentize(#000000, 0.1); /* Similar background as naviMenu */
+    background-color: transparentize(
+        #000000,
+        0.1
+    ); /* Similar background as naviMenu */
     min-width: 250px; /* Adjust as needed, similar to naviMenu */
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease-in-out, visibility 0s linear 0.2s; /* Transition for smooth show/hide */
-  }
-  
-  /* Style for each item in the dropdown list */
-  .horizontal-nav .nav-dropdown ul li {
+}
+
+/* Style for each item in the dropdown list */
+.horizontal-nav .nav-dropdown ul li {
     text-align: left;
     white-space: nowrap;
-    padding: 0 .1em;
+    padding: 0 0.1em;
     border-bottom: 1px solid #bcbcbc; /* Similar border as naviMenu */
     text-decoration: none;
-    overflow:hidden;
-  }
-  
-  /* Style for the links within the dropdown */
-  .horizontal-nav .nav-dropdown ul li a {
+    overflow: hidden;
+}
+
+/* Style for the links within the dropdown */
+.horizontal-nav .nav-dropdown ul li a {
     color: white; /* Similar color as naviMenu dropdown links */
     display: block;
     padding: 5px 0; /* Adjust padding for better spacing */
@@ -705,11 +705,11 @@ footer {
     font-weight: bold;
     font-family: "Raleway", sans-serif;
     text-decoration: none;
-  }
-  
-  /* Hover state for the dropdown links */
-  .horizontal-nav .nav-dropdown ul li a:hover {
-    color: #8F55E0; /* Same as naviMenu dropdown link hover color */
+}
+
+/* Hover state for the dropdown links */
+.horizontal-nav .nav-dropdown ul li a:hover {
+    color: #8f55e0; /* Same as naviMenu dropdown link hover color */
     border-bottom: none; /* Remove border on hover for dropdown links */
     font-size: 18px; /* Same font size as main nav links on hover */
     font-weight: bold; /* Same font weight as main nav links on hover */
@@ -719,89 +719,89 @@ footer {
     display: inline-block;
     padding: 5px 0; /* Keep the padding */
     cursor: pointer;
-  }
-  
-  /* Show the dropdown on hover */
-  .horizontal-nav .nav-dropdown:hover ul {
+}
+
+/* Show the dropdown on hover */
+.horizontal-nav .nav-dropdown:hover ul {
     opacity: 1;
     visibility: visible;
     transition-delay: 0s; /* Remove delay on visibility */
-  }
-  
-  /* Optional: Adjust spacing for the first section to accommodate the logo */
-  .horizontal-nav .nav-dropdown:first-child {
+}
+
+/* Optional: Adjust spacing for the first section to accommodate the logo */
+.horizontal-nav .nav-dropdown:first-child {
     margin-left: 0; /* Or adjust as needed */
-  }
-  
-  /* You might need to add specific styling for the logo if it's part of the horizontal-nav */
-  .horizontal-nav span a img {
+}
+
+/* You might need to add specific styling for the logo if it's part of the horizontal-nav */
+.horizontal-nav span a img {
     width: 180px; /* Match the logo width */
     vertical-align: middle; /* Align with the text */
     margin-right: 30px; /* Match the old padding */
-  }
+}
 
 .app-sidebar {
     width: 250px;
-    background-color: #EDEDEE;
+    background-color: #ededee;
     padding: 20px;
-  }
-  
-  .sidebar-logo img {
+}
+
+.sidebar-logo img {
     max-width: 150px;
-  }
-  
-  .footer-content {
+}
+
+.footer-content {
     text-align: center;
     color: #d7d7d7;
-  }
+}
 
-  .logo-container {
+.logo-container {
     display: flex;
     align-items: center;
     width: 100%; /* Take full width to center on mobile */
     justify-content: start; /* Center the logo by default */
-  }
-  
-  /* Mobile Logo */
-  .mobile-logo {
+}
+
+/* Mobile Logo */
+.mobile-logo {
     width: 100%;
     text-align: center;
-  }
-  
-  .mobile-logo a img {
+}
+
+.mobile-logo a img {
     width: 200px; /* Adjust as needed */
     vertical-align: middle;
-  }
-  
-  /* Tablet Logo */
-  .tablet-logo {
+}
+
+/* Tablet Logo */
+.tablet-logo {
     margin-right: 20px; /* Space between logo and menu */
-    float: left
-  }
-  
-  .tablet-logo a img {
+    float: left;
+}
+
+.tablet-logo a img {
     width: 120px; /* Adjust as needed */
     vertical-align: middle;
-  }
-  
-  /* Desktop Logo and Navigation */
-  .desktop-nav {
+}
+
+/* Desktop Logo and Navigation */
+.desktop-nav {
     display: flex;
     align-items: center;
     float: left;
-    flex-direction: row
-  }
-  
-  .desktop-nav .logo {
+    flex-direction: row;
+}
+
+.desktop-nav .logo {
     margin-right: 30px; /* Space between logo and menu */
-  }
-  
-  .desktop-nav .logo img {
+}
+
+.desktop-nav .logo img {
     width: 180px; /* Adjust as needed */
     vertical-align: middle;
-  }
+}
 
-  .auth-links .mat-mdc-button-base{
+.auth-links .mat-mdc-button-base {
     min-width: 40px;
     width: 20px;
     height: 20px;
@@ -812,8 +812,8 @@ footer {
     padding: 0 0;
     margin: 0 5px;
     font-family: Roboto, Helvetica Neue, sans-serif;
-  }
-  .auth-links .user-greeting {
+}
+.auth-links .user-greeting {
     min-width: 40px;
     width: 20px;
     height: 20px;
@@ -824,16 +824,16 @@ footer {
     padding: 0 0;
     margin: 0;
     font-family: Roboto, Helvetica Neue, sans-serif;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 599px) {
+}
+
+/* Responsive adjustments */
+@media (max-width: 599px) {
     .horizontal-nav {
         display: none;
     }
-  }
+}
 
-  @media (min-width: 600px) and (max-width: 1023px) {
+@media (min-width: 600px) and (max-width: 1023px) {
     .desktop-nav .logo img {
         width: 130px;
     }
@@ -865,8 +865,8 @@ footer {
     .horizontal-nav .nav-dropdown ul li a:hover {
         font-size: 12px;
     }
-  }
-  @media (min-width: 1024px) and (max-width: 1350px) {
+}
+@media (min-width: 1024px) and (max-width: 1350px) {
     .desktop-nav .logo img {
         width: 150px;
     }
@@ -898,9 +898,9 @@ footer {
     .horizontal-nav .nav-dropdown ul li a:hover {
         font-size: 14px;
     }
-  }
+}
 
-  .mat-toolbar {
+.mat-toolbar {
     .mat-icon {
         cursor: pointer;
     }
@@ -918,16 +918,16 @@ footer {
             margin-right: 0px;
         }
     }
-.mat-tooltip {
-    margin: 0 !important;
-    clear: both;
-    transform: translateX(1px);
-}
+    .mat-tooltip {
+        margin: 0 !important;
+        clear: both;
+        transform: translateX(1px);
+    }
 
-mat-tooltip-component {
-    position: inherit;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: max-content;
+    mat-tooltip-component {
+        position: inherit;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: max-content;
+    }
 }
-  }
