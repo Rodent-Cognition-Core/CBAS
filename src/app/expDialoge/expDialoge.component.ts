@@ -16,8 +16,8 @@ import { EXPERIMENTNAMETAKEN, FIELDISREQUIRED, NAIFNOTAPPLICABLE } from '../shar
 @Component({
 
     selector: 'app-exp-dialoge',
-    templateUrl: './ExpDialoge.component.html',
-    styleUrls: ['./ExpDialoge.component.scss'],
+    templateUrl: './expDialoge.component.html',
+    styleUrls: ['./expDialoge.component.scss'],
     providers: [TaskAnalysisService, ExpDialogeService, PISiteService, CogbytesService]
 
 })
