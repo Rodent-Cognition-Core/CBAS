@@ -1271,9 +1271,6 @@ namespace AngularSPAWebAPI.Services
                         numSubjects = num;
                     };
 
-                    string doi = Convert.ToString(dr["DOI"].ToString());
-                    PubScreenSearch publication = GetPubScreenPaper(doi);
-
                     // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
                     using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID={UploadID} Order By DateUploaded"))
@@ -1296,21 +1293,9 @@ namespace AngularSPAWebAPI.Services
 
                     RepList.Add(new CogbytesSearch2
                     {
-                        RepoID = repID,
+                        RepoID = Int32.Parse(dr["RepID"].ToString()),
                         RepoLinkGuid = repoLinkGuid,
                         UploadID = UploadID,
-                        Title = Convert.ToString(dr["Title"].ToString()),
-                        Date = Convert.ToString(dr["Date"].ToString()),
-                        DOI = doi,
-                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
-                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
-                        Description = Convert.ToString(dr["Description"].ToString()),
-                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
-                        Link = Convert.ToString(dr["Link"].ToString()),
-                        Username = Convert.ToString(dr["Username"].ToString()),
-                        DateRepositoryCreated = Convert.ToString(dr["DateRepositoryCreated"].ToString()),
-                        Author = Convert.ToString(dr["Author"].ToString()),
-                        PI = Convert.ToString(dr["PI"].ToString()),
                         UploadName = Convert.ToString(dr["UploadName"].ToString()),
                         DateUpload = Convert.ToString(dr["DateUpload"].ToString()),
                         UploadDescription = Convert.ToString(dr["UploadDescription"].ToString()),
@@ -1328,9 +1313,7 @@ namespace AngularSPAWebAPI.Services
                         GenoType = Convert.ToString(dr["GenoType"].ToString()),
                         Age = Convert.ToString(dr["Age"].ToString()),
                         UploadFileList = FileList,
-                        Experiment = GetCogbytesExperimentList(repoLinkGuid),
-                        NumSubjects = numSubjects,
-                        Paper = publication
+                        NumSubjects = numSubjects
                     });
 
                 }
@@ -1340,7 +1323,38 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<CogBytesMetaData> GetMetaDataFromCogbytesByLinkGuid(Guid repoLinkGuid) {
+            List<CogBytesMetaData> RepList = new List<CogBytesMetaData>();
+            using (DataTable dt = Dal.GetDataTableCog($@"Select * From SearchCogMeta Where RepoLinkGuid = '{repoLinkGuid}'"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string doi = Convert.ToString(dr["DOI"].ToString());
+                    PubScreenSearch publication = GetPubScreenPaper(doi);
+                    RepList.Add(new CogBytesMetaData
+                    {
+                        RepoID = Int32.Parse(dr["RepID"].ToString()),
+                        RepoLinkGuid = repoLinkGuid,
+                        Title = Convert.ToString(dr["Title"].ToString()),
+                        Date = Convert.ToString(dr["Date"].ToString()),
+                        DOI = doi,
+                        Keywords = Convert.ToString(dr["Keywords"].ToString()),
+                        PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
+                        Description = Convert.ToString(dr["Description"].ToString()),
+                        AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
+                        Link = Convert.ToString(dr["Link"].ToString()),
+                        Username = Convert.ToString(dr["Username"].ToString()),
+                        DateRepositoryCreated = Convert.ToString(dr["DateRepositoryCreated"].ToString()),
+                        Author = Convert.ToString(dr["Authors"].ToString()),
+                        PI = Convert.ToString(dr["PIs"].ToString()),
+                        Experiment = GetCogbytesExperimentList(repoLinkGuid),
+                        Paper = publication
 
+                    });
+                }
+            }
+            return RepList;
+        }
 
         public async Task<Cogbytes> GetGuidByRepID(int repID)
         {
