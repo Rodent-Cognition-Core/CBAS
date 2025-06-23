@@ -72,6 +72,9 @@
                         <a mat-button routerLink="/profile" style="color: white;">Profile</a>
                         <a mat-button (click)="signout()" style="color: white;">Sign out</a>
                     </ng-container>
+                    <ng-container *ngIf="adminSignedIn | async">
+                        <a mat-button routerLink="/manage-user" style="color: white;">Users</a>
+                    </ng-container>
                 </div>
             </mat-toolbar>
 

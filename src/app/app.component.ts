@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Router, NavigationEnd } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthenticationService } from './services/authentication.service';
 import { User } from './models/user';
@@ -85,6 +85,8 @@ export class AppComponent implements OnInit {
         }
     ];
     signedIn: Observable<boolean>;
+    private isAdminStatus = new BehaviorSubject<boolean>(false);
+    public adminSignedIn: Observable<boolean> = this.isAdminStatus.asObservable();
 
     // public signedIn!: Observable<boolean>;
 
@@ -127,7 +129,7 @@ export class AppComponent implements OnInit {
                 gtag('config', 'G-D1Q51EVX8L', { 'page_path': event.urlAfterRedirects });
             }
         })
-
+        this.isAdminStatus.next(this.isAdmin);
    }
 
     ngOnInit() {
@@ -248,29 +250,23 @@ export class AppComponent implements OnInit {
         if(this.isDesktop) {
             this.navigationSections = [
                 {
-                    title: 'TOUCHSCREEN DATA',
+                    title: 'Repositories',
                     items:  [
-                        {name: 'Dashboard', route: '/mb-dashboard'},
-                        { name: 'Data Lab', route: '/data-extraction' },
-                        { name: 'Data Visualization', route: '/data-visualization' },
-                        { name: 'Search', route: '/search-experiment' },
-                        { name: 'Experiment', route: '/experiment', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: 'Upload', route: '/upload', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: 'Animal', route: '/animal-info', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: "Upload Log", route: '/dashboard', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Search Repositories', route: '/comp-search' },
                         { name: "User Management", route:'/manage-user', visibilityCondition: () => this.isAdmin}
                     ]
                 },
                 {
-                    title: 'MOUSEBYTES+',
+                    title: 'Analytics',
                     items:  [
-                        {name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: 'Search Repositories', route: '/comp-search' },
-                        { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} }
+                        { name: 'Repository Dashboard', route: '/mb-dashboard'},
+                        { name: 'Touchscreen Dashboard', route: '/data-visualization' },
+                        { name: 'Data Lab', route: '/data-extraction' }
                     ]
                 },
                 {
-                    title: 'PUBSCREEN',
+                    title: 'Pubscreen',
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
@@ -278,14 +274,14 @@ export class AppComponent implements OnInit {
                     ]
                 },
                 {
-                    title: 'TUTORIALS',
+                    title: 'Tutorials',
                     items:  [
                         { name: 'Guidelines', route: 'guideline' },
                         { name: 'Video Tutorials', route: 'video-tutorial' }
                     ]
                 },
                 {
-                    title: 'RESOURCES',
+                    title: 'Resources',
                     items:  [
                         { name: 'Contact US', route: 'contact-us' },
                         { name: 'Forms', route: 'forms' },
@@ -314,12 +310,11 @@ export class AppComponent implements OnInit {
         } else if (this.isTablet) {
             this.navigationSections = [
                 {
-                    title: 'DATA',
+                    title: 'Repositories',
                     items:  [
-                        {name: 'Dashboard', route: '/mb-dashboard'},
-                        { name: 'Data Lab', route: '/data-extraction' },
-                        { name: 'Data Visualization', route: '/data-visualization' },
-                        { name: 'Search', route: '/search-experiment' },
+                        { name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
+                        { name: 'Search Repositories', route: '/comp-search' },
+                        { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} },
                         { name: 'Experiment', route: '/experiment', visibilityCondition: () => this.isAdmin || this.isUser},
                         { name: 'Upload', route: '/upload', visibilityCondition: () => this.isAdmin || this.isUser},
                         { name: 'Animal', route: '/animal-info', visibilityCondition: () => this.isAdmin || this.isUser},
@@ -328,15 +323,15 @@ export class AppComponent implements OnInit {
                     ]
                 },
                 {
-                    title: 'MB+',
+                    title: 'Analytics',
                     items:  [
-                        {name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: 'Search Repositories', route: '/comp-search' },
-                        { name: 'Repositories', route: '/comp-search', queryParams: { showall: true} }
+                        { name: 'Repository Dashboard', route: '/mb-dashboard'},
+                        { name: 'Touchscreen Dashboard', route: '/data-visualization' },
+                        { name: 'Data Lab', route: '/data-extraction' }
                     ]
                 },
                 {
-                    title: 'PUBSCREEN',
+                    title: 'Pubscreen',
                     items:  [
                         {name: 'Pubscreen Dashboard', route: '/pubScreen-dashboard'},
                         { name: 'Add/Search Publications', route: '/pubScreen' },
@@ -344,14 +339,14 @@ export class AppComponent implements OnInit {
                     ]
                 },
                 {
-                    title: 'TUTORIALS',
+                    title: 'Tutorials',
                     items:  [
                         { name: 'Guidelines', route: 'guideline' },
                         { name: 'Video Tutorials', route: 'video-tutorial' }
                     ]
                 },
                 {
-                    title: 'RESOURCES',
+                    title: 'Resources',
                     items:  [
                         { name: 'Contact US', route: 'contact-us' },
                         { name: 'Forms', route: 'forms' },
