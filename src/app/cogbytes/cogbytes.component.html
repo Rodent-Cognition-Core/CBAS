@@ -1,7 +1,7 @@
-<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>MOUSEBYTES+ DATA REPOSITORIES</h1></div>
+<div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title"><h1>MOUSEBYTES REPOSITORIES</h1></div>
 
 <div>
-    <div class="content">
+    <!-- <div class="content">
         <p style="padding-left:50px; line-height: 1.8;">
             Touchscreen datasets can be coupled with different neuro-technologies such as fiber photometry, miniscopes, optogenetics, MRI, PET, and OMICs analysis to evaluate the brain basis of behaviour.
             In this new feature of MouseBytes, users can upload processed datasets, scripts and codes related to these and other technologies and link them to cognitive data in MouseBytes and raw data in
@@ -12,7 +12,7 @@
 
         </p>
 
-    </div>
+    </div> -->
 
     <!--<app-shared-pubscreen></app-shared-pubscreen>-->
     <!--***********************************************************************************************************
@@ -78,13 +78,15 @@
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
-                            <mat-expansion-panel *ngIf="getRep().experiment.length>0">
+                            <mat-expansion-panel>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         <span style="color: #A569BD;">MouseBytes datasets associated to this repository:</span>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                                <!-- <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p> -->
+                                <button mat-icon-button matTooltip="Add Touchscreen Dataset" (click)="createNewTouchscreenDataset(null)"><mat-icon>add</mat-icon></button>
+                                <label>Add Touchscreen Dataset</label>
                                 <table>
                                     <tr *ngFor="let exp of getRep().experiment">
                                         <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>

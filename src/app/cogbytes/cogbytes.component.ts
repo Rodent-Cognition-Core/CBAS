@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
+import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -176,6 +177,20 @@ export class CogbytesComponent implements OnInit, OnDestroy {
             dialogRef.close();
         });
     }
+
+    createNewTouchscreenDataset(Experiment : any): void {
+        const dialogRef = this.dialog.open(ExpDialogeComponent, {
+            height: '850px',
+            width: '1200px',
+            data: { experimentObj: Experiment }
+        });
+
+        dialogRef.afterClosed().subscribe((_result : any) => {
+            this.getRep();
+        })
+    }
+
+    refreshTouchscreenDataset(): void {}
 
     getRepID() : number {
         return this.repList[this.repList.map(function (x: any) { return x.id }).indexOf(this.repModel)].id;
