@@ -126,6 +126,75 @@
                             </textarea>
                         </mat-form-field>
 
+                        <br />
+
+                        <mat-form-field style="width:20%; ">
+                            <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" required multiple>
+                                <mat-option *ngFor="let task of taskList" [value]="task.id">
+                                    <span matTooltip="{{task.task}}">{{task.task}}</span>
+                                </mat-option>
+                            </mat-select>
+                        <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
+
+                        </mat-form-field>
+                                    <mat-form-field style="width:20%; padding-left:30px">
+                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjects.setValue(null)" multiple>
+                            <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                                <span matTooltip="{{species.species}}">{{species.species}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!--Number of Subjects-->
+                    <mat-form-field *ngIf="speciesModel!==null&&speciesModel.length>0" style="width:10%; padding-left:30px">
+                        <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects">
+                        <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:20%; padding-left:30px">
+                        <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                            <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                                <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:20%; padding-left:30px">
+                        <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                            <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                                <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <br />
+
+                    <mat-form-field style="width:20%; padding-left:0px">
+                        <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
+                            <mat-option *ngFor="let geno of genosList" [value]="geno.id">
+                                <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:20%; padding-left:30px">
+                        <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                            <mat-option *ngFor="let age of ageList" [value]="age.id">
+                                {{age.ageInMonth}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:20%; padding-left:30px">
+                        <textarea matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
+                                matAutosizeMaxRows="5"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:20%; padding-left:30px">
+                        <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
+                                matAutosizeMaxRows="5"></textarea>
+                    </mat-form-field>
+
                         <br /><br />
 
                         <!--Privacy Status-->

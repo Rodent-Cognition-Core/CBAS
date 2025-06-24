@@ -10,6 +10,7 @@ import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
 import { takeUntil } from 'rxjs/operators';
 import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialoge.component'
+import { FIELDISREQUIRED, INVALIDNUMBERICALVALUE } from '../shared/messages';
 
 @Component({
 
@@ -30,6 +31,16 @@ export class CogbytesDialogueComponent implements OnInit {
     additionalNotesModel: any;
     linkModel: any;
     piMultiSelect: any;
+    public speciesModel: any;
+    public sexModel: any;
+    public strainModel: any;
+    public genotypeModel: any;
+    public ageModel: any;
+    public housingModel: any;
+    public lightModel: any;
+    public intDesModel: any;
+    public imgDesModel: any;
+    public taskBatteryModel: any;
 
     // Definiing List Variables 
     authorList: any;
@@ -38,6 +49,12 @@ export class CogbytesDialogueComponent implements OnInit {
     yearList: any;
     paperInfoFromDoiList: any;
     paperInfo: any;
+    public taskList: any;
+    public speciesList: any;
+    public sexList: any;
+    public strainList: any;
+    public genosList: any;
+    public ageList: any;
 
     repID: any;
 
@@ -49,6 +66,9 @@ export class CogbytesDialogueComponent implements OnInit {
     title: UntypedFormControl;
     date: UntypedFormControl;
     privacyStatus: UntypedFormControl;
+    cognitiveTask: UntypedFormControl;
+    intervention: UntypedFormControl;
+    numSubjects: UntypedFormControl;
 
 
 
@@ -83,10 +103,23 @@ export class CogbytesDialogueComponent implements OnInit {
         this.title = fb.control('', [Validators.required])
         this.date = fb.control('', [Validators.required])
         this.privacyStatus = fb.control('', [Validators.required])
+        this.cognitiveTask = fb.control('', [Validators.required]);
+        this.intervention = fb.control('', [Validators.required]);
+        this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
         this._cogbytes = {
             additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
-            doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: ''
+            doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: '',
+            taskID: [], specieID: [], sexID: [], strainID: [], genoID: [], ageID: [], numSubjects: 0, housing: '',
+            lightCycle: '', taskBattery: ''
         }
+
+        this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe((data: any) => { this.speciesList = data; });
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genosList = data; });
+        this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+
         this.resetFormVals();
     }
 
@@ -94,7 +127,6 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.isEditMode = false;
 
-        this.resetFormVals();
         this.GetAuthorList();
         this.GetPIList();
 
@@ -266,6 +298,18 @@ export class CogbytesDialogueComponent implements OnInit {
         return this.privacyStatus.hasError('required') ? 'You must select a value' : '';
     }
 
+    getErrorMessageTask() {
+            return this.cognitiveTask.hasError('required') ? FIELDISREQUIRED : '';
+        }
+    
+    getErrorMessageIntervention() {
+        return this.intervention.hasError('required') ? FIELDISREQUIRED : '';
+    }
+
+    getErrorMessageNumSubjects() {
+        return this.numSubjects.hasError('pattern') ? INVALIDNUMBERICALVALUE: '';
+    }
+
     setDisabledVal() {
        
         if (
@@ -365,6 +409,18 @@ export class CogbytesDialogueComponent implements OnInit {
         this.additionalNotesModel = '';
         this.linkModel = '';
         this.pi.setValue([]);
+        this.cognitiveTask.setValue([]);
+        this.speciesModel = [];
+        this.sexModel = [];
+        this.strainModel = [];
+        this.genotypeModel = [];
+        this.ageModel = [];
+        this.housingModel = '';
+        this.lightModel = '';
+        this.intDesModel = '';
+        this.imgDesModel = '';
+        this.taskBatteryModel = '';
+        this.intervention.setValue(null);
     }
 
 
