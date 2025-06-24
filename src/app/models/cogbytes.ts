@@ -14,5 +14,15 @@ export interface Cogbytes {
     description: string;
     additionalNotes: string;
     dateRepositoryCreated: string;
+    taskID: Array<number>;
+    specieID: Array<number>;
+    sexID: Array<number>;
+    strainID: Array<number>;
+    genoID: Array<number>;
+    ageID: Array<number>;
+    numSubjects: number;
+    housing: string;
+    lightCycle: string;
+    taskBattery: string;
 
 }
