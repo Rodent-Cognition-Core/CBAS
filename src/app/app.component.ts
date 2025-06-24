@@ -141,6 +141,7 @@ export class AppComponent implements OnInit {
                 this.isAdmin = this.authenticationService.isInRole("administrator");
                 this.isUser = this.authenticationService.isInRole("user");
                 this.isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+                this.isAdminStatus.next(this.isAdmin);
             });
 
 
@@ -253,8 +254,7 @@ export class AppComponent implements OnInit {
                     title: 'Repositories',
                     items:  [
                         { name: 'Your Repositories', route: '/comp', visibilityCondition: () => this.isAdmin || this.isUser},
-                        { name: 'Search Repositories', route: '/comp-search' },
-                        { name: "User Management", route:'/manage-user', visibilityCondition: () => this.isAdmin}
+                        { name: 'Search Repositories', route: '/comp-search' }
                     ]
                 },
                 {
