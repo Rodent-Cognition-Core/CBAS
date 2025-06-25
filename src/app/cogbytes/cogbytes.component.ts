@@ -5,8 +5,11 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
+import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
 import { CogbytesUpload } from '../models/cogbytesUpload'
 import { CogbytesService } from '../services/cogbytes.service'
+import { AnimalService } from '../services/animal.service';
+import { PagerService } from '../services/pager.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { map } from 'rxjs/operators';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
@@ -27,12 +30,17 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     panelOpenState: boolean;
     showGeneratedLink: boolean;
     public repModel: any;
+    pager: any = {};
+    pagedItems: any[];
+    expfilter: any = '';
+    experimentID: any
 
     // Definiing List Variables
     repList: any;
     uploadList: any;
     authorList: any;
     piList: any;
+    AnimalList: any;
 
     _cogbytesUpload: CogbytesUpload;
 
@@ -49,7 +57,9 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
+        private animalService: AnimalService,
         private spinnerService: NgxSpinnerService,
+        private pagerService: PagerService,
         public dialogRefLink: MatDialog,
         public dialogRef: MatDialog
     )
@@ -67,6 +77,8 @@ export class CogbytesComponent implements OnInit, OnDestroy {
             housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
             lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
         }
+        this.pagedItems = [];
+        this.experimentID = 1;
 
         this.resetFormVals();
     }
@@ -190,6 +202,21 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         })
     }
 
+    addNewAnimal(animal?: any): void {
+        if (typeof animal == 'undefined') {
+            animal = null;
+        }
+        const dialogRef = this.dialog.open(AnimalDialogComponent, {
+            height: '480px',
+            width: '450px',
+            data: { experimentId: this.experimentID, animalObj: animal}
+        });
+
+        dialogRef.afterClosed().subscribe((_result : any) => {
+            this.GetAnimalInfo(this.experimentID);
+        })
+    }
+
     refreshTouchscreenDataset(): void {}
 
     getRepID() : number {
@@ -259,6 +286,41 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
     getLinkURL() {
         return "http://localhost:4200/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
+    }
+
+    GetAnimalInfo(selectedExperimentID: number) {
+        this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
+            this.AnimalList = data;
+            this.setPage(1);
+            //console.log(this.AnimalList)
+
+        });
+
+    }
+
+    setPage(page: number) {
+
+
+        var filteredItems = this.AnimalList;
+
+        filteredItems = this.filterByString(this.AnimalList, this.expfilter);
+
+        // get pager object from service
+        this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
+
+        if (page < 1 || page > this.pager.totalPages) {
+            this.pagedItems = [];
+            return;
+        }
+
+        // get current page of items
+        this.pagedItems = filteredItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
+    }
+
+    filterByString(data: any, s: string): any {
+        s = s.trim();
+        return data.filter((e : any) => e.userAnimalID.includes(s)); // || e.another.includes(s)
+        //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
 
 }

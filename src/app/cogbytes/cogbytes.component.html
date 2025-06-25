@@ -78,24 +78,6 @@
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title>
-                                        <span style="color: #A569BD;">MouseBytes datasets associated to this repository:</span>
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
-                                <!-- <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p> -->
-                                <button mat-icon-button matTooltip="Add Touchscreen Dataset" (click)="createNewTouchscreenDataset(null)"><mat-icon>add</mat-icon></button>
-                                <label>Add Touchscreen Dataset</label>
-                                <table>
-                                    <tr *ngFor="let exp of getRep().experiment">
-                                        <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
-                                        <td>Task Name: &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span></td>
-                                        <td>Status:&nbsp; <span style="color:#696d70;">{{exp.status ? "Public" : "Private"}}</span></td>
-                                    </tr>
-                                </table>
-
-                            </mat-expansion-panel>
                             <mat-expansion-panel *ngIf="getRep().paper !== null">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
@@ -169,6 +151,68 @@
                     </td>
                 </tr>
             </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="repModel !== null" style="padding-top:30px">
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">{{getRep().title}} Touchscreen Datasets</th>
+
+                </tr>
+            </thead>
+            <tr>
+                <td style="padding: 13px 16px;">
+                   <button mat-icon-button matTooltip="Add Touchscreen Dataset" (click)="createNewTouchscreenDataset(null)"><mat-icon>add</mat-icon></button>
+                                <label>Add Touchscreen Dataset</label>
+                    <mat-accordion>
+                        <mat-expansion-panel *ngFor="let exp of getRep().experiment">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>{{exp.expName}}</mat-panel-title>
+                            </mat-expansion-panel-header>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div *ngIf="repModel !== null" style="padding-top:30px">
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;" colspan="6">{{getRep().title}} Registered Animals</th>
+                </tr>
+                <tr style=" text-align: center; color:#465563;">
+                    <td class="docs-markdown-td">Animal ID</td>
+
+                    <td class="docs-markdown-td">Sex</td>
+                    <td class="docs-markdown-td">Strain</td>
+                    <td class="docs-markdown-td">Genotype</td>
+            </tr>
+            </thead>
+            <tr>
+                <td style="padding: 13px 16px;">
+                   <button mat-icon-button matTooltip="Add Animal(s)" (click)="addNewAnimal(null)"><mat-icon>add</mat-icon></button>
+                                <label>Add Animal(s)</label>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr>
+                <td colspan="12" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
+                    <!-- pager -->
+                    <div class="pagination-custom">
+                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
+                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
+                        <span *ngFor="let page of pager.pages">
+                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
+                        </span>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
+                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
+                    </div>
+                </td>
+            </tr>
         </table>
     </div>
 
