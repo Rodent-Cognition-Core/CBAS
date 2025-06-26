@@ -20,7 +20,13 @@
         </mat-form-field>
 
         <mat-form-field class="full-width">
-            <input matInput placeholder="Enter PI's Institution(s)" [formControl]="institution" required>
+            <input matInput placeholder="Enter PI's Institution" [formControl]="institution" required>
+            <mat-error *ngIf="institution.invalid">{{getErrorMessageIns()}}</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Enter Institution's Country" [formControl]="country" required>
             <mat-error *ngIf="institution.invalid">{{getErrorMessageIns()}}</mat-error>
 
         </mat-form-field>
