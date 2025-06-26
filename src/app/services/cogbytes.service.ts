@@ -118,12 +118,13 @@ import { AuthenticationService } from './authentication.service';
     }
 
     //// Adding New PI to the database
-    public addPI(piFullName: string, piAffiliation: string, piEmail: string): any {
+    public addPI(piFullName: string, piAffiliation: string, piEmail: string, country: string): any {
 
         var obj = {
             'PIFullName': piFullName,
             'PIEmail': piEmail,
             'PIInstitution': piAffiliation,
+            'InstitutionCountry' : country
         };
 
         const body: string = JSON.stringify(obj);
