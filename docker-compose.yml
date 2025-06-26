@@ -17,9 +17,9 @@ services:
       - app-network
     volumes:
       - /home/ubuntu/https:/https/:rw
-      - /cephfs/staging/TempUpload:/app/TempUpload:rw
-      - /cephfs/staging/UPLOAd:/app/UPLOAD:rw
-      - /cephfs/staging/COGBYTES_FILES:/app/COGBYTES_FILES:rw
+      - /cephfs/production/TempUpload:/app/TempUpload:rw
+      - /cephfs/production/UPLOAD:/app/UPLOAD:rw
+      - /cephfs/production/COGBYTES_FILES:/app/COGBYTES_FILES:rw
 networks:
   app-network:
     driver: bridge
