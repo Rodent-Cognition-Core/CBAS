@@ -194,7 +194,9 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         const dialogRef = this.dialog.open(ExpDialogeComponent, {
             height: '850px',
             width: '1200px',
-            data: { experimentObj: Experiment }
+            data: { experimentObj: Experiment,
+                    repoData: this.getRep()
+             }
         });
 
         dialogRef.afterClosed().subscribe((_result : any) => {
