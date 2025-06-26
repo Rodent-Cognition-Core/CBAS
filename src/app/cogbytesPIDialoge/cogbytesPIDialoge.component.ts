@@ -24,6 +24,7 @@ export class CogbytesPIDialogeComponent {
     emailPI: UntypedFormControl;
     piName: UntypedFormControl;
     institution: UntypedFormControl;
+    country: UntypedFormControl;
 
     constructor(public thisDialogRef: MatDialogRef<CogbytesPIDialogeComponent>,
          
@@ -33,6 +34,7 @@ export class CogbytesPIDialogeComponent {
         this.emailPI = fb.control('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")])
         this.piName = fb.control('', [Validators.required])
         this.institution = fb.control('', [Validators.required])
+        this.country = fb.control('', [Validators.required])
     }
 
     onCloseCancel(): void {
@@ -45,7 +47,7 @@ export class CogbytesPIDialogeComponent {
     onCloseSubmit(): void {      
 
         // Submiting the request to server
-        this.cogbytesService.addPI(this.piName.value, this.institution.value, this.emailPI.value).subscribe((result : any) => {
+        this.cogbytesService.addPI(this.piName.value, this.institution.value, this.emailPI.value, this.country.value).subscribe((result : any) => {
             if (result == 0) {
                 alert(PIALRADYEXISTS);
             }
@@ -91,7 +93,8 @@ export class CogbytesPIDialogeComponent {
             this.emailPI.hasError('required') ||
             this.emailPI.hasError('pattern') ||
             this.piName.hasError('required') ||
-            this.institution.hasError('required')
+            this.institution.hasError('required') ||
+            this.country.hasError('required')
             
         )
         {
