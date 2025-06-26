@@ -165,12 +165,10 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.TaskDescription = this.expDescription.value;
         this._experiment.TaskBattery = this.expBattery.value;
         this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
-        this._experiment.DOI = this.DOIModel;
-        this._experiment.Status = this.status.value == "1" ? true : false;
+        this._experiment.DOI = this.data.repoData.DOI;
+        this._experiment.Status = this.data.repoData.PrivacyStatus == "1" ? true : false;
         this._experiment.multipleSessions = this.isMultipleSessions.value == "1" ? true : false;
-        if (this.isRepoLink == '1') {
-            this._experiment.repoGuid = this.repModel;
-        }
+        this._experiment.repoGuid = this.data.repoData.repoLinkGUID
 
         if (this.data.experimentObj == null) {
             // Insert Mode: Insert Experiment
