@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <PackageReference Include="dropzone" Version="4.3.0" />
+    <PackageReference Include="FuzzySharp" Version="2.0.2" />
     <PackageReference Include="IdentityServer4" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.0.0" />
