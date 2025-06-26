@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Http;
 using Nest;
 using CBAS.Models;
 using Serilog;
+using FuzzySharp;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -229,7 +230,66 @@ namespace AngularSPAWebAPI.Services
                             ('{userEmail}', '{HelperService.EscapeSql(request.PIFullName)}',
                              '{HelperService.EscapeSql(request.PIEmail)}', '{HelperService.EscapeSql(request.PIInstitution)}'); SELECT @@IDENTITY AS 'Identity';";
 
-            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+            //return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+            Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+
+            // Check if PI information in Mousebytes Database
+            List<PISite> mbPIMatch = new List<PISite>();
+
+            // string sqlPI = $@"SELECT COUNT(PID), EDIT_DISTANCE_SIMILARITY(PName, '{HelperService.EscapeSql(request.PIFullName)}') AS Similarity
+            //                     FROM PI
+            //                     WHERE EDIT_DISTANCE_SIMILARITY(PName, '{HelperService.EscapeSql(request.PIFullName)}') >= 80";
+            string sqlPI = $@"SELECT PID, PName
+                                FROM PI";
+            using (DataTable dtPI = Dal.GetDataTable(sqlPI))
+            {
+                foreach (DataRow dr in dtPI.Rows)
+                {
+                    if (Fuzz.Ratio(request.PIFullName, dr["PName"].ToString()) >= 80)
+                    {
+                        return 0;
+                    }
+                }
+            }
+
+
+            string sqlMBInsert = $@"Insert Into PI (PName) Values ('{HelperService.EscapeSql(request.PIFullName)}');
+                                    SELECT SCOPE_IDENTITY();";
+            int newPIID;
+            newPIID = Convert.ToInt32(Dal.ExecScalar(sqlMBInsert));
+
+            // string sqlSite = $@"SELECT TOP (1) SiteID, Institution, Country, , EDIT_DISTANCE_SIMILARITY(PName, '{HelperService.EscapeSql(request.PIFullName)}') AS Similarity
+            //                     FROM Site
+            //                     Where EDIT_DISTANCE_SIMILARITY(Institution,'{HelperService.EscapeSql(request.PIInstitution)}') >= 80
+            //                     ORDER By Similarity DESC";
+            string sqlSite = $@"SELECT SiteID, Institution, Country
+                                FROM Site";
+
+            int siteID = 0;
+            bool siteIDFound = false;
+            using (DataTable dtSite = Dal.GetDataTable(sqlSite))
+            {
+                foreach (DataRow dr in dtSite.Rows)
+                {
+                    if (Fuzz.Ratio(request.PIInstitution, dr["Institution"].ToString()) >= 80)
+                    {
+                        siteID = Convert.ToInt32(dr["SiteID"].ToString());
+                        siteIDFound = true;
+                        break;
+                    }
+                }
+                if (!siteIDFound)
+                {
+                    string sqlSiteInsert = $@"INSERT INTO Site (Institution, Country) VALUES ('{HelperService.EscapeSql(request.PIInstitution)}','{HelperService.EscapeSql(request.InstitutionCountry)}');
+                                            SELECT SCOPE_IDENTITY();";
+                    siteID = Convert.ToInt32(Dal.ExecScalar(sqlSiteInsert));
+                }
+            }
+
+            string sqlPISiteInsert = $@"Insert Into PISite (PID, SiteID) VALUES ({newPIID},{siteID})";
+
+            Dal.ExecScalar(sqlPISiteInsert);
+            return 1;
 
         }
 
