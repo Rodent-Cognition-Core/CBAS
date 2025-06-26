@@ -21,6 +21,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     // UntypedFormControl Parameters
     authorName: UntypedFormControl;
     authorLastName: UntypedFormControl;
+    authorEmail: UntypedFormControl;
     
     constructor(public thisDialogRef: MatDialogRef<CogbytesAuthorDialogueComponent>,
          
@@ -30,6 +31,7 @@ export class CogbytesAuthorDialogueComponent implements OnInit {
     ) {
         this.authorName = fb.control('', [Validators.required])
         this.authorLastName = fb.control('', [Validators.required])
+        this.authorEmail = fb.control(",", [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")])
     }
 
     ngOnInit() {

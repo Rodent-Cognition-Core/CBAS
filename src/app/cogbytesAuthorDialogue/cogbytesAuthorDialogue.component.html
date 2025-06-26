@@ -22,6 +22,14 @@
 
         </mat-form-field>
 
+        <mat-form-field class="full-width">
+            &nbsp;&nbsp;
+
+            <input matInput placeholder="Author's Email" [formControl]="authorEmail" required>
+            <mat-error *ngIf="authorEmail.invalid">{{getErrorMessageLastName()}}</mat-error>
+
+        </mat-form-field>
+
         <!--Author Affiliation-->
         <mat-form-field class="full-width">
             &nbsp;&nbsp;
