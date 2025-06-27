@@ -208,6 +208,9 @@ namespace AngularSPAWebAPI.Services
                         FirstName = Convert.ToString(dr["FirstName"].ToString()),
                         LastName = Convert.ToString(dr["LastName"].ToString()),
                         Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
+                        nameAffiliation = Convert.ToString(dr["FirstName"].ToString()) + " "
+                        + Convert.ToString(dr["LastName"].ToString()) + " - " +
+                         Convert.ToString(dr["Affiliation"].ToString())
 
                     });
                 }
