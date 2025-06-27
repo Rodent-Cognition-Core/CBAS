@@ -31,7 +31,8 @@
                                     </mat-option>
 
                                     <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
-                                        {{author.firstName}}-{{author.lastName}}
+                                        <!-- {{author.firstName}} {{author.lastName}} ({{author.affiliation}}) -->
+                                         {{author.nameAffiliation}}
                                     </mat-option>
 
                                 </mat-select>
@@ -50,7 +51,7 @@
                                     </mat-option>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
-                                        {{pi.piFullName}}
+                                        {{pi.piSiteName}}
                                     </mat-option>
 
                                 </mat-select>
