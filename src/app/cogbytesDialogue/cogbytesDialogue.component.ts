@@ -89,6 +89,7 @@ export class CogbytesDialogueComponent implements OnInit {
         private spinnerService: NgxSpinnerService,
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
+        private piSiteService: PISiteService,
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
         public fb: UntypedFormBuilder,
@@ -228,25 +229,38 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the Author
         this.filteredAutorList.next(
-            this.authorList.filter((x : any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+            this.authorList.filter((x : any) => x.nameAffiliation.toLowerCase().indexOf(searchAuthor) > -1)
         );
     }
 
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe((data : any) => {
-            this.piList = data;
+        // this.cogbytesService.getPI().subscribe((data : any) => {
+        //     this.piList = data;
 
-            // load the initial expList
+        //     // load the initial expList
+        //     this.filteredPIList.next(this.piList.slice());
+
+        //     this.piMultiFilterCtrl.valueChanges
+        //         .pipe(takeUntil(this._onDestroy))
+        //         .subscribe(() => {
+        //             this.filterPI();
+        //         });
+
+        // });
+
+        this.piSiteService.getPISite().subscribe((data : any) => {
+            this.piList = data
+
             this.filteredPIList.next(this.piList.slice());
+            console.log(this.filteredPIList);
 
             this.piMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
-                .subscribe(() => {
-                    this.filterPI();
-                });
-
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.filterPI();
+            });
         });
 
         return this.piList;
@@ -270,7 +284,7 @@ export class CogbytesDialogueComponent implements OnInit {
 
         // filter the PI
         this.filteredPIList.next(
-            this.piList.filter((x : any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+            this.piList.filter((x : any) => x.piSiteName.toLowerCase().indexOf(searchPI) > -1)
         );
     }
 
