@@ -98,7 +98,7 @@
                         <!--Paper DOI-->
                         <mat-form-field style="width:30%; padding-left:25px">
 
-                            <input matInput placeholder="DOI" [(ngModel)]="doiModel">
+                            <input matInput placeholder="Publication DOI" [(ngModel)]="doiModel">
 
                         </mat-form-field> <br />
 
@@ -123,78 +123,176 @@
                         <!--URL Link-->
                         <mat-form-field style="width:60%">
 
-                            <textarea matInput placeholder="URL Link (if multiple, please seperate by semicolon)" [(ngModel)]="linkModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
+                            <textarea matInput placeholder="Additional Data Source URLs (if multiple, please separate by semicolon)" [(ngModel)]="linkModel" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="5">
                             </textarea>
                         </mat-form-field>
 
                         <br />
 
-                        <mat-form-field style="width:20%; ">
+                        <!-- Row 1: Cognitive Task, Species, Sex -->
+                        <mat-form-field style="width:20%;">
                             <mat-select placeholder="Select Cognitive Task(s)" [formControl]="cognitiveTask" required multiple>
                                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                                     <span matTooltip="{{task.task}}">{{task.task}}</span>
                                 </mat-option>
                             </mat-select>
-                        <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
-
+                            <mat-error *ngIf="cognitiveTask.invalid">{{getErrorMessageTask()}}</mat-error>
                         </mat-form-field>
-                                    <mat-form-field style="width:20%; padding-left:30px">
-                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjects.setValue(null)" multiple>
-                            <mat-option *ngFor="let species of speciesList" [value]="species.id">
-                                <span matTooltip="{{species.species}}">{{species.species}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
 
-                    <!--Number of Subjects-->
-                    <mat-form-field *ngIf="speciesModel!==null&&speciesModel.length>0" style="width:10%; padding-left:30px">
-                        <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects">
-                        <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
-                    </mat-form-field>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Specie(s)" [(ngModel)]="speciesModel" (selectionChange)="numSubjects.setValue(null)" multiple>
+                                <mat-option *ngFor="let species of speciesList" [value]="species.id">
+                                    <span matTooltip="{{species.species}}">{{species.species}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-                    <mat-form-field style="width:20%; padding-left:30px">
-                        <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
-                            <mat-option *ngFor="let sex of sexList" [value]="sex.id">
-                                <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                        <!--Number of Subjects-->
+                        <mat-form-field *ngIf="speciesModel!==null&&speciesModel.length>0" style="width:10%; padding-left:30px">
+                            <input matInput input="number" placeholder="Number of Subjects" [formControl]="numSubjects">
+                            <mat-error *ngIf="numSubjects.invalid">{{getErrorMessageNumSubjects()}}</mat-error>
+                        </mat-form-field>
 
-                    <mat-form-field style="width:20%; padding-left:30px">
-                        <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
-                            <mat-option *ngFor="let strain of strainList" [value]="strain.id">
-                                <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Sex" [(ngModel)]="sexModel" multiple>
+                                <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                                    <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <br />
 
-                    <br />
+                        <!-- Row 2: Strain, Genotype, Age -->
+                        <mat-form-field style="width:20%;">
+                            <mat-select placeholder="Select Strain(s)" [(ngModel)]="strainModel" multiple>
+                                <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                                    <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-                    <mat-form-field style="width:20%; padding-left:0px">
-                        <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
-                            <mat-option *ngFor="let geno of genosList" [value]="geno.id">
-                                <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Genotype(s)" [(ngModel)]="genotypeModel" multiple>
+                                <mat-option *ngFor="let geno of genosList" [value]="geno.id">
+                                    <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-                    <mat-form-field style="width:20%; padding-left:30px">
-                        <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
-                            <mat-option *ngFor="let age of ageList" [value]="age.id">
-                                {{age.ageInMonth}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                                <mat-option *ngFor="let age of ageList" [value]="age.id">
+                                    {{age.ageInMonth}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <br />
 
-                    <mat-form-field style="width:20%; padding-left:30px">
-                        <textarea matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
-                                matAutosizeMaxRows="5"></textarea>
-                    </mat-form-field>
+                        <!-- Row 3: Rodent Model, Anatomical Region, Cell Type -->
+                        <mat-form-field style="width:20%">
+                            <mat-select placeholder="Select Rodent Model(s)" matTooltip="Select Rodent Model(s)" [(ngModel)]="diseaseModel" (selectionChange)="selectedModelChange(diseaseModel)" multiple>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="diseaseMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let disease of filteredDiseaseList | async" [value]="disease.id">
+                                    <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <!--SubModel-->
+                        <span [hidden]="subSubModelList.length === 0">
+                            <mat-form-field style="width:20%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-Rodent Model(s)" matTooltip="Select Sub-Rodent Model(s)" [(ngModel)]="subModel" multiple>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subModelMultiFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let sub of filteredSubModelList | async" [value]="sub.id">
+                                        <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </span>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Anatomical Region(s)" matTooltip="Select Anatomical Region(s)" [(ngModel)]="regionModel" (selectionChange)="selectedRegionChange(regionModel)" multiple>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="regionMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let region of filteredRegionList | async" [value]="region.id">
+                                    <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <!--SubRegion-->
+                        <span [hidden]="subSubRegionList.length === 0">
+                            <mat-form-field style="width:20%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-Anatomical Region(s)" matTooltip="Select Sub-Anatomical Region(s)" [(ngModel)]="subRegionModel" multiple>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subRegionMultiFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let subregion of filteredSubRegionList | async" [value]="subregion.id">
+                                        <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </span>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="cellTypeModel" multiple>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="cellTypeMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let cell of filteredCellTypeList | async" [value]="cell.id">
+                                    <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <br />
 
-                    <mat-form-field style="width:20%; padding-left:30px">
-                        <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
-                                matAutosizeMaxRows="5"></textarea>
-                    </mat-form-field>
+                        <!-- Row 4: Method, Neurochemical -->
+                        <mat-form-field style="width:20%">
+                            <mat-select placeholder="Select Method(s)" [(ngModel)]="methodModel" (selectionChange)="selectedMethodChange(methodModel)" multiple>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="methodMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let method of filteredMethodList | async" [value]="method.id">
+                                    <span matTooltip="{{method.method}}">{{method.method}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <!--SubMethod-->
+                        <span [hidden]="subSubMethodList.length === 0">
+                            <mat-form-field style="width:20%; padding-left:30px">
+                                <mat-select placeholder="Select Sub-Method(s)" matTooltip="Select Sub-Method(s)" [(ngModel)]="subMethodModel" multiple>
+                                    <mat-option>
+                                        <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="subMethodMultiFilterCtrl"></ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let sub of filteredSubMethodList | async" [value]="sub.id">
+                                        <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </span>
+                        <mat-form-field style="width:20%; padding-left:30px">
+                            <mat-select placeholder="Select Neurochemical(s)" matTooltip="Select Neurochemical(s)" [(ngModel)]="neurotransmitterModel" multiple>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="neurotransmitterMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let neuro of filteredNeurotransmitterList | async" [value]="neuro.id">
+                                    <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <br />
+
+                        <!-- Row 5: Housing Info, Light Cycle Info -->
+                        <mat-form-field style="width:30%;">
+                            <textarea matInput placeholder="Housing Info" [(ngModel)]="housingModel" matTextareaAutosize matAutosizeMinRows="2"
+                                    matAutosizeMaxRows="5"></textarea>
+                        </mat-form-field>
+
+                        <mat-form-field style="width:30%; padding-left:30px">
+                            <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="lightModel" matTextareaAutosize matAutosizeMinRows="2"
+                                    matAutosizeMaxRows="5"></textarea>
+                        </mat-form-field>
 
                         <br /><br />
 

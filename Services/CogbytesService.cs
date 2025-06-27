@@ -219,6 +219,16 @@ namespace AngularSPAWebAPI.Services
             return AuthorList;
         }
 
+        public List<PISite> GetTouchscreenPIFromRepo(Request request)
+        {
+            string piidValues = string.Join(",", request.PIID);
+            List<PISite> PISiteList = new List<PISite>();
+            string sqlCogPI = $@"SELECT FullName
+                                    FROM PI
+                                    WHERE PIID IN ({piidValues})";
+            
+        }
+
         public int AddNewPI(Request request, string userEmail)
         {
             // Check if author is in DB

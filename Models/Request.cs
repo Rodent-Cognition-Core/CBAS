@@ -16,6 +16,7 @@ namespace AngularSPAWebAPI.Models
         public string PIFullName { get; set; }
         public string PIEmail { get; set; }
         public string PIInstitution { get; set; }
+        public string PIID { get; set; }
         public string InstitutionCountry { get; set; }
         public string Age { get; set; }
         public string MouseStrain { get; set; }

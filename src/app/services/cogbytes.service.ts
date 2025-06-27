@@ -147,6 +147,13 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public getTouchscreenPIFromRepo(repObj: any): any {
+        const body: string = JSON.stringify(repObj);
+        return this.http.post("/api/cogbytes/GetPIDFromRepo", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        })
+    }
+
     // Adding a new publication to System
     public addRepository(repObj: Cogbytes) : any {
 

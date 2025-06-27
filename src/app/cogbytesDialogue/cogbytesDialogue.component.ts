@@ -5,6 +5,7 @@ import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { PISiteService } from '../services/piSite.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { Cogbytes } from '../models/cogbytes'
 import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
@@ -41,6 +42,14 @@ export class CogbytesDialogueComponent implements OnInit {
     public intDesModel: any;
     public imgDesModel: any;
     public taskBatteryModel: any;
+    public diseaseModel: Array<number>;
+    public subModel: Array<number>;
+    public regionModel: Array<number>;
+    public subRegionModel: Array<number>;
+    public cellTypeModel: Array<number>;
+    public methodModel: Array<number>;
+    public subMethodModel: Array<number>;
+    public neurotransmitterModel: Array<number>;
 
     // Definiing List Variables 
     authorList: any;
@@ -55,6 +64,17 @@ export class CogbytesDialogueComponent implements OnInit {
     public strainList: any;
     public genosList: any;
     public ageList: any;
+    public diseaseList: any;
+    public subModelList: any;
+    public regionList: any;
+    public subRegionList: any;
+    public cellTypeList: any;
+    public methodList: any;
+    public subMethodList: any;
+    public neurotransmitterList: any;
+    public subSubRegionList: any[];
+    public subSubModelList: any[];
+    public subSubMethodList: any[];
 
     repID: any;
 
@@ -80,6 +100,32 @@ export class CogbytesDialogueComponent implements OnInit {
 
     public piMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredPIList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public diseaseMultiFilterCtrl: UntypedFormControl;
+    public filteredDiseaseList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subModelMultiFilterCtrl: UntypedFormControl;
+    public filteredSubModelList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public regionMultiFilterCtrl: UntypedFormControl;
+    public filteredRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subRegionMultiFilterCtrl: UntypedFormControl;
+    public filteredSubRegionList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public cellTypeMultiFilterCtrl: UntypedFormControl;
+    public filteredCellTypeList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public methodMultiFilterCtrl: UntypedFormControl;
+    public filteredMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public subMethodMultiFilterCtrl: UntypedFormControl;
+    public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+    public neurotransmitterMultiFilterCtrl: UntypedFormControl;
+    public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -90,6 +136,7 @@ export class CogbytesDialogueComponent implements OnInit {
         public dialog: MatDialog,
         private cogbytesService: CogbytesService,
         private piSiteService: PISiteService,
+        private pubScreenService: PubScreenService,
         //private cogbytesService: CogbytesService,
         public dialogAuthor: MatDialog,
         public fb: UntypedFormBuilder,
@@ -107,6 +154,25 @@ export class CogbytesDialogueComponent implements OnInit {
         this.cognitiveTask = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);
         this.numSubjects = fb.control('', [Validators.pattern('[0-9]*')]);
+        this.diseaseMultiFilterCtrl = fb.control([]),
+        this.subModelMultiFilterCtrl = fb.control([]),
+        this.regionMultiFilterCtrl = fb.control([]),
+        this.subRegionMultiFilterCtrl = fb.control([]),
+        this.cellTypeMultiFilterCtrl = fb.control([]),
+        this.methodMultiFilterCtrl = fb.control([]),
+        this.subMethodMultiFilterCtrl = fb.control([]),
+        this.neurotransmitterMultiFilterCtrl = fb.control([]),
+        this.subSubRegionList = [];
+        this.subSubMethodList = [];
+        this.subSubModelList = [];
+        this.diseaseModel = [];
+        this.subModel = [];
+        this.regionModel = [];
+        this.subRegionModel = [];
+        this.cellTypeModel = [];
+        this.methodModel = [];
+        this.subMethodModel = [];
+        this.neurotransmitterModel = [];
         this._cogbytes = {
             additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
             doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: '',
@@ -130,6 +196,14 @@ export class CogbytesDialogueComponent implements OnInit {
 
         this.GetAuthorList();
         this.GetPIList();
+        this.GetDiseaseList();
+        this.GetSubModelList();
+        this.GetRegionList();
+        this.GetSubRegionList();
+        this.GetCellTypeList();
+        this.GetMethodList();
+        this.GetSubMethodList();
+        this.GetNeurotransmitterList();
 
         //console.log(this.data);
 
@@ -286,6 +360,327 @@ export class CogbytesDialogueComponent implements OnInit {
         this.filteredPIList.next(
             this.piList.filter((x : any) => x.piSiteName.toLowerCase().indexOf(searchPI) > -1)
         );
+    }
+
+    GetDiseaseList() {
+
+        this.pubScreenService.getDisease().subscribe((data: any) => {
+            this.diseaseList = data;
+            this.filteredDiseaseList.next(this.diseaseList.slice());
+            this.diseaseMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterDisease();
+                });
+
+        });
+
+        return this.diseaseList;
+    }
+
+    GetSubModelList() {
+
+        this.pubScreenService.getSubModels().subscribe((data: any) => {
+            this.subModelList = data;
+
+            this.subModelMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubModel();
+                });
+
+        });
+
+        return this.subModelList;
+    }
+
+    GetRegionList() {
+
+        this.pubScreenService.getRegion().subscribe((data: any) => {
+            this.regionList = data;
+            this.filteredRegionList.next(this.regionList.slice());
+            this.regionMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterRegion();
+                });
+
+        });
+
+        return this.regionList;
+    }
+
+    GetSubRegionList() {
+
+        this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
+            this.subRegionList = data;
+
+            this.subRegionMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubRegion();
+                });
+
+        });
+
+        return this.subRegionList;
+    }
+
+    GetCellTypeList() {
+
+        this.pubScreenService.getCellType().subscribe((data: any) => {
+            this.cellTypeList = data;
+            this.filteredCellTypeList.next(this.cellTypeList.slice());
+            this.cellTypeMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterCellType();
+                });
+
+        });
+
+        return this.cellTypeList;
+    }
+
+    GetMethodList() {
+
+        this.pubScreenService.getMethod().subscribe((data: any) => {
+            this.methodList = data;
+            this.filteredMethodList.next(this.methodList.slice());
+            this.methodMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterMethod();
+                });
+
+        });
+
+        return this.methodList;
+    }
+
+    GetSubMethodList() {
+
+        this.pubScreenService.getSubMethod().subscribe((data: any) => {
+            this.subMethodList = data;
+
+            this.subMethodMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterSubMethod();
+                });
+
+        });
+
+        return this.subMethodList;
+    }
+
+    GetNeurotransmitterList() {
+
+        this.pubScreenService.getNeurotransmitter().subscribe((data: any) => {
+            this.neurotransmitterList = data;
+            this.filteredNeurotransmitterList.next(this.neurotransmitterList.slice());
+            this.neurotransmitterMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterNeurotransmitter();
+                });
+
+        });
+
+        return this.neurotransmitterList;
+    }
+
+    private filterDisease() {
+        if (!this.diseaseList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchDisease = this.diseaseMultiFilterCtrl.value;
+
+        if (!searchDisease) {
+            this.filteredDiseaseList.next(this.diseaseList.slice());
+            return;
+        } else {
+            searchDisease = searchDisease.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredDiseaseList.next(
+            this.diseaseList.filter((x: any) => x.diseaseModel.toLowerCase().indexOf(searchDisease) > -1)
+        );
+    }
+
+    // handling multi filtered SubTask list
+    private filterSubModel() {
+        if (!this.subSubModelList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubModel = this.subModelMultiFilterCtrl.value;
+
+        if (!searchSubModel) {
+            this.filteredSubModelList.next(this.subSubModelList.slice());
+            return;
+        } else {
+            searchSubModel = searchSubModel.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubModelList.next(
+            this.subSubModelList.filter((x: any) => x.subModel.toLowerCase().indexOf(searchSubModel) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterRegion() {
+        if (!this.regionList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchRegion = this.regionMultiFilterCtrl.value;
+
+        if (!searchRegion) {
+            this.filteredRegionList.next(this.regionList.slice());
+            return;
+        } else {
+            searchRegion = searchRegion.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredRegionList.next(
+            this.regionList.filter((x: any) => x.brainRegion.toLowerCase().indexOf(searchRegion) > -1)
+        );
+    }
+
+    // handling multi filtered Sub Region list
+    private filterSubRegion() {
+        if (!this.subSubRegionList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubRegion = this.subRegionMultiFilterCtrl.value;
+
+        if (!searchSubRegion) {
+            this.filteredSubRegionList.next(this.subSubRegionList.slice());
+            return;
+        } else {
+            searchSubRegion = searchSubRegion.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubRegionList.next(
+            this.subSubRegionList.filter((x: any) => x.subRegion.toLowerCase().indexOf(searchSubRegion) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterCellType() {
+        if (!this.cellTypeList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchCellType = this.cellTypeMultiFilterCtrl.value;
+
+        if (!searchCellType) {
+            this.filteredCellTypeList.next(this.cellTypeList.slice());
+            return;
+        } else {
+            searchCellType = searchCellType.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredCellTypeList.next(
+            this.cellTypeList.filter((x: any) => x.cellType.toLowerCase().indexOf(searchCellType) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterMethod() {
+        if (!this.methodList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchMethod = this.methodMultiFilterCtrl.value;
+
+        if (!searchMethod) {
+            this.filteredMethodList.next(this.methodList.slice());
+            return;
+        } else {
+            searchMethod = searchMethod.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredMethodList.next(
+            this.methodList.filter((x: any) => x.method.toLowerCase().indexOf(searchMethod) > -1)
+        );
+    }
+
+    // handling multi filtered SubTask list
+    private filterSubMethod() {
+        if (!this.subSubMethodList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchSubMethod = this.subMethodMultiFilterCtrl.value;
+
+        if (!searchSubMethod) {
+            this.filteredSubMethodList.next(this.subSubMethodList.slice());
+            return;
+        } else {
+            searchSubMethod = searchSubMethod.toLowerCase();
+        }
+
+        // filter the SubTask
+        this.filteredSubMethodList.next(
+            this.subSubMethodList.filter((x: any) => x.subMethod.toLowerCase().indexOf(searchSubMethod) > -1)
+        );
+    }
+
+    // handling multi filtered Disease list
+    private filterNeurotransmitter() {
+        if (!this.neurotransmitterList) {
+            return;
+        }
+
+        // get the search keyword
+        let searchNeurotransmitter = this.neurotransmitterMultiFilterCtrl.value;
+
+        if (!searchNeurotransmitter) {
+            this.filteredNeurotransmitterList.next(this.neurotransmitterList.slice());
+            return;
+        } else {
+            searchNeurotransmitter = searchNeurotransmitter.toLowerCase();
+        }
+
+        // filter the disease
+        this.filteredNeurotransmitterList.next(
+            this.neurotransmitterList.filter((x : any) => x.neuroTransmitter.toLowerCase().indexOf(searchNeurotransmitter) > -1)
+        );
+    }
+
+    selectedModelChange(SelectedModels: number[]) {
+        this.subModel = [];
+        this.subSubModelList = this.subModelList.filter((x: any) => SelectedModels.includes(x.modelID));
+        this.filteredSubModelList.next(this.subSubModelList.slice());
+    }
+
+    selectedMethodChange(SelectedMethods : number[]) {
+        this.subMethodModel = [];
+        this.subSubMethodList = this.subMethodList.filter((x: any) => SelectedMethods.includes(x.methodID));
+        this.filteredSubMethodList.next(this.subSubMethodList.slice());
+    }
+
+    selectedRegionChange(SelectedRegion : number[]) {
+        this.subRegionModel = [];
+        this.subSubRegionList = this.subRegionList.filter((x: any) => SelectedRegion.includes(x.rid));
+        this.filteredSubRegionList.next(this.subSubRegionList.slice());
     }
 
     // Handling Error for the required fields

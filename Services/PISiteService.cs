@@ -1,6 +1,7 @@
 using AngularSPAWebAPI.Controllers;
 using AngularSPAWebAPI.Models;
 using CBAS.Helpers;
+using Elasticsearch.Net;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace AngularSPAWebAPI.Services
                         PName = Convert.ToString(dr["PName"].ToString()),
                         Institution = Convert.ToString(dr["Institution"].ToString()),
                         PISiteName = Convert.ToString(dr["PISiteName"].ToString()),
-                      
+
                     });
                 }
 
@@ -109,6 +110,27 @@ namespace AngularSPAWebAPI.Services
             }
 
             return lstPISite;
+        }
+
+        public List<int> GetPISiteIDByName(string piName)
+        {
+            var piID = 0;
+            var siteID = 0;
+            var piSiteID = 0;
+            try
+            {
+                string sqlPI = $@"SELECT TOP (1) PID
+                                FROM PI
+                                WHERE PName='{piName}'";
+                piID = Convert.ToInt32(Dal.ExecScalar(sqlPI).ToString());
+
+            }
+            catch (Exception e)
+            {
+                
+            }
+            return new List<int>(1);
+        
         }
 
 

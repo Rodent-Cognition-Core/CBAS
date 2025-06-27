@@ -38,7 +38,7 @@ export class ExpDialogeComponent implements OnInit {
     eDate: UntypedFormControl;
     task: UntypedFormControl;
     species: UntypedFormControl;
-    piSite: UntypedFormControl;
+    // piSite: UntypedFormControl;
     status:UntypedFormControl;
     expDescription: UntypedFormControl;
     expBattery: UntypedFormControl;
@@ -66,7 +66,7 @@ export class ExpDialogeComponent implements OnInit {
         this.eDate = fb.control('',[Validators.required])
         this.task = fb.control('',[Validators.required])
         this.species = fb.control('',[Validators.required])
-        this.piSite = fb.control('',[Validators.required])
+        // this.piSite = fb.control('',[Validators.required])
         this.status = fb.control('',[Validators.required])
         this.expDescription = fb.control('',[Validators.required])
         this.expBattery = fb.control('',[Validators.required])
@@ -96,7 +96,7 @@ export class ExpDialogeComponent implements OnInit {
             this.species.setValue(this.data.experimentObj.speciesID);
             this.expDescription.setValue(this.data.experimentObj.taskDescription);
             this.expBattery.setValue(this.data.experimentObj.taskBattery);
-            this.piSite.setValue(this.data.experimentObj.pusid);
+            // this.piSite.setValue(this.data.experimentObj.pusid);
             this.DOIModel = this.data.experimentObj.doi;
             this.status.setValue(this.data.experimentObj.status ? "1" : "0");
             this.isMultipleSessions.setValue(this.data.experimentObj.multipleSessions ? "1" : "0");
@@ -164,7 +164,7 @@ export class ExpDialogeComponent implements OnInit {
         this._experiment.SpeciesID = parseInt(this.species.value);
         this._experiment.TaskDescription = this.expDescription.value;
         this._experiment.TaskBattery = this.expBattery.value;
-        this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
+        this._experiment.PUSID = this.getSelectedPIS(this.data.repoData.Author);
         this._experiment.DOI = this.data.repoData.DOI;
         this._experiment.Status = this.data.repoData.PrivacyStatus == "1" ? true : false;
         this._experiment.multipleSessions = this.isMultipleSessions.value == "1" ? true : false;
@@ -253,13 +253,13 @@ export class ExpDialogeComponent implements OnInit {
 
     }
 
-    getErrorMessagePiSite() {
+    // getErrorMessagePiSite() {
 
 
-        return this.piSite.hasError('required') ? FIELDISREQUIRED :
-            '';
+    //     return this.piSite.hasError('required') ? FIELDISREQUIRED :
+    //         '';
 
-    }
+    // }
 
     getErrorMessageStatus() {   
         return this.status.hasError('required') ? FIELDISREQUIRED :
@@ -296,7 +296,6 @@ export class ExpDialogeComponent implements OnInit {
             this.sDate.hasError('required') ||
             this.eDate.hasError('required') ||
             this.task.hasError('required') ||
-            this.piSite.hasError('required') ||
             this.status.hasError('required') ||
             this.expDescription.hasError('required') ||
             this.expBattery.hasError('required') ||
@@ -314,8 +313,9 @@ export class ExpDialogeComponent implements OnInit {
         return this.taskList.find((x : any) => x.id === selectedValue);
     }
 
-    getSelectedPIS(selectedVal : any) {
-        return this.piSiteList.find((x : any) => x.pusid === selectedVal);
+    getSelectedPIS(repoData : any) {
+        // return this.piSiteList.find((x : any) => x.pusid === selectedVal);
+        return 1;
     }
 
 

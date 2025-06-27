@@ -115,6 +115,11 @@ namespace AngularSPAWebAPI.Controllers
         {
             return new JsonResult(_cogbytesService.GetPIs());
         }
+        [HttpPost("GetPIDFromRepo")]
+        public async Task<IActionResult> GetTouchscreenPIFromRepo([FromBody] Request request)
+        {
+            return new JsonResult(_cogbytesService.GetTouchscreenPIFromRepo(request));
+        }
 
         [HttpPost("AddRepository")]
         public async Task<IActionResult> AddRepository([FromBody] Cogbytes repository)
