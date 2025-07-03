@@ -110,7 +110,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "http://localhost:5000/";
+                        options.Authority = "https://production.mousebytes.ca/";
                         options.RequireHttpsMetadata = false;
 
                         options.ApiName = "WebAPI";
@@ -121,7 +121,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = "https://production.mousebytes.ca/";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "WebAPI";
@@ -133,7 +133,7 @@ namespace AngularSPAWebAPI
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins("https://production.mousebytes.ca")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
