@@ -81,7 +81,7 @@
                                     <td>Repository Name:&nbsp; <span style="color:#696d70;">{{rep.title}}</span></td>
                                     <td>Status:&nbsp; <span style="color:#696d70;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">
-                                        <span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
+                                        <span style="color:#696d70;" [innerHTML]='"<a href=https://production.mousebytes.ca/comp-edit?repolinkguid=" + rep.repoLinkGuid + " target=_blank><label>Repository Link</label></a>"'></span>
                                     </td>
                                 </tr>
                             </table>

@@ -1006,7 +1006,7 @@ export class DataExtractionComponent implements OnInit {
 
                 const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
                 });
-                dialogRefLink.componentInstance.message = "http://localhost:4200/data-link?linkguid=" + this.linkGuid;
+                dialogRefLink.componentInstance.message = "https://production.mousebytes.ca/data-link?linkguid=" + this.linkGuid;
 
 
 
