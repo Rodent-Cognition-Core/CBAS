@@ -38,9 +38,16 @@ export interface animalResponse {
 
 
     public getAnimalInfo(id: any): Observable<animalResponse[]> {
-
         return this.http
             .get<animalResponse[]>("/api/animal/GetAnimalInfoByExpID?expId="+id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    public getAnimalInfoRepository(repID: any): Observable<animalResponse[]> {
+
+        return this.http
+            .get<animalResponse[]>("/api/animal/GetAnimalInfoByRepID?repId="+repID, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
     }
