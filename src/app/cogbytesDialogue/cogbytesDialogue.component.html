@@ -25,15 +25,18 @@
 
                             <!--Author-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" (openedChange)="GetAuthorList()" required multiple>
+                                <mat-select [formControl]="author" placeholder="Select Authors/Collaborators" required multiple [compareWith]="compareAuthors">
                                     <mat-option>
                                         <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="authorMultiSelect" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
 
-                                    <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
-                                        <!-- {{author.firstName}} {{author.lastName}} ({{author.affiliation}}) -->
-                                         {{author.nameAffiliation}}
-                                    </mat-option>
+                                    <ng-container *ngIf="authorMultiFilterCtrl.value?.length >= 3; else authorSearchPrompt">
+                                        <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                            <!-- {{author.firstName}} {{author.lastName}} ({{author.affiliation}}) -->
+                                             {{author.nameAffiliation}}
+                                        </mat-option>
+                                    </ng-container>
+                                    <ng-template #authorSearchPrompt><mat-option disabled>Type 3 or more characters to search...</mat-option></ng-template>
 
                                 </mat-select>
                                 <mat-error *ngIf="author.invalid">{{getErrorMessageAuthor()}}</mat-error>
@@ -44,10 +47,10 @@
                             <!--PI-->
                             <!--PI-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="pi" placeholder="Select PI(s)" (openedChange)="GetPIList()" required multiple>
+                                <mat-select [formControl]="pi" placeholder="Select Touchscreen Site(s)" (openedChange)="GetPIList()" required multiple>
 
                                     <mat-option>
-                                        <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search based on PI" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
@@ -58,7 +61,7 @@
                                 <mat-error *ngIf="pi.invalid">{{getErrorMessagePi()}}</mat-error>
                             </mat-form-field>&nbsp;
 
-                            <button mat-icon-button matTooltip="Add new PI" (click)="openDialogPI()"><mat-icon>add</mat-icon></button>
+                            <button mat-icon-button matTooltip="Add new Touchscreen Site" (click)="openDialogPI()"><mat-icon>add</mat-icon></button>
 
                             <br /><br />
                         </div>

@@ -9,7 +9,7 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { Cogbytes } from '../models/cogbytes'
 import { Subject ,  ReplaySubject } from 'rxjs';
 import { CogbytesAuthorDialogueComponent } from '../cogbytesAuthorDialogue/cogbytesAuthorDialogue.component';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil, filter } from 'rxjs/operators';
 import { CogbytesPIDialogeComponent } from '../cogbytesPIDialoge/cogbytesPIDialoge.component'
 import { FIELDISREQUIRED, INVALIDNUMBERICALVALUE } from '../shared/messages';
 
@@ -274,7 +274,11 @@ export class CogbytesDialogueComponent implements OnInit {
             this.filteredAutorList.next(this.authorList.slice());
 
             this.authorMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
+                .pipe(
+                    debounceTime(100),
+                    filter(search => search && search.length >= 3),
+                    takeUntil(this._onDestroy)
+            )
                 .subscribe(() => {
                     this.filterAuthor();
                 });
@@ -284,6 +288,9 @@ export class CogbytesDialogueComponent implements OnInit {
         return this.authorList;
     }
 
+    compareAuthors(author1: string, author2: string): boolean {
+    return author1 && author2 ? author1 === author2 : author1 === author2;
+    }
 
     //// handling multi filtered Author list
     private filterAuthor() {
@@ -328,7 +335,6 @@ export class CogbytesDialogueComponent implements OnInit {
             this.piList = data
 
             this.filteredPIList.next(this.piList.slice());
-            console.log(this.filteredPIList);
 
             this.piMultiFilterCtrl.valueChanges
             .pipe(takeUntil(this._onDestroy))
