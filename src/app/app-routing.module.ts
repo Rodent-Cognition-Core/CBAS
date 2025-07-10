@@ -17,7 +17,7 @@ const routes: Routes = [
     { path: 'resources', loadChildren: () => import('./resources/resources.module').then(m => m.ResourcesModule) },
     { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
     { path: 'taskAnalysis', loadChildren: () => import('./taskAnalysis/taskAnalysis.module').then(m => m.TaskAnalysisModule) },
-    { path: 'upload', loadChildren: () => import('./upload/upload.module').then(m => m.UploadModule) },
+    //{ path: 'upload', loadChildren: () => import('./upload/upload.module').then(m => m.UploadModule) },
     { path: 'animal-info', loadChildren: () => import('./animal-info/animal-info.module').then(m => m.AnimalInfoModule) },
     { path: 'experiment', loadChildren: () => import('./experiment/experiment.module').then(m => m.ExperimentModule) },
     { path: 'data-extraction', loadChildren: () => import('./data-extraction/data-extraction.module').then(m => m.DataExtractionModule) },
