@@ -69,7 +69,7 @@
                             <hr /><br />
                             <label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
                             <label>Authors:</label> <span style="color:#696d70;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>PIs:</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(getRep())}}</span><br /><br />
+                            <label>Touchscreen Site(s):</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(getRep())}}</span><br /><br />
                             <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( getRep().keywords ==="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
                             <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( getRep().doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
                             <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( getRep().date.slice(0, -12) ==="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
@@ -159,18 +159,79 @@
             <thead>
                 <tr>
                     <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;">{{getRep().title}} Touchscreen Datasets</th>
-
                 </tr>
             </thead>
             <tr>
                 <td style="padding: 13px 16px;">
-                   <button mat-icon-button matTooltip="Add Touchscreen Dataset" (click)="createNewTouchscreenDataset(null)"><mat-icon>add</mat-icon></button>
-                                <label>Add Touchscreen Dataset</label>
+                    <button mat-icon-button matTooltip="Add Touchscreen Dataset" (click)="createNewTouchscreenDataset(null)"><mat-icon>add</mat-icon></button>
+                    <label>Add Touchscreen Dataset</label>
                     <mat-accordion>
-                        <mat-expansion-panel *ngFor="let exp of getRep().experiment">
+                        <mat-expansion-panel *ngFor="let exp of experiments">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>{{exp.expName}}</mat-panel-title>
+                                <button mat-button matTooltip="Edit Touchscreen Dataset" (click)="createNewTouchscreenDataset(exp)">Edit</button>
+                                <button mat-button matTooltip="Delete Touchscreen Dataset" (click)="openConfirmationDialog(exp.expID)" color="warn" style="margin-right: 2%">Delete</button>
                             </mat-expansion-panel-header>
+
+                            <div class="experiment-details">
+                                <label>Experiment name:</label>&nbsp; <span style="color:#696d70;">{{exp.expName}}</span>&nbsp; &nbsp; &nbsp;
+                                <label>Task name:</label> &nbsp; <span style="color:#696d70;">{{exp.taskName}}</span>&nbsp; &nbsp; &nbsp;
+                                <label>Species:</label> &nbsp; <span style="color:#696d70;">{{exp.species}}</span>&nbsp; &nbsp; &nbsp;
+                                <br /><br />
+                                <label>Start date:</label>&nbsp; <span style="color:#696d70;">{{exp.startExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
+                                <label>End date:</label> &nbsp; <span style="color:#696d70;">{{exp.endExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
+                                <label>Status:</label> &nbsp; <span style="color:#696d70;">{{exp.status === true ? 'Public' : 'Private'}}</span> <br /><br />
+                                <label>Experiment description:</label>&nbsp;&nbsp; <span style="color:#696d70;">{{exp.taskDescription}}</span><br /><br />
+                                <label>Battery of Tasks:</label>&nbsp;&nbsp; <span style="color:#696d70;">{{exp.taskBattery}}</span><br /><br />
+                                <label>PI and Institution:</label>&nbsp;&nbsp; <span style="color:#696d70;">{{exp.piSiteName}}</span><br /><br />
+                                <label>DOI:</label>&nbsp;&nbsp; <a href="{{'http://www.doi.org/' + exp.doi}}" target="_blank" style="color:#696d70;">{{exp.doi}}</a><br /><br />
+                                <label>Multiple sessions for an animal within a single day?:</label> &nbsp; <span style="color:#696d70;">{{exp.multipleSessions === true ? 'Yes' : 'No'}}</span> <br /><br />
+                            </div>
+
+                            <hr>
+
+                            <div>
+                                <h4>Sub-Experiments
+                                    <button mat-icon-button matTooltip="Create Sub-Experiment" (click)="createSubExperiment(exp)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </h4>
+
+                                <mat-accordion *ngIf="exp.subexperiment && exp.subexperiment.length > 0">
+                                    <mat-expansion-panel *ngFor="let subExp of exp.subexperiment">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>{{subExp.subExpName}}</mat-panel-title>
+                                            <button mat-button (click)="openDialogSubExp(subExp, exp.expID)">Edit</button>
+                                            <button mat-button color="warn" (click)="delSubExp(subExp)" style="margin-right: 2%">Delete</button>
+                                        </mat-expansion-panel-header>
+
+                                        <div>
+                                            <p><b>Sub-exp Name:</b> {{subExp.subExpName}}</p>
+                                            <p *ngIf="!subExp.isIntervention && !subExp.isDrug"><b>Housing:</b> {{subExp.housing}}, <br /> <b>LightCycle:</b> {{subExp.lightCycle}}</p>
+                                            <p *ngIf="subExp.isIntervention && subExp.isDrug"><b>Housing:</b> {{subExp.housing}}, <br /> <b>LightCycle:</b> {{subExp.lightCycle}}, <br /> <b>Drug Name:</b> {{subExp.drugName}},<br /> <b>Drug Quantity</b>: {{subExp.drugQuantity}}, <br /> <b>Drug Unit:</b> {{subExp.drugUnit}}</p>
+                                            <p *ngIf="subExp.isIntervention && !subExp.isDrug"><b>Housing:</b> {{subExp.housing}}, <br /> <b>LightCycle:</b> {{subExp.lightCycle}}, <br /> <b>Intervention Description:</b> {{subExp.interventionDescription}}</p>
+                                            <p><b>Animal Age:</b> {{subExp.ageInMonth}}</p>
+                                            <p *ngIf="exp.taskID === 3 || exp.taskID === 4"><b>Images:</b> <span [innerHTML]="subExp.imageInfo"></span><span *ngIf="subExp.imageDescription!==''"><mat-icon matTooltip="{{subExp.imageDescription}}">help</mat-icon></span></p>
+                                            <p><b>Status:</b> <span *ngIf="subExp.isPostProcessingPass"><mat-icon style="color:#2ECC71;">check_circle</mat-icon></span><span *ngIf="!subExp.isPostProcessingPass"><mat-icon color="warn">clear</mat-icon></span></p>
+                                        </div>
+
+                                        <mat-action-row>
+                                            <button mat-button [matMenuTriggerFor]="uploadMenu">Upload Data</button>
+                                            <mat-menu #uploadMenu="matMenu">
+                                                <button mat-menu-item (click)="openUploadDialog(exp,subExp)">Summary Data Upload</button>
+                                                <button mat-menu-item (click)="openTimeSeriesUploadDialog(exp,subExp)">Time Series Data Upload</button>
+                                            </mat-menu>
+                                            <button mat-button (click)="openUploadResultDialog(subExp)">Upload Results</button>
+                                        </mat-action-row>
+                                        <mat-action-row>
+                                            <button mat-button (click)="runPostQC(subExp)" [disabled]="subExp.isPostProcessingPass">Quality Control Check</button>
+                                            <button mat-button (click)="openPostProcessingResult(subExp.subExpID)" [disabled]="subExp.errorMessage === ''">Quality Control Results</button>
+                                        </mat-action-row>
+
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                                <p *ngIf="!exp.subexperiment || exp.subexperiment.length === 0">No sub-experiments found.</p>
+                            </div>
                         </mat-expansion-panel>
                     </mat-accordion>
                 </td>
@@ -185,21 +246,25 @@
                     <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;" colspan="6">{{getRep().title}} Registered Animals</th>
                 </tr>
                 <tr style=" text-align: center; color:#465563;">
+                    <td class="docs-markdown-td"></td>
+                    <td class="docs-markdown-td"></td>
                     <td class="docs-markdown-td">Animal ID</td>
-
                     <td class="docs-markdown-td">Sex</td>
                     <td class="docs-markdown-td">Strain</td>
                     <td class="docs-markdown-td">Genotype</td>
             </tr>
             </thead>
-            <tr>
-                <td style="padding: 13px 16px;">
-                   <button mat-icon-button matTooltip="Add Animal(s)" (click)="addNewAnimal(null)"><mat-icon>add</mat-icon></button>
-                                <label>Add Animal(s)</label>
-                </td>
+            <tr *ngFor="let row of pagedItems">
+                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td"><button mat-icon-button (click)="addNewAnimal(row)"><mat-icon>edit</mat-icon></button></td>
+                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="delAnimal(row.animalID, row.expID)"><mat-icon>delete</mat-icon></button> </td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userAnimalID}}</td>
+                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td">{{row.sex}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.strain}}</td>
+                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.genotype}}</td>
             </tr>
-            <tr></tr>
             <tr>
+                <button mat-icon-button matTooltip="Add Animal(s)" (click)="addNewAnimal(null)"><mat-icon>add</mat-icon></button>
+                                <label>Add Animal(s)</label>
                 <td colspan="12" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
                     <!-- pager -->
                     <div class="pagination-custom">
