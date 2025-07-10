@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { UploadService } from '../services/upload.service';
-import { ViewChild } from '@angular/core'
 import {
     DropzoneComponent, DropzoneDirective,
     DropzoneConfigInterface
@@ -65,8 +64,9 @@ export class UploadComponent implements OnInit {
         public dialog: MatDialog,
         private spinnerService: NgxSpinnerService,
         private uploadService: UploadService,
-        public dialogRefDelFile: MatDialog
-
+        public dialogRefDelFile: MatDialog,
+        public dialogRef: MatDialogRef<UploadComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.experimentName = '';
         this.subExpName = '';
@@ -85,7 +85,15 @@ export class UploadComponent implements OnInit {
 
     ngOnInit() {
 
-        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+
+        this.uploadService.getSessionInfo().subscribe((data : any) => { 
+            this.SessionList = data;
+            if (this.data && this.data.experiment && this.data.subExperiment) {
+                this.SelectedExpChanged(this.data.experiment);
+                this.SelectedSubExpChanged(this.data.subExperiment);
+        }
+        });
+
 
     }
 
@@ -97,7 +105,7 @@ export class UploadComponent implements OnInit {
         this.expTask = experiment.taskName;
         this.expTaskID = experiment.taskID;
 
-        this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        //this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
         this.subExpID = null;
         this.sessionNameVal = null;
 
@@ -119,7 +127,7 @@ export class UploadComponent implements OnInit {
         switch (this.expTaskID) {
             case 2: { // 5-choice
                 this.SessionList = this.SessionList.filter(((x : any) => x.taskID === 1 || x.taskID === 2));
-                //console.log(this.SessionList);
+                console.log(this.SessionList);
                 break;
 
             }
