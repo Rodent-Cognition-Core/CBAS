@@ -33,6 +33,7 @@ import { UploadResultDialogComponent } from './upload-result-dialog/upload-resul
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
 import { NotificationDialogComponent } from './notification-dialog/notification-dialog.component';
 import { GenericDialogComponent } from './generic-dialog/generic-dialog.component';
+import { UploadComponent } from './upload/upload.component';
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { SubExpDialogeComponent } from './sub-exp-dialoge/sub-exp-dialoge.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -84,6 +85,7 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
         CogbytesDialogueComponent,
         CogbytesAuthorDialogueComponent,
         CogbytesPIDialogeComponent,
+        UploadComponent
 
     ],
     exports: [
