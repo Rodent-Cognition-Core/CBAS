@@ -1039,7 +1039,7 @@ namespace AngularSPAWebAPI.Services
             string sql;
             try
             {
-                using (SqlConnection cn = new SqlConnection(_cnnString_PubScreen))
+                using (SqlConnection cn = new SqlConnection(_cnnString))
                 {
                     await cn.OpenAsync();
                     using (SqlTransaction transaction = cn.BeginTransaction())
@@ -1049,22 +1049,22 @@ namespace AngularSPAWebAPI.Services
                             // Define all SQL queries
                             var queries = new Dictionary<string, string>
                             {
-                                { "AuthourID", "Select AuthorID From Publication_Author Where PublicationID = @PublicationID" },
-                                { "CellTypeID", "Select CelltypeID From Publication_CellType Where PublicationID = @PublicationID" },
-                                { "DiseaseID", "Select DiseaseID From Publication_Disease Where PublicationID = @PublicationID" },
-                                { "SubModelID", "Select SubModelID From Publication_SubModel Where PublicationID = @PublicationID" },
-                                { "MethodID", "Select MethodID From Publication_Method Where PublicationID = @PublicationID" },
-                                { "SubMethodID", "Select SubMethodID From Publication_SubMethod Where PublicationID = @PublicationID" },
-                                { "TransmitterID", "Select TransmitterID From Publication_NeuroTransmitter Where PublicationID = @PublicationID" },
-                                { "RegionID", "Select RegionID From Publication_Region Where PublicationID = @PublicationID" },
-                                { "sexID", "Select SexID From Publication_Sex Where PublicationID = @PublicationID" },
-                                { "SpecieID", "Select SpecieID From Publication_Specie Where PublicationID = @PublicationID" },
-                                { "StrainID", "Select StrainID From Publication_Strain Where PublicationID = @PublicationID" },
-                                { "SubRegionID", "Select SubRegionID From Publication_SubRegion Where PublicationID = @PublicationID" },
-                                { "TaskID", "Select TaskID From Publication_Task Where PublicationID = @PublicationID" },
-                                { "SubTaskID", "Select SubTaskID From Publication_SubTask Where PublicationID = @PublicationID" },
-                                { "PaperTypeID", "Select PaperTypeID From Publication_PaperType Where PublicationID = @PublicationID" },
-                                { "Publication", "Select * From Publication Where ID = @PublicationID" }
+                                { "AuthourID", "Select AuthorID From pss.Publication_Author Where PublicationID = @PublicationID" },
+                                { "CellTypeID", "Select CelltypeID From pss.Publication_CellType Where PublicationID = @PublicationID" },
+                                { "DiseaseID", "Select DiseaseID From pss.Publication_Disease Where PublicationID = @PublicationID" },
+                                { "SubModelID", "Select SubModelID From pss.Publication_SubModel Where PublicationID = @PublicationID" },
+                                { "MethodID", "Select MethodID From pss.Publication_Method Where PublicationID = @PublicationID" },
+                                { "SubMethodID", "Select SubMethodID From pss.Publication_SubMethod Where PublicationID = @PublicationID" },
+                                { "TransmitterID", "Select TransmitterID From pss.Publication_NeuroTransmitter Where PublicationID = @PublicationID" },
+                                { "RegionID", "Select RegionID From pss.Publication_Region Where PublicationID = @PublicationID" },
+                                { "sexID", "Select SexID From pss.Publication_Sex Where PublicationID = @PublicationID" },
+                                { "SpecieID", "Select SpecieID From pss.Publication_Specie Where PublicationID = @PublicationID" },
+                                { "StrainID", "Select StrainID From pss.Publication_Strain Where PublicationID = @PublicationID" },
+                                { "SubRegionID", "Select SubRegionID From pss.Publication_SubRegion Where PublicationID = @PublicationID" },
+                                { "TaskID", "Select TaskID From pss.Publication_Task Where PublicationID = @PublicationID" },
+                                { "SubTaskID", "Select SubTaskID From pss.Publication_SubTask Where PublicationID = @PublicationID" },
+                                { "PaperTypeID", "Select PaperTypeID From pss.Publication_PaperType Where PublicationID = @PublicationID" },
+                                { "Publication", "Select * From pss.Publication Where ID = @PublicationID" }
                             };
 
                             // Execute all queries
