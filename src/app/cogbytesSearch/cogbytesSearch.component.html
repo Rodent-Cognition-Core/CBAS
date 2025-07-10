@@ -1,10 +1,10 @@
 <div [ngStyle]="{background: 'url(../../assets/images/horbg.png)'}" class="page-title">
-    <h1 *ngIf="showAll !== true">SEARCH MOUSEBYTES+ DATA</h1>
+    <h1 *ngIf="showAll !== true">Search Data Repositories</h1>
     <h1 *ngIf="showAll === true">MOUSEBYTES+ REPOSITORIES</h1>
 </div>
 
 <div>
-    <div class="content" *ngIf="showAll !== true">
+    <!-- <div class="content" *ngIf="showAll !== true">
         <p style="padding-left:50px; line-height: 1.8;">
             Touchscreen datasets can be coupled with different neuro-technologies such as fiber photometry, miniscopes, optogenetics, MRI, PET, and OMICs analysis to evaluate the brain basis of behaviour.
             In this new feature of MouseBytes, users can upload processed datasets, scripts and codes related to these and other technologies and link them to cognitive data in MouseBytes and raw data in
@@ -15,7 +15,7 @@
 
         </p>
 
-    </div>
+    </div> -->
 
     <div style="padding-top:0px" *ngIf="showAll !== true">
         <table class="docs-markdown-table">
@@ -35,31 +35,34 @@
                             <!--Searching Author information ********************************************-->
                             <label style="color:#465563">Author Information:</label><br />
 
-                            <mat-form-field>
-                                <mat-select placeholder="Select Author" [(ngModel)]="authorModel" multiple>
+                            <mat-form-field style="width:20%;">
+                                <mat-select placeholder="Select Repository Author" [(ngModel)]="authorModel" multiple>
 
                                     <mat-option>
                                         <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [formControl]="authorMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
 
-                                    <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
-                                        {{author.firstName}}-{{author.lastName}}
-                                    </mat-option>
+                                    <ng-container *ngIf="authorMultiFilterCtrl.value?.length >= 3; else authorSearchPrompt">
+                                        <mat-option *ngFor="let author of filteredAutorList | async" [value]="author.id">
+                                            {{author.nameAffiliation}}
+                                        </mat-option>
+                                    </ng-container>
+                                    <ng-template #authorSearchPrompt><mat-option disabled>Type 3 or more characters to search...</mat-option></ng-template>
                                 </mat-select>
 
                             </mat-form-field>&nbsp;
 
 
                             <!--PI-->
-                            <mat-form-field style="padding-left: 25px">
-                                <mat-select placeholder="Select PI(s)" [(ngModel)]="piModel" multiple>
+                            <mat-form-field style="padding-left: 25px; width:20%;">
+                                <mat-select placeholder="Select Touchscreen Site(s)" [(ngModel)]="piModel" multiple>
 
                                     <mat-option>
-                                        <ngx-mat-select-search placeholderLabel="Search based on last name" noEntriesFoundLabel="Result not found!" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
+                                        <ngx-mat-select-search placeholderLabel="Search based on PI" noEntriesFoundLabel="Result not found!" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
 
                                     <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
-                                        {{pi.piFullName}}
+                                        {{pi.piSiteName}}
                                     </mat-option>
 
                                 </mat-select>

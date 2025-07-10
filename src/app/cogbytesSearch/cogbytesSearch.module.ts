@@ -6,6 +6,7 @@ import { CogbytesSearchComponent } from './cogbytesSearch.component';
 import { IdentityService } from '../services/identity.service';
 import { PubScreenService } from '../services/pubScreen.service';
 import { CogbytesService } from '../services/cogbytes.service';
+import { PISiteService } from '../services/piSite.service';
 
 @NgModule({
     imports: [
@@ -15,7 +16,7 @@ import { CogbytesService } from '../services/cogbytes.service';
     declarations: [
         CogbytesSearchComponent
     ],
-    providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService,],
+    providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService, PISiteService],
 
     bootstrap: [CogbytesSearchComponent],
 

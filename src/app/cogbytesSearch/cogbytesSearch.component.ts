@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject, Subscription } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil, filter, debounceTime } from 'rxjs/operators';
 import { CogbytesService } from '../services/cogbytes.service'
+import { PISiteService } from '../services/piSite.service';
 import { CogbytesSearch } from '../models/cogbytesSearch'
 import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -93,6 +94,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private cogbytesService: CogbytesService,
+        private piSiteService: PISiteService,
         public dialogAuthor: MatDialog,
         private spinnerService: NgxSpinnerService,
         private route: ActivatedRoute,
@@ -302,7 +304,11 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
             this.filteredAutorList.next(this.authorList.slice());
 
             this.authorMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
+                .pipe(
+                                    debounceTime(100),
+                                    filter(search => search && search.length >= 3),
+                                    takeUntil(this._onDestroy)
+                            )
                 .subscribe(() => {
                     this.filterAuthor();
                 });
@@ -315,7 +321,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     GetPIList() {
 
-        this.cogbytesService.getPI().subscribe((data: any) => {
+        this.piSiteService.getPISite().subscribe((data: any) => {
             this.piList = data;
 
             // load the initial expList
@@ -350,7 +356,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         // filter the PI
         this.filteredPIList.next(
-            this.piList.filter((x: any) => x.piFullName.toLowerCase().indexOf(searchPI) > -1)
+            this.piList.filter((x : any) => x.piSiteName.toLowerCase().indexOf(searchPI) > -1)
         );
     }
 
