@@ -1,19 +1,29 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { AuthenticationService } from '../services/authentication.service';
 import { CogbytesDialogueComponent } from '../cogbytesDialogue/cogbytesDialogue.component';
 import { ExpDialogeComponent } from '../expDialoge/expDialoge.component';
 import { AnimalDialogComponent } from '../animal-dialog/animal-dialog.component';
-import { CogbytesUpload } from '../models/cogbytesUpload'
-import { CogbytesService } from '../services/cogbytes.service'
+import { CogbytesUpload } from '../models/cogbytesUpload';
+import { CogbytesService } from '../services/cogbytes.service';
 import { AnimalService } from '../services/animal.service';
 import { PagerService } from '../services/pager.service';
+import { UploadService } from '../services/upload.service';
+import { ExperimentService } from '../services/experiment.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { map } from 'rxjs/operators';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
-import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
+import { CONFRIMREPOSITORYDETLETE, CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
+import { SubExpDialogeComponent } from '../sub-exp-dialoge/sub-exp-dialoge.component';
+import { UploadComponent } from '../upload/upload.component';
+import { UploadResultDialogComponent } from '../upload-result-dialog/upload-result-dialog.component';
+import { PostProcessingQcService } from '../services/postprocessingqc.service';
+import { SubExpDialogeService } from '../services/subexpdialoge.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
+import { Experiment } from '../models/experiment';
 
 
 @Component({
@@ -41,6 +51,7 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     authorList: any;
     piList: any;
     AnimalList: any;
+    experiments: any[] = [];
 
     _cogbytesUpload: CogbytesUpload;
 
@@ -54,14 +65,19 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
     constructor(
         public dialog: MatDialog,
+        public dialogRefDelAnimal: MatDialog,
         private authenticationService: AuthenticationService,
         //public dialogAuthor: MatDialog,
         private cogbytesService: CogbytesService,
         private animalService: AnimalService,
+        private experimentService: ExperimentService,
         private spinnerService: NgxSpinnerService,
         private pagerService: PagerService,
         public dialogRefLink: MatDialog,
-        public dialogRef: MatDialog
+        public dialogRef: MatDialog,
+        private postProcessingQcService: PostProcessingQcService,
+        private subexpDialogeService: SubExpDialogeService,
+        private snackBar: MatSnackBar,
     )
     {
         this.uploadKey = 0;
@@ -118,8 +134,32 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
     GetUploads( _event? : any) {
         if (this.repModel != null) {
-            let repID = this.getRep().id;
-            this.cogbytesService.getUploads(repID).subscribe((data: any) => { this.uploadList = data; });
+            const rep = this.getRep();
+            this.GetAnimalInfo(rep.id);
+            this.experiments = rep?.experiment || [];
+            if (this.experiments.length > 0) {
+                const subExpObservables = this.experiments.map(exp =>
+                    this.subexpDialogeService.getAllSubExp(exp.expID).pipe(
+                        map((subExperimentArray: any[]) => ({
+                            ...exp,
+                            subexperiment: subExperimentArray
+                        }))
+                )
+             );
+             
+             forkJoin(subExpObservables).subscribe(
+                (updatedExp: any[]) => {
+                    this.experiments = updatedExp;
+                }
+             )
+            }
+            if (rep) {
+                this.cogbytesService.getUploads(rep.id).subscribe((data: any) => { this.uploadList = data; });
+            }
+        } else {
+            // When no repository is selected, clear the lists.
+            this.uploadList = [];
+            this.experiments = [];
         }
     }
 
@@ -215,7 +255,8 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         });
 
         dialogRef.afterClosed().subscribe((_result : any) => {
-            this.GetAnimalInfo(this.experimentID);
+            const rep = this.getRep();
+            this.GetAnimalInfo(rep.id);
         })
     }
 
@@ -290,12 +331,11 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         return "http://localhost:4200/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
     }
 
-    GetAnimalInfo(selectedExperimentID: number) {
-        this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
+    GetAnimalInfo(repID: number) {
+        console.log(repID);
+        this.animalService.getAnimalInfoRepository(repID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
-            //console.log(this.AnimalList)
-
         });
 
     }
@@ -325,6 +365,188 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
     }
 
+    delAnimal(animalID: number, expId: number) {
+        this.openConfirmationDialogDelAnimal(animalID, expId);
+    }
+    
+    openConfirmationDialogDelAnimal(animalID: number, expId: number) {
+        const dialogRefDelAnimal = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        dialogRefDelAnimal.componentInstance.confirmMessage = CONFIRMDELETE;
+
+
+
+        dialogRefDelAnimal.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+                this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
+
+
+                    this.GetAnimalInfo(expId);
+                    // location.reload()
+
+                    this.spinnerService.hide();
+
+                })).subscribe();
+            }
+            //this.dialogRefDelAnimal = null;
+            dialogRefDelAnimal.close();
+        });
+    }
+
+    createSubExperiment(exp: any): void {
+        const dialogRef = this.dialog.open(SubExpDialogeComponent, {
+            height: '850px',
+            width: '1200px',
+            data: { expObj: exp }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            this.GetRepositories();
+        });
+    }
+
+    openUploadDialog(exp: any, subExp: any): void {
+        // const exp = this.getRep().experiment.find((e: any) => e.subExperiments.some((se: any) => se.subExpID === subExp.subExpID));
+        const dialogRef = this.dialog.open(UploadComponent, {
+            height: '800px',
+            width: '1000px',
+            data: {
+                experiment: exp,
+                subExperiment: subExp
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            // Handle dialog close
+        });
+    }
+
+    openTimeSeriesUploadDialog(exp: any, subExp: any): void {
+        const dialogRef = this.dialog.open(NotificationDialogComponent, {
+        });
+        dialogRef.componentInstance.message = "Time series upload is not yet implemented.";
+    }
+
+    openUploadResultDialog(subExp: any): void {
+        // This is a placeholder. In a real scenario, you would fetch the
+        // latest upload result for the sub-experiment.
+        const mockUploadResult: any[] = [];
+
+        const dialogRef = this.dialog.open(UploadResultDialogComponent, {
+            height: '900px',
+            width: '850px',
+            data: {
+                uploadResult: mockUploadResult,
+                experimentName: this.getRep().title
+            }
+        });
+    }
+
+    openConfirmationDialog(expID : any) {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        dialogRef.componentInstance.confirmMessage = CONFIRMDELETE;
+
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+
+                this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
+
+                    
+                    this.spinnerService.hide();
+                    
+
+                    location.reload()
+
+                })).subscribe();
+            }
+            //this.dialogRef = null;
+            dialogRef.close();
+        });
+    }
+
+    getRepTitle(repGuid : any) {
+        console.log(repGuid);
+        if (repGuid == "") {
+            return "N/A";
+        }
+        return this.repList[this.repList.map(function (x: any) { return x.repoLinkGuid }).indexOf(repGuid)].title;
+    }
+
+    runPostQC(subExpObj : any) {
+        this.spinnerService.show();
+        this.postProcessingQcService.postProcessSubExperiment(subExpObj).subscribe((errorMessage : string) => {
+            setTimeout(() => {
+                this.spinnerService.hide();
+            }, 500);
+
+            if (errorMessage == "") {
+                // this.GetAllSubExp();
+            } else {
+                this.snackBar.open(POSTPROCESSINGDONE, "", {
+                    duration: 2000,
+                    horizontalPosition: 'right',
+                    verticalPosition: 'top',
+                });
+                this.GetRepositories();
+            }
+        });
+    }
+
+    openPostProcessingResult(subExpID : any) {
+        this.postProcessingQcService.getPostProcessingResult(subExpID).subscribe((errorMessage : string) => {
+            if (errorMessage == "")
+                errorMessage = PLEASERUNPREPROCESSING;
+
+            const dialogRefPostProcessingResult = this.dialog.open(GenericDialogComponent, {
+                disableClose: false
+            });
+            dialogRefPostProcessingResult.componentInstance.message = errorMessage;
+        });
+    }
+
+    openDialogSubExp(SubExperiment : any, ExpID : any): void {
+        //console.log(SubExperiment);
+        var Experiment = this.getRep().experiment.find((x : any) => x.expID === ExpID);
+        let dialogref = this.dialog.open(SubExpDialogeComponent, {
+            width: '600px',
+            data: { subexperimentObj: SubExperiment, expObj: Experiment} // change it for editing
+
+        });
+
+        dialogref.afterClosed().subscribe((_result : any) => {
+            //console.log('the dialog was closed');
+            this.GetRepositories();
+        });
+    } 
+
+    delSubExp(subExp : any) {
+        //console.log(subExp)
+        this.openSubExpConfirmationDialog(subExp);
+    }
+
+    openSubExpConfirmationDialog(subExp : any) {
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        dialogRef.componentInstance.confirmMessage = CONFIRMDELETE
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
+                   // location.reload()
+                    this.GetRepositories();
+                    this.spinnerService.hide();
+                })).subscribe();
+            }
+            //this.dialogRef = null;
+            dialogRef.close();
+        });
+    }
 }
-
-

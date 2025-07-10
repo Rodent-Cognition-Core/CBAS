@@ -8,6 +8,10 @@ import { PubScreenService } from '../services/pubScreen.service';
 import { CogbytesService } from '../services/cogbytes.service'
 import { AnimalService } from '../services/animal.service';
 import { PagerService } from '../services/pager.service';
+import { PostProcessingQcService } from '../services/postprocessingqc.service';
+import { UploadService } from '../services/upload.service';
+import { ExperimentService } from '../services/experiment.service';
+import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { CogbytesUploadModule } from '../cogbytesUpload/cogbytesUpload.module';
 import { CogbytesSearchModule } from '../cogbytesSearch/cogbytesSearch.module';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -24,7 +28,8 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
         CogbytesComponent
     ],
     providers: [ManageUserService, PubScreenService, IdentityService, CogbytesService,
-                AnimalService, PagerService, {
+                AnimalService, PagerService, PostProcessingQcService, SubExpDialogeService, UploadService,
+                ExperimentService,  {
         provide: MatDialogRef,
         useValue: {}
     },
