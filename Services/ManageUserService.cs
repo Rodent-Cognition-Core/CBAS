@@ -24,7 +24,7 @@ namespace AngularSPAWebAPI.Services
                     SELECT 
                         EmailConfirmed, 
                         LockoutEnd 
-                    FROM AspNetUsers 
+                    FROM dbo.AspNetUsers 
                     WHERE UserName = @UserName";
 
                 var parameters = new List<SqlParameter>
@@ -65,14 +65,14 @@ namespace AngularSPAWebAPI.Services
                     SELECT AspNetUsers.GivenName, AspNetUsers.FamilyName, AspNetUsers.Email, EmailConfirmed,
                     STUFF(( 
                         SELECT DISTINCT ' <br/>' + CONCAT(PName, ' - ', Institution) AS PISiteName
-                        FROM PISite
-                        INNER JOIN PI ON PI.PID = PISite.PID
-                        INNER JOIN Site ON Site.SiteID = PISite.SiteID
-                        INNER JOIN PIUserSite ON PISite.PSID = PIUserSite.PSID
+                        FROM tsd.PISite
+                        INNER JOIN tsd.PI ON PI.PID = PISite.PID
+                        INNER JOIN tsd.Site ON Site.SiteID = PISite.SiteID
+                        INNER JOIN tsd.PIUserSite ON PISite.PSID = PIUserSite.PSID
                         WHERE PIUserSite.UserID = AspNetUsers.id
                         FOR XML PATH(''), TYPE
                     ).value('.', 'nvarchar(max)'), 1, 6, '') AS PISiteName
-                    FROM AspNetUsers";
+                    FROM dbo.AspNetUsers";
                 lstUser = await Dal.GetReader(sql, reader => new Users
                 {
                     GivenName = Convert.ToString(reader.GetValue(reader.GetOrdinal("GivenName"))),
@@ -96,7 +96,7 @@ namespace AngularSPAWebAPI.Services
         {
             try
             {
-                const string sql = "UPDATE AspNetUsers SET EmailConfirmed = 'true' WHERE Email = @Email";
+                const string sql = "UPDATE dbo.AspNetUsers SET EmailConfirmed = 'true' WHERE Email = @Email";
                 var parameters = new List<SqlParameter>
                 {
                     new SqlParameter("@Email", email)
@@ -115,7 +115,7 @@ namespace AngularSPAWebAPI.Services
         {
             try
             {
-                const string sql = "UPDATE AspNetUsers SET EmailConfirmed = 'false' WHERE Email = @Email";
+                const string sql = "UPDATE dbo.AspNetUsers SET EmailConfirmed = 'false' WHERE Email = @Email";
                 var parameters = new List<SqlParameter>
                 {
                     new SqlParameter("@Email", email)

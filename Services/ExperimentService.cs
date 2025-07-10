@@ -16,25 +16,25 @@ namespace AngularSPAWebAPI.Services
         {
             List<Experiment> lstExperiment = new List<Experiment>();
 
-            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, Species.Species as Species, tt2.PISiteName, 
+            using (DataTable dt = Dal.GetDataTable($@"select tsd.Experiment.*, task.name as TaskName, Species.Species as Species, tt2.PISiteName, 
 
                                                         STUFF((SELECT ' <br/>' + se.SubExpName
-                                                                FROM SubExperiment se
+                                                                FROM tsd.SubExperiment se
                                                                 Where se.ExpID = Experiment.ExpID
                                                                 order by se.SubExpName
                                                                 FOR XML PATH(''), type
                                                         ).value('.', 'nvarchar(max)'),1,6,'') As SubExpNames
 
-                                                        from Experiment 
-                                                        inner join task on task.id = Experiment.taskID
-                                                        inner join species on species.id = Experiment.SpeciesID
+                                                        from tsd.Experiment 
+                                                        inner join tsd.task on task.id = Experiment.taskID
+                                                        inner join tsd.species on species.id = Experiment.SpeciesID
                                                         inner join 
 
-                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName  From PIUserSite
+                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName  From tsd.PIUserSite
                                                         inner join 
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID 
-                                                        inner join Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID) as tt2 on tt2.PUSID = Experiment.PUSID
+                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID 
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID) as tt2 on tt2.PUSID = Experiment.PUSID
 
                                                         WHERE Experiment.UserID = '{userID}'"))
             {
@@ -82,7 +82,7 @@ namespace AngularSPAWebAPI.Services
                 return "";
             }
 
-            string sql = $@"Select * From Image Where Id in ({imageIdCsv}) ";
+            string sql = $@"Select * From tsd.Image Where Id in ({imageIdCsv}) ";
 
             List<string> imageList = new List<string>();
 
@@ -103,7 +103,7 @@ namespace AngularSPAWebAPI.Services
 
         public bool DoesExperimentNameExist(string experimentName)
         {
-            string sql = $"select count(*) from Experiment where ltrim(rtrim(ExpName)) = '{HelperService.EscapeSql(experimentName.Trim())}' ";
+            string sql = $"select count(*) from tsd.Experiment where ltrim(rtrim(ExpName)) = '{HelperService.EscapeSql(experimentName.Trim())}' ";
 
             int countResult = Int32.Parse(Dal.ExecScalar(sql).ToString());
 
@@ -113,7 +113,7 @@ namespace AngularSPAWebAPI.Services
 
         public bool DoesExperimentNameExistEdit(string experimentName, int expID)
         {
-            string sql = $"select count(*) from Experiment where ltrim(rtrim(ExpName)) = '{HelperService.EscapeSql(experimentName.Trim())}' AND ExpID != {expID} ";
+            string sql = $"select count(*) from tsd.Experiment where ltrim(rtrim(ExpName)) = '{HelperService.EscapeSql(experimentName.Trim())}' AND ExpID != {expID} ";
 
             int countResult = Int32.Parse(Dal.ExecScalar(sql).ToString());
 
@@ -131,7 +131,7 @@ namespace AngularSPAWebAPI.Services
                 repoString = "'" + experiment.RepoGuid + "'";
             }
             
-            string sql = $"insert into Experiment " +
+            string sql = $"insert into tsd.Experiment " +
               $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status, TaskBattery, MultipleSessions, RepoGuid) Values " +
               $"('{userID}', {experiment.PUSID}, '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
               $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql((HelperService.NullToString(experiment.TaskDescription)).Trim())}'," +
@@ -191,32 +191,32 @@ namespace AngularSPAWebAPI.Services
 
         public void DeleteExpByExpID(int expID)
         {
-            string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where ExpID = {expID});
-                            Delete From SessionInfo Where ExpID = {expID};
-                            Delete From Upload Where ExpID ={expID};
-                            Delete From Animal Where ExpID ={expID};
-                            Delete From UploadErrorLog Where ExpID ={expID};
-                            Delete From SubExperiment Where ExpId = {expID};
-                            Delete From Experiment Where ExpID={expID};";
+            string sql = $@"Delete From tsd.RBT_TouchScreen_Features Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.rbt_data_cached_avg Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.rbt_data_cached_std Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.rbt_data_cached_cnt Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.rbt_data_cached_sum Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.SessionInfo_Dynamic Where SessionID in (Select SessionID From tsd.SessionInfo Where ExpID = {expID});
+                            Delete From tsd.SessionInfo Where ExpID = {expID};
+                            Delete From tsd.Upload Where ExpID ={expID};
+                            Delete From tsd.Animal Where ExpID ={expID};
+                            Delete From tsd.UploadErrorLog Where ExpID ={expID};
+                            Delete From tsd.SubExperiment Where ExpId = {expID};
+                            Delete From tsd.Experiment Where ExpID={expID};";
 
             Dal.ExecuteNonQuery(sql);
         }
 
         public void DeleteExpByUploadID(int uploadID)
         {
-            string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
-                            Delete From SessionInfo Where UploadID = {uploadID};
-                            Delete From Upload Where UploadID = {uploadID};";
+            string sql = $@"Delete From tsd.RBT_TouchScreen_Features Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.rbt_data_cached_avg Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.rbt_data_cached_std Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.rbt_data_cached_cnt Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.rbt_data_cached_sum Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.SessionInfo_Dynamic Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID = {uploadID});
+                            Delete From tsd.SessionInfo Where UploadID = {uploadID};
+                            Delete From tsd.Upload Where UploadID = {uploadID};";
 
             Dal.ExecuteNonQuery(sql);
         }
@@ -226,7 +226,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Image> lstImages = new List<Image>();
 
-            using (DataTable dt = Dal.GetDataTable("select * from Image"))
+            using (DataTable dt = Dal.GetDataTable("select * from tsd.Image"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -249,7 +249,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Species_> lstSpecies = new List<Species_>();
 
-            using (DataTable dt = Dal.GetDataTable("select * from Species"))
+            using (DataTable dt = Dal.GetDataTable("select * from tsd.Species"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {

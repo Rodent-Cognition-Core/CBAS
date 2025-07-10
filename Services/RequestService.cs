@@ -17,7 +17,7 @@ namespace AngularSPAWebAPI.Services
         {         
 
             
-            string sql = $@"Insert into Request (Type, FullName, Email, TaskName, ScheduleName) Values
+            string sql = $@"Insert into tsd.Request (Type, FullName, Email, TaskName, ScheduleName) Values
                             ('AddTask', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.taskName)}',
                              '{HelperService.EscapeSql(request.ScheduleName)}'); SELECT @@IDENTITY AS 'Identity';";
 
@@ -30,7 +30,7 @@ namespace AngularSPAWebAPI.Services
         {
 
 
-            string sql = $@"Insert into Request (Type, FullName, Email, PIFullName, PIEmail, PIInstitution) Values
+            string sql = $@"Insert into tsd.Request (Type, FullName, Email, PIFullName, PIEmail, PIInstitution) Values
                             ('AddPI', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.PIFullName)}',
                              '{HelperService.EscapeSql(request.PIEmail)}', '{HelperService.EscapeSql(request.PIInstitution)}'); SELECT @@IDENTITY AS 'Identity';";
 
@@ -43,7 +43,7 @@ namespace AngularSPAWebAPI.Services
         {
 
 
-            string sql = $@"Insert into Request (Type, FullName, Email, Age) Values
+            string sql = $@"Insert into tsd.Request (Type, FullName, Email, Age) Values
                             ('AddAge', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.Age)}'); SELECT @@IDENTITY AS 'Identity';";
 
             Int32.Parse(Dal.ExecScalar(sql).ToString());
@@ -55,7 +55,7 @@ namespace AngularSPAWebAPI.Services
         {
 
 
-            string sql = $@"Insert into Request (Type, FullName, Email, MouseStrain, Genotype, GeneticModification, StrainReference, ControlSuggestion) Values
+            string sql = $@"Insert into tsd.Request (Type, FullName, Email, MouseStrain, Genotype, GeneticModification, StrainReference, ControlSuggestion) Values
                             ('AddMouseLine', '{HelperService.EscapeSql(request.FullName)}', '{request.Email}', '{HelperService.EscapeSql(request.MouseStrain)}', '{HelperService.EscapeSql(request.Genotype)}',
                              '{HelperService.EscapeSql(request.GeneticModification)}', '{HelperService.EscapeSql(request.StrainReference)}',
                              '{HelperService.EscapeSql(request.ControlSuggestion)}'); SELECT @@IDENTITY AS 'Identity';";

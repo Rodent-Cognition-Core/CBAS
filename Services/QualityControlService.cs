@@ -1514,7 +1514,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Animal> lstAnimal = new List<Animal>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.* From Animal
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.* From tsd.Animal
                                                          Where UserAnimalID = '{Animal_ID}' and ExpID = {expID}"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -1553,7 +1553,7 @@ namespace AngularSPAWebAPI.Services
         {
             FileUploadResult FileUniqueIDIsQcPassed;
 
-            using (DataTable dt = Dal.GetDataTable($@"select UploadID, ltrim(rtrim(FileUniqueID)) As FileUniqueID, IsQcPassed, IsIdentifierPassed from Upload
+            using (DataTable dt = Dal.GetDataTable($@"select UploadID, ltrim(rtrim(FileUniqueID)) As FileUniqueID, IsQcPassed, IsIdentifierPassed from tsd.Upload
                                                         where ltrim(rtrim([FileUniqueID])) = '{FileUniqueID1.Trim()}' and  ExpID = {expID};"))
             {
                 if (dt.Rows.Count == 0)
@@ -1581,7 +1581,7 @@ namespace AngularSPAWebAPI.Services
             string SID = animal.SID == null ? "null" : "";
             string GID = animal.GID == null ? "null" : "";
 
-            string sql = $"insert into Animal (ExpID, UserAnimalID, SID, GID, Sex)" +
+            string sql = $"insert into tsd.Animal (ExpID, UserAnimalID, SID, GID, Sex)" +
             $"Values('{animal.ExpID}', '{animal.UserAnimalID}', {SID}, {GID}, '{animal.Sex}'); SELECT @@IDENTITY AS 'Identity'; ";
 
             return Int32.Parse(Dal.ExecScalar(sql).ToString());

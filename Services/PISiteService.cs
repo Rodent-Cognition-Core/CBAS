@@ -21,9 +21,9 @@ namespace AngularSPAWebAPI.Services
         {
             List<PISite> lstPISite = new List<PISite>();
 
-            using (DataTable dt = Dal.GetDataTable($@"Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID"))
+            using (DataTable dt = Dal.GetDataTable($@"Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -50,7 +50,7 @@ namespace AngularSPAWebAPI.Services
             {
                 foreach (var piSiteID in selectedPiSiteIds)
                 {
-                    const string sql = "INSERT INTO PIUserSite (PSID, UserID) VALUES (@PSID, @UserID)";
+                    const string sql = "INSERT INTO tsd.PIUserSite (PSID, UserID) VALUES (@PSID, @UserID)";
                     var parameters = new List<SqlParameter>
                     {
                         new("@PSID", piSiteID),
@@ -76,12 +76,12 @@ namespace AngularSPAWebAPI.Services
             {
                 const string sql = @"
                     SELECT PUSID, PIUserSite.PSID, tt.PISiteName
-                    FROM PIUserSite
+                    FROM tsd.PIUserSite
                     INNER JOIN (
                         SELECT PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) AS PISiteName
-                        FROM PISite
-                        INNER JOIN PI ON PI.PID = PISite.PID
-                        INNER JOIN Site ON Site.SiteID = PISite.SiteID
+                        FROM tsd.PISite
+                        INNER JOIN tsd.PI ON PI.PID = PISite.PID
+                        INNER JOIN tsd.Site ON Site.SiteID = PISite.SiteID
                     ) AS tt ON tt.PSID = PIUserSite.PSID
                     WHERE PIUserSite.UserID = @UserID";
 
@@ -120,7 +120,7 @@ namespace AngularSPAWebAPI.Services
             try
             {
                 string sqlPI = $@"SELECT TOP (1) PID
-                                FROM PI
+                                FROM tsd.PI
                                 WHERE PName='{piName}'";
                 piID = Convert.ToInt32(Dal.ExecScalar(sqlPI).ToString());
 

@@ -14,7 +14,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<TaskAnalysis> lstTaskAnalyses = new List<TaskAnalysis>();
 
-            using (DataTable dt = Dal.GetDataTable("select * from Task Where ID not in (1,6)"))
+            using (DataTable dt = Dal.GetDataTable("select * from tsd.Task Where ID not in (1,6)"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -41,7 +41,7 @@ namespace AngularSPAWebAPI.Services
 
         public int InsertTest(TaskAnalysis taskAnalysis)
         {
-            string sql = $"insert into Test (Name, Last_name) Values ('{taskAnalysis.Name}', '{taskAnalysis.OriginalName}'); SELECT @@IDENTITY AS 'Identity';";
+            string sql = $"insert into tsd.Test (Name, Last_name) Values ('{taskAnalysis.Name}', '{taskAnalysis.OriginalName}'); SELECT @@IDENTITY AS 'Identity';";
             //Dal.ExecuteNonQuery(sql);
             //Dal.ExecuteScalar(sql);
             return Int32.Parse(Dal.ExecScalar(sql).ToString());

@@ -24,7 +24,7 @@ namespace AngularSPAWebAPI.Services
             else
             {
                 // connect to DB, empty Erroressage field in SubExsp table, then call RunPostProcessin Function
-                string sql = $@"UPDATE SubExperiment
+                string sql = $@"UPDATE tsd.SubExperiment
                             SET ErrorMessage = ''
                             WHERE ExpID = {subExp.SubExpID} ;";
 
@@ -139,7 +139,7 @@ namespace AngularSPAWebAPI.Services
 
         private void SetPostProcessingError(int SubxpID, string error)
         {
-            string sql = $@"UPDATE SubExperiment
+            string sql = $@"UPDATE tsd.SubExperiment
                             SET IsPostProcessingPass = 0, ErrorMessage = '{error}'
                             WHERE SubExpID = {SubxpID} ;";
 
@@ -149,7 +149,7 @@ namespace AngularSPAWebAPI.Services
 
         private void SetPostProcessingPassed(int SubxpID)
         {
-            string sql = $@"UPDATE SubExperiment
+            string sql = $@"UPDATE tsd.SubExperiment
                             SET IsPostProcessingPass = 1, ErrorMessage = ''
                             WHERE SubExpID = {SubxpID} ;";
 
@@ -159,7 +159,7 @@ namespace AngularSPAWebAPI.Services
 
         public string GetPostProcessingResult(int subExpID)
         {
-            string sql = $@"SELECT ISNULL(ErrorMessage, '') AS ErrorMessage FROM SubExperiment
+            string sql = $@"SELECT ISNULL(ErrorMessage, '') AS ErrorMessage FROM tsd.SubExperiment
                             
                             WHERE SubExpID = {subExpID} ;";
 
@@ -392,8 +392,8 @@ namespace AngularSPAWebAPI.Services
         {
 
             return $@"select count(*) cnt, SessionInfo.AnimalID
-                    from SessionInfo
-                    inner join upload on SessionInfo.UploadID = Upload.UploadID
+                    from tsd.SessionInfo
+                    inner join tsd.upload on SessionInfo.UploadID = Upload.UploadID
                     where upload.subExpID = {subExpId} and ({sessionNameFilter})
                     group by SessionInfo.AnimalID
                     having  count(*) {operand} {minCount}";
@@ -403,8 +403,8 @@ namespace AngularSPAWebAPI.Services
         private string GetScheduleNameQuery(string sessionNameFilter, int subExpId)
         {
             return $@"select count(*) cnt
-                    from SessionInfo
-                    inner join upload on SessionInfo.UploadID = Upload.UploadID
+                    from tsd.SessionInfo
+                    inner join tsd.upload on SessionInfo.UploadID = Upload.UploadID
                     where upload.subExpID = {subExpId} and ({sessionNameFilter})";
 
         }
@@ -413,9 +413,9 @@ namespace AngularSPAWebAPI.Services
         {
 
             return $@"select Schedule_Name, Animal.UserAnimalID , CAST(Date_Time AS DATE) as DateField, upload.UserFileName 
-                        from SessionInfo 
-                        inner join Upload on SessionInfo.UploadID = Upload.UploadID
-                        inner join Animal on Animal.AnimalID = SessionInfo.AnimalID
+                        from tsd.SessionInfo 
+                        inner join tsd.Upload on SessionInfo.UploadID = Upload.UploadID
+                        inner join tsd.Animal on Animal.AnimalID = SessionInfo.AnimalID
                         where ({sessionNameFilter}) and  upload.subExpID = {subExpId} and SessionInfo.AnimalID = {animalId}
 
             ";
@@ -428,7 +428,7 @@ namespace AngularSPAWebAPI.Services
         // extrcting taskname of the experiment
         public int GetTaskName(int expID)
         {
-            string sql = $@"Select task.id as TaskID from Experiment inner join task on task.id = Experiment.taskID WHERE experiment.ExpID = {expID};";
+            string sql = $@"Select task.id as TaskID from tsd.Experiment inner join tsd.task on task.id = Experiment.taskID WHERE experiment.ExpID = {expID};";
             int taskID = Int32.Parse(Dal.ExecScalar(sql).ToString());
             return taskID;
 
@@ -436,7 +436,7 @@ namespace AngularSPAWebAPI.Services
 
         public int getminAge(int expID)
         {
-            string sql = $@"Select Min(AgeID) as MinAge From SubExperiment Where ExpID ={expID}";
+            string sql = $@"Select Min(AgeID) as MinAge From tsd.SubExperiment Where ExpID ={expID}";
             int minAge = Int32.Parse(Dal.ExecScalar(sql).ToString());
             return minAge;
         }

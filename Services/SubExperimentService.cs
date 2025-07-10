@@ -20,7 +20,7 @@ namespace AngularSPAWebAPI.Services
             using (DataTable dt = Dal.GetDataTable($@"Select se.SubExpID, se.ExpID, se.AgeID, se.SubExpName, se.IsPostProcessingPass, se.ErrorMessage, Age.AgeInMonth,
                                                         se.IsIntervention, se.IsDrug, se.DrugName, se.DrugUnit, se.DrugQuantity, se.InterventionDescription, se.ImageIds, se.ImageDescription,
                                                         se.Housing, se.LightCycle
-                                                        From SubExperiment se Inner Join Age On Age.ID = se.AgeID Where ExpID = {ExpID} order by Age.ID"))
+                                                        From tsd.SubExperiment se Inner Join tsd.Age On Age.ID = se.AgeID Where ExpID = {ExpID} order by Age.ID"))
             {
                 foreach(DataRow dr in dt.Rows)
                 {
@@ -65,7 +65,7 @@ namespace AngularSPAWebAPI.Services
                 return "";
             }
 
-            string sql = $@"Select * From Image Where Id in ({imageIdCsv}) ";
+            string sql = $@"Select * From tsd.Image Where Id in ({imageIdCsv}) ";
 
             List<string> imageList = new List<string>();
 
@@ -88,7 +88,7 @@ namespace AngularSPAWebAPI.Services
         {
 
             List<Age> AgeList = new List<Age>();
-            using (DataTable dt = Dal.GetDataTable($@"select * from age"))
+            using (DataTable dt = Dal.GetDataTable($@"select * from tsd.age"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -109,8 +109,8 @@ namespace AngularSPAWebAPI.Services
 
         public (bool flagSubExp, bool flagAge) DoesSubExperimentNameExist(SubExperiment subexpObj, int subExpId)
         {
-            string sqlsubexp = $"select count(*) from SubExperiment where ltrim(rtrim(SubExpName)) = '{HelperService.EscapeSql(subexpObj.SubExpName.Trim())}' {(subExpId == 0 ? "" : " AND SubExpID != " + subexpObj.SubExpID)} ";
-            string sqlage = $@"select count(*) from SubExperiment where AgeID={subexpObj.AgeID} and Isintervention={(subexpObj.IsIntervention ? 1 : 0)} and
+            string sqlsubexp = $"select count(*) from tsd.SubExperiment where ltrim(rtrim(SubExpName)) = '{HelperService.EscapeSql(subexpObj.SubExpName.Trim())}' {(subExpId == 0 ? "" : " AND SubExpID != " + subexpObj.SubExpID)} ";
+            string sqlage = $@"select count(*) from tsd.SubExperiment where AgeID={subexpObj.AgeID} and Isintervention={(subexpObj.IsIntervention ? 1 : 0)} and
                             IsDrug = {(subexpObj.IsDrug ? 1 : 0)} and
                             ltrim(rtrim(DrugName)) = '{HelperService.EscapeSql(subexpObj.DrugName.Trim())}' and
                             DrugUnit = '{HelperService.EscapeSql(subexpObj.DrugUnit.Trim())}' and
@@ -140,7 +140,7 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-            string sql = $@"Insert into SubExperiment  
+            string sql = $@"Insert into tsd.SubExperiment  
                         (ExpID, AgeID, SubExpName, IsIntervention, IsDrug, DrugName, DrugUnit, DrugQuantity, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle) Values  
                 ({subexperiment.ExpID}, {subexperiment.AgeID}, '{HelperService.EscapeSql(subexperiment.SubExpName.Trim())}',
                 {(subexperiment.IsIntervention ? 1 : 0)}, {(subexperiment.IsDrug ? 1 : 0)}, '{HelperService.EscapeSql(subexperiment.DrugName)}',
@@ -166,7 +166,7 @@ namespace AngularSPAWebAPI.Services
 
             
 
-            string sql = $@"UPDATE SubExperiment 
+            string sql = $@"UPDATE tsd.SubExperiment 
                         SET SubExpName = '{HelperService.EscapeSql(subexperiment.SubExpName.Trim())}', AgeID = {subexperiment.AgeID},
                         IsIntervention = {(subexperiment.IsIntervention ? 1 : 0)}, IsDrug = {(subexperiment.IsDrug ? 1 : 0)}, DrugName = '{HelperService.EscapeSql(subexperiment.DrugName)}',
                         DrugUnit = '{HelperService.EscapeSql(subexperiment.DrugUnit)}', DrugQuantity= '{HelperService.EscapeSql(subexperiment.DrugQuantity)}',
@@ -181,21 +181,21 @@ namespace AngularSPAWebAPI.Services
 
         public void DeleteSubExpBySubExpID(int subExpID)
         {
-            string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in
-                         (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+            string sql = $@"Delete From tsd.RBT_TouchScreen_Features Where SessionID in
+                         (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From tsd.Upload Where SubExpID = {subExpID} ) );
 
-                         Delete From SessionInfo_Dynamic Where SessionID in
-                         (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                         Delete From tsd.SessionInfo_Dynamic Where SessionID in
+                         (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From tsd.Upload Where SubExpID = {subExpID} ) );
 
-                        Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
-                        Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
-                        Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
-                        Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                        Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                        Delete From rbt_data_cached_std Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                        Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
+                        Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From tsd.SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} ) );
 
-                        Delete From SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
-                        Delete From Upload Where SubExpID = {subExpID};
-                        Delete From UploadErrorLog Where SubExpID = {subExpID};
-                        Delete From SubExperiment Where SubExpID={subExpID};";
+                        Delete From tsd.SessionInfo Where UploadID in (Select UploadID From Upload Where SubExpID = {subExpID} );
+                        Delete From tsd.Upload Where SubExpID = {subExpID};
+                        Delete From tsd.UploadErrorLog Where SubExpID = {subExpID};
+                        Delete From tsd.SubExperiment Where SubExpID={subExpID};";
 
             Dal.ExecuteNonQuery(sql);
         }
@@ -205,7 +205,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Image> lstImages = new List<Image>();
 
-            using (DataTable dt = Dal.GetDataTable("select * from Image"))
+            using (DataTable dt = Dal.GetDataTable("select * from tsd.Image"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {

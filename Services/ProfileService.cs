@@ -18,7 +18,7 @@ namespace AngularSPAWebAPI.Services
         {
             var user= new Users();
 
-            using (DataTable dt = Dal.GetDataTable($@"Select GivenName, FamilyName, Email From AspNetUsers Where Id = '{userID}'"))
+            using (DataTable dt = Dal.GetDataTable($@"Select GivenName, FamilyName, Email From dbo.AspNetUsers Where Id = '{userID}'"))
             {
                     user = new Users
                     {
@@ -39,13 +39,13 @@ namespace AngularSPAWebAPI.Services
         public void UpdateProfile(CreateViewModel model, string userID)
         {
             // For Daniel  (UserAnimalID = '{animal.UserAnimalID}' should be removed from the sql query)
-            string sql = $@"UPDATE AspNetUsers set GivenName = '{model.givenName}', FamilyName = '{model.familyName}' Where Id = '{userID}'";
+            string sql = $@"UPDATE dbo.AspNetUsers set GivenName = '{model.givenName}', FamilyName = '{model.familyName}' Where Id = '{userID}'";
             Dal.ExecuteNonQuery(sql);
 
             if (model.selectedPiSiteIds != null)
             foreach (var PiSiteID in model.selectedPiSiteIds)
             {
-                string sql2 = $@"Insert into PIUserSite (PSID, UserID) Values ({PiSiteID}, '{userID}'); ";
+                string sql2 = $@"Insert into tsd.PIUserSite (PSID, UserID) Values ({PiSiteID}, '{userID}'); ";
                 Dal.ExecuteNonQuery(sql2);
             }
 

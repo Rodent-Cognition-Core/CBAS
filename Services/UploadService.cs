@@ -170,7 +170,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<string> GetTaskNameAsync(int ExpID)
         {
-            const string sql = "SELECT LTRIM(RTRIM(Task.Name)) AS TaskName FROM Task INNER JOIN Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
+            const string sql = "SELECT LTRIM(RTRIM(Task.Name)) AS TaskName FROM tsd.Task INNER JOIN tsd.Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
             {
@@ -191,7 +191,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int> GetTaskIDAsync(int ExpID)
         {
-            const string sql = "SELECT Task.ID AS TaskID FROM Task INNER JOIN Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
+            const string sql = "SELECT Task.ID AS TaskID FROM tsd.Task INNER JOIN tsd.Experiment ON Task.ID = Experiment.TaskID WHERE Experiment.ExpID = @ExpID";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@ExpID", ExpID)
@@ -211,7 +211,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<string> GetExpNameAsync(int ExpID)
         {
-            const string sql = "SELECT LTRIM(RTRIM(ExpName)) AS ExpName FROM Experiment WHERE Experiment.ExpID = @ExpID";
+            const string sql = "SELECT LTRIM(RTRIM(ExpName)) AS ExpName FROM tsd.Experiment WHERE Experiment.ExpID = @ExpID";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@ExpID", ExpID)
@@ -232,7 +232,7 @@ namespace AngularSPAWebAPI.Services
         // function to determine if multiple sessions of an animal in a single day are allowed
         public async Task<bool> GetMultipleSessionsAsync(int ExpID)
         {
-            const string sql = "SELECT MultipleSessions FROM Experiment WHERE Experiment.ExpID = @ExpID";
+            const string sql = "SELECT MultipleSessions FROM Experiment WHERE tsd.Experiment.ExpID = @ExpID";
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@ExpID", ExpID)
@@ -259,7 +259,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             const string sql = @"
-                INSERT INTO Upload 
+                INSERT INTO tsd.Upload 
                 (ExpID, AnimalID, SubExpID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath) 
                 VALUES 
                 (@ExpID, @AnimalID, @SubExpID, @UserFileName, @SysFileName, @SessionName, @ErrorMessage, @WarningMessage, @IsUploaded, @DateFileCreated, @DateUpload, @FileSize, @FileUniqueID, @IsQcPassed, @IsIdentifierPassed, @PermanentFilePath); 
@@ -306,7 +306,7 @@ namespace AngularSPAWebAPI.Services
             }
 
             const string sql = @"
-                UPDATE Upload 
+                UPDATE tsd.Upload 
                 SET ExpID = @ExpID, AnimalID = @AnimalID, SubExpID = @SubExpID, UserFileName = @UserFileName, SysFileName = @SysFileName, 
                     SessionName = @SessionName, ErrorMessage = @ErrorMessage, WarningMessage = @WarningMessage, 
                     IsUploaded = @IsUploaded, DateFileCreated = @DateFileCreated, DateUpload = @DateUpload, FileSize = @FileSize, 
@@ -349,7 +349,7 @@ namespace AngularSPAWebAPI.Services
         public async Task UpdateDuplicateSessionsAsync(string fileUniqueID)
         {
             const string sql = @"
-                UPDATE Upload 
+                UPDATE tsd.Upload 
                 SET IsDuplicateSession = 1 
                 WHERE FileUniqueID = @FileUniqueID";
 
@@ -421,7 +421,7 @@ namespace AngularSPAWebAPI.Services
                 }
 
                 const string sql = @"
-                    UPDATE Upload 
+                    UPDATE tsd.Upload 
                     SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
                         IsQcPassed = 1, IsIdentifierPassed = 1 
                     WHERE UploadID = @UploadID";
@@ -486,7 +486,7 @@ namespace AngularSPAWebAPI.Services
                 }
 
                 const string sql = @"
-                    UPDATE Upload 
+                    UPDATE tsd.Upload 
                     SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
                         IsQcPassed = 1, IsIdentifierPassed = 1 
                     WHERE UploadID = @UploadID";
@@ -513,7 +513,7 @@ namespace AngularSPAWebAPI.Services
 
         private async Task<int> getUploadSessionIDbySessionNameAsync(string sessionName)
         {
-            const string sql = "SELECT id FROM Upload_SessionInfo WHERE SessionName = @SessionName";
+            const string sql = "SELECT id FROM tsd.Upload_SessionInfo WHERE SessionName = @SessionName";
 
             var parameters = new List<SqlParameter>
             {
@@ -536,8 +536,8 @@ namespace AngularSPAWebAPI.Services
         {
             const string sql = @"
                 SELECT Upload.*, Experiment.TaskID 
-                FROM Upload
-                INNER JOIN Experiment ON Experiment.ExpID = Upload.ExpID
+                FROM tsd.Upload
+                INNER JOIN tsd.Experiment ON Experiment.ExpID = Upload.ExpID
                 WHERE UploadID = @UploadID";
 
             var parameters = new List<SqlParameter>
@@ -568,8 +568,8 @@ namespace AngularSPAWebAPI.Services
         {
             const string sql = @"
                 SELECT Upload.*, Experiment.TaskID 
-                FROM Upload
-                INNER JOIN Experiment ON Experiment.ExpID = Upload.ExpID
+                FROM tsd.Upload
+                INNER JOIN tsd.Experiment ON Experiment.ExpID = Upload.ExpID
                 WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
 
             var parameters = new List<SqlParameter>
@@ -1296,7 +1296,7 @@ namespace AngularSPAWebAPI.Services
         private int InsertSessionInfoToTable(SessionInfo si)
         {
 
-            string sql = $@"select SessionID from SessionInfo where UploadID = {si.UploadID} ";
+            string sql = $@"select SessionID from tsd.SessionInfo where UploadID = {si.UploadID} ";
             //var sessionInfoId = Dal.ExecuteScalar(sql);
             //if (sessionInfoId != null)
             //{
@@ -1308,7 +1308,7 @@ namespace AngularSPAWebAPI.Services
             //}
 
 
-            sql = $@"insert into SessionInfo (
+            sql = $@"insert into tsd.SessionInfo (
                           [ExpID]
                           ,[UploadID]
                           ,[AnimalID]
@@ -1356,7 +1356,7 @@ namespace AngularSPAWebAPI.Services
 
             foreach (var sessionInfoDynamic in si.SessionInfoDynamics)
             {
-                sql = $@"insert into SessionInfo_Dynamic (
+                sql = $@"insert into tsd.SessionInfo_Dynamic (
                           [SessionID]
                           ,[Name]
                           ,[Value]
@@ -1397,14 +1397,14 @@ namespace AngularSPAWebAPI.Services
                 if (!string.IsNullOrEmpty(stimulus_duration) && lstMD.Count > 0)
                 {
                     // Insert it to table SessionInfo in DB
-                    sql_stimulus = $@" Update SessionInfo Set Stimulus_Duration = '{stimulus_duration}'
+                    sql_stimulus = $@" Update tsd.SessionInfo Set Stimulus_Duration = '{stimulus_duration}'
                                       Where  SessionID = {lstMD[0].SessionID}";
                     Dal.ExecuteNonQuery(sql_stimulus);
                 }
 
             }
 
-            var table = Dal.GetDataTable($@"SELECT TOP 0 * FROM RBT_TouchScreen_Features");
+            var table = Dal.GetDataTable($@"SELECT TOP 0 * FROM tsd.RBT_TouchScreen_Features");
 
             foreach (var markerData in lstMD)
             {
@@ -1427,7 +1427,7 @@ namespace AngularSPAWebAPI.Services
 
             }
 
-            Dal.BulkInsert(table, "RBT_TouchScreen_Features");
+            Dal.BulkInsert(table, "tsd.RBT_TouchScreen_Features");
 
             table.Dispose();
 
@@ -1443,9 +1443,9 @@ namespace AngularSPAWebAPI.Services
 
             using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID,  UserFileName, Animal.UserAnimalID, DateFileCreated, WarningMessage, 
                                                         Upload.ErrorMessage,  CONCAT(se.SubExpName, ', ' , Age.AgeInMonth, ' Months') as SubExpNameAge, se.SubExpID 
-                                                        From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
-                                                        inner join SubExperiment se on Upload.SubExpID = se.SubExpID
-														inner join Age on Age.ID = se.AgeID
+                                                        From tsd.Upload inner join tsd.Animal on Animal.AnimalID = Upload.AnimalID
+                                                        inner join tsd.SubExperiment se on Upload.SubExpID = se.SubExpID
+														inner join tsd.Age on Age.ID = se.AgeID
                                                         WHERE Upload.ExpID = {expId} and ((Upload.ErrorMessage!='' and Upload.ErrorMessage IS NOT NUll) OR (ISNULL(WarningMessage,'')!='')) Order By UserAnimalID;"))
 
             {
@@ -1485,9 +1485,9 @@ namespace AngularSPAWebAPI.Services
         {
             List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Age.AgeInMonth, ' Months') as SubExpNameAge  FROM UploadErrorLog
-                                                        inner join SubExperiment se on UploadErrorLog.SubExpID = se.SubExpID
-														inner join Age on Age.ID = se.AgeID
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Age.AgeInMonth, ' Months') as SubExpNameAge  FROM tsd.UploadErrorLog
+                                                        inner join tsd.SubExperiment se on UploadErrorLog.SubExpID = se.SubExpID
+														inner join tsd.Age on Age.ID = se.AgeID
                                                         WHERE UploadErrorLog.ExpID = {expId};"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -1516,7 +1516,7 @@ namespace AngularSPAWebAPI.Services
             List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
 
             using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, Upload.IsUploaded, Upload.IsDuplicateSession
-                                                       From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
+                                                       From tsd.Upload inner join tsd.Animal on Animal.AnimalID = Upload.AnimalID
                                                        WHERE Upload.SubExpID = {subExpId} Order By DateUpload;"))
 
             {
@@ -1547,7 +1547,7 @@ namespace AngularSPAWebAPI.Services
         // Function Definition: Clear UploadErrorLog table
         public void ClearUploadLogTblbyID(int expID)
         {
-            string sql = $@"Delete From UploadErrorLog Where ExpID={expID}";
+            string sql = $@"Delete From tsd.UploadErrorLog Where ExpID={expID}";
 
             Dal.ExecuteNonQuery(sql);
         }
@@ -1557,8 +1557,8 @@ namespace AngularSPAWebAPI.Services
         {
             const string sql = @"
                 SELECT CONCAT(SubExpName, ', ', Age.AgeInMonth, ' Months') AS SubExpNameAge 
-                FROM SubExperiment  
-                INNER JOIN Age ON Age.ID = SubExperiment.AgeID  
+                FROM tsd.SubExperiment  
+                INNER JOIN tsd.Age ON Age.ID = SubExperiment.AgeID  
                 WHERE SubExpID = @SubExpID";
             var parameters = new List<SqlParameter>
             {
@@ -1582,8 +1582,8 @@ namespace AngularSPAWebAPI.Services
         {
             const string sql = @"
                 SELECT AgeInMonth 
-                FROM SubExperiment 
-                INNER JOIN Age ON Age.ID = SubExperiment.AgeID  
+                FROM tsd.SubExperiment 
+                INNER JOIN tsd.Age ON Age.ID = SubExperiment.AgeID  
                 WHERE SubExpID = @SubExpID";
 
             var parameters = new List<SqlParameter>
@@ -1608,7 +1608,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<UploadSession> lstUploadSession = new List<UploadSession>();
 
-            string sql = "Select * From Upload_SessionInfo;";
+            string sql = "Select * From tsd.Upload_SessionInfo;";
 
             using (DataTable dt = Dal.GetDataTable(sql))
             {

@@ -18,7 +18,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<TaskAnalysis> lstTaskAnalyses = new List<TaskAnalysis>();
 
-            using (DataTable dt = Dal.GetDataTable("select * from Task Where ID not in (1,6)"))
+            using (DataTable dt = Dal.GetDataTable("select * from tsd.Task Where ID not in (1,6)"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -44,19 +44,19 @@ namespace AngularSPAWebAPI.Services
             var userIdCondition = (string.IsNullOrEmpty(userID)) ? "" : $"OR Experiment.UserID ='{userID}'";
             var isFullAccessCondition = (isFullDataAccess.ToUpper() == "TRUE") ? "" : $"and (Experiment.Status = 1 {userIdCondition} )";
 
-            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, tt2.PISiteName, tt2.UserName, CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser from Experiment 
+            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, task.name as TaskName, tt2.PISiteName, tt2.UserName, CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser from tsd.Experiment 
 
-                                                        inner join task on task.ID = Experiment.TaskID
+                                                        inner join tsd.task on task.ID = Experiment.TaskID
                                                         inner join
                                                         
-                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName, CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName  From PIUserSite
+                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName, CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName  From tsd.PIUserSite
                                                         inner join
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID
+                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID
 														
 														) as tt on tt.PSID = PIUserSite.PSID
-														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
+														inner join dbo.AspNetUsers on AspNetUsers.Id = PIUserSite.UserID) 
 														 as tt2 on tt2.PUSID = Experiment.PUSID
                                                         WHERE TaskID ={TaskId} and SpeciesID = {speciesId} {isFullAccessCondition}"))
             {
@@ -96,7 +96,7 @@ namespace AngularSPAWebAPI.Services
                 return lstExp;
             }
 
-            using (DataTable dt = Dal.GetDataTable($@"select * from Experiment 
+            using (DataTable dt = Dal.GetDataTable($@"select * from tsd.Experiment 
                                                         WHERE ExpID in({expIdCsv})"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -128,17 +128,17 @@ namespace AngularSPAWebAPI.Services
             var retVal = string.Empty;
             var lstReVal = new List<string>();
 
-            using (DataTable dt = Dal.GetDataTable($@"Select  CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser, tt2.PUSID From Experiment
+            using (DataTable dt = Dal.GetDataTable($@"Select  CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser, tt2.PUSID From tsd.Experiment
 
                                                         inner join 
-                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName, CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName  From PIUserSite
+                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName, CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName  From tsd.PIUserSite
                                                         inner join
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID
+                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID
 														
 														) as tt on tt.PSID = PIUserSite.PSID
-														inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID {strCondition}) as tt2 on tt2.PUSID = Experiment.PUSID
+														inner join dbo.AspNetUsers on AspNetUsers.Id = PIUserSite.UserID {strCondition}) as tt2 on tt2.PUSID = Experiment.PUSID
 
                                                         Where Experiment.ExpID in ({ExpIDcsv}) "))
             {
@@ -175,7 +175,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<SessionInfo> SessionInfolst = new List<SessionInfo>();
 
-            using (DataTable dt = Dal.GetDataTable($"Select * From SessionInfo Where ExpID = {ExpId}"))
+            using (DataTable dt = Dal.GetDataTable($"Select * From tsd.SessionInfo Where ExpID = {ExpId}"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -215,7 +215,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<SubTask> Schedulelst = new List<SubTask>();
 
-            using (DataTable dt = Dal.GetDataTable($"select * from Sub_Task where Task_ID={taskID} and show=1"))
+            using (DataTable dt = Dal.GetDataTable($"select * from tsd.Sub_Task where Task_ID={taskID} and show=1"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -244,8 +244,8 @@ namespace AngularSPAWebAPI.Services
             if (!string.IsNullOrEmpty(str))
             {
                 string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-                string sql = $@"Select DISTINCT(FeatureName) From rbt_cached
-                Where SessionID in (Select SessionID From SessionInfo Where {str} and (ExpID in ({ExpIDcsv})) );";
+                string sql = $@"Select DISTINCT(FeatureName) From tsd.rbt_cached
+                Where SessionID in (Select SessionID From tsd.SessionInfo Where {str} and (ExpID in ({ExpIDcsv})) );";
 
                 using (DataTable dt = Dal.GetDataTable(sql))
                 {
@@ -269,8 +269,8 @@ namespace AngularSPAWebAPI.Services
         {
             List<SubExperiment> animalAgelst = new List<SubExperiment>();
             string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-            string sql = $@"Select DISTINCT(LTRIM(RTRIM(Age.AgeInMonth))) as AgeInMonth,  AgeID From SubExperiment
-                inner join Age on Age.ID = SubExperiment.AgeID
+            string sql = $@"Select DISTINCT(LTRIM(RTRIM(Age.AgeInMonth))) as AgeInMonth,  AgeID From tsd.SubExperiment
+                inner join tsd.Age on Age.ID = SubExperiment.AgeID
                  Where ExpID in ({ExpIDcsv}) and AgeInMonth IS NOT NULL and AgeInMonth !=''";
 
 
@@ -299,7 +299,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Animal> animalSexlst = new List<Animal>();
             string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-            string sql = $"Select DISTINCT(Sex) From Animal Where ExpID in ({ExpIDcsv}) and Sex IS NOT NULL and Sex !=''";
+            string sql = $"Select DISTINCT(Sex) From tsd.Animal Where ExpID in ({ExpIDcsv}) and Sex IS NOT NULL and Sex !=''";
 
 
             using (DataTable dt = Dal.GetDataTable(sql))
@@ -330,7 +330,7 @@ namespace AngularSPAWebAPI.Services
             string GenoIDcsv = String.Join(",", GenoID.Select(x => x.ToString()).ToArray());
             if (!String.IsNullOrEmpty(GenoIDcsv))
             {
-                string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description From Genotype
+                string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description From tsd.Genotype
                             
                             Where Genotype.ID in ({GenoIDcsv}) and Genotype.Genotype IS NOT NULL and Genotype.Genotype !=''";
 
@@ -365,8 +365,8 @@ namespace AngularSPAWebAPI.Services
         {
             List<Geno> animalGenotypelst = new List<Geno>();
             string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-            string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description From Animal
-                            inner join Genotype on Genotype.ID = Animal.GID
+            string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description From tsd.Animal
+                            inner join tsd.Genotype on Genotype.ID = Animal.GID
                             Where Animal.ExpID in ({ExpIDcsv}) and Genotype.Genotype IS NOT NULL and Genotype.Genotype !=''";
 
 
@@ -397,9 +397,9 @@ namespace AngularSPAWebAPI.Services
         {
             List<Geno> animalGenotypelst = new List<Geno>();
             string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-            string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description, Strain.Strain From Animal
-                            inner join Genotype on Genotype.ID = Animal.GID
-							inner join Strain on Strain.ID = Animal.SID
+            string sql = $@"Select DISTINCT(Genotype.Genotype), Genotype.ID, Genotype.Link, Genotype.Description, Strain.Strain From tsd.Animal
+                            inner join tsd.Genotype on Genotype.ID = Animal.GID
+							inner join tsd.Strain on Strain.ID = Animal.SID
                             Where ExpID in ({ExpIDcsv}) and Genotype.Genotype IS NOT NULL and Genotype.Genotype !='' and Strain.ID in ({AnimalStrainCsv}) ";
 
 
@@ -430,8 +430,8 @@ namespace AngularSPAWebAPI.Services
         {
             List<Strains> animalStrainlst = new List<Strains>();
             string ExpIDcsv = String.Join(",", ExpId.Select(x => x.ToString()).ToArray());
-            string sql = $"Select DISTINCT(Strain.Strain), Strain.ID, Strain.Link From Animal " +
-                $" inner join Strain on Strain.ID = Animal.SID Where ExpID in ({ExpIDcsv}) and Strain IS NOT NULL and Strain.Strain !=''";
+            string sql = $"Select DISTINCT(Strain.Strain), Strain.ID, Strain.Link From tsd.Animal " +
+                $" inner join tsd.Strain on Strain.ID = Animal.SID Where ExpID in ({ExpIDcsv}) and Strain IS NOT NULL and Strain.Strain !=''";
 
 
             using (DataTable dt = Dal.GetDataTable(sql))
@@ -463,7 +463,7 @@ namespace AngularSPAWebAPI.Services
 
             if (!string.IsNullOrEmpty(ExpIDcsv))
             {
-                string sql = $@"Select * From SubExperiment where expID in ({ExpIDcsv}) and IsIntervention=1";
+                string sql = $@"Select * From tsd.SubExperiment where expID in ({ExpIDcsv}) and IsIntervention=1";
 
 
                 using (DataTable dt = Dal.GetDataTable(sql))
@@ -607,7 +607,7 @@ namespace AngularSPAWebAPI.Services
                 strFeatureNamesCondition = $"AND ({strOrCondition})";
             }
             // order by FeatureName so we don't need to sort the output
-            var sql = $"SELECT * from RBT_TouchScreen_Features WHERE SessionID = {sessionId} {strFeatureNamesCondition} ORDER BY FeatureName, ID";
+            var sql = $"SELECT * from tsd.RBT_TouchScreen_Features WHERE SessionID = {sessionId} {strFeatureNamesCondition} ORDER BY FeatureName, ID";
             var dt = Dal.GetDataTable(sql);
             var index = 0;
 
@@ -714,7 +714,7 @@ namespace AngularSPAWebAPI.Services
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
 
-            string selectQuery = "select top 1 * from [Mousebytes].[dbo].[Links] where LinkGuid=@LinkGuid";
+            string selectQuery = "select top 1 * from tsd.Links where LinkGuid=@LinkGuid";
 
             var linkModels = await Dal.GetReader(selectQuery, reader => new LinkModel
             {
@@ -863,7 +863,7 @@ namespace AngularSPAWebAPI.Services
                 return "";
             }
 
-            string sql = $@"Select * From Age Where Id in ({ageIdCsv}) ";
+            string sql = $@"Select * From tsd.Age Where Id in ({ageIdCsv}) ";
 
             List<string> ageInMonthList = new List<string>();
 
@@ -889,7 +889,7 @@ namespace AngularSPAWebAPI.Services
                 return "";
             }
 
-            string sql = $@"Select * From genotype Where Id in ({genotypeIdCsv}) ";
+            string sql = $@"Select * From tsd.genotype Where Id in ({genotypeIdCsv}) ";
 
             List<string> genoypeList = new List<string>();
 
@@ -915,7 +915,7 @@ namespace AngularSPAWebAPI.Services
                 return "";
             }
 
-            string sql = $@"Select * From strain Where Id in ({strainIdCsv}) ";
+            string sql = $@"Select * From tsd.strain Where Id in ({strainIdCsv}) ";
 
             List<string> strainList = new List<string>();
 
@@ -947,7 +947,7 @@ namespace AngularSPAWebAPI.Services
 							WHEN SubExperiment.IsDrug = 1 THEN CONCAT(SubExperiment.DrugName, '-', SubExperiment.DrugQuantity, '-', SubExperiment.DrugUnit)
 							WHEN SubExperiment.IsDrug = 0 THEN SubExperiment.InterventionDescription
 							END as Intervention
-							From SubExperiment Where SubExperiment.SubExpID in ({subExpIdCsv}) and SubExperiment.IsIntervention=1 ";
+							From tsd.SubExperiment Where SubExperiment.SubExpID in ({subExpIdCsv}) and SubExperiment.IsIntervention=1 ";
 
             List<string> InterventionList = new List<string>();
 
@@ -1146,7 +1146,7 @@ namespace AngularSPAWebAPI.Services
                                  ss.SubExpID,
 
 								STUFF(( SELECT distinct ';' + CONCAT('<img src =""', imagepath, '"" width=''30'' height=''30'' style=''margin-top:15px;''/>') as path
-                                From image
+                                From tsd.image
                                 Where image.ID in (SELECT * FROM dbo.CSVToTable(ss.ImageIds))
                                 FOR XML PATH(''), type
                                 ).value('.', 'nvarchar(max)'),1,1,'') as Image,
@@ -1156,19 +1156,19 @@ namespace AngularSPAWebAPI.Services
                                  {sessionInfoNamesCsv} as sessionInfoName
                                  {StimulusDurationCondition1}
                                  {InterventionQuery}
-                                 From SessionInfo
-                                 inner join Animal on Animal.AnimalID = SessionInfo.AnimalID
-                                 inner join Experiment on Experiment.ExpID = SessionInfo.ExpID
-                                 inner join Genotype on Genotype.ID = Animal.GID
-                                 inner join Strain on Strain.ID = Animal.SID
+                                 From tsd.SessionInfo
+                                 inner join tsd.Animal on Animal.AnimalID = SessionInfo.AnimalID
+                                 inner join tsd.Experiment on Experiment.ExpID = SessionInfo.ExpID
+                                 inner join tsd.Genotype on Genotype.ID = Animal.GID
+                                 inner join tsd.Strain on Strain.ID = Animal.SID
 
 								 inner join (
-								 Select PUSID, PIUserSite.PSID, tt.PISiteName , CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName From PIUserSite
+								 Select PUSID, PIUserSite.PSID, tt.PISiteName , CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName From tsd.PIUserSite
                                                         inner join
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID
-                                                        inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID
+                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID
+                                                        inner join dbo.AspNetUsers on AspNetUsers.Id = PIUserSite.UserID
 
 								 ) as tt2 on  tt2.PUSID = Experiment.PUSID
 
@@ -1176,10 +1176,10 @@ namespace AngularSPAWebAPI.Services
 								 Select UploadID, SubExperiment.ExpID, SubExperiment.SubExpID, SubExperiment.AgeID, 
                                         SubExperiment.IsDrug, SubExperiment.DrugQuantity, SubExperiment.DrugName, SubExperiment.DrugUnit, SubExperiment.IsIntervention,
                                         SubExperiment.InterventionDescription, SubExperiment.ImageIds, SubExperiment.ImageDescription, SubExperiment.Housing, SubExperiment.LightCycle
-                                        From SubExperiment 
-											inner join Upload on SubExperiment.SubExpID = Upload.SubExpID
+                                        From tsd.SubExperiment 
+											inner join tsd.Upload on SubExperiment.SubExpID = Upload.SubExpID
 								 ) as ss on  ss.UploadID = SessionInfo.UploadID
-                                inner join Age on Age.ID = ss.AgeID
+                                inner join tsd.Age on Age.ID = ss.AgeID
 
                                  Where {str}  (SessionInfo.ExpID in ({expIDcsv}) {AgeCondition} {SexCondition} {GenotypeCondition} {StrainCondition} {PiSiteCondition} {SessionNameCondition})";
 
@@ -1213,7 +1213,7 @@ namespace AngularSPAWebAPI.Services
             string subQuery2 = "Select * From ( Select SessionID as S_ID ";
             if (isTrialByTrial)
             {
-                subQuery2 += @" From RBT_TouchScreen_Features
+                subQuery2 += @" From tsd.RBT_TouchScreen_Features
                             group by SessionID
                             ) tmp ";
 
@@ -1224,23 +1224,23 @@ namespace AngularSPAWebAPI.Services
                 switch(aggNames)
                 {
                     case "MEAN":
-                        subQuery2 += @" From rbt_data_cached_avg
+                        subQuery2 += @" From tsd.rbt_data_cached_avg
                                 ) tmp ";
                         break;
                     case "STDEV":
-                        subQuery2 += @" From rbt_data_cached_std
+                        subQuery2 += @" From tsd.rbt_data_cached_std
                                 ) tmp ";
                         break;
                     case "COUNT":
-                        subQuery2 += @" From rbt_data_cached_cnt
+                        subQuery2 += @" From tsd.rbt_data_cached_cnt
                                 ) tmp ";
                         break;
                     case "SUM":
-                        subQuery2 += @" From rbt_data_cached_sum
+                        subQuery2 += @" From tsd.rbt_data_cached_sum
                                 ) tmp ";
                         break;
                     default:
-                        subQuery2 += @" From rbt_data_cached
+                        subQuery2 += @" From tsd.rbt_data_cached
                                 ) tmp ";
                         break;
                 }
@@ -1285,7 +1285,7 @@ namespace AngularSPAWebAPI.Services
         private void SaveDataExtractionLink(LinkModel linkModel)
         {
 
-            string sql = $@"insert into Links
+            string sql = $@"insert into tsd.Links
                             (
                                 LinkGuid, TaskId, TaskName, SpeciesID, Species, SubTaskId, SubTaskName, ExpIdCsv, AnimalAgeCsv, AnimalSexCsv, AnimalGenotypeCsv,
                                 AnimalStrainCsv, PiSiteIdsCsv, SessionInfoNamesCsv, MarkerInfoNamesCsv, AggNamesCsv, IsTrialByTrial, SubExpIDcsv, SessionNameCsv
@@ -1328,9 +1328,9 @@ namespace AngularSPAWebAPI.Services
         {
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@LinkGuid", linkGuid));
-            string selectQuery = "select top 1 * from [Mousebytes].[dbo].[Links] where LinkGuid=@LinkGuid";
+            string selectQuery = "select top 1 * from tsd.Links where LinkGuid=@LinkGuid";
             // fill Links table data (if not already)
-            var savedLink = (await Dal.GetReaderCogAsync(selectQuery, reader => new LinkModel
+            var savedLink = (await Dal.GetReader(selectQuery, reader => new LinkModel
             {
                 ExpIdCsv = reader.GetString("ExpIdCsv"),
                 PiSiteIdsCsv = reader.GetString("PiSiteIdsCsv"),
@@ -1399,7 +1399,7 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@AnimalSexCsv", AnimalSexCsv));
             parameters.Add(new SqlParameter("@PiSiteIdsCsv", PiSiteUserIdCsv));
 
-            string sql = $@"update Links
+            string sql = $@"update tsd.Links
                             set IsSaved = 1, AnimalgenotypeCsv = @AnimalgenotypeCsv, ExpNameCsv = @ExpNameCsv, AnimalAgeCsv = @AnimalAgeCsv,
                             AnimalStrainCsv = @AnimalStrainCsv, AnimalSexCsv = @AnimalSexCsv, PiSiteIdsCsv = @PiSiteIdsCsv
                             where LinkGuid = @LinkGuid ";
@@ -1409,7 +1409,7 @@ namespace AngularSPAWebAPI.Services
 
         public void IncreaseDLCounter(string buttonName)
         {
-            string sql = $@"Insert into Metrics (ButtonName) Values('{buttonName}')";
+            string sql = $@"Insert into tsd.Metrics (ButtonName) Values('{buttonName}')";
 
             Dal.ExecuteNonQuery(sql);
         }
