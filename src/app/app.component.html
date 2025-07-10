@@ -5,7 +5,7 @@
              [fullScreen]="true">
 </ngx-spinner>
 
-<mat-sidenav-container class="app-container">
+<mat-sidenav-container class="app-container" style="height: 100vh;">
     <!-- Sidebar Navigation -->
     <mat-sidenav #sidenav class="app-sidebar">
         <div class="sidebar-logo">
@@ -47,7 +47,7 @@
         </nav>
     </mat-sidenav>
 
-    <div class="page-content">
+    <mat-sidenav-content class="page-content">
         <!-- Header -->
         <header>
             <mat-toolbar class="top-toolbar" style="background-color: #8F55E0; height: 30px;">
@@ -160,6 +160,5 @@
                 </div>
             </div>
         </footer>
-    </div>
+    </mat-sidenav-content>
 </mat-sidenav-container>
-
