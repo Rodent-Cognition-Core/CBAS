@@ -35,6 +35,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(res);
         }
 
+        [HttpGet("GetAnimalInfoByRepID")]
+        public async Task<IActionResult> GetAnimalInfoByRepID(int repId)
+        {
+            var res = await _animalService.GetAnimalByRepIDAsync(repId);
+            return new JsonResult(res);
+        }
+
         [HttpPost("CreateAnimal")]
         public async Task<IActionResult> CreateAnimal([FromBody]Animal animal)
         {
