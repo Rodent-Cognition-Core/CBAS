@@ -17,9 +17,9 @@ namespace AngularSPAWebAPI.Services
         public async Task<List<Animal>> GetAnimalByExpIDAsync(int expID)
         {
             string query = @"SELECT Animal.*, Strain.Strain, Genotype.Genotype 
-                             FROM Animal
-                             LEFT JOIN Genotype ON Genotype.ID = Animal.GID
-                             LEFT JOIN Strain ON Strain.ID = Animal.SID 
+                             FROM tsd.Animal
+                             LEFT JOIN tsd.Genotype ON Genotype.ID = Animal.GID
+                             LEFT JOIN tsd.Strain ON Strain.ID = Animal.SID 
                              WHERE ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
@@ -48,9 +48,44 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<List<Animal>> GetAnimalByRepIDAsync(int repID)
+        {
+            string query = @"SELECT Animal.*, Strain.Strain, Genotype.Genotype, AnimalRepository.RepID 
+                             FROM tsd.Animal
+                             LEFT JOIN tsd.Genotype ON Genotype.ID = Animal.GID
+                             LEFT JOIN tsd.Strain ON Strain.ID = Animal.SID
+                             INNER JOIN tsd.AnimalRepository ON AnimalRepository.AID = Animal.AnimalID 
+                             WHERE RepID = @repID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@repID", repID)
+            };
+
+            try
+            {
+                return await Dal.ExecuteQueryAsync(query, reader => new Animal
+                {
+                    ExpID = reader.GetInt32(reader.GetOrdinal("ExpID")),
+                    AnimalID = reader.GetInt32(reader.GetOrdinal("AnimalID")),
+                    UserAnimalID = reader.GetString(reader.GetOrdinal("UserAnimalID")),
+                    SID = reader.IsDBNull(reader.GetOrdinal("SID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("SID")),
+                    GID = reader.IsDBNull(reader.GetOrdinal("GID")) ? (int?)null : reader.GetInt32(reader.GetOrdinal("GID")),
+                    Sex = reader.GetString(reader.GetOrdinal("Sex")),
+                    Genotype = reader.IsDBNull(reader.GetOrdinal("Genotype")) ? null : reader.GetString(reader.GetOrdinal("Genotype")),
+                    Strain = reader.IsDBNull(reader.GetOrdinal("Strain")) ? null : reader.GetString(reader.GetOrdinal("Strain"))
+                }, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting animals by ExpID: {ExpID}", repID);
+                return new List<Animal>();
+            }
+        }
+
         public async Task<bool> DoesAnimalIDExistAsync(string userAnimalId, int expID)
         {
-            string sql = "SELECT COUNT(*) FROM Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
+            string sql = "SELECT COUNT(*) FROM tsd.Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
             {
@@ -72,7 +107,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int> InsertAnimalAsync(Animal animal)
         {
-            string sql = @"INSERT INTO Animal (ExpID, UserAnimalID, SID, GID, Sex) 
+            string sql = @"INSERT INTO tsd.Animal (ExpID, UserAnimalID, SID, GID, Sex) 
                    VALUES (@ExpID, @UserAnimalID, @SID, @GID, @Sex); 
                    SELECT CAST(scope_identity() AS int);";
 
@@ -99,7 +134,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task UpdateAnimalAsync(Animal animal)
         {
-            string sql = @"UPDATE Animal 
+            string sql = @"UPDATE tsd.Animal 
                    SET Sex = @Sex, GID = @GID, SID = @SID 
                    WHERE AnimalID = @AnimalID";
 
@@ -124,7 +159,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int> GetCountOfAnimalsAsync()
         {
-            string sql = "SELECT COUNT(*) FROM Animal WHERE SID IS NOT NULL AND GID IS NOT NULL AND Sex != ''";
+            string sql = "SELECT COUNT(*) FROM tsd.Animal WHERE SID IS NOT NULL AND GID IS NOT NULL AND Sex != ''";
 
             try
             {
@@ -140,15 +175,15 @@ namespace AngularSPAWebAPI.Services
 
         public async Task DeleteAnimalByAnimalIDAsync(int animalID)
         {
-            string sql = @"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From rbt_data_cached_avg Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From rbt_data_cached_std Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From rbt_data_cached_cnt Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From rbt_data_cached_sum Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where AnimalID = @AnimalID);
-                   Delete From SessionInfo Where AnimalID = @AnimalID;
-                   Delete From Upload Where AnimalID = @AnimalID;
-                   Delete From Animal Where AnimalID = @AnimalID;";
+            string sql = @"Delete From tsd.RBT_TouchScreen_Features Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.rbt_data_cached_avg Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.rbt_data_cached_std Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.rbt_data_cached_cnt Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.rbt_data_cached_sum Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.SessionInfo_Dynamic Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID = @AnimalID);
+                   Delete From tsd.SessionInfo Where AnimalID = @AnimalID;
+                   Delete From tsd.Upload Where AnimalID = @AnimalID;
+                   Delete From tsd.Animal Where AnimalID = @AnimalID;";
 
             var parameters = new List<SqlParameter>
             {
@@ -168,7 +203,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<List<Strains>> GetStrainListAsync()
         {
-            string query = "SELECT * FROM Strain";
+            string query = "SELECT * FROM tsd.Strain";
 
             try
             {
@@ -198,7 +233,7 @@ namespace AngularSPAWebAPI.Services
             List<int> lstGenoID = HelperService.GetGenoID(strainID);
             string lstGenoIDCsv = String.Join(",", lstGenoID.Select(x => x.ToString()).ToArray());
 
-            string query = $"SELECT * FROM Genotype WHERE ID IN ({lstGenoIDCsv})";
+            string query = $"SELECT * FROM tsd.Genotype WHERE ID IN ({lstGenoIDCsv})";
 
             try
             {
@@ -219,7 +254,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<bool> IsUserAnimalIDExistAsync(string userAnimalID, int expID)
         {
-            string sql = "SELECT COUNT(*) FROM Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
+            string sql = "SELECT COUNT(*) FROM tsd.Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
             {
@@ -248,7 +283,7 @@ namespace AngularSPAWebAPI.Services
                         WHEN Sex IS NOT NULL AND GID IS NOT NULL AND SID IS NOT NULL THEN 1 
                         ELSE 0 
                     END AS IsInfoCompleted
-                FROM Animal 
+                FROM tsd.Animal 
                 WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
 
             var parameters = new List<SqlParameter>
@@ -277,16 +312,16 @@ namespace AngularSPAWebAPI.Services
         {
             string sql = @"
                 BEGIN TRANSACTION;
-                UPDATE Upload SET AnimalId = @ExistingAnimalIdToUse WHERE AnimalId = @OldAnimalId;
-                DELETE FROM RBT_TouchScreen_Features WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM rbt_data_cached_avg WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM rbt_data_cached_std WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM rbt_data_cached_cnt WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM rbt_data_cached_sum WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM SessionInfo_Dynamic WHERE SessionID IN (SELECT SessionID FROM SessionInfo WHERE AnimalID = @OldAnimalId);
-                DELETE FROM SessionInfo WHERE AnimalID = @OldAnimalId;
-                DELETE FROM Upload WHERE AnimalID = @OldAnimalId;
-                DELETE FROM Animal WHERE AnimalID = @OldAnimalId;
+                UPDATE Upload SET AnimalId = @ExistingAnimalIdToUse WHERE tsd.AnimalId = @OldAnimalId;
+                DELETE FROM RBT_TouchScreen_Features WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.rbt_data_cached_avg WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.rbt_data_cached_std WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.rbt_data_cached_cnt WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.rbt_data_cached_sum WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.SessionInfo_Dynamic WHERE SessionID IN (SELECT SessionID FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId);
+                DELETE FROM tsd.SessionInfo WHERE AnimalID = @OldAnimalId;
+                DELETE FROM tsd.Upload WHERE AnimalID = @OldAnimalId;
+                DELETE FROM tsd.Animal WHERE AnimalID = @OldAnimalId;
                 COMMIT TRANSACTION;";
 
             var parameters = new List<SqlParameter>
