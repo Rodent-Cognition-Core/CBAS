@@ -22,6 +22,7 @@ using Nest;
 using CBAS.Models;
 using Serilog;
 using FuzzySharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -35,7 +36,7 @@ namespace AngularSPAWebAPI.Services
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From FileType"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.FileType"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -55,7 +56,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenTask> GetTasks()
         {
             List<PubScreenTask> TaskList = new List<PubScreenTask>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Task"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Task"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -76,7 +77,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSpecie> GetSpecies()
         {
             List<PubScreenSpecie> SpecieList = new List<PubScreenSpecie>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Species"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Species"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -95,7 +96,7 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenSex> GetSex()
         {
             List<PubScreenSex> SexList = new List<PubScreenSex>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Sex"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Sex"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -116,13 +117,13 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenStrain> GetStrains()
         {
             List<PubScreenStrain> StrainList = new List<PubScreenStrain>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Strain"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From tsd.Strain"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     StrainList.Add(new PubScreenStrain
                     {
-                        ID = Int32.Parse(dr["StrainID"].ToString()),
+                        ID = Int32.Parse(dr["ID"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
 
 
@@ -137,7 +138,7 @@ namespace AngularSPAWebAPI.Services
         public List<Geno> GetGenos()
         {
             List<Geno> GenoList = new List<Geno>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Genotype"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Genotype"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -158,7 +159,7 @@ namespace AngularSPAWebAPI.Services
         public List<Age> GetAges()
         {
             List<Age> AgeList = new List<Age>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Age"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Age"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -180,17 +181,17 @@ namespace AngularSPAWebAPI.Services
         public int AddAuthors(PubScreenAuthor author, string userEmail)
         {
             // Check if author is in DB
-            string sqlCount = $@"Select Count(AuthorID) From Author Where FirstName = '{author.FirstName.Trim()}' AND LastName = '{author.LastName.Trim()}'";
-            int isAuthorAdded = Int32.Parse(Dal.ExecScalarCog(sqlCount).ToString());
+            string sqlCount = $@"Select Count(ID) From pss.Author Where FirstName = '{author.FirstName.Trim()}' AND LastName = '{author.LastName.Trim()}'";
+            int isAuthorAdded = Int32.Parse(Dal.ExecScalar(sqlCount).ToString());
             if (isAuthorAdded > 0)
             {
                 return 0;
             }
 
-            string sql = $@"Insert into Author (FirstName, LastName, Affiliation, Username) Values
+            string sql = $@"Insert into pss.Author (FirstName, LastName, Affiliation, Username) Values
                             ('{author.FirstName.Trim()}', '{author.LastName.Trim()}', '{author.Affiliation.Trim()}', '{userEmail}'); SELECT @@IDENTITY AS 'Identity';";
 
-            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }
 
 
@@ -198,13 +199,13 @@ namespace AngularSPAWebAPI.Services
         public List<PubScreenAuthor> GetAuthors()
         {
             List<PubScreenAuthor> AuthorList = new List<PubScreenAuthor>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Author Order By LastName"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From pss.Author Order By LastName"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     AuthorList.Add(new PubScreenAuthor
                     {
-                        ID = Int32.Parse(dr["AuthorID"].ToString()),
+                        ID = Int32.Parse(dr["ID"].ToString()),
                         FirstName = Convert.ToString(dr["FirstName"].ToString()),
                         LastName = Convert.ToString(dr["LastName"].ToString()),
                         Affiliation = Convert.ToString(dr["Affiliation"].ToString()),
@@ -224,27 +225,28 @@ namespace AngularSPAWebAPI.Services
             string piidValues = string.Join(",", request.PIID);
             List<PISite> PISiteList = new List<PISite>();
             string sqlCogPI = $@"SELECT FullName
-                                    FROM PI
-                                    WHERE PIID IN ({piidValues})";
-            
-        }
+                                     FROM mbr.PI
+                                     WHERE PIID IN ({piidValues})";
+          
+            return new List<PISite>();  
+         }
 
         public int AddNewPI(Request request, string userEmail)
         {
             // Check if author is in DB
-            string sqlCount = $@"Select Count(PIID) From PI Where FullName = '{request.PIFullName.Trim()}'";
-            int isPIAdded = Int32.Parse(Dal.ExecScalarCog(sqlCount).ToString());
+            string sqlCount = $@"Select Count(PIID) From mbr.PI Where FullName = '{request.PIFullName.Trim()}'";
+            int isPIAdded = Int32.Parse(Dal.ExecScalar(sqlCount).ToString());
             if (isPIAdded > 0)
             {
                 return 0;
             }
 
-            string sql = $@"Insert into PI (Username, FullName, Email, Affiliation) Values
+            string sql = $@"Insert into mbr.PI (Username, FullName, Email, Affiliation) Values
                             ('{userEmail}', '{HelperService.EscapeSql(request.PIFullName)}',
                              '{HelperService.EscapeSql(request.PIEmail)}', '{HelperService.EscapeSql(request.PIInstitution)}'); SELECT @@IDENTITY AS 'Identity';";
 
-            //return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
-            Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+            //return Int32.Parse(Dal.ExecScalar(sql).ToString());
+            Int32.Parse(Dal.ExecScalar(sql).ToString());
 
             // Check if PI information in Mousebytes Database
             List<PISite> mbPIMatch = new List<PISite>();
@@ -253,7 +255,7 @@ namespace AngularSPAWebAPI.Services
             //                     FROM PI
             //                     WHERE EDIT_DISTANCE_SIMILARITY(PName, '{HelperService.EscapeSql(request.PIFullName)}') >= 80";
             string sqlPI = $@"SELECT PID, PName
-                                FROM PI";
+                                FROM mbr.PI";
             using (DataTable dtPI = Dal.GetDataTable(sqlPI))
             {
                 foreach (DataRow dr in dtPI.Rows)
@@ -266,7 +268,7 @@ namespace AngularSPAWebAPI.Services
             }
 
 
-            string sqlMBInsert = $@"Insert Into PI (PName) Values ('{HelperService.EscapeSql(request.PIFullName)}');
+            string sqlMBInsert = $@"Insert Into mbr.PI (PName) Values ('{HelperService.EscapeSql(request.PIFullName)}');
                                     SELECT SCOPE_IDENTITY();";
             int newPIID;
             newPIID = Convert.ToInt32(Dal.ExecScalar(sqlMBInsert));
@@ -276,7 +278,7 @@ namespace AngularSPAWebAPI.Services
             //                     Where EDIT_DISTANCE_SIMILARITY(Institution,'{HelperService.EscapeSql(request.PIInstitution)}') >= 80
             //                     ORDER By Similarity DESC";
             string sqlSite = $@"SELECT SiteID, Institution, Country
-                                FROM Site";
+                                FROM mbr.Site";
 
             int siteID = 0;
             bool siteIDFound = false;
@@ -293,7 +295,7 @@ namespace AngularSPAWebAPI.Services
                 }
                 if (!siteIDFound)
                 {
-                    string sqlSiteInsert = $@"INSERT INTO Site (Institution, Country) VALUES ('{HelperService.EscapeSql(request.PIInstitution)}','{HelperService.EscapeSql(request.InstitutionCountry)}');
+                    string sqlSiteInsert = $@"INSERT INTO mbr.Site (Institution, Country) VALUES ('{HelperService.EscapeSql(request.PIInstitution)}','{HelperService.EscapeSql(request.InstitutionCountry)}');
                                             SELECT SCOPE_IDENTITY();";
                     siteID = Convert.ToInt32(Dal.ExecScalar(sqlSiteInsert));
                 }
@@ -310,7 +312,7 @@ namespace AngularSPAWebAPI.Services
         public List<Request> GetPIs()
         {
             List<Request> PIList = new List<Request>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From PI Order By PIID"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.PI Order By PIID"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -334,7 +336,7 @@ namespace AngularSPAWebAPI.Services
         public int? AddRepository(Cogbytes repository, string Username)
         {
 
-            string sqlRepository = $@"Insert into UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
+            string sqlRepository = $@"Insert into mbr.UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
                                     ('{Guid.NewGuid()}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
                                      '{repository.Date}',
@@ -348,25 +350,25 @@ namespace AngularSPAWebAPI.Services
                                      '{repository.DateRepositoryCreated}'
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
 
-            int RepositoryID = Int32.Parse(Dal.ExecScalarCog(sqlRepository).ToString());
+            int RepositoryID = Int32.Parse(Dal.ExecScalar(sqlRepository).ToString());
 
             // Adding Author **********************************************************************************************************************
 
             string sqlAuthor = "";
             for (int i = 0; i < repository.AuthourID.Length; i++)
             {
-                sqlAuthor += $@"Insert into RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {RepositoryID});";
+                sqlAuthor += $@"Insert into mbr.RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {RepositoryID});";
             }
-            if (sqlAuthor != "") { Dal.ExecuteNonQueryCog(sqlAuthor); };
+            if (sqlAuthor != "") { Dal.ExecuteNonQuery(sqlAuthor); };
 
             // Adding PI
 
             string sqlPI = "";
             for (int i = 0; i < repository.PIID.Length; i++)
             {
-                sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
+                sqlPI += $@"Insert into mbr.RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
             }
-            if (sqlPI != "") { Dal.ExecuteNonQueryCog(sqlPI); };
+            if (sqlPI != "") { Dal.ExecuteNonQuery(sqlPI); };
 
             // Send email for new repository
             string emailMsg = $"Repository Title: {repository.Title}\n\nUser: {Username}";
@@ -380,7 +382,7 @@ namespace AngularSPAWebAPI.Services
         public List<Cogbytes> GetRepositories(string userEmail)
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where Username='{userEmail}' Order By DateRepositoryCreated"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.UserRepository Where Username='{userEmail}' Order By DateRepositoryCreated"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -400,8 +402,8 @@ namespace AngularSPAWebAPI.Services
                         PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
-                        AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                        PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                        AuthourID = FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
+                        PIID = FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
                         Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
                         Paper = publication
                     });
@@ -415,7 +417,7 @@ namespace AngularSPAWebAPI.Services
         public bool EditRepository(int repositoryID, Cogbytes repository, string Username)
         {
 
-            string sqlRepository = $@"Update UserRepository set Title = @title, Date = @date, DOI = @doi, Keywords = @keywords, PrivacyStatus = @privacyStatus,
+            string sqlRepository = $@"Update mbr.UserRepository set Title = @title, Date = @date, DOI = @doi, Keywords = @keywords, PrivacyStatus = @privacyStatus,
                                                                 Description = @description, AdditionalNotes = @additionalNotes, Link = @link
                                                                 where RepID = {repositoryID}";
 
@@ -429,30 +431,30 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@additionalNotes", HelperService.NullToString(HelperService.EscapeSql(repository.AdditionalNotes)).Trim()));
             parameters.Add(new SqlParameter("@link", HelperService.NullToString(HelperService.EscapeSql(repository.Link)).Trim()));
 
-            Int32.Parse(Dal.ExecuteNonQueryCog(CommandType.Text, sqlRepository, parameters.ToArray()).ToString());
+            Int32.Parse(Dal.ExecuteNonQuery(CommandType.Text, sqlRepository, parameters.ToArray()).ToString());
 
             string sqlAuthor = "";
 
-            string sqlDelete = $"DELETE From RepAuthor where RepID = {repositoryID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            string sqlDelete = $"DELETE From mbr.RepAuthor where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < repository.AuthourID.Length; i++)
             {
-                sqlAuthor += $@"Insert into RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {repositoryID});";
+                sqlAuthor += $@"Insert into mbr.RepAuthor (AuthorID, RepID) Values ({repository.AuthourID[i]}, {repositoryID});";
             }
 
-            Dal.ExecuteNonQueryCog(sqlAuthor);
+            Dal.ExecuteNonQuery(sqlAuthor);
 
             string sqlPI = "";
-            sqlDelete = $"DELETE From RepPI where RepID = {repositoryID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.RepPI where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < repository.PIID.Length; i++)
             {
-                sqlPI += $@"Insert into RepPI (PIID, RepID) Values ({repository.PIID[i]}, {repositoryID});";
+                sqlPI += $@"Insert into mbr.RepPI (PIID, RepID) Values ({repository.PIID[i]}, {repositoryID});";
             }
 
-            if (sqlPI != "") Dal.ExecuteNonQueryCog(sqlPI);
+            if (sqlPI != "") Dal.ExecuteNonQuery(sqlPI);
 
             return true;
 
@@ -471,7 +473,7 @@ namespace AngularSPAWebAPI.Services
                 sqlNumSubjects = upload.NumSubjects.ToString();
             }
 
-            string sqlUpload = $@"Insert into Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects) Values
+            string sqlUpload = $@"Insert into mbr.Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects) Values
                                     ('{upload.RepID}',
                                      '{upload.FileTypeID}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.Name)).Trim())}',
@@ -488,51 +490,51 @@ namespace AngularSPAWebAPI.Services
                                      {sqlNumSubjects}
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
 
-            int UploadID = Int32.Parse(Dal.ExecScalarCog(sqlUpload).ToString());
+            int UploadID = Int32.Parse(Dal.ExecScalar(sqlUpload).ToString());
 
             // Adding Tasks and other Features **********************************************************************************************************************
 
             string sqlCmd = "";
             for (int i = 0; i < upload.TaskID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
             sqlCmd = "";
             for (int i = 0; i < upload.SpecieID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
             sqlCmd = "";
             for (int i = 0; i < upload.SexID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
             sqlCmd = "";
             for (int i = 0; i < upload.StrainID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
             sqlCmd = "";
             for (int i = 0; i < upload.GenoID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
             sqlCmd = "";
             for (int i = 0; i < upload.AgeID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {UploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {UploadID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQueryCog(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
 
             return UploadID;
@@ -543,7 +545,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<FileUploadResult> FileList = new List<FileUploadResult>();
 
-            using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+            using (DataTable ft = Dal.GetDataTable($@"Select * From mbr.UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
             {
                 foreach (DataRow fr in ft.Rows)
                 {
@@ -567,7 +569,7 @@ namespace AngularSPAWebAPI.Services
         public List<CogbytesUpload> GetUploads(int repID)
         {
             List<CogbytesUpload> Uploadlist = new List<CogbytesUpload>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From Upload Where RepID='{repID}' Order By DateUpload"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Upload Where RepID='{repID}' Order By DateUpload"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -583,7 +585,7 @@ namespace AngularSPAWebAPI.Services
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
-                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+                    using (DataTable ft = Dal.GetDataTable($@"Select * From mbr.UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
                     {
                         foreach (DataRow fr in ft.Rows)
                         {
@@ -616,12 +618,12 @@ namespace AngularSPAWebAPI.Services
                         Housing = Convert.ToString(dr["Housing"].ToString()),
                         LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
                         TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
-                        TaskID = FillCogbytesItemArray($"Select TaskID From DatasetTask Where UploadID={uploadID}", "TaskID"),
-                        SpecieID = FillCogbytesItemArray($"Select SpeciesID From DatasetSpecies Where UploadID={uploadID}", "SpeciesID"),
-                        SexID = FillCogbytesItemArray($"Select SexID From DatasetSex Where UploadID={uploadID}", "SexID"),
-                        StrainID = FillCogbytesItemArray($"Select StrainID From DatasetStrain Where UploadID={uploadID}", "StrainID"),
-                        GenoID = FillCogbytesItemArray($"Select GenoID From DatasetGeno Where UploadID={uploadID}", "GenoID"),
-                        AgeID = FillCogbytesItemArray($"Select AgeID From DatasetAge Where UploadID={uploadID}", "AgeID"),
+                        TaskID = FillCogbytesItemArray($"Select TaskID From mbr.DatasetTask Where UploadID={uploadID}", "TaskID"),
+                        SpecieID = FillCogbytesItemArray($"Select SpeciesID From mbr.DatasetSpecies Where UploadID={uploadID}", "SpeciesID"),
+                        SexID = FillCogbytesItemArray($"Select SexID From mbr.DatasetSex Where UploadID={uploadID}", "SexID"),
+                        StrainID = FillCogbytesItemArray($"Select StrainID From mbr.DatasetStrain Where UploadID={uploadID}", "StrainID"),
+                        GenoID = FillCogbytesItemArray($"Select GenoID From mbr.DatasetGeno Where UploadID={uploadID}", "GenoID"),
+                        AgeID = FillCogbytesItemArray($"Select AgeID From mbr.DatasetAge Where UploadID={uploadID}", "AgeID"),
                         NumSubjects = numSubjects,
                         UploadFileList = FileList
                     });
@@ -644,7 +646,7 @@ namespace AngularSPAWebAPI.Services
             //    sqlNumSubjects = upload.NumSubjects.ToString();
             //}
 
-            string sqlUpload = $@"Update Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes, IsIntervention = @isIntervention, InterventionDescription=@interventionDescription,
+            string sqlUpload = $@"Update mbr.Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes, IsIntervention = @isIntervention, InterventionDescription=@interventionDescription,
                                                                     ImageIds = @imageIds, ImageDescription=@imageDescription, Housing=@housing, LightCycle = @lightCycle, TaskBattery=@taskBattery, NumSubjects=@numSubjects
                                                                 where UploadID = {uploadID}";
 
@@ -661,73 +663,73 @@ namespace AngularSPAWebAPI.Services
             parameters.Add(new SqlParameter("@taskBattery", HelperService.NullToString(HelperService.EscapeSql(upload.TaskBattery)).Trim()));
             parameters.Add(new SqlParameter("@numSubjects", (object)upload.NumSubjects ?? DBNull.Value));
 
-            Int32.Parse(Dal.ExecuteNonQueryCog(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
+            Int32.Parse(Dal.ExecuteNonQuery(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
 
             string sqlCmd = "";
-            string sqlDelete = $"DELETE From DatasetTask where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            string sqlDelete = $"DELETE From mbr.DatasetTask where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.TaskID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             sqlCmd = "";
-            sqlDelete = $"DELETE From DatasetSpecies where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSpecies where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.SpecieID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             sqlCmd = "";
-            sqlDelete = $"DELETE From DatasetSex where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSex where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.SexID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             sqlCmd = "";
-            sqlDelete = $"DELETE From DatasetStrain where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetStrain where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.StrainID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             sqlCmd = "";
-            sqlDelete = $"DELETE From DatasetGeno where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetGeno where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.GenoID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             sqlCmd = "";
-            sqlDelete = $"DELETE From DatasetAge where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetAge where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
             for (int i = 0; i < upload.AgeID.Length; i++)
             {
-                sqlCmd += $@"Insert into DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {uploadID});";
+                sqlCmd += $@"Insert into mbr.DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {uploadID});";
             }
 
-            if (sqlCmd != "") Dal.ExecuteNonQueryCog(sqlCmd);
+            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
 
             return true;
 
@@ -792,54 +794,54 @@ namespace AngularSPAWebAPI.Services
         // Function to Insert File in Database
         public int InsertFile(FileUploadResult upload)
         {
-            string sql = $"Insert into UploadFile " +
+            string sql = $"Insert into mbr.UploadFile " +
               $"(UploadID, UserFileName, SystemFileName, DateFileCreated, DateUploaded, FileSize, PermanentFilePath ) Values " +
               $"({upload.UploadID}, '{upload.UserFileName}', '{upload.SysFileName}', '{upload.DateFileCreated}', " +
               $"'{upload.DateUpload}', '{upload.FileSize}', '{upload.PermanentFilePath}'); SELECT @@IDENTITY AS 'Identity';";
 
-            return Int32.Parse(Dal.ExecScalarCog(sql).ToString());
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }
 
         public void DeleteFile(int fileID)
         {
             string sql = $@"Delete from UploadFile where ID = {fileID}";
-            Dal.ExecuteNonQueryCog(sql);
+            Dal.ExecuteNonQuery(sql);
         }
 
         public void DeleteUpload(int uploadID)
         {
-            string sqlDelete = $"DELETE From DatasetTask where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            string sqlDelete = $"DELETE From mbr.DatasetTask where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From DatasetSpecies where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSpecies where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From DatasetSex where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSex where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From DatasetStrain where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetStrain where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From DatasetGeno where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetGeno where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From DatasetAge where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetAge where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From UploadFile where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.UploadFile where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
 
-            sqlDelete = $"DELETE From Upload where UploadID = {uploadID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            sqlDelete = $"DELETE From mbr.Upload where UploadID = {uploadID}";
+            Dal.ExecuteNonQuery(sqlDelete);
         }
 
         public void DeleteRepository(int repID)
         {
             // Delete RepGuidLink from Experiments linked to the repository
             var rep = GetGuidByRepID(repID);
-            Dal.ExecuteNonQuery($"UPDATE Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.Result.RepoLinkGuid}'");
+            Dal.ExecuteNonQuery($"UPDATE mbr.Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.Result.RepoLinkGuid}'");
 
-            using (DataTable dt = Dal.GetDataTableCog($@"Select UploadID From Upload Where RepID = {repID}"))
+            using (DataTable dt = Dal.GetDataTable($@"Select UploadID From mbr.Upload Where RepID = {repID}"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -853,12 +855,12 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            string sqlDelete = $"DELETE From RepAuthor where RepID = {repID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
-            sqlDelete = $"DELETE From RepPI where RepID = {repID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
-            sqlDelete = $"DELETE From UserRepository where RepID = {repID}";
-            Dal.ExecuteNonQueryCog(sqlDelete);
+            string sqlDelete = $"DELETE From mbr.RepAuthor where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.RepPI where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.UserRepository where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
         }
 
 
@@ -866,7 +868,7 @@ namespace AngularSPAWebAPI.Services
         {
 
             var retVal = new int?[0];
-            using (DataTable dt = Dal.GetDataTableCog(sql))
+            using (DataTable dt = Dal.GetDataTable(sql))
             {
                 retVal = new int?[dt.Rows.Count];
                 var i = 0;
@@ -888,7 +890,7 @@ namespace AngularSPAWebAPI.Services
 
             string sql = "Select UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
                 "ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects, RepID, FileTypeID " +
-                "From SearchCog Where ";
+                "From mbr.SearchCog Where ";
 
             // Title
             if (cogbytesSearch.RepID != null && cogbytesSearch.RepID.Length != 0)
@@ -1116,7 +1118,7 @@ namespace AngularSPAWebAPI.Services
                 "ORDER BY RepID";
             string sqlMB = "";
 
-            using (DataTable dt = Dal.GetDataTableCog(sql))
+            using (DataTable dt = Dal.GetDataTable(sql))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1131,7 +1133,7 @@ namespace AngularSPAWebAPI.Services
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
-                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
+                    using (DataTable ft = Dal.GetDataTable($@"Select * From mbr.UploadFile Where UploadID='{uploadID}' Order By DateUploaded"))
                     {
                         foreach (DataRow fr in ft.Rows)
                         {
@@ -1188,20 +1190,20 @@ namespace AngularSPAWebAPI.Services
         public List<Cogbytes> ShowAllRepositories()
         {
             List<Cogbytes> RepList = new List<Cogbytes>();
-            //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
-            using (DataTable dt = Dal.GetDataTableCog($@"SELECT        UserRepository.RepID, RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, UserRepository.Description, UserRepository.AdditionalNotes, Link, Username, DateRepositoryCreated, UserRepository.DataCiteURL, 
+            //using (DataTable dt = Dal.GetDataTable($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+            using (DataTable dt = Dal.GetDataTable($@"SELECT        UserRepository.RepID, RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, UserRepository.Description, UserRepository.AdditionalNotes, Link, Username, DateRepositoryCreated, UserRepository.DataCiteURL, 
                          STUFF
                              ((SELECT        ', ' + CONCAT(Author.FirstName, '-', Author.LastName)
-                                 FROM            RepAuthor INNER JOIN
-                                                          Author ON Author.AuthorID = RepAuthor.AuthorID
+                                 FROM            mbr.RepAuthor INNER JOIN
+                                                          pss.Author ON Author.ID = RepAuthor.AuthorID
                                  WHERE        RepAuthor.RepID = UserRepository.RepID
                                  ORDER BY AuthorOrder FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS Author, STUFF
                              ((SELECT        ', ' + PI.FullName
-                                 FROM            RepPI INNER JOIN
-                                                          PI ON PI.PIID = RepPI.PIID
+                                 FROM            mbr.RepPI INNER JOIN
+                                                          mbr.PI ON PI.PIID = RepPI.PIID
                                  WHERE        RepPI.RepID = UserRepository.RepID FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS PI
 
-                            FROM            UserRepository "))
+                            FROM            mbr.UserRepository "))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1240,8 +1242,8 @@ namespace AngularSPAWebAPI.Services
             List<Cogbytes> RepList = new List<Cogbytes>();
             try
             {
-                //using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
-                using (DataTable dt = Dal.GetDataTableCog($@"Select * From UserRepository Order By DateRepositoryCreated"))
+                //using (DataTable dt = Dal.GetDataTable($@"Select * From UserRepository Where PrivacyStatus = 1 Order By DateRepositoryCreated"))
+                using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.UserRepository Order By DateRepositoryCreated"))
                 {
                     Log.Information("Data fetched successfully from the UserRepository.");
                     foreach (DataRow dr in dt.Rows)
@@ -1261,8 +1263,8 @@ namespace AngularSPAWebAPI.Services
                             PrivacyStatus = Boolean.Parse(dr["PrivacyStatus"].ToString()),
                             Description = Convert.ToString(dr["Description"].ToString()),
                             AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
-                            AuthourID = FillCogbytesItemArray($"Select AuthorID From RepAuthor Where RepID={repID}", "AuthorID"),
-                            PIID = FillCogbytesItemArray($"Select PIID From RepPI Where RepID={repID}", "PIID"),
+                            AuthourID = FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
+                            PIID = FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
                             Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
                             Paper = publication
                         });
@@ -1280,9 +1282,27 @@ namespace AngularSPAWebAPI.Services
         public List<Experiment> GetCogbytesExperimentList(Guid repoLinkGuid)
         {
 
-            string sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
-                       Inner join Task on Task.ID = Experiment.TaskID
-                       Where RepoGuid = '{repoLinkGuid}'";
+            string sqlMB = $@"select tsd.Experiment.*, task.name as TaskName, Species.Species as Species, tt2.PISiteName, 
+
+                                                        STUFF((SELECT ' <br/>' + se.SubExpName
+                                                                FROM tsd.SubExperiment se
+                                                                Where se.ExpID = Experiment.ExpID
+                                                                order by se.SubExpName
+                                                                FOR XML PATH(''), type
+                                                        ).value('.', 'nvarchar(max)'),1,6,'') As SubExpNames
+
+                                                        from tsd.Experiment 
+                                                        inner join tsd.task on task.id = Experiment.taskID
+                                                        inner join tsd.species on species.id = Experiment.SpeciesID
+                                                        inner join 
+
+                                                        (Select PUSID, PIUserSite.PSID, tt.PISiteName  From tsd.PIUserSite
+                                                        inner join 
+                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From tsd.PISite
+                                                        inner join tsd.PI on PI.PID = PISite.PID 
+                                                        inner join tsd.Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID) as tt2 on tt2.PUSID = Experiment.PUSID
+
+                                                        Where RepoGuid = '{repoLinkGuid}'";
 
             var lstExperiment = new List<Experiment>();
             using (DataTable dtExp = Dal.GetDataTable(sqlMB))
@@ -1293,12 +1313,20 @@ namespace AngularSPAWebAPI.Services
                     lstExperiment.Add(new Experiment
                     {
                         ExpID = Int32.Parse(drExp["ExpID"].ToString()),
+                        PUSID = Int32.Parse(drExp["PUSID"].ToString()),
                         ExpName = Convert.ToString(drExp["ExpName"].ToString()),
                         StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
+                        EndExpDate = Convert.ToDateTime(drExp["EndExpDate"].ToString()),
                         TaskName = Convert.ToString(drExp["TaskName"].ToString()),
+                        TaskDescription = Convert.ToString(drExp["TaskDescription"].ToString()),
                         DOI = Convert.ToString(drExp["DOI"].ToString()),
                         Status = Convert.ToBoolean(drExp["Status"]),
                         TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
+                        TaskID = Int32.Parse(drExp["TaskID"].ToString()),
+                        PISiteName = Convert.ToString(drExp["PISiteName"].ToString()),
+                        SpeciesID = Int32.Parse(drExp["SpeciesID"].ToString()),
+                        Species = Convert.ToString(drExp["Species"].ToString()),
+                        MultipleSessions = Convert.ToBoolean(drExp["MultipleSessions"].ToString()),
 
                     });
                 }
@@ -1331,7 +1359,7 @@ namespace AngularSPAWebAPI.Services
             //List<FileUploadResult> FileList = new List<FileUploadResult>();
             string sqlMB = "";
 
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From searchCog2 Where RepoLinkGuid = '{repoLinkGuid}'"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.searchCog2 Where RepoLinkGuid = '{repoLinkGuid}'"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1346,7 +1374,7 @@ namespace AngularSPAWebAPI.Services
 
                     // Loop through table UploadFile to get list of all files uploaded to each Upload section in a Repo
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
-                    using (DataTable ft = Dal.GetDataTableCog($@"Select * From UploadFile Where UploadID={UploadID} Order By DateUploaded"))
+                    using (DataTable ft = Dal.GetDataTable($@"Select * From mbr.UploadFile Where UploadID={UploadID} Order By DateUploaded"))
                     {
                         foreach (DataRow fr in ft.Rows)
                         {
@@ -1398,7 +1426,7 @@ namespace AngularSPAWebAPI.Services
 
         public List<CogBytesMetaData> GetMetaDataFromCogbytesByLinkGuid(Guid repoLinkGuid) {
             List<CogBytesMetaData> RepList = new List<CogBytesMetaData>();
-            using (DataTable dt = Dal.GetDataTableCog($@"Select * From SearchCogMeta Where RepoLinkGuid = '{repoLinkGuid}'"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.SearchCogMeta Where RepoLinkGuid = '{repoLinkGuid}'"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1432,11 +1460,11 @@ namespace AngularSPAWebAPI.Services
         public async Task<Cogbytes> GetGuidByRepID(int repID)
         {
             //Cogbytes cogbytesRepo = new Cogbytes();
-            string sql = $"Select * From UserRepository Where RepID = @repID ";
+            string sql = $"Select * From mbr.UserRepository Where RepID = @repID ";
             var parameters = new List<SqlParameter>() ;
             parameters.Add(new SqlParameter("@repID", repID));
 
-            var cogbytesRepo = await Dal.GetReaderCogAsync(sql, reader => new Cogbytes
+            var cogbytesRepo = await Dal.GetReader(sql, reader => new Cogbytes
             {
                 RepoLinkGuid = reader.GetGuid(reader.GetOrdinal("RepoLinkGuid"))
             }, parameters);
