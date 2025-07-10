@@ -490,7 +490,6 @@ thead {
 .page-content {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .content {
@@ -508,15 +507,15 @@ main {
     }
 }
 
-header {
-    min-height: 15vh;
-}
+// header {
+//     min-height: 15vh;
+// }
 
 footer {
     background-color: #48395a;
     //max-height: 15vh;
     //min-height: 15vh;
-    height: 120px;
+    //height: 120px;
 }
 // main {
 //     display: flex;
