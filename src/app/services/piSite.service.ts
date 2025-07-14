@@ -41,6 +41,13 @@ export interface getPISiteResponse {
             });
     }
 
+    public deletePIUserSiteByPSID(psid: any): Observable<any> {
+        return this.http.delete("/api/PISite/DeletePIUserSiteByPSID&psid=" + psid,{
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    
+    }
+
 
 
     
