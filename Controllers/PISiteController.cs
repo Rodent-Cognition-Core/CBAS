@@ -44,6 +44,15 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(res);
         }
 
+        [HttpDelete("DeletePIUserSitebyPSID")]
+        public async Task<IActionResult> DeletePIUserSitebyPSID(int psid)
+        {
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userID = user.Id;
+            _piSiteService.DeletePIUserSitebyPSID(userID, psid);
+            return new JsonResult("Done!");
+        }
+
 
     }
 }
