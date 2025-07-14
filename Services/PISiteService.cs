@@ -113,7 +113,7 @@ namespace AngularSPAWebAPI.Services
 
         public void DeletePIUserSitebyPSID(string userID, int psid)
         {
-            string sql = $@"DELETE FROM tsd.PIUserSite Where PUSID={psid} AND userID={userID};";
+            string sql = $@"DELETE FROM PIUserSite Where PUSID={psid} AND userID={userID};";
             Dal.ExecuteNonQuery(sql);
         }
 
