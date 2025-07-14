@@ -43,18 +43,6 @@
                     </mat-form-field>
                     <br />
                     <br />
-                    <mat-form-field class="full-width">
-                        <mat-select placeholder="Select PI & Institution" required name="selectedPiSiteIds" [(ngModel)]="model.selectedPiSiteIds" multiple>
-                            <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.psid">
-                                <span matTooltip="{{PIS.piSiteName}}">{{PIS.piSiteName}}</span>
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>
-                            Required
-                        </mat-error>
-                    </mat-form-field>
-                    <br />
-                    <br />
                     <mat-checkbox name="termsConfirmed" [(ngModel)]="model.termsChecked">
                         I have read and agree to the MouseBytes <span (click)="openDialogTerms()" style="color: blue; text-decoration: underline;">Terms of Service</span>
                     </mat-checkbox>

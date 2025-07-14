@@ -7,7 +7,9 @@ import { IdentityService } from '../services/identity.service';
 import { PISiteService } from '../services/piSite.service';
 import { ProfileService } from '../services/profile.service';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button'
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     imports: [
@@ -15,6 +17,8 @@ import { MatButtonModule } from '@angular/material/button'
         SharedModule,
         MatDialogModule,
         MatButtonModule,
+        MatListModule,
+        MatIconModule
     ],
     declarations: [
         ProfileComponent
