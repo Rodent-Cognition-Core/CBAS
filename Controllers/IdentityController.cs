@@ -94,7 +94,6 @@ namespace AngularSPAWebAPI.Controllers
             {
                 await addToRole(model.username, "user");
                 await addClaims(model.username);
-                //await _piSiteService.InsertPiSiteIdsAsync(user.Id, model.selectedPiSiteIds);
 
                 // here should be a good place to send email.
                 var strBody = $@"Hi Admin, <br /><br />
