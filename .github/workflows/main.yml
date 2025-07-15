@@ -115,4 +115,4 @@ jobs:
         working-directory: /cephfs/
         run: |
           docker-compose pull
-          docker-compose up -d --build  # Rebuild and start containers in detached mode
+          docker compose -f docker-compose.yml up -d
