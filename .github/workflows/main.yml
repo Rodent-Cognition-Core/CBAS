@@ -115,4 +115,5 @@ jobs:
         working-directory: /cephfs/
         run: |
           docker-compose pull
+          docker system  prune
           docker compose -f docker-compose.yml up -d
