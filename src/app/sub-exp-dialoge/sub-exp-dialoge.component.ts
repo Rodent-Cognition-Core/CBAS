@@ -61,7 +61,7 @@ export class SubExpDialogeComponent implements OnInit {
         this.drugQuantity = fb.control('', [Validators.required]);
         this.drugUnit = fb.control('', [Validators.required]);
         this.intDes = fb.control('', [Validators.required]);
-        this.imageInfo = fb.control('', [Validators.required]);
+        this.imageInfo = fb.control([], [Validators.required]);
         this.imageDescription = fb.control('', [Validators.required]);
         this.housing = fb.control('', [Validators.required]);
         this.lightCycle = fb.control('', [Validators.required]);
