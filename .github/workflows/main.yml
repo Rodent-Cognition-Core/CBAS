@@ -2,7 +2,7 @@
 
 # # Trigger this workflow when code is pushed to the dev branch
 # on:
-#   push:
+#   pull_request:
 #     branches:
 #       - develop
 
