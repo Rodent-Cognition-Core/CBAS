@@ -108,11 +108,11 @@ jobs:
       - name: Stop and remove existing containers
         working-directory: /cephfs/staging/CBAS
         run: |
-          docker-compose down
+          docker stop app_staging
        
       # Pull latest images (if using image tags) and rebuild containers
       - name: Pull latest images and start containers
-        working-directory: /cephfs/staging/CBAS
+        working-directory: /cephfs/
         run: |
           docker-compose pull
           docker-compose up -d --build  # Rebuild and start containers in detached mode
