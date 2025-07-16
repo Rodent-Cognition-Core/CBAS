@@ -90,9 +90,9 @@ namespace AngularSPAWebAPI
             services.AddSerilog();
 
             // Uncomment this line for publuishing
-            services.AddIdentityServer(options =>
-                     options.PublicOrigin = "https://staging.mousebytes.ca")
-            //services.AddIdentityServer()
+            //services.AddIdentityServer(options =>
+            //         options.PublicOrigin = "https://staging.mousebytes.ca")
+                services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
@@ -163,6 +163,10 @@ namespace AngularSPAWebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+            });
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -173,7 +177,11 @@ namespace AngularSPAWebAPI
             else
             {
                 app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandlingPath = "/Home/Error",
+                    AllowStatusCode404Response = true
+                });
                 app.UseHsts();
             }
            
