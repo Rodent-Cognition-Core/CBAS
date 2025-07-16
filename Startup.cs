@@ -163,10 +163,7 @@ namespace AngularSPAWebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-            });
+
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -176,6 +173,10 @@ namespace AngularSPAWebAPI
             }
             else
             {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                });
                 app.UseCors("ProductionCorsPolicy");
                 app.UseExceptionHandler(new ExceptionHandlerOptions
                 {
