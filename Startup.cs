@@ -91,8 +91,8 @@ namespace AngularSPAWebAPI
 
             // Uncomment this line for publuishing
             //services.AddIdentityServer(options =>
-            //         options.PublicOrigin = "https://mousebytes.ca")
-            services.AddIdentityServer()
+            //         options.PublicOrigin = "https://staging.mousebytes.ca")
+                services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
@@ -163,6 +163,7 @@ namespace AngularSPAWebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
+
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -172,13 +173,28 @@ namespace AngularSPAWebAPI
             }
             else
             {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                });
                 app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandlingPath = "/Home/Error",
+                    AllowStatusCode404Response = true
+                });
                 app.UseHsts();
             }
            
 
             app.UseHttpsRedirection();
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
             app.UseRouting();
 
 
@@ -238,14 +254,6 @@ namespace AngularSPAWebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
-            // Uses default files as index.html.
-            app.UseDefaultFiles();
-            // this should always be the last middleware
-            app.UseStaticFiles();
-
-
         }
     }
 }
