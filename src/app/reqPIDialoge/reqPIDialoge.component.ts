@@ -40,7 +40,7 @@ export class ReqPIDialogeComponent {
         this.piName = fb.control('', [Validators.required]);
         this.institution = fb.control('', [Validators.required]);
         this._request = {
-            age: '', controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
+            controlSuggestion: '', doi: '', email: '', fullName: '', generalRequest: '', geneticModification: '', genotype: '', ID: 0,
             method: '', model: '', mouseStrain: '', piEmail: '', piFullName: '', piInstitution: '', scheduleName: '', strainReference: '', subMethod: '',
             subModel: '', taskCategory: '', taskName: '', type: ''
         }
