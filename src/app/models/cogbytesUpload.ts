@@ -20,7 +20,8 @@ export interface CogbytesUpload {
      sexID: Array<number>;
      strainID: Array<number>;
      genoID: Array<number>;
-     ageID: Array<number>;
+     startAge: number | null;
+     endAge: number | null;
 
      numSubjects: number;
 

@@ -9,7 +9,6 @@ export interface Request {
      piFullName: string;
      piEmail: string;
      piInstitution: string;
-     age: string;
      mouseStrain: string;
      geneticModification: string;
      strainReference: string;

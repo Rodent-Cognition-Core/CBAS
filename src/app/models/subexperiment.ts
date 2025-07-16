@@ -2,8 +2,8 @@ export interface SubExperiment {
 
      SubExpID: number;
      ExpID: number;
-     AgeID: number;
-     AgeInMonth: string;
+     startAge: number | null;
+     endAge: number | null;
      SubExpName: string;
      ErrorMessage: string;
      IsPostProcessingPass: boolean;

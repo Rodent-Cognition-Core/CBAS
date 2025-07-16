@@ -9,7 +9,8 @@ export interface DataExtraction {
      markerInfoNames: Array<string>;
      aggNames: string;
      pisiteIDs: Array<number>;
-     ageVals: Array<number>;
+     startAge: number | null;
+     endAge: number | null;
      sexVals: Array<string>;
      genotypeVals: Array<number>;
      strainVals: Array<number>;

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ReqTaskDialogeComponent } from '../reqTaskDialoge/reqTaskDialoge.component';
 import { ReqPIDialogeComponent } from '../reqPIDialoge/reqPIDialoge.component';
-import { ReqAgeDialogeComponent } from '../reqAgeDialoge/reqAgeDialoge.component';
 import { ReqMouseLineDialogeComponent } from '../reqMouseLineDialoge/reqMouseLineDialoge.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { ReqPubTaskDialogeComponent } from '../reqPubTaskDialoge/reqPubTaskDialoge.component';
@@ -41,19 +40,6 @@ export class FormsComponent {
 
         let dialogref = this.dialogPI.open(ReqPIDialogeComponent, {
             height: '550px',
-            width: '700px',
-            data: {}
-
-        });
-
-        dialogref.afterClosed().subscribe();
-    }
-
-    // Function Definition to open a dialog for adding a new age to the system 
-    openDialogAge(): void {
-
-        let dialogref = this.dialogAge.open(ReqAgeDialogeComponent, {
-            height: '400px',
             width: '700px',
             data: {}
 
