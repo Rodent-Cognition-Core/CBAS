@@ -78,6 +78,28 @@
                             <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
                             <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
 
+                            <label>Cognitive Task(s):</label>&nbsp; <span style="color:#696d70;">{{getRepCognitiveTaskString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Species:</label>&nbsp; <span style="color:#696d70;">{{getRepSpeciesString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Number of Subjects:</label>&nbsp; <span style="color:#696d70;">{{getRep().numSubjects || 'N/A'}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Sex:</label>&nbsp; <span style="color:#696d70;">{{getRepSexString(getRep())}}</span><br /><br />
+
+                            <label>Strain(s):</label>&nbsp; <span style="color:#696d70;">{{getRepStrainString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Genotype(s):</label>&nbsp; <span style="color:#696d70;">{{getRepGenotypeString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Start Age:</label>&nbsp; <span style="color:#696d70;">{{getRepAgeString(getRep()).startAge}}</span><br /><br />
+                            <label>End Age:</label>&nbsp; <span style="color:#696d70;">{{getRepAgeString(getRep()).endAge}}</span><br /><br />
+                            <label>Rodent Model(s):</label>&nbsp; <span style="color:#696d70;">{{getRepDiseaseModelString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubModelString(getRep())}}</span><br /><br />
+                            <label>Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;">{{getRepRegionString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubRegionString(getRep())}}</span><br /><br />
+                            <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;">{{getRepCellTypeString(getRep())}}</span><br /><br />
+
+                            <label>Method(s):</label>&nbsp; <span style="color:#696d70;">{{getRepMethodString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Sub-Method(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubMethodString(getRep())}}</span><br /><br />
+                            <label>Neurochemical(s):</label>&nbsp; <span style="color:#696d70;">{{getRepNeurotransmitterString(getRep())}}</span><br /><br />
+
+                            <label>Housing Info:</label>&nbsp; <span style="color:#696d70;">{{getRep().housingModel || 'N/A'}}</span> &nbsp; &nbsp; &nbsp;
+                            <label>Light Cycle Info:</label>&nbsp; <span style="color:#696d70;">{{getRep().lightModel || 'N/A'}}</span><br /><br />
+
                             <mat-expansion-panel *ngIf="getRep().paper !== null">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>

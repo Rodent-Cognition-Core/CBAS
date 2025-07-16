@@ -89,9 +89,9 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         this.repModel = null;
 
         this._cogbytesUpload = {
-            additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
+            additionalNotes: '', dateUpload: '', description: '', fileTypeId: 0, genoID: [],
             housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
-            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
+            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: [], startAge: null, endAge: null
         }
         this.pagedItems = [];
         this.experimentID = 1;
@@ -338,6 +338,62 @@ export class CogbytesComponent implements OnInit, OnDestroy {
             this.setPage(1);
         });
 
+    }
+
+    getRepCognitiveTaskString(repID: number) {
+
+    }
+
+    getRepSpeciesString(repID: number) {
+        
+    }
+
+    getRepSexString(repID: number) {
+        
+    }
+
+    getRepStrainString(repID: number) {
+        
+    }
+
+    getRepGenotypeString(repID: number) {
+        
+    }
+
+    getRepAgeString(repID: number) {
+        return { startAge: 0, endAge: 0 };
+    }
+
+    getRepDiseaseModelString(repID: number) {
+        
+    }
+
+    getRepSubModelString(repID: number) {
+        
+    }
+
+    getRepRegionString(repID: number) {
+        
+    }
+
+    getRepSubRegionString(repID: number) {
+        
+    }
+
+    getRepCellTypeString(repID: number) {
+        
+    }
+
+    getRepMethodString(repID: number) {
+        
+    }
+
+    getRepSubMethodString(repID: number) {
+        
+    }
+
+    getRepNeurotransmitterString(repID: number) {
+        
     }
 
     setPage(page: number) {
