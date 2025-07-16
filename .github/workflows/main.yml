@@ -93,7 +93,7 @@ jobs:
     name: Deploy to Staging Site with Docker Compose
     needs: merge-to-staging
     runs-on: self-hosted  # This job runs on your self-hosted runner (staging server)
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
 
     steps:
       # Checkout the updated staging branch
