@@ -18,7 +18,6 @@ import { AnimalDialogComponent } from './animal-dialog/animal-dialog.component';
 import { PasswordDialogComponent } from './password-dialog/password-dialog.component';
 import { ReqTaskDialogeComponent } from './reqTaskDialoge/reqTaskDialoge.component';
 import { ReqPIDialogeComponent } from './reqPIDialoge/reqPIDialoge.component';
-import { ReqAgeDialogeComponent } from './reqAgeDialoge/reqAgeDialoge.component';
 import { ReqMouseLineDialogeComponent } from './reqMouseLineDialoge/reqMouseLineDialoge.component';
 import { ReqGeneralDialogeComponent } from './reqGeneralDialoge/reqGeneralDialoge.component';
 import { ReqPubTaskDialogeComponent } from './reqPubTaskDialoge/reqPubTaskDialoge.component';
@@ -69,7 +68,6 @@ export function initOAuth(oAuthConfig: OAuthConfig): Function {
         PasswordDialogComponent,
         ReqTaskDialogeComponent,
         ReqPIDialogeComponent,
-        ReqAgeDialogeComponent,
         ReqMouseLineDialogeComponent,
         ReqGeneralDialogeComponent,
         ReqPubTaskDialogeComponent,
