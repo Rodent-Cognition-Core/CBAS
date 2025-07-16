@@ -90,9 +90,9 @@ namespace AngularSPAWebAPI
             services.AddSerilog();
 
             // Uncomment this line for publuishing
-            //services.AddIdentityServer(options =>
-            //         options.PublicOrigin = "https://staging.mousebytes.ca")
-                services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+                     options.PublicOrigin = "https://staging.mousebytes.ca")
+                //services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
