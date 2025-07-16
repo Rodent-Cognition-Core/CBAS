@@ -188,6 +188,13 @@ namespace AngularSPAWebAPI
            
 
             app.UseHttpsRedirection();
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
             app.UseRouting();
 
 
@@ -247,14 +254,6 @@ namespace AngularSPAWebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
-            // Uses default files as index.html.
-            app.UseDefaultFiles();
-            // this should always be the last middleware
-            app.UseStaticFiles();
-
-
         }
     }
 }
