@@ -182,13 +182,22 @@
                             </mat-select>
                         </mat-form-field>
 
-                        <mat-form-field style="width:20%; padding-left:30px">
-                            <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
-                                <mat-option *ngFor="let age of ageList" [value]="age.id">
-                                    {{age.ageInMonth}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <div style="display: flex; width: 25%; padding-left: 30px;">
+                            <mat-form-field style="width: 50%; margin-right: 10px;">
+                                <input matInput type="number" placeholder="Start Age (months)" [(ngModel)]="ageStartModel">
+                            </mat-form-field>
+
+                            <mat-form-field style="width: 50%;">
+                                <input matInput type="number" placeholder="End Age (months)" [(ngModel)]="ageEndModel">
+                            </mat-form-field>
+                        </div>
+
+                        <!--Removed Original Age Selection
+                            <mat-form-field style="width:20%; padding-left:30px">
+                                <mat-select placeholder="Select Age" [(ngModel)]="ageModel" multiple>
+                                    
+                                </mat-select>
+                            </mat-form-field>-->
                         <br />
 
                         <!-- Row 3: Rodent Model, Anatomical Region, Cell Type -->

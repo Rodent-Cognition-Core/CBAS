@@ -36,7 +36,8 @@ export class CogbytesDialogueComponent implements OnInit {
     public sexModel: any;
     public strainModel: any;
     public genotypeModel: any;
-    public ageModel: any;
+    public ageStartModel: any;
+    public ageEndModel: any;
     public housingModel: any;
     public lightModel: any;
     public intDesModel: any;
@@ -176,8 +177,8 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes = {
             additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
             doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: '',
-            taskID: [], specieID: [], sexID: [], strainID: [], genoID: [], ageID: [], numSubjects: 0, housing: '',
-            lightCycle: '', taskBattery: ''
+            taskID: [], specieID: [], sexID: [], strainID: [], genoID: [], numSubjects: 0, housing: '',
+            lightCycle: '', taskBattery: '', startAge: null, endAge: null
         }
 
         this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
@@ -185,7 +186,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
         this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
         this.cogbytesService.getGenos().subscribe((data: any) => { this.genosList = data; });
-        this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+        //this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
 
         this.resetFormVals();
     }
@@ -829,7 +830,8 @@ export class CogbytesDialogueComponent implements OnInit {
         this.sexModel = [];
         this.strainModel = [];
         this.genotypeModel = [];
-        this.ageModel = [];
+        this.ageStartModel = [];
+        this.ageEndModel = [];
         this.housingModel = '';
         this.lightModel = '';
         this.intDesModel = '';
