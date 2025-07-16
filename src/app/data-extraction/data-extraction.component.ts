@@ -150,9 +150,9 @@ export class DataExtractionComponent implements OnInit {
         this.filteredExpCache = [];
         this._geno = { Description: '', Genotype: '', ID: 0, Link: '' }
         this._dataExtractionObj = {
-            ageVals: [], aggNames: '', expIDs: [], genotypeVals: [], isTrialByTrials: false, markerInfoNames: [], pisiteIDs: [],
+            aggNames: '', expIDs: [], genotypeVals: [], isTrialByTrials: false, markerInfoNames: [], pisiteIDs: [],
             sessionInfoNames: [], sessionName: [], sexVals: [], species: '', speciesID: 0, strainVals: [], subExpID: [], subtaskID: 0,
-            subTaskName: '', taskID: 0, taskName: ''
+            subTaskName: '', taskID: 0, taskName: '', startAge: null, endAge: null
         }
         this.task = fb.control('', [Validators.required])
         this.subtask = fb.control('', [Validators.required])
@@ -945,7 +945,7 @@ export class DataExtractionComponent implements OnInit {
         this._dataExtractionObj.markerInfoNames = this.markerinfo.value;
         this._dataExtractionObj.aggNames = this.aggFunc.value;
         this._dataExtractionObj.pisiteIDs = this.selectedPiSiteValue;
-        this._dataExtractionObj.ageVals = this.selectedAgeValue;
+        //this._dataExtractionObj.ageVals = this.selectedAgeValue;
         this._dataExtractionObj.sexVals = this.selectedSexValue;
         this._dataExtractionObj.genotypeVals = this.selectedGenotypeValue;
         this._dataExtractionObj.strainVals = this.selectedStrainValue;

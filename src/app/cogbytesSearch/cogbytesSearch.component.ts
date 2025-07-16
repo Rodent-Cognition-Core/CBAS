@@ -103,8 +103,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         public dialogRef: MatDialog) {
 
         this._cogbytesSearch = {
-            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
+            authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
+            startAge: null, endAge: null
         }
         this.checkYear = false;
         this.isAdmin = false;
@@ -151,7 +152,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
             this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
             this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
             this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
-            this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
+            //this.cogbytesService.getAges().subscribe((data: any) => { this.ageList = data; });
         }
 
 
@@ -182,8 +183,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     resetState(): void {
         this._cogbytesSearch = {
-            ageID: [], authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined
+            authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
+            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
+            startAge: null, endAge: null
         }
         this.checkYear = false;
         this.isAdmin = false;
@@ -432,7 +434,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this._cogbytesSearch.sexID = this.sexModel;
         this._cogbytesSearch.strainID = this.strainModel;
         this._cogbytesSearch.genoID = this.genoModel;
-        this._cogbytesSearch.ageID = this.ageModel;
+        //this._cogbytesSearch.ageID = this.ageModel;
 
         this._cogbytesSearch.yearFrom = this.yearFromSearchModel;
         this._cogbytesSearch.yearTo = (this.yearTo.value === '') ? undefined : +this.yearTo.value

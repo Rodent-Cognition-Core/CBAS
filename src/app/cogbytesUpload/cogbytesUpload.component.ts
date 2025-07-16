@@ -117,9 +117,10 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         this.isEditMode = false;
         this.uploadID = 0;
         this._cogbytesUpload = {
-            additionalNotes: '', ageID: [], dateUpload: '', description: '', fileTypeId: 0, genoID: [],
+            additionalNotes: '', dateUpload: '', description: '', fileTypeId: 0, genoID: [],
             housing: '', id: 0, imageDescription: '', imageIds: '', interventionDescription: '', isIntervention: false,
-            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: []
+            lightCycle: '', name: '', numSubjects: 0, repId: 0, sexID: [], specieID: [], strainID: [], taskBattery: '', taskID: [],
+            startAge: null, endAge: null
         }
 
         this.name = fb.control('', [Validators.required]);
@@ -274,7 +275,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
-        this._cogbytesUpload.ageID = this.ageModel;
+        //this._cogbytesUpload.ageID = this.ageModel;
 
         this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 
@@ -313,7 +314,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         this._cogbytesUpload.sexID = this.sexModel;
         this._cogbytesUpload.strainID = this.strainModel;
         this._cogbytesUpload.genoID = this.genotypeModel;
-        this._cogbytesUpload.ageID = this.ageModel;
+        //this._cogbytesUpload.ageID = this.ageModel;
 
         this._cogbytesUpload.numSubjects = parseInt(this.numSubjects.value);
 

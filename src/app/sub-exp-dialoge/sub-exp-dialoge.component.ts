@@ -66,9 +66,9 @@ export class SubExpDialogeComponent implements OnInit {
         this.housing = fb.control('', [Validators.required]);
         this.lightCycle = fb.control('', [Validators.required]);
         this._subexperiment = {
-            AgeID: 0, AgeInMonth: '', drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
+            drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
             ImageIds: [], ImageInfo: '', interventionDescription: '', isDrug: false, isIntervention: false, IsPostProcessingPass: false, LightCycle: '',
-            SubExpID: 0, SubExpName: ''
+            SubExpID: 0, SubExpName: '', startAge: null, endAge: null
         }
     }
 
@@ -275,7 +275,7 @@ export class SubExpDialogeComponent implements OnInit {
 
         }
         this._subexperiment.SubExpName = this.subExp.value;
-        this._subexperiment.AgeID = parseInt(this.ageInMonth.value);
+        //this._subexperiment.AgeID = parseInt(this.ageInMonth.value);
         this._subexperiment.ExpID = this.data.expObj.expID;
         this._subexperiment.isIntervention = this.intervention.value == "1" ? true : false;
         this._subexperiment.isDrug = this.isDrug.value == "1" ? true : false;
