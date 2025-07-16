@@ -81,11 +81,16 @@ jobs:
       - name: Checkout staging
         run: git checkout staging
 
-      # Merge the latest changes from dev into staging
-      - name: Merge dev into staging
-        run: git merge origin/develop --no-ff -m "Auto-merged dev into staging"
 
-      # Push the updated staging branch back to the remote
+      # Rebase the PR branch onto staging (apply PR changes on top of staging)
+      - name: Rebase PR branch onto staging
+        run: git rebase ${{ github.head_ref }}
+
+
+      
+      # Push the rebased staging branch to remote
+      # WARNING: This force-pushes to staging, so use with caution
+
       - name: Push to staging
         run: git push origin staging
 
