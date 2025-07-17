@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Nest;
 using Serilog;
 using Serilog.Exceptions;
+using static System.Net.WebRequestMethods;
 
 namespace AngularSPAWebAPI
 {
@@ -109,7 +110,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "http://localhost:5000/";
+                        options.Authority = "https://staging.mousebytes.ca";
                         options.RequireHttpsMetadata = false;
 
                         options.ApiName = "WebAPI";
