@@ -89,9 +89,11 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
-            // Uncomment this line for publuishing
-            services.AddIdentityServer(options =>
-                     options.PublicOrigin = "https://staging.mousebytes.ca")
+            if (currentEnvironment.IsProduction())
+            {
+                // Uncomment this line for publuishing
+                services.AddIdentityServer(options =>
+                         options.PublicOrigin = "https://staging.mousebytes.ca")
                 //services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
@@ -104,13 +106,10 @@ namespace AngularSPAWebAPI
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-
-            if (currentEnvironment.IsProduction())
-            {
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "https://staging.mousebytes.ca/";
+                        options.Authority = "http://localhost:5000/";
                         options.RequireHttpsMetadata = false;
 
                         options.ApiName = "WebAPI";
@@ -118,6 +117,21 @@ namespace AngularSPAWebAPI
             }
             else
             {
+                // Uncomment this line for publuishing
+                //services.AddIdentityServer(options =>
+                //         options.PublicOrigin = "https://staging.mousebytes.ca")
+                services.AddIdentityServer()
+                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                .AddDeveloperSigningCredential()
+                .AddInMemoryPersistedGrants()
+                // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
+                // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients())
+                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
