@@ -136,7 +136,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "https://staging.mousebytes.ca/";
+                    options.Authority = "http://localhost:5000/";
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "WebAPI";
