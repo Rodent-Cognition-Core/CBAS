@@ -16,7 +16,7 @@
         "dom"
       ],
       "module": "esnext",
-      "baseUrl": "./",
+      "baseUrl": "/",
       "strict": true,
       "noImplicitAny": true,
       "strictNullChecks": true,
