@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Net;
+
 using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
@@ -8,6 +10,7 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -89,12 +92,8 @@ namespace AngularSPAWebAPI
 
             //Adds serilog to 
             services.AddSerilog();
-
-            if (currentEnvironment.IsProduction())
-            {
-                // Uncomment this line for publuishing
-                services.AddIdentityServer(options =>
-                         options.PublicOrigin = "https://staging.mousebytes.ca")
+            services.AddIdentityServer(options =>
+                        options.PublicOrigin = "https://staging.mousebytes.ca")
                 //services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
@@ -107,14 +106,33 @@ namespace AngularSPAWebAPI
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+            if (currentEnvironment.IsProduction())
+            {
+                                
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
                         options.Authority = "https://staging.mousebytes.ca";
                         options.RequireHttpsMetadata = false;
-
                         options.ApiName = "WebAPI";
                     });
+
+                var trustedSubnet = Environment.GetEnvironmentVariable("TRUSTED_SUBNET");
+                if (!string.IsNullOrEmpty(trustedSubnet))
+                {
+                    var parts = trustedSubnet.Split('/');
+                    if (parts.Length == 2 &&
+                        IPAddress.TryParse(parts[0], out var ip) &&
+                        int.TryParse(parts[1], out var prefix))
+                    {
+                        services.Configure<ForwardedHeadersOptions>(options =>
+                            {
+                                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                                options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse(parts[0]), int.Parse(parts[1])));
+                            });
+                    }
+                }
+
             }
             else
             {
@@ -141,6 +159,7 @@ namespace AngularSPAWebAPI
 
                     options.ApiName = "WebAPI";
                 });
+                                    IdentityModelEventSource.ShowPII = true;
             }
 
 
@@ -177,6 +196,7 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
 
             if (env.IsDevelopment())
@@ -188,30 +208,15 @@ namespace AngularSPAWebAPI
             }
             else
             {
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-                });
                 app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler(new ExceptionHandlerOptions
-                {
-                    ExceptionHandlingPath = "/Home/Error",
-                    AllowStatusCode404Response = true
-                });
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
-           
+
 
             app.UseHttpsRedirection();
-
-            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
-            // Uses default files as index.html.
-            app.UseDefaultFiles();
-            // this should always be the last middleware
-            app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseForwardedHeaders();
 
             // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
             var appRoutes = new[] {
@@ -269,6 +274,13 @@ namespace AngularSPAWebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
         }
     }
 }
