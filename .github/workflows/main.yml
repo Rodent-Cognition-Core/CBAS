@@ -79,7 +79,10 @@ jobs:
 
       # Switch to the staging branch
       - name: Checkout staging
-        run: git checkout staging
+        run: |
+          git checkout staging
+          git pull origin staging  # Pull latest changes from remote staging
+
 
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
@@ -111,7 +114,7 @@ jobs:
       - name: Stop and remove existing containers
         working-directory: /cephfs/staging/CBAS
         run: |
-          docker stop staging.mousebytes.ca
+          docker stop app_staging
        
       # Pull latest images (if using image tags) and rebuild containers
       - name: Pull latest images and start containers
