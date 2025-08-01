@@ -159,7 +159,6 @@ namespace AngularSPAWebAPI
 
                     options.ApiName = "WebAPI";
                 });
-                                    IdentityModelEventSource.ShowPII = true;
             }
 
 
