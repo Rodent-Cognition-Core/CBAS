@@ -79,9 +79,7 @@ jobs:
 
       # Switch to the staging branch
       - name: Checkout staging
-        run: |
-          git checkout staging
-          git pull origin staging  # Pull latest changes from remote staging
+        run: git checkout staging
 
 
       # Merge the latest changes from dev into staging
