@@ -84,7 +84,8 @@ jobs:
 
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
-        run: git merge origin/develop --no-ff -m "Auto-merged dev into staging"
+        run: git merge origin/develop --strategy=recursive --strategy-option=theirs -m "Auto-merged dev into staging (prefer develop)" #Use Git’s merge strategy options to always prefer the incoming branch (develop) during the merg to resolve merge conflict
+
 
       # Push the updated staging branch back to the remote
       - name: Push to staging
