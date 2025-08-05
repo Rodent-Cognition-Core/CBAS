@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace AngularSPAWebAPI.Controllers
@@ -68,8 +69,16 @@ namespace AngularSPAWebAPI.Controllers
             if (exp[0].Status != "Public") {
                 return new JsonResult("");
             }
+            var expDsFilePath = string.Empty;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
 
-            var expDsFilePath = _hostingEnvironment.ContentRootPath + "\\UPLOAD\\datasets\\" + expDsFileName + ".csv";
+                expDsFilePath = _hostingEnvironment.ContentRootPath + "\\UPLOAD\\datasets\\" + expDsFileName + ".csv";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                expDsFilePath = _hostingEnvironment.ContentRootPath + "/UPLOAD/datasets/" + expDsFileName + ".csv";
+            }
             var memory = new MemoryStream();
             using (var stream = new FileStream(expDsFilePath, FileMode.Open))
             {
