@@ -136,5 +136,18 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("DeleteAnimals")]
+        public async Task<IActionResult> DeleteAnimals([FromBody] IEnumerable<int> animalIds)
+        {
+            await _animalService.DeleteAnimalsAsync(animalIds);
+            return new JsonResult("Done!");
+        }
+
+        [HttpPost("DuplicateAnimals")]
+        public async Task<IActionResult> DuplicateAnimals([FromBody] IEnumerable<Animal> animals)
+        {
+            await _animalService.DuplicateAnimalsAsync(animals);
+            return new JsonResult("Done!");
+        }
     }
 }

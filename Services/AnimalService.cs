@@ -342,6 +342,38 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task DeleteAnimalsAsync(IEnumerable<int> animalIds)
+        {
+            string sql = $"Delete From tsd.RBT_TouchScreen_Features Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.rbt_data_cached_avg Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.rbt_data_cached_std Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.rbt_data_cached_cnt Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.rbt_data_cached_sum Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.SessionInfo_Dynamic Where SessionID in (Select SessionID From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)}));"
+                       + $"Delete From tsd.SessionInfo Where AnimalID IN ({string.Join(",", animalIds)});"
+                       + $"Delete From tsd.Upload Where AnimalID IN ({string.Join(",", animalIds)});"
+                       + $"Delete From tsd.Animal Where AnimalID IN ({string.Join(",", animalIds)});";
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting animals with AnimalIDs: {AnimalIDs}", animalIds);
+                throw;
+            }
+        }
+
+        public async Task DuplicateAnimalsAsync(IEnumerable<Animal> animals)
+        {
+            foreach (var animal in animals)
+            {
+                animal.UserAnimalID = $"{animal.UserAnimalID}_copy";
+                await InsertAnimalAsync(animal);
+            }
+        }
+
 
         //public List<int> GetGenoID (int? strainID)
         //{
