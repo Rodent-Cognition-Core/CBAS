@@ -262,45 +262,73 @@
     </div>
 
     <div *ngIf="repModel !== null" style="padding-top:30px">
-        <table class="docs-markdown-table">
-            <thead>
-                <tr>
-                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;" colspan="6">{{getRep().title}} Registered Animals</th>
-                </tr>
-                <tr style=" text-align: center; color:#465563;">
-                    <td class="docs-markdown-td"></td>
-                    <td class="docs-markdown-td"></td>
-                    <td class="docs-markdown-td">Animal ID</td>
-                    <td class="docs-markdown-td">Sex</td>
-                    <td class="docs-markdown-td">Strain</td>
-                    <td class="docs-markdown-td">Genotype</td>
-            </tr>
-            </thead>
-            <tr *ngFor="let row of pagedItems">
-                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td"><button mat-icon-button (click)="addNewAnimal(row)"><mat-icon>edit</mat-icon></button></td>
-                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td"><button mat-icon-button color="warn" (click)="delAnimal(row.animalID, row.expID)"><mat-icon>delete</mat-icon></button> </td>
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.userAnimalID}}</td>
-                <td style="text-align: center; color:#696d70; width:40px;" class="docs-markdown-td">{{row.sex}}</td>
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.strain}}</td>
-                <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{row.genotype}}</td>
-            </tr>
-            <tr>
-                <button mat-icon-button matTooltip="Add Animal(s)" (click)="addNewAnimal(null)"><mat-icon>add</mat-icon></button>
-                                <label>Add Animal(s)</label>
-                <td colspan="12" *ngIf="pager.pages && pager.pages.length" style="text-align: right;">
-                    <!-- pager -->
-                    <div class="pagination-custom">
-                        <a (click)="pager.currentPage === 1 || setPage(1)">First</a>
-                        <a (click)="pager.currentPage === 1 || setPage(pager.currentPage - 1)"><mat-icon>keyboard_arrow_left</mat-icon></a>
-                        <span *ngFor="let page of pager.pages">
-                            <a (click)="pager.currentPage === page || setPage(page)" [ngClass]="{active:pager.currentPage === page}">{{page}}</a>
-                        </span>
-                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.currentPage + 1)"><mat-icon>keyboard_arrow_right</mat-icon></a>
-                        <a (click)="pager.currentPage === pager.totalPages || setPage(pager.totalPages)">Last</a>
-                    </div>
+        <div class="table-header">
+            <mat-form-field>
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+            </mat-form-field>
+        </div>
+
+        <table mat-table [dataSource]="dataSource" class="docs-markdown-table">
+
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                  [checked]="selection.hasValue() && isAllSelected()"
+                                  [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()"
+                                  (change)="$event ? selection.toggle(row) : null"
+                                  [checked]="selection.isSelected(row)">
+                    </mat-checkbox>
                 </td>
-            </tr>
+            </ng-container>
+
+            <!-- Animal ID Column -->
+            <ng-container matColumnDef="animalId">
+                <th mat-header-cell *matHeaderCellDef> Animal ID </th>
+                <td mat-cell *matCellDef="let row"> {{row.userAnimalID}} </td>
+            </ng-container>
+
+            <!-- Sex Column -->
+            <ng-container matColumnDef="sex">
+                <th mat-header-cell *matHeaderCellDef> Sex </th>
+                <td mat-cell *matCellDef="let row"> {{row.sex}} </td>
+            </ng-container>
+
+            <!-- Strain Column -->
+            <ng-container matColumnDef="strain">
+                <th mat-header-cell *matHeaderCellDef> Strain </th>
+                <td mat-cell *matCellDef="let row"> {{row.strain}} </td>
+            </ng-container>
+
+            <!-- Genotype Column -->
+            <ng-container matColumnDef="genotype">
+                <th mat-header-cell *matHeaderCellDef> Genotype </th>
+                <td mat-cell *matCellDef="let row"> {{row.genotype}} </td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button (click)="addNewAnimal(row)"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button color="warn" (click)="delAnimal(row.animalID, row.expID)"><mat-icon>delete</mat-icon></button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+        <div class="table-footer">
+            <button mat-raised-button color="primary" (click)="addNewAnimal(null)">Add Animal</button>
+            <button mat-raised-button color="warn" [disabled]="selection.isEmpty()" (click)="deleteSelectedAnimals()">Delete Selected</button>
+            <button mat-raised-button [disabled]="selection.isEmpty()" (click)="duplicateSelectedAnimals()">Duplicate Selected</button>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
     </div>
 
     <br />

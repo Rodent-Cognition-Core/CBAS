@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, forkJoin } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
@@ -24,6 +24,9 @@ import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericDialogComponent } from '../generic-dialog/generic-dialog.component';
 import { Experiment } from '../models/experiment';
+import { MatTableDataSource } from '@angular/material/table';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 @Component({
@@ -33,7 +36,7 @@ import { Experiment } from '../models/experiment';
 })
 
 
-export class CogbytesComponent implements OnInit, OnDestroy {
+export class CogbytesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     readonly DATASET = 1;
     public uploadKey: number;
@@ -62,6 +65,13 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
+
+    // For animal table
+    displayedColumns: string[] = ['select', 'animalId', 'sex', 'strain', 'genotype', 'actions'];
+    dataSource = new MatTableDataSource<any>();
+    selection = new SelectionModel<any>(true, []);
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     constructor(
         public dialog: MatDialog,
@@ -115,6 +125,9 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         }
     }
 
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator;
+    }
 
     ngOnDestroy() {
         this._onDestroy.next();
@@ -256,7 +269,9 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().subscribe((_result : any) => {
             const rep = this.getRep();
-            this.GetAnimalInfo(rep.id);
+            if (rep) {
+                this.GetAnimalInfo(rep.id);
+            }
         })
     }
 
@@ -308,7 +323,10 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     }
 
     getRep(): any {
-        return this.repList[this.repList.map(function (x: any) { return x.id }).indexOf(this.repModel)];
+        if (!this.repList || !this.repModel) {
+            return null;
+        }
+        return this.repList.find((x: any) => x.id === this.repModel);
     }
 
     // Get Guid by RepoID
@@ -332,12 +350,11 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     }
 
     GetAnimalInfo(repID: number) {
-        console.log(repID);
-        this.animalService.getAnimalInfoRepository(repID).subscribe(data => {
+        this.animalService.getAnimalInfoRepository(repID).subscribe((data: any) => {
             this.AnimalList = data;
-            this.setPage(1);
+            this.dataSource.data = data;
+            this.dataSource.paginator = this.paginator;
         });
-
     }
 
     getRepCognitiveTaskString(repID: number) {
@@ -396,29 +413,76 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         
     }
 
-    setPage(page: number) {
+    applyFilter(filterValue: string) {
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
 
+    /** Whether the number of selected elements matches the total number of rows. */
+    isAllSelected() {
+        const numSelected = this.selection.selected.length;
+        const numRows = this.dataSource.data.length;
+        return numSelected === numRows;
+    }
 
-        var filteredItems = this.AnimalList;
+    /** Selects all rows if they are not all selected; otherwise clear selection. */
+    masterToggle() {
+        this.isAllSelected() ?
+            this.selection.clear() :
+            this.dataSource.data.forEach(row => this.selection.select(row));
+    }
 
-        filteredItems = this.filterByString(this.AnimalList, this.expfilter);
+    deleteSelectedAnimals() {
+        const numSelected = this.selection.selected.length;
+        if (numSelected === 0) { return; }
 
-        // get pager object from service
-        this.pager = this.pagerService.getPager(filteredItems.length, page, 10);
+        const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+            disableClose: false
+        });
+        dialogRef.componentInstance.confirmMessage = `Are you sure you want to delete ${numSelected} animal(s)?`;
 
-        if (page < 1 || page > this.pager.totalPages) {
-            this.pagedItems = [];
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.spinnerService.show();
+                const deletionObservables = this.selection.selected.map(animal =>
+                    this.animalService.deleteAnimalbyID(animal.animalID)
+                );
+
+                forkJoin(deletionObservables).subscribe({
+                    next: () => {
+                        this.snackBar.open('Selected animals deleted successfully.', 'Close', { duration: 3000 });
+                        const rep = this.getRep();
+                        if (rep) {
+                            this.GetAnimalInfo(rep.id);
+                        }
+                        this.selection.clear();
+                    },
+                    error: (err) => {
+                        this.spinnerService.hide();
+                        this.snackBar.open('An error occurred while deleting animals.', 'Close', { duration: 3000 });
+                        console.error(err);
+                    },
+                    complete: () => {
+                        this.spinnerService.hide();
+                    }
+                });
+            }
+        });
+    }
+
+    duplicateSelectedAnimals() {
+        const selectedAnimals = this.selection.selected;
+        if (selectedAnimals.length === 0) {
             return;
         }
 
-        // get current page of items
-        this.pagedItems = filteredItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
-    }
+        selectedAnimals.forEach(animal => {
+            const newAnimal = { ...animal };
+            delete newAnimal.animalID; // No ID means it's a new animal
+            newAnimal.userAnimalID = `Copy of ${animal.userAnimalID}`; // Suggest a new name
+            this.addNewAnimal(newAnimal);
+        });
 
-    filterByString(data: any, s: string): any {
-        s = s.trim();
-        return data.filter((e : any) => e.userAnimalID.includes(s)); // || e.another.includes(s)
-        //    .sort((a, b) => a.userFileName.includes(s) && !b.userFileName.includes(s) ? -1 : b.userFileName.includes(s) && !a.userFileName.includes(s) ? 1 : 0);
+        this.selection.clear();
     }
 
     delAnimal(animalID: number, expId: number) {
@@ -438,10 +502,11 @@ export class CogbytesComponent implements OnInit, OnDestroy {
                 this.spinnerService.show();
                 this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
 
-
-                    this.GetAnimalInfo(expId);
-                    // location.reload()
-
+                    const rep = this.getRep();
+                    if (rep) {
+                        this.GetAnimalInfo(rep.id);
+                    }
+                    
                     this.spinnerService.hide();
 
                 })).subscribe();
