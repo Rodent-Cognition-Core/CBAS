@@ -126,6 +126,20 @@ export interface animalResponse {
             });
 
     }
+
+    public deleteAnimals(animalIds: number[]): Observable<any> {
+        const body = JSON.stringify(animalIds);
+        return this.http.post<any>("/api/animal/DeleteAnimals", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
+    public duplicateAnimals(animals: Animal[]): Observable<any> {
+        const body = JSON.stringify(animals);
+        return this.http.post<any>("/api/animal/DuplicateAnimals", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
     
 
 
