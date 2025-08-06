@@ -253,7 +253,6 @@ import { AuthenticationService } from './authentication.service';
     public searchRepositories(searchCogbytesObj: CogbytesSearch) {
 
         const body: string = JSON.stringify(searchCogbytesObj);
-
         return this.http
             .post("/api/cogbytes/SearchRepositories", body, {
                 headers: new HttpHeaders().set('Content-Type', 'application/json')

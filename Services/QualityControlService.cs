@@ -10,6 +10,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -50,7 +51,15 @@ namespace AngularSPAWebAPI.Services
             string End_Summary_Hits;
 
 
-            string path = Filepath + "\\" + FileName;
+            string path = string.Empty;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                path = Filepath + "\\" + FileName;
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                path = Filepath + "/" + FileName;
+            }
+
             XDocument xdoc;
             using (var reader = XmlReader.Create(path))
             {
