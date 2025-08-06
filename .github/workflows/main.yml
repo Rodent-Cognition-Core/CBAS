@@ -48,9 +48,6 @@ name: Merge Dev to Staging and Deploy with Docker Compose
 
 # Trigger this workflow when code is pushed to the 'dev' branch
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches:
       - develop
