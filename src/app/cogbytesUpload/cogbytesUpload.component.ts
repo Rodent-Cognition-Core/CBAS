@@ -462,7 +462,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
                     this.spinnerService.hide();
                 }, 500);
 
-                let path = file.permanentFilePath + '\\' + file.sysFileName;
+                let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
                 this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
                 })).subscribe(
