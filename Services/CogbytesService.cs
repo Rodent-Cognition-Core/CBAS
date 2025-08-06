@@ -1064,6 +1064,7 @@ namespace AngularSPAWebAPI.Services
                         {
                             FileList.Add(new FileUploadResult
                             {
+                                UploadID = Int32.Parse(fr["UploadID"].ToString()),
                                 ExpID = Int32.Parse(fr["ID"].ToString()), // Hijacking ExpID for the primary key
                                 UserFileName = Convert.ToString(fr["UserFileName"].ToString()),
                                 SysFileName = Convert.ToString(fr["SystemFileName"].ToString()),
