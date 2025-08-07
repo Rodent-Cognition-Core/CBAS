@@ -5,6 +5,7 @@ import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/for
 import { Animal } from '../models/animal';
 import { AnimalService } from '../services/animal.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { forkJoin } from 'rxjs';
 import { map, /*catchError*/ } from 'rxjs/operators'
 import { ANIMALIDDOESNOTEXIST, ANIMALIDTAKEN, CANNOTSAVEEDITS, FIELDISREQUIRED, TAKEN } from '../shared/messages';
 
@@ -117,75 +118,91 @@ export class AnimalDialogComponent implements OnInit {
 
 
     onCloseSubmit(): void {
-
-        this._animal.ExpID = this.data.experimentId;
-        this._animal.UserAnimalID = this.userAnimalId.value;
-        this._animal.Sex = this.gender.value;
-        this._animal.SID = this.strain.value;
-        this._animal.GID = this.genotype.value;
-
-        if (this.data.animalObj == null) {   // Insert Mode: Insert Animal
+        if (this.data.animalObj == null) {
+            // Insert Mode for one or more animals
             this.isTaken = false;
+            const animalIds = this.userAnimalId.value.split(',')
+                .map((id: string) => id.trim())
+                .filter(Boolean);
 
-            this.animalService.createAnimal(this._animal).pipe(map(res => {
-                if (res == TAKEN) {
-                    this.isTaken = true;
-                    this.userAnimalId.setErrors({ 'taken': true });
-                } else {
-                    this.thisDialogRef.close(true);
-                }
-            })
-            ).subscribe();
-
-        } else {  // Edit Mode: Edit Animal
-
-            // Check If UserAnimalID has been edited
-            if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) {
-
-                this._animal.AnimalID = this.data.animalObj.animalID;
-                this.animalService.updateAniaml(this._animal).pipe(map((_res: {id: string}) => {
-                    // close it so we can see the loading
-                    this.thisDialogRef.close(true);
-
-                })
-             ).subscribe();
-
+            if (animalIds.length === 0) {
+                return; // Exit if no valid IDs are provided
             }
-            else {
 
-                // Check If edited UserAnimalID exist in Table Animal
-                this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
-                    if (!res) {
-                        alert("ERROR: " + ANIMALIDDOESNOTEXIST);
+            const creationObservables = animalIds.map((id: string) => {
+                const newAnimal: Animal = {
+                    AnimalID: 0,
+                    ExpID: this.data.experimentId,
+                    UserAnimalID: id,
+                    Sex: this.gender.value,
+                    SID: this.strain.value,
+                    GID: this.genotype.value,
+                    Genotype: '',
+                    Strain: ''
+                };
+                return this.animalService.createAnimal(newAnimal);
+            });
 
+            this.spinnerService.show();
+            forkJoin<any[]>(creationObservables).subscribe(
+                (results: any[]) => {
+                    this.spinnerService.hide();
+                    const takenIds = animalIds.filter((_id: string, index: number) => results[index] === TAKEN);
+
+                    if (takenIds.length > 0) {
+                        this.isTaken = true;
+                        this.userAnimalId.setErrors({ 'taken': true });
                     } else {
-                        // Edit UserAnimalId based what exists in tbl Animal in Database
-                        this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
-                            // close it so we can see the loading
-                            if (res) {
-                                this.thisDialogRef.close(false);
-                            }
-                            else {
-                                alert(CANNOTSAVEEDITS);
-                            }
-
-                        })
-                    ).subscribe();
+                        this.thisDialogRef.close(true);
                     }
-                })
-            ).subscribe();
+                },
+                (err: any) => {
+                    this.spinnerService.hide();
+                    console.error('Error creating animals:', err);
+                }
+            );
+        } else {
+            // Edit Mode for a single animal
+            const updatedAnimal: Animal = {
+                AnimalID: this.data.animalObj.animalID,
+                ExpID: this.data.experimentId,
+                UserAnimalID: this.userAnimalId.value,
+                Sex: this.gender.value,
+                SID: this.strain.value,
+                GID: this.genotype.value,
+                Genotype: '',
+                Strain: ''
+            };
+
+            const idHasChanged = this.userAnimalLoadVal.trim().toUpperCase() !== this.userAnimalId.value.trim().toUpperCase();
+
+            const performUpdate = () => {
+                this.animalService.updateAniaml(updatedAnimal).subscribe(
+                    () => {
+                        this.spinnerService.hide();
+                        this.thisDialogRef.close(true);
+                    },
+                    (err) => {
+                        this.spinnerService.hide();
+                        console.error('Error updating animal:', err);
+                        alert(CANNOTSAVEEDITS);
+                    }
+                );
+            };
+
+            this.spinnerService.show();
+            if (idHasChanged) {
+                this.animalService.IsUserAnimalIDExist(updatedAnimal.UserAnimalID, updatedAnimal.ExpID).subscribe(isTaken => {
+                    if (isTaken) {
+                        this.userAnimalId.setErrors({ 'taken': true });
+                        this.spinnerService.hide();
+                    } else {
+                        performUpdate();
+                    }
+                });
+            } else {
+                performUpdate();
             }
-
-
-
-
         }
-
-
-
     }
-
-
-
-
 }
