@@ -262,73 +262,71 @@
     </div>
 
     <div *ngIf="repModel !== null" style="padding-top:30px">
-        <div class="table-header">
-            <mat-form-field>
-                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
-            </mat-form-field>
-        </div>
-
-        <table mat-table [dataSource]="dataSource" class="docs-markdown-table">
-
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="select">
-                <th mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox (change)="$event ? masterToggle() : null"
-                                  [checked]="selection.hasValue() && isAllSelected()"
-                                  [indeterminate]="selection.hasValue() && !isAllSelected()">
-                    </mat-checkbox>
-                </th>
-                <td mat-cell *matCellDef="let row">
-                    <mat-checkbox (click)="$event.stopPropagation()"
-                                  (change)="$event ? selection.toggle(row) : null"
-                                  [checked]="selection.isSelected(row)">
-                    </mat-checkbox>
-                </td>
-            </ng-container>
-
-            <!-- Animal ID Column -->
-            <ng-container matColumnDef="animalId">
-                <th mat-header-cell *matHeaderCellDef> Animal ID </th>
-                <td mat-cell *matCellDef="let row"> {{row.userAnimalID}} </td>
-            </ng-container>
-
-            <!-- Sex Column -->
-            <ng-container matColumnDef="sex">
-                <th mat-header-cell *matHeaderCellDef> Sex </th>
-                <td mat-cell *matCellDef="let row"> {{row.sex}} </td>
-            </ng-container>
-
-            <!-- Strain Column -->
-            <ng-container matColumnDef="strain">
-                <th mat-header-cell *matHeaderCellDef> Strain </th>
-                <td mat-cell *matCellDef="let row"> {{row.strain}} </td>
-            </ng-container>
-
-            <!-- Genotype Column -->
-            <ng-container matColumnDef="genotype">
-                <th mat-header-cell *matHeaderCellDef> Genotype </th>
-                <td mat-cell *matCellDef="let row"> {{row.genotype}} </td>
-            </ng-container>
-
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let row">
-                    <button mat-icon-button (click)="addNewAnimal(row)"><mat-icon>edit</mat-icon></button>
-                    <button mat-icon-button color="warn" (click)="delAnimal(row.animalID, row.expID)"><mat-icon>delete</mat-icon></button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <table class="docs-markdown-table">
+            <thead>
+                <tr>
+                    <th class="docs-markdown-th" style="color:black; background-color:#e0e0e0; font-size:large;" colspan="5">Animals</th>
+                </tr>
+            </thead>
+            <tbody class="docs-markdown-tbody">
+                <tr>
+                    <td style="vertical-align: top; padding: 13px 16px;" colspan="5">
+                        <div class="table-header">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                            </mat-form-field>
+                        </div>
+                        <table mat-table [dataSource]="dataSource" class="docs-markdown-table">
+                            <!-- Checkbox Column -->
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                  [checked]="selection.hasValue() && isAllSelected()"
+                                                  [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                    </mat-checkbox>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <mat-checkbox (click)="$event.stopPropagation()"
+                                                  (change)="$event ? selection.toggle(row) : null"
+                                                  [checked]="selection.isSelected(row)">
+                                    </mat-checkbox>
+                                </td>
+                            </ng-container>
+                            <!-- Animal ID Column -->
+                            <ng-container matColumnDef="animalId">
+                                <th mat-header-cell *matHeaderCellDef> Animal ID </th>
+                                <td mat-cell *matCellDef="let row" (click)="addNewAnimal(row)" style="user-select: none;">
+                                    {{row.userAnimalID}}
+                                </td>
+                            </ng-container>
+                            <!-- Sex Column -->
+                            <ng-container matColumnDef="sex">
+                                <th mat-header-cell *matHeaderCellDef> Sex </th>
+                                <td mat-cell *matCellDef="let row"> {{row.sex}} </td>
+                            </ng-container>
+                            <!-- Strain Column -->
+                            <ng-container matColumnDef="strain">
+                                <th mat-header-cell *matHeaderCellDef> Strain </th>
+                                <td mat-cell *matCellDef="let row"> {{row.strain}} </td>
+                            </ng-container>
+                            <!-- Genotype Column -->
+                            <ng-container matColumnDef="genotype">
+                                <th mat-header-cell *matHeaderCellDef> Genotype </th>
+                                <td mat-cell *matCellDef="let row"> {{row.genotype}} </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                        <div class="table-footer">
+                            <button mat-raised-button color="primary" (click)="addNewAnimal(null)">Add Animal</button>
+                            <button mat-raised-button color="warn" [disabled]="selection.isEmpty()" (click)="deleteSelectedAnimals()">Delete Selected</button>
+                            <button mat-raised-button [disabled]="selection.isEmpty()" (click)="duplicateSelectedAnimals()">Duplicate Selected</button>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
-
-        <div class="table-footer">
-            <button mat-raised-button color="primary" (click)="addNewAnimal(null)">Add Animal</button>
-            <button mat-raised-button color="warn" [disabled]="selection.isEmpty()" (click)="deleteSelectedAnimals()">Delete Selected</button>
-            <button mat-raised-button [disabled]="selection.isEmpty()" (click)="duplicateSelectedAnimals()">Duplicate Selected</button>
-            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-        </div>
     </div>
 
     <br />

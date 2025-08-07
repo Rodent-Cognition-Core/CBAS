@@ -67,7 +67,7 @@ export class CogbytesComponent implements OnInit, OnDestroy, AfterViewInit {
     private _onDestroy = new Subject<void>();
 
     // For animal table
-    displayedColumns: string[] = ['select', 'animalId', 'sex', 'strain', 'genotype', 'actions'];
+    displayedColumns: string[] = ['select', 'animalId', 'sex', 'strain', 'genotype'];
     dataSource = new MatTableDataSource<any>();
     selection = new SelectionModel<any>(true, []);
 
