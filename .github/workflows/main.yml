@@ -48,12 +48,11 @@ name: Merge Dev to Staging and Deploy with Docker Compose
 
 # Trigger this workflow when code is pushed to the 'dev' branch
 on:
-  push:
-    branches:
-      - develop
+
   pull_request:
     branches:
       - develop
+    types: [opened, synchronize, reopened]
 
 jobs:
   merge-to-staging:
@@ -81,10 +80,9 @@ jobs:
       - name: Checkout staging
         run: git checkout staging
 
-
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
-        run: git merge origin/develop --strategy=recursive --strategy-option=theirs -m "Auto-merged dev into staging (prefer develop)" #Use Git’s merge strategy options to always prefer the incoming branch (develop) during the merg to resolve merge conflict
+        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR #${{ github.event.pull_request.number }}"
 
 
       # Push the updated staging branch back to the remote
@@ -95,7 +93,7 @@ jobs:
     name: Deploy to Staging Site with Docker Compose
     needs: merge-to-staging
     runs-on: self-hosted  # This job runs on your self-hosted runner (staging server)
-    if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+    # if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
 
     steps:
       # Checkout the updated staging branch
@@ -113,12 +111,12 @@ jobs:
       - name: Stop and remove existing containers
         working-directory: /cephfs/staging/CBAS
         run: |
-          docker stop app_staging
+          docker stop app_staging || true
+          docker rm app_staging || true
        
       # Pull latest images (if using image tags) and rebuild containers
       - name: Pull latest images and start containers
         working-directory: /cephfs/
         run: |
-          docker-compose pull
-          docker system  prune
-          docker compose -f docker-compose.yml up -d
+          docker-compose build app_staging
+          docker-compose up -d app_staging
