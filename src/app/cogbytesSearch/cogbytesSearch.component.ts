@@ -530,13 +530,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     }
 
     DownloadFile(file: any): void {
-        let path = "/app/COGBYTES/" + file.uploadID + '/' + file.sysFileName;
-
-        //const parts = file.permanentFilePath.split(/\\/);
-        //if (parts.length > 1) {
-        //    var size = parts.length;
-        //    path = "/app/COGBYTES/" + parts[size - 1]
-        //}
+        let path = "/app/COGBYTES/" + file.uploadID + "/" + file.sysFileName;
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
 
