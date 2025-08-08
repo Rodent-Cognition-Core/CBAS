@@ -42,7 +42,6 @@ namespace AngularSPAWebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             var publicURL = Environment.GetEnvironmentVariable("PUBLIC_ORIGIN");
-            var appName = Environment.GetEnvironmentVariable("APP_NAME");
             // By setting EnableEndpointRouting to false, you can continue using the traditional MVC routing setup
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //// SQLite & Identity.
@@ -96,6 +95,8 @@ namespace AngularSPAWebAPI
 
             if (currentEnvironment.IsProduction())
             {
+                var appName = Environment.GetEnvironmentVariable("APP_NAME");
+
                 // Uncomment this line for publuishing
                 services.AddIdentityServer(options =>
                          options.PublicOrigin = publicURL)
@@ -121,7 +122,7 @@ namespace AngularSPAWebAPI
                         options.ApiName = "WebAPI";
                     });
                 services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
-                    .SetApplicationName(publicURL);
+                    .SetApplicationName(appName);
             }
             else
             {
