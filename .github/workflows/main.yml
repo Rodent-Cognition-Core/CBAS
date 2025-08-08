@@ -82,7 +82,7 @@ jobs:
 
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
-        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR #${{ github.event.pull_request.number }}"
+        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
 
 
       # Push the updated staging branch back to the remote
