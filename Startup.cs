@@ -6,6 +6,7 @@ using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -34,12 +35,14 @@ namespace AngularSPAWebAPI
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var publicURL = Environment.GetEnvironmentVariable("PUBLIC_ORIGIN");
+            var appName = Environment.GetEnvironmentVariable("APP_NAME");
             // By setting EnableEndpointRouting to false, you can continue using the traditional MVC routing setup
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //// SQLite & Identity.
@@ -117,6 +120,8 @@ namespace AngularSPAWebAPI
 
                         options.ApiName = "WebAPI";
                     });
+                services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
+                    .SetApplicationName(publicURL);
             }
             else
             {
@@ -161,7 +166,6 @@ namespace AngularSPAWebAPI
                            .AllowCredentials();
                 });
             });
-
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
 
             services.AddMvc();
