@@ -82,7 +82,7 @@ jobs:
 
       - name: Merge PR branch into staging
         run: |
-          git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR #${{ github.event.pull_request.number }} into staging"
+          git merge origin/${{ github.head_ref }} --no-ff -m "Auto-merge dev PR into staging"
           git push origin staging
 
 
