@@ -8,6 +8,7 @@ using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -36,6 +37,7 @@ namespace AngularSPAWebAPI
             currentEnvironment = env;
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
+
 
         public IConfiguration Configuration { get; }
 
@@ -96,6 +98,8 @@ namespace AngularSPAWebAPI
 
             if (currentEnvironment.IsProduction())
             {
+                var appName = Environment.GetEnvironmentVariable("APP_NAME");
+
                 // Uncomment this line for publuishing
                 services.AddIdentityServer(options =>
                          options.PublicOrigin = publicURL)
@@ -119,23 +123,8 @@ namespace AngularSPAWebAPI
                         options.RequireHttpsMetadata = false;
                         options.ApiName = "WebAPI";
                     });
-
-                var trustedSubnet = Environment.GetEnvironmentVariable("TRUSTED_SUBNET");
-                if (!string.IsNullOrEmpty(trustedSubnet))
-                {
-                    var parts = trustedSubnet.Split('/');
-                    if (parts.Length == 2 &&
-                        IPAddress.TryParse(parts[0], out var ip) &&
-                        int.TryParse(parts[1], out var prefix))
-                    {
-                        services.Configure<ForwardedHeadersOptions>(options =>
-                            {
-                                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                                options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(IPAddress.Parse(parts[0]), int.Parse(parts[1])));
-                            });
-                    }
-                }
-
+                services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
+                    .SetApplicationName(appName);
             }
             else
             {
@@ -180,7 +169,6 @@ namespace AngularSPAWebAPI
                            .AllowCredentials();
                 });
             });
-
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
 
             services.AddMvc();
