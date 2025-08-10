@@ -107,16 +107,17 @@ jobs:
           rsync -av --delete --exclude='.env' . /cephfs/staging/CBAS/
 
           
-        # Stop and remove existing Docker containers
-      - name: Stop and remove existing containers
+      - name: Stop and remove only app_staging container
         working-directory: /cephfs/staging/CBAS
         run: |
-          docker stop app_staging || true
-          docker rm app_staging || true
-       
-      # Pull latest images (if using image tags) and rebuild containers
-      - name: Pull latest images and start containers
+              docker stop app_staging || true
+              docker rm app_staging || true
+      - name: Remove unused images (safe prune)
+        run: |
+              docker image prune -f
+      - name: Force fresh rebuild and restart app_staging
         working-directory: /cephfs/
         run: |
-          docker-compose build app_staging
-          docker-compose up -d app_staging
+              DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
+              docker compose up -d app_staging
+
