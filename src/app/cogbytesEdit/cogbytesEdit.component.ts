@@ -78,7 +78,7 @@ export class CogbytesEditComponent implements OnInit {
     // Downloading file
     DownloadFile(file: any): void {
 
-        let path = "/app/COGBYTES/" + file.uploadID + '/' + file.sysFileName;
+        let path = "/app/COGBYTES_FILES/" + file.uploadID + '/' + file.sysFileName;
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
 
