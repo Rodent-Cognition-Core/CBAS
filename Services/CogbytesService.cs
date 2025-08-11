@@ -336,7 +336,8 @@ namespace AngularSPAWebAPI.Services
         public int? AddRepository(Cogbytes repository, string Username)
         {
 
-            string sqlRepository = $@"Insert into mbr.UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated) Values
+            string sqlRepository = $@"Insert into mbr.UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated,
+                                    StartAge, EndAge) Values
                                     ('{Guid.NewGuid()}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
                                      '{repository.Date}',
@@ -347,7 +348,9 @@ namespace AngularSPAWebAPI.Services
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.AdditionalNotes)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Link)).Trim())}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(Username)))}',
-                                     '{repository.DateRepositoryCreated}'
+                                     '{repository.DateRepositoryCreated}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.StartAge)).Trim())}',
+                                     '{HelperService.EscapeSql((HelperService.NullToString(repository.EndAge)).Trim())}'    
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
 
             int RepositoryID = Int32.Parse(Dal.ExecScalar(sqlRepository).ToString());
@@ -370,6 +373,100 @@ namespace AngularSPAWebAPI.Services
             }
             if (sqlPI != "") { Dal.ExecuteNonQuery(sqlPI); };
 
+            // Adding Tasks and other Features **********************************************************************************************************************
+
+            string sqlCmd = "";
+            for (int i = 0; i < repository.TaskID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, RepID) Values ({repository.TaskID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.SpecieID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, RepID) Values ({repository.SpecieID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.SexID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, RepID) Values ({repository.SexID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.StrainID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, RepID) Values ({repository.StrainID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.GenoID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, RepID) Values ({repository.GenoID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+    
+            sqlCmd = "";
+            for (int i = 0; i < repository.DiseaseID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetDiseaseModel (DMID, RepID) Values ({repository.DiseaseID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubModelID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.MethodID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetMethod (MID, RepID) Values ({repository.MethodID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubMethodID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSubMethod (SMID, RepID) Values ({repository.SubMethodID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.RegionID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetBrainRegion (BRID, RepID) Values ({repository.RegionID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubRegionID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetBrainSubRegion (BSRID, RepID) Values ({repository.SubRegionID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.TransmitterID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetNeurotransmitter (NID, RepID) Values ({repository.TransmitterID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
+            for (int i = 0; i < repository.CellTypeID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetCellType (CTID, RepID) Values ({repository.CellTypeID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlCmd = "";
             // Send email for new repository
             string emailMsg = $"Repository Title: {repository.Title}\n\nUser: {Username}";
             HelperService.SendEmail("", "", "New Complementary Data Reposiotry in MouseBytes+", emailMsg.Replace("\n", "<br \\>"));
