@@ -178,6 +178,8 @@ export class CogbytesDialogueComponent implements OnInit {
             additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
             doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: '',
             taskID: [], specieID: [], sexID: [], strainID: [], genoID: [], numSubjects: 0, housing: '',
+            diseaseID: [], subModelID: [], regionID: [], subRegionID: [], cellTypeID: [],
+            methodID: [], subMethodID: [], transmitterID: [],
             lightCycle: '', taskBattery: '', startAge: null, endAge: null
         }
 
