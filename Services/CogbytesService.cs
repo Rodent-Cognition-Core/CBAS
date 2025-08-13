@@ -509,14 +509,14 @@ namespace AngularSPAWebAPI.Services
                         StrainID = FillCogbytesItemArray($"Select StrainID From mbr.DatasetStrain Where RepID={repID}", "StrainID"),
                         GenoID = FillCogbytesItemArray($"Select GenoID From mbr.DatasetGeno Where RepID={repID}", "GenoID"),
                         DiseaseID = FillCogbytesItemArray($"Select DMID From mbr.DatasetDiseaseModel Where RepID={repID}", "DMID"),
-                        SubModelID = FillCogbytesItemArray($"Select DMSID From mbr.DatasetSubModel Where RepID={repID}", "DMSID"),
+                        SubModelID = FillCogbytesItemArray($"Select DMSID From mbr.DatasetDiseaseSubModel Where RepID={repID}", "DMSID"),
                         RegionID = FillCogbytesItemArray($"Select BRID From mbr.DatasetBrainRegion Where RepID={repID}", "BRID"),
                         SubRegionID = FillCogbytesItemArray($"Select BSRID From mbr.DatasetBrainSubRegion Where RepID={repID}", "BSRID"),
                         CellTypeID = FillCogbytesItemArray($"Select CTID From mbr.DatasetCellType Where RepID={repID}", "CTID"),
                         TransmitterID = FillCogbytesItemArray($"Select NID From mbr.DatasetNeurotransmitter Where RepID={repID}", "NID"),
-                        StartAge = Convert.ToInt32(dr["StartAge"]),
-                        EndAge = Convert.ToInt32(dr["EndAge"]),
-                        DateRepositoryCreated = Convert.ToDateTime(dr["DateRepositoryCreated"]).ToString(),
+                        StartAge = dr["StartAgeMonths"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["StartAgeMonths"].ToString()) ? (int?)null : Convert.ToInt32(dr["StartAgeMonths"]),
+                        EndAge = dr["EndAgeMonths"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["EndAgeMonths"].ToString()) ? (int?)null : Convert.ToInt32(dr["EndAgeMonths"]),
+                        DateRepositoryCreated = dr["DateRepositoryCreated"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["DateRepositoryCreated"].ToString()) ? null : Convert.ToDateTime(dr["DateRepositoryCreated"]).ToString(),
                         Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
                         Paper = publication
                     });
