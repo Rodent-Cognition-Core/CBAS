@@ -569,6 +569,123 @@ namespace AngularSPAWebAPI.Services
 
             if (sqlPI != "") Dal.ExecuteNonQuery(sqlPI);
 
+            sqlDelete = $"DELETE From mbr.DatasetTask where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            string sqlCmd = "";
+            for (int i = 0; i < repository.TaskID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, RepID) Values ({repository.TaskID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetSpecies where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.SpecieID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, RepID) Values ({repository.SpecieID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetSex where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.SexID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, RepID) Values ({repository.SexID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetStrain where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.StrainID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, RepID) Values ({repository.StrainID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetGeno where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.GenoID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, RepID) Values ({repository.GenoID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetDiseaseModel where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.DiseaseID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetDiseaseModel (DMID, RepID) Values ({repository.DiseaseID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetDiseaseSubModel where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubModelID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetMethod where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.MethodID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetMethod (MID, RepID) Values ({repository.MethodID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetSubMethod where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubMethodID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetSubMethod (SMID, RepID) Values ({repository.SubMethodID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetBrainRegion where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.RegionID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetBrainRegion (BRID, RepID) Values ({repository.RegionID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetBrainSubRegion where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.SubRegionID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetBrainSubRegion (BSRID, RepID) Values ({repository.SubRegionID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetNeurotransmitter where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.TransmitterID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetNeurotransmitter (NID, RepID) Values ({repository.TransmitterID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
+            sqlDelete = $"DELETE From mbr.DatasetCellType where RepID = {repositoryID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlCmd = "";
+            for (int i = 0; i < repository.CellTypeID.Length; i++)
+            {
+                sqlCmd += $@"Insert into mbr.DatasetCellType (CTID, RepID) Values ({repository.CellTypeID[i]}, {RepositoryID});";
+            }
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+
             return true;
 
         }
