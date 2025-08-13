@@ -56,65 +56,135 @@
                     </td>
                     <td class="docs-markdown-td" style="vertical-align:top;">
                         <div *ngIf="repModel !== null">
-                            <div style="float:left; padding-top:10px;">
-                                <label style="color:#465563;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top:10px;">
+                                <label style="color:#465563; font-size: 1.2em; font-weight: bold;">
                                     {{getRep().title}} Information
                                 </label>
+                                <span>
+                                    <button mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditRepository()"><mat-icon>edit</mat-icon></button>
+                                    <button mat-icon-button matTooltip="Delete Repository" (click)="deleteRepository()" color="warn"><mat-icon>delete</mat-icon></button>
+                                </span>
                             </div>
-                            <span style="float:right; padding-left: 20px;">
-                                <button mat-icon-button matTooltip="Edit Repository" (click)="openDialogEditRepository()"><mat-icon>edit</mat-icon></button>
-                                <button mat-icon-button matTooltip="Delete Repository" (click)="deleteRepository()" color="warn"><mat-icon>delete</mat-icon></button>
-                            </span>
-                            <div style="clear:both"></div>
-                            <hr /><br />
-                            <label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL() + " target=_blank>" + getLinkURL() + "</a>"'></span><br /><br />
-                            <label>Authors:</label> <span style="color:#696d70;">{{getRepAuthorString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Touchscreen Site(s):</label> &nbsp; <span style="color:#696d70;">{{getRepPIString(getRep())}}</span><br /><br />
-                            <label>Keywords:</label>&nbsp; <span style="color:#696d70;">{{( getRep().keywords ==="") ?  "N/A" : getRep().keywords}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>DOI:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='( getRep().doi ==="") ?  "N/A" : "<a href=http://www.doi.org/" + getRep().doi + " target=_blank>" + getRep().doi + "</a>"'></span>&nbsp; &nbsp; &nbsp;
-                            <label>Date:</label> &nbsp; <span style="color:#696d70;">{{( getRep().date.slice(0, -12) ==="") ?  "N/A" : getRep().date.slice(0, -12)}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Link:</label> &nbsp; <span style="color:#696d70;">{{( getRep().link ==="") ?  "N/A" : getRep().link}}</span>&nbsp; &nbsp; &nbsp;
-                            <label>Status:</label> &nbsp; <span style="color:#696d70;">{{getRep().privacyStatus === true ? 'Public' : 'Private'}}</span> <br /><br />
-                            <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( getRep().description ==="") ?  "N/A" : getRep().description}}</span><br /><br />
-                            <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( getRep().additionalNotes ==="") ?  "N/A" : getRep().additionalNotes}}</span><br /><br />
-
-                            <label>Cognitive Task(s):</label>&nbsp; <span style="color:#696d70;">{{getRepCognitiveTaskString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Species:</label>&nbsp; <span style="color:#696d70;">{{getRepSpeciesString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Number of Subjects:</label>&nbsp; <span style="color:#696d70;">{{getRep().numSubjects || 'N/A'}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Sex:</label>&nbsp; <span style="color:#696d70;">{{getRepSexString(getRep())}}</span><br /><br />
-
-                            <label>Strain(s):</label>&nbsp; <span style="color:#696d70;">{{getRepStrainString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Genotype(s):</label>&nbsp; <span style="color:#696d70;">{{getRepGenotypeString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Start Age:</label>&nbsp; <span style="color:#696d70;">{{getRepAgeString(getRep()).startAge}}</span><br /><br />
-                            <label>End Age:</label>&nbsp; <span style="color:#696d70;">{{getRepAgeString(getRep()).endAge}}</span><br /><br />
-                            <label>Rodent Model(s):</label>&nbsp; <span style="color:#696d70;">{{getRepDiseaseModelString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Sub-Rodent Model(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubModelString(getRep())}}</span><br /><br />
-                            <label>Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;">{{getRepRegionString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Sub-Anatomical Region(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubRegionString(getRep())}}</span><br /><br />
-                            <label>Cell Type(s):</label>&nbsp; <span style="color:#696d70;">{{getRepCellTypeString(getRep())}}</span><br /><br />
-
-                            <label>Method(s):</label>&nbsp; <span style="color:#696d70;">{{getRepMethodString(getRep())}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Sub-Method(s):</label>&nbsp; <span style="color:#696d70;">{{getRepSubMethodString(getRep())}}</span><br /><br />
-                            <label>Neurochemical(s):</label>&nbsp; <span style="color:#696d70;">{{getRepNeurotransmitterString(getRep())}}</span><br /><br />
-
-                            <label>Housing Info:</label>&nbsp; <span style="color:#696d70;">{{getRep().housingModel || 'N/A'}}</span> &nbsp; &nbsp; &nbsp;
-                            <label>Light Cycle Info:</label>&nbsp; <span style="color:#696d70;">{{getRep().lightModel || 'N/A'}}</span><br /><br />
-
+                            <hr />
+                            <div class="repository-info-table" style="width:100%;">
+                                <table style="width:100%; border-collapse: separate; border-spacing: 0 8px;">
+                                    <tr>
+                                        <td><label>Repository Link:</label></td>
+                                        <td colspan="3"><span style="color:#696d70;" [innerHTML]="'\u003ca href=' + getLinkURL() + ' target=_blank\u003e' + getLinkURL() + '\u003c/a\u003e'" ></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Authors:</label></td>
+                                        <td><span style="color:#696d70;">{{getRepAuthorString(getRep())}}</span></td>
+                                        <td><label>Touchscreen Site(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepPIString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Keywords:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().keywords === '' ? 'N/A' : getRep().keywords}}</span></td>
+                                        <td><label>DOI:</label></td>
+                                        <td><span style="color:#696d70;" [innerHTML]="(getRep().doi === '') ? 'N/A' : '\u003ca href=http://www.doi.org/' + getRep().doi + ' target=_blank\u003e' + getRep().doi + '\u003c/a\u003e'" ></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>DOI:</label></td>
+                                        <td><span style="color:#696d70;" [innerHTML]="(getRep().doi === '') ? 'N/A' : '\u003ca href=http://www.doi.org/' + getRep().doi + ' target=_blank\u003e' + getRep().doi + '\u003c/a\u003e'"></span></td>
+                                        <td><label>Date:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().date.slice(0, -12) === '' ? 'N/A' : getRep().date.slice(0, -12)}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Link:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().link === '' ? 'N/A' : getRep().link}}</span></td>
+                                        <td><label>Status:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().privacyStatus === true ? 'Public' : 'Private'}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Description:</label></td>
+                                        <td colspan="3"><span style="color:#696d70;">{{getRep().description === '' ? 'N/A' : getRep().description}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Additional Notes:</label></td>
+                                        <td colspan="3"><span style="color:#696d70;">{{getRep().additionalNotes === '' ? 'N/A' : getRep().additionalNotes}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4"><hr style="border-top: 1px solid #e0e0e0; margin: 8px 0;" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Cognitive Task(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepCognitiveTaskString(getRep())}}</span></td>
+                                        <td><label>Species:</label></td>
+                                        <td><span style="color:#696d70;">{{getRepSpeciesString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Number of Subjects:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().numSubjects || 'N/A'}}</span></td>
+                                        <td><label>Sex:</label></td>
+                                        <td><span style="color:#696d70;">{{getRepSexString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Strain(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepStrainString(getRep())}}</span></td>
+                                        <td><label>Genotype(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepGenotypeString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Start Age:</label></td>
+                                        <td><span style="color:#696d70;">{{getRepAgeString(getRep()).startAge}}</span></td>
+                                        <td><label>End Age:</label></td>
+                                        <td><span style="color:#696d70;">{{getRepAgeString(getRep()).endAge}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Rodent Model(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepDiseaseModelString(getRep())}}</span></td>
+                                        <td><label>Sub-Rodent Model(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepSubModelString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Anatomical Region(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepRegionString(getRep())}}</span></td>
+                                        <td><label>Sub-Anatomical Region(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepSubRegionString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Cell Type(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepCellTypeString(getRep())}}</span></td>
+                                        <td><label>Method(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepMethodString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Sub-Method(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepSubMethodString(getRep())}}</span></td>
+                                        <td><label>Neurochemical(s):</label></td>
+                                        <td><span style="color:#696d70;">{{getRepNeurotransmitterString(getRep())}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>Housing Info:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().housingModel || 'N/A'}}</span></td>
+                                        <td><label>Light Cycle Info:</label></td>
+                                        <td><span style="color:#696d70;">{{getRep().lightModel || 'N/A'}}</span></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br />
                             <mat-expansion-panel *ngIf="getRep().paper !== null">
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         <span style="color: #A569BD;">Touchscreen publications associated to this repository:</span>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <table>
-                                        <tr><td><span style="color:#696d70;" [innerHTML]='"<a href=http://localhost:4200/pubScreen-edit?paperlinkguid=" + getRep().paper.paperLinkGuid + " target=_blank><label>Pubscreen Link</label></a>"'></span></td></tr>
-                                        <tr><td>Title:&nbsp; <span style="color:#696d70;">{{getRep().paper.title}}</span></td></tr>
-                                        <tr><td>Author(s): &nbsp; <span style="color:#696d70;">{{getRep().paper.author}}</span></td></tr>
-                                        <tr><td>Year:&nbsp; <span style="color:#696d70;">{{getRep().paper.year}}</span></td></tr>
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td><span style="color:#696d70;" [innerHTML]="'\u003ca href=http://localhost:4200/pubScreen-edit?paperlinkguid=' + getRep().paper.paperLinkGuid + ' target=_blank\u003ePubscreen Link\u003c/a\u003e'"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Title:&nbsp; <span style="color:#696d70;">{{getRep().paper.title}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Author(s): &nbsp; <span style="color:#696d70;">{{getRep().paper.author}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Year:&nbsp; <span style="color:#696d70;">{{getRep().paper.year}}</span></td>
+                                    </tr>
                                 </table>
-
                             </mat-expansion-panel>
-
                         </div>
                     </td>
                 </tr>
