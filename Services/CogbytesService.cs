@@ -952,7 +952,6 @@ namespace AngularSPAWebAPI.Services
         {
             // Delete RepGuidLink from Experiments linked to the repository
             var rep = GetGuidByRepID(repID);
-            Dal.ExecuteNonQuery($"UPDATE mbr.Experiment SET RepoGuid = null WHERE RepoGuid = '{rep.Result.RepoLinkGuid}'");
 
             using (DataTable dt = Dal.GetDataTable($@"Select UploadID From mbr.Upload Where RepID = {repID}"))
             {
@@ -973,6 +972,32 @@ namespace AngularSPAWebAPI.Services
             sqlDelete = $"DELETE From mbr.RepPI where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
             sqlDelete = $"DELETE From mbr.UserRepository where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetBrainRegion where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetBrainSubRegion where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetDiseaseModel where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetDiseaseSubModel where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetGeno where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetMethod where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSubMethod where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetNeurotransmitter where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetCellType where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetTask where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSpecies where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetStrain where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.DatasetSex where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
         }
 
