@@ -693,79 +693,15 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to add a new repository to database Cogbytes
         public int? AddUpload(CogbytesUpload upload)
         {
-            string sqlNumSubjects = "";
-            if (upload.NumSubjects == null)
-            {
-                sqlNumSubjects = "null";
-            }
-            else
-            {
-                sqlNumSubjects = upload.NumSubjects.ToString();
-            }
-
-            string sqlUpload = $@"Insert into mbr.Upload (RepID, FileTypeID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle, TaskBattery, NumSubjects) Values
+            string sqlUpload = $@"Insert into mbr.Upload (RepID, FileTypeID, Name, Description, AdditionalNotes) Values
                                     ('{upload.RepID}',
                                      '{upload.FileTypeID}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.Name)).Trim())}',
-                                     '{upload.DateUpload}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(upload.Description)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.AdditionalNotes)).Trim())}',
-                                     '{upload.IsIntervention}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.InterventionDescription)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.ImageIds)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.ImageDescription)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.Housing)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.LightCycle)).Trim())}',
-                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.TaskBattery)).Trim())}',
-                                     {sqlNumSubjects}
+                                     '{HelperService.EscapeSql((HelperService.NullToString(upload.AdditionalNotes)).Trim())}'
                                       ); SELECT @@IDENTITY AS 'Identity'; ";
 
             int UploadID = Int32.Parse(Dal.ExecScalar(sqlUpload).ToString());
-
-            // Adding Tasks and other Features **********************************************************************************************************************
-
-            string sqlCmd = "";
-            for (int i = 0; i < upload.TaskID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
-            sqlCmd = "";
-            for (int i = 0; i < upload.SpecieID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
-            sqlCmd = "";
-            for (int i = 0; i < upload.SexID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
-            sqlCmd = "";
-            for (int i = 0; i < upload.StrainID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
-            sqlCmd = "";
-            for (int i = 0; i < upload.GenoID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
-            sqlCmd = "";
-            for (int i = 0; i < upload.AgeID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {UploadID});";
-            }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
-
 
             return UploadID;
 
@@ -799,19 +735,12 @@ namespace AngularSPAWebAPI.Services
         public List<CogbytesUpload> GetUploads(int repID)
         {
             List<CogbytesUpload> Uploadlist = new List<CogbytesUpload>();
-            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Upload Where RepID='{repID}' Order By DateUpload"))
+            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.Upload Where RepID='{repID}' Order By UploadID"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     int uploadID = Int32.Parse(dr["UploadID"].ToString());
                     int fileTypeID = Int32.Parse(dr["FileTypeID"].ToString());
-                    int? numSubjects = null;
-                    int num;
-                    if (Int32.TryParse(dr["NumSubjects"].ToString(), out num))
-                    {
-                        numSubjects = num;
-                    };
-
 
                     List<FileUploadResult> FileList = new List<FileUploadResult>();
 
@@ -838,23 +767,8 @@ namespace AngularSPAWebAPI.Services
                         RepID = repID,
                         FileTypeID = fileTypeID,
                         Name = Convert.ToString(dr["Name"].ToString()),
-                        DateUpload = Convert.ToString(dr["DateUpload"].ToString()),
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
-                        IsIntervention = Boolean.Parse(dr["IsIntervention"].ToString()),
-                        InterventionDescription = Convert.ToString(dr["InterventionDescription"].ToString()),
-                        ImageIds = Convert.ToString(dr["ImageIds"].ToString()),
-                        ImageDescription = Convert.ToString(dr["ImageDescription"].ToString()),
-                        Housing = Convert.ToString(dr["Housing"].ToString()),
-                        LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
-                        TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
-                        TaskID = FillCogbytesItemArray($"Select TaskID From mbr.DatasetTask Where RepID={repID}", "TaskID"),
-                        SpecieID = FillCogbytesItemArray($"Select SpeciesID From mbr.DatasetSpecies Where RepID={repID}", "SpeciesID"),
-                        SexID = FillCogbytesItemArray($"Select SexID From mbr.DatasetSex Where RepID={repID}", "SexID"),
-                        StrainID = FillCogbytesItemArray($"Select StrainID From mbr.DatasetStrain Where RepID={repID}", "StrainID"),
-                        GenoID = FillCogbytesItemArray($"Select GenoID From mbr.DatasetGeno Where RepID={repID}", "GenoID"),
-                        AgeID = FillCogbytesItemArray($"Select AgeID From mbr.DatasetAge Where RepID={repID}", "AgeID"),
-                        NumSubjects = numSubjects,
                         UploadFileList = FileList
                     });
                 }
@@ -866,100 +780,15 @@ namespace AngularSPAWebAPI.Services
         // Function Definition to edit a respository in database Cogbytes
         public bool EditUpload(int uploadID, CogbytesUpload upload)
         {
-            //string sqlNumSubjects = "";
-            //if (upload.NumSubjects == null)
-            //{
-            //    sqlNumSubjects = "null";
-            //}
-            //else
-            //{
-            //    sqlNumSubjects = upload.NumSubjects.ToString();
-            //}
-
-            string sqlUpload = $@"Update mbr.Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes, IsIntervention = @isIntervention, InterventionDescription=@interventionDescription,
-                                                                    ImageIds = @imageIds, ImageDescription=@imageDescription, Housing=@housing, LightCycle = @lightCycle, TaskBattery=@taskBattery, NumSubjects=@numSubjects
+            string sqlUpload = $@"Update mbr.Upload set Name = @name, Description = @description, AdditionalNotes = @additionalNotes
                                                                 where UploadID = {uploadID}";
 
             var parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@name", HelperService.NullToString(HelperService.EscapeSql(upload.Name)).Trim()));
             parameters.Add(new SqlParameter("@description", HelperService.NullToString(HelperService.EscapeSql(upload.Description)).Trim()));
             parameters.Add(new SqlParameter("@additionalNotes", HelperService.NullToString(HelperService.EscapeSql(upload.AdditionalNotes)).Trim()));
-            parameters.Add(new SqlParameter("@isIntervention", HelperService.NullToString(upload.IsIntervention).Trim()));
-            parameters.Add(new SqlParameter("@interventionDescription", HelperService.NullToString(HelperService.EscapeSql(upload.InterventionDescription)).Trim()));
-            parameters.Add(new SqlParameter("@imageIds", HelperService.NullToString(HelperService.EscapeSql(upload.ImageIds)).Trim()));
-            parameters.Add(new SqlParameter("@imageDescription", HelperService.NullToString(HelperService.EscapeSql(upload.ImageDescription)).Trim()));
-            parameters.Add(new SqlParameter("@housing", HelperService.NullToString(HelperService.EscapeSql(upload.Housing)).Trim()));
-            parameters.Add(new SqlParameter("@lightCycle", HelperService.NullToString(HelperService.EscapeSql(upload.LightCycle)).Trim()));
-            parameters.Add(new SqlParameter("@taskBattery", HelperService.NullToString(HelperService.EscapeSql(upload.TaskBattery)).Trim()));
-            parameters.Add(new SqlParameter("@numSubjects", (object)upload.NumSubjects ?? DBNull.Value));
 
-            Int32.Parse(Dal.ExecuteNonQuery(CommandType.Text, sqlUpload, parameters.ToArray()).ToString());
-
-            string sqlCmd = "";
-            string sqlDelete = $"DELETE From mbr.DatasetTask where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.TaskID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, UploadID) Values ({upload.TaskID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
-
-            sqlCmd = "";
-            sqlDelete = $"DELETE From mbr.DatasetSpecies where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.SpecieID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, UploadID) Values ({upload.SpecieID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
-
-            sqlCmd = "";
-            sqlDelete = $"DELETE From mbr.DatasetSex where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.SexID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, UploadID) Values ({upload.SexID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
-
-            sqlCmd = "";
-            sqlDelete = $"DELETE From mbr.DatasetStrain where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.StrainID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, UploadID) Values ({upload.StrainID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
-
-            sqlCmd = "";
-            sqlDelete = $"DELETE From mbr.DatasetGeno where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.GenoID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, UploadID) Values ({upload.GenoID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
-
-            sqlCmd = "";
-            sqlDelete = $"DELETE From mbr.DatasetAge where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            for (int i = 0; i < upload.AgeID.Length; i++)
-            {
-                sqlCmd += $@"Insert into mbr.DatasetAge (AgeID, UploadID) Values ({upload.AgeID[i]}, {uploadID});";
-            }
-
-            if (sqlCmd != "") Dal.ExecuteNonQuery(sqlCmd);
+            Dal.ExecuteNonQuery(CommandType.Text, sqlUpload, parameters.ToArray());
 
             return true;
 
@@ -1040,25 +869,7 @@ namespace AngularSPAWebAPI.Services
 
         public void DeleteUpload(int uploadID)
         {
-            string sqlDelete = $"DELETE From mbr.DatasetTask where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.DatasetSpecies where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.DatasetSex where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.DatasetStrain where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.DatasetGeno where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.DatasetAge where UploadID = {uploadID}";
-            Dal.ExecuteNonQuery(sqlDelete);
-
-            sqlDelete = $"DELETE From mbr.UploadFile where UploadID = {uploadID}";
+            string sqlDelete = $"DELETE From mbr.UploadFile where UploadID = {uploadID}";
             Dal.ExecuteNonQuery(sqlDelete);
 
             sqlDelete = $"DELETE From mbr.Upload where UploadID = {uploadID}";
