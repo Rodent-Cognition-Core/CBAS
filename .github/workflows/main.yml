@@ -107,6 +107,8 @@ jobs:
               rsync -av --delete \
                 --exclude='.env' \
                 --exclude='wwwroot/' \
+                --exclude=UPLOAD/ \
+                --exclude=TempUpload/ \
                 --exclude='persistent_data/' \
                 . /cephfs/staging/CBAS/
 
