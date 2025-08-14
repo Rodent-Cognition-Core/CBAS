@@ -129,7 +129,7 @@ namespace AngularSPAWebAPI.Controllers
                             afterUpload = true;
                         }
                     }
-                    path = path.TrimEnd('/');
+                    path += fur.SysFileName;
                 }
             }
 
