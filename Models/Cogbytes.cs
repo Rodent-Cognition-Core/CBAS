@@ -14,7 +14,7 @@ namespace AngularSPAWebAPI.Models
         public int?[] AuthourID { get; set; }
         public string AuthorString { get; set; }
         public string CountryString { get; set; }
-        public int?[] PIID { get; set; }
+        public int?[] PSID { get; set; }
         public string PIString { get; set; }
         public string Link { get; set; }
         public int?[] TaskID { get; set; }

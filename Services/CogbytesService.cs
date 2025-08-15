@@ -367,9 +367,9 @@ namespace AngularSPAWebAPI.Services
             // Adding PI
 
             string sqlPI = "";
-            for (int i = 0; i < repository.PIID.Length; i++)
+            for (int i = 0; i < repository.PSID.Length; i++)
             {
-                sqlPI += $@"Insert into mbr.RepPI (PIID, RepID) Values ({repository.PIID[i]}, {RepositoryID});";
+                sqlPI += $@"Insert into mbr.RepPI (PSID, RepID) Values ({repository.PSID[i]}, {RepositoryID});";
             }
             if (sqlPI != "") { Dal.ExecuteNonQuery(sqlPI); };
 
@@ -500,7 +500,7 @@ namespace AngularSPAWebAPI.Services
                         Description = Convert.ToString(dr["Description"].ToString()),
                         AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                         AuthourID = FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
-                        PIID = FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
+                        PSID = FillCogbytesItemArray($"Select PSID From mbr.RepPI Where RepID={repID}", "PSID"),
                         TaskID = FillCogbytesItemArray($"Select TaskID From mbr.DatasetTask Where RepID={repID}", "TaskID"),
                         SpecieID = FillCogbytesItemArray($"Select SpeciesID From mbr.DatasetSpecies Where RepID={repID}", "SpeciesID"),
                         SexID = FillCogbytesItemArray($"Select SexID From mbr.DatasetSex Where RepID={repID}", "SexID"),
@@ -562,9 +562,9 @@ namespace AngularSPAWebAPI.Services
             sqlDelete = $"DELETE From mbr.RepPI where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
 
-            for (int i = 0; i < repository.PIID.Length; i++)
+            for (int i = 0; i < repository.PSID.Length; i++)
             {
-                sqlPI += $@"Insert into mbr.RepPI (PIID, RepID) Values ({repository.PIID[i]}, {repositoryID});";
+                sqlPI += $@"Insert into mbr.RepPI (PSID, RepID) Values ({repository.PSID[i]}, {repositoryID});";
             }
 
             if (sqlPI != "") Dal.ExecuteNonQuery(sqlPI);
@@ -574,7 +574,7 @@ namespace AngularSPAWebAPI.Services
             string sqlCmd = "";
             for (int i = 0; i < repository.TaskID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, RepID) Values ({repository.TaskID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, RepID) Values ({repository.TaskID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -583,7 +583,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SpecieID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, RepID) Values ({repository.SpecieID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, RepID) Values ({repository.SpecieID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -592,7 +592,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SexID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, RepID) Values ({repository.SexID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetSex (SexID, RepID) Values ({repository.SexID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -601,7 +601,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.StrainID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, RepID) Values ({repository.StrainID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, RepID) Values ({repository.StrainID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -610,7 +610,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.GenoID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, RepID) Values ({repository.GenoID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, RepID) Values ({repository.GenoID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -619,7 +619,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.DiseaseID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetDiseaseModel (DMID, RepID) Values ({repository.DiseaseID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetDiseaseModel (DMID, RepID) Values ({repository.DiseaseID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -628,7 +628,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SubModelID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -637,7 +637,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.MethodID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetMethod (MID, RepID) Values ({repository.MethodID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetMethod (MID, RepID) Values ({repository.MethodID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -646,7 +646,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SubMethodID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSubMethod (SMID, RepID) Values ({repository.SubMethodID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetSubMethod (SMID, RepID) Values ({repository.SubMethodID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -655,7 +655,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.RegionID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetBrainRegion (BRID, RepID) Values ({repository.RegionID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetBrainRegion (BRID, RepID) Values ({repository.RegionID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -664,7 +664,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SubRegionID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetBrainSubRegion (BSRID, RepID) Values ({repository.SubRegionID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetBrainSubRegion (BSRID, RepID) Values ({repository.SubRegionID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -673,7 +673,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.TransmitterID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetNeurotransmitter (NID, RepID) Values ({repository.TransmitterID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetNeurotransmitter (NID, RepID) Values ({repository.TransmitterID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -682,7 +682,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.CellTypeID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetCellType (CTID, RepID) Values ({repository.CellTypeID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetCellType (CTID, RepID) Values ({repository.CellTypeID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -1330,7 +1330,7 @@ namespace AngularSPAWebAPI.Services
                             Description = Convert.ToString(dr["Description"].ToString()),
                             AdditionalNotes = Convert.ToString(dr["AdditionalNotes"].ToString()),
                             AuthourID = FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
-                            PIID = FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
+                            PSID = FillCogbytesItemArray($"Select PSID From mbr.RepPI Where RepID={repID}", "PSID"),
                             Experiment = GetCogbytesExperimentList(Guid.Parse(dr["repoLinkGuid"].ToString())),
                             Paper = publication
                         });
