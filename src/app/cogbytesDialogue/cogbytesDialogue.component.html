@@ -47,16 +47,16 @@
                             <!--PI-->
                             <!--PI-->
                             <mat-form-field style="width: 40%">
-                                <mat-select [formControl]="pi" placeholder="Select Touchscreen Site(s)" (openedChange)="GetPIList()" required multiple>
-
+                                <mat-select [formControl]="pi" placeholder="Select Touchscreen Site(s)" required multiple [compareWith]="comparePI">
                                     <mat-option>
                                         <ngx-mat-select-search placeholderLabel="Search based on PI" noEntriesFoundLabel="Result not found!" [(ngModel)]="piMultiSelect" [formControl]="piMultiFilterCtrl"></ngx-mat-select-search>
                                     </mat-option>
-
-                                    <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.id">
-                                        {{pi.piSiteName}}
-                                    </mat-option>
-
+                                    <ng-container *ngIf="piMultiFilterCtrl.value?.length >= 3; else piSearchPrompt">
+                                        <mat-option *ngFor="let pi of filteredPIList | async" [value]="pi.psid">
+                                            {{pi.piSiteName}}
+                                        </mat-option>
+                                    </ng-container>
+                                    <ng-template #piSearchPrompt><mat-option disabled>Type 3 or more characters to search...</mat-option></ng-template>
                                 </mat-select>
                                 <mat-error *ngIf="pi.invalid">{{getErrorMessagePi()}}</mat-error>
                             </mat-form-field>&nbsp;

@@ -335,18 +335,25 @@ export class CogbytesDialogueComponent implements OnInit {
         // });
 
         this.piSiteService.getPISite().subscribe((data : any) => {
-            this.piList = data
-
+            this.piList = data;
             this.filteredPIList.next(this.piList.slice());
-
             this.piMultiFilterCtrl.valueChanges
-            .pipe(takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.filterPI();
-            });
+                .pipe(
+                    debounceTime(100),
+                    filter(search => search && search.length >= 3),
+                    takeUntil(this._onDestroy)
+                )
+                .subscribe(() => {
+                    this.filterPI();
+                });
         });
-
         return this.piList;
+    }
+
+    // Save current PI selection so it can be restored if the user navigates away and returns
+
+    comparePI(pi1: string, pi2: string): boolean {
+        return pi1 && pi2 ? pi1 === pi2 : pi1 === pi2;
     }
 
     //// handling multi filtered PI list
@@ -765,6 +772,25 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.description = this.descriptionModel;
         this._cogbytes.additionalNotes = this.additionalNotesModel;
         this._cogbytes.date = this.date.value.toISOString().split('T')[0];
+        this._cogbytes.taskID = this.cognitiveTask.value;
+        this._cogbytes.specieID = this.speciesModel;
+        this._cogbytes.sexID = this.sexModel;
+        this._cogbytes.strainID = this.strainModel;
+        this._cogbytes.genoID = this.genotypeModel;
+        this._cogbytes.startAge = this.ageStartModel.length > 0 ? this.ageStartModel[0] : null;
+        this._cogbytes.endAge = this.ageEndModel.length > 0 ? this.ageEndModel[0] : null;
+        this._cogbytes.numSubjects = this.numSubjects.value;
+        this._cogbytes.diseaseID = this.diseaseModel;
+        this._cogbytes.subModelID = this.subModel;
+        this._cogbytes.regionID = this.regionModel;
+        this._cogbytes.subRegionID = this.subRegionModel;
+        this._cogbytes.cellTypeID = this.cellTypeModel;
+        this._cogbytes.methodID = this.methodModel;
+        this._cogbytes.subMethodID = this.subMethodModel;
+        this._cogbytes.transmitterID = this.neurotransmitterModel;
+        this._cogbytes.housing = this.housingModel;
+        this._cogbytes.lightCycle = this.lightModel;
+        this._cogbytes.taskBattery = this.taskBatteryModel;
 
         let today = new Date();
         this._cogbytes.dateRepositoryCreated = today.toISOString().split('T')[0];
