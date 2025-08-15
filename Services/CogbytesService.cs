@@ -337,7 +337,7 @@ namespace AngularSPAWebAPI.Services
         {
 
             string sqlRepository = $@"Insert into mbr.UserRepository (RepoLinkGuid, Title, Date, DOI, Keywords, PrivacyStatus, Description, AdditionalNotes, Link, Username, DateRepositoryCreated,
-                                    StartAge, EndAge) Values
+                                    StartAgeMonths, EndAgeMonths) Values
                                     ('{Guid.NewGuid()}',
                                      '{HelperService.EscapeSql((HelperService.NullToString(repository.Title)).Trim())}',
                                      '{repository.Date}',
