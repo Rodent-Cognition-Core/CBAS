@@ -902,8 +902,6 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sqlDelete);
             sqlDelete = $"DELETE From mbr.RepPI where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
-            sqlDelete = $"DELETE From mbr.UserRepository where RepID = {repID}";
-            Dal.ExecuteNonQuery(sqlDelete);
             sqlDelete = $"DELETE From mbr.DatasetBrainRegion where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
             sqlDelete = $"DELETE From mbr.DatasetBrainSubRegion where RepID = {repID}";
@@ -929,6 +927,8 @@ namespace AngularSPAWebAPI.Services
             sqlDelete = $"DELETE From mbr.DatasetStrain where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
             sqlDelete = $"DELETE From mbr.DatasetSex where RepID = {repID}";
+            Dal.ExecuteNonQuery(sqlDelete);
+            sqlDelete = $"DELETE From mbr.UserRepository where RepID = {repID}";
             Dal.ExecuteNonQuery(sqlDelete);
         }
 
