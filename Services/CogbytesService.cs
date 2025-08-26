@@ -301,7 +301,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            string sqlPISiteInsert = $@"Insert Into PISite (PID, SiteID) VALUES ({newPIID},{siteID})";
+            string sqlPISiteInsert = $@"Insert Into tsd.PISite (PID, SiteID) VALUES ({newPIID},{siteID})";
 
             Dal.ExecScalar(sqlPISiteInsert);
             return 1;
@@ -312,17 +312,20 @@ namespace AngularSPAWebAPI.Services
         public List<Request> GetPIs()
         {
             List<Request> PIList = new List<Request>();
-            using (DataTable dt = Dal.GetDataTable($@"Select * From mbr.PI Order By PIID"))
+            using (DataTable dt = Dal.GetDataTable($@"
+                SELECT PISite.PSID, PI.PName, Site.Institution
+                FROM tsd.PISite
+                INNER JOIN tsd.PI ON PISite.PID = PI.PID
+                INNER JOIN tsd.Site ON PISite.SiteID = Site.SiteID
+                ORDER BY PISite.PSID"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
                     PIList.Add(new Request
                     {
-                        ID = Int32.Parse(dr["PIID"].ToString()),
-                        PIFullName = Convert.ToString(dr["FullName"].ToString()),
-                        PIEmail = Convert.ToString(dr["Email"].ToString()),
-                        PIInstitution = Convert.ToString(dr["Affiliation"].ToString()),
-
+                        ID = Int32.Parse(dr["PSID"].ToString()),
+                        PIFullName = Convert.ToString(dr["PName"].ToString()) + " (" + Convert.ToString(dr["Institution"].ToString()) + ")",
+                        PIInstitution = Convert.ToString(dr["Institution"].ToString()),
                     });
                 }
             }
@@ -1264,9 +1267,11 @@ namespace AngularSPAWebAPI.Services
                                                           pss.Author ON Author.ID = RepAuthor.AuthorID
                                  WHERE        RepAuthor.RepID = UserRepository.RepID
                                  ORDER BY AuthorOrder FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS Author, STUFF
-                             ((SELECT        ', ' + PI.FullName
+                             ((SELECT        ', ' + CONCAT(PI.PName, ' (', Site.Institution, ')')
                                  FROM            mbr.RepPI INNER JOIN
-                                                          mbr.PI ON PI.PIID = RepPI.PIID
+                                                          tsd.PISite ON RepPI.PSID = PISite.PSID
+                                                          INNER JOIN tsd.PI ON PISite.PID = PI.PID
+                                                          INNER JOIN tsd.Site ON PISite.SiteID = Site.SiteID
                                  WHERE        RepPI.RepID = UserRepository.RepID FOR XML PATH(''), type ).value('.', 'nvarchar(max)'), 1, 2, '') AS PI
 
                             FROM            mbr.UserRepository "))

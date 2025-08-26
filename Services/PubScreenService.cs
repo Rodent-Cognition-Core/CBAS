@@ -2287,7 +2287,7 @@ namespace AngularSPAWebAPI.Services
                                         Description = Convert.ToString(drCog["Description"].ToString()),
                                         AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
                                         AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
-                                        PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
+                                        PSID = cogbytesService.FillCogbytesItemArray($"Select PSID From mbr.RepPI Where RepID={repID}", "PIID"),
                                     });
                                 }
 
@@ -2792,7 +2792,7 @@ namespace AngularSPAWebAPI.Services
                             Description = Convert.ToString(drCog["Description"].ToString()),
                             AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
                             AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
-                            PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
+                            PSID = cogbytesService.FillCogbytesItemArray($"Select PSID From mbr.RepPI Where RepID={repID}", "PSID"),
                         });
                     }
                 }
@@ -3465,7 +3465,7 @@ QueryContainerDescriptor<PubScreenElasticSearchModel> query)
                                     Description = Convert.ToString(drCog["Description"].ToString()),
                                     AdditionalNotes = Convert.ToString(drCog["AdditionalNotes"].ToString()),
                                     AuthourID = cogbytesService.FillCogbytesItemArray($"Select AuthorID From mbr.RepAuthor Where RepID={repID}", "AuthorID"),
-                                    PIID = cogbytesService.FillCogbytesItemArray($"Select PIID From mbr.RepPI Where RepID={repID}", "PIID"),
+                                    PSID = cogbytesService.FillCogbytesItemArray($"Select PSID From mbr.RepPI Where RepID={repID}", "PSID"),
                                 });
                             }
 
