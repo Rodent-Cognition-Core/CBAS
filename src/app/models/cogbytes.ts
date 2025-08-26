@@ -7,7 +7,7 @@ export interface Cogbytes {
     doi: string;
     authourID: Array<number>;
     authorString: string;
-    piID: Array<number>;
+    psID: Array<number>;
     piString: string;
     link: string;
     privacyStatus: boolean;
