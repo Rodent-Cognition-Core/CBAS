@@ -423,7 +423,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SubModelID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {RepositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetDiseaseSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {RepositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
@@ -631,7 +631,7 @@ namespace AngularSPAWebAPI.Services
             sqlCmd = "";
             for (int i = 0; i < repository.SubModelID.Length; i++)
             {
-                sqlCmd += $@"Insert into mbr.DatasetSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {repositoryID});";
+                sqlCmd += $@"Insert into mbr.DatasetDiseaseSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {repositoryID});";
             }
             if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
 
