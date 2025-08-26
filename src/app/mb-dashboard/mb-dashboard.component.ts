@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ declare var spotfire: any;
     templateUrl: './mb-dashboard.component.html',
     styleUrls: ['./mb-dashboard.component.scss']
 })
-export class MBDashboardComponent implements OnInit {
+export class MBDashboardComponent implements OnInit, OnDestroy {
 
     app: any;
 
@@ -26,8 +26,13 @@ export class MBDashboardComponent implements OnInit {
 
     ngOnInit() {
 
+        this.spinnerService.show();
         this.loadAnalysis("View_MB_Data")
         
+    }
+
+    ngOnDestroy() {
+        this.destroySpotfireApplication();
     }
 
     
@@ -35,32 +40,10 @@ export class MBDashboardComponent implements OnInit {
 
         //console.log('loaded');
         var customization = new spotfire.webPlayer.Customization();
-        //customization.showCustomizableHeader = false;
-        //customization.showToolBar = false;
         customization.showClose = false;
-        //customization.showTopHeader = false;
-
-        //customization.showTopHeader = false;
-
-        //customization.showToolBar = true;
-
-        //customization.showAbout = false;
-        //customization.showAnalysisInfo = false;
-        //customization.showAnalysisInformationTool = false;
-        //customization.showClose = false;
-        //customization.showCustomizableHeader = false;
         customization.showDodPanel = false;
-
-        //customization.showExportFile = true;
-
-        //customization.showExportVisualization = false;
-        //customization.showFilterPanel = true;
         customization.showHelp = false;
-        //customization.showLogout = false;
-        //customization.showPageNavigation = false;
-        customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
-        //customization.showUndoRedo = false;
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
@@ -77,12 +60,23 @@ export class MBDashboardComponent implements OnInit {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/" + spotfireAnalysisName, "contentpanel", configuration);
+        this.app.open("/Public/" + spotfireAnalysisName, "mousebytes-dashboard-container", configuration);
 
        
         this.spinnerService.hide();
 
     }
 
-   
+    private destroySpotfireApplication() {
+        if (this.app) {
+            if (typeof this.app.close === 'function') {
+                this.app.close();
+            }
+            this.app = null;
+        }
+        const contentPanel = document.getElementById("mousebytes-dashboard-container");
+        if (contentPanel) {
+            contentPanel.innerHTML = "";
+        }
+    }
 }
