@@ -316,7 +316,7 @@ export class CogbytesComponent implements OnInit, OnDestroy, AfterViewInit {
     // Function for getting string of repository PIs
     getRepPIString(rep: any) {
         let PIString: string = "";
-        for (let id of rep.piid) {
+        for (let id of rep.psid) {
             PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].piFullName + ", ";
         }
         return PIString.slice(0, -2);

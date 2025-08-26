@@ -104,7 +104,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this._cogbytesSearch = {
             authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
+            psID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
             startAge: null, endAge: null
         }
         this.checkYear = false;
@@ -184,7 +184,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     resetState(): void {
         this._cogbytesSearch = {
             authorID: [], doi: '', fileTypeID: [], genoID: [], intervention: '', keywords: '',
-            piID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
+            psID: [], repID: [], sexID: [], specieID: [], strainID: [], taskID: [], yearFrom: undefined, yearTo: undefined,
             startAge: null, endAge: null
         }
         this.checkYear = false;
@@ -423,7 +423,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     search() {
 
         this._cogbytesSearch.authorID = this.authorModel;
-        this._cogbytesSearch.piID = this.piModel;
+        this._cogbytesSearch.psID = this.piModel;
         this._cogbytesSearch.repID = this.titleModel;
         this._cogbytesSearch.keywords = this.keywordsModel;
         this._cogbytesSearch.doi = this.doiModel;
@@ -472,8 +472,8 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     // Function for getting string of repository PIs
     getRepPIString(rep: any) {
         let PIString: string = "";
-        for (let id of rep.piid) {
-            PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].piFullName + ", ";
+        for (let id of rep.psID) {
+            PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].psFullName + ", ";
         }
         return PIString.slice(0, -2);
     }

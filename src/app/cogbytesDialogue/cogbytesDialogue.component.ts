@@ -176,7 +176,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this.neurotransmitterModel = [];
         this._cogbytes = {
             additionalNotes: '', authorString: '', authourID: [], date: '', dateRepositoryCreated: '', description: '',
-            doi: '', id: 0, keywords: '', link: '', piID: [], piString: '', privacyStatus: false, title: '',
+            doi: '', id: 0, keywords: '', link: '', psID: [], piString: '', privacyStatus: false, title: '',
             taskID: [], specieID: [], sexID: [], strainID: [], genoID: [], numSubjects: 0, housing: '',
             diseaseID: [], subModelID: [], regionID: [], subRegionID: [], cellTypeID: [],
             methodID: [], subMethodID: [], transmitterID: [],
@@ -224,7 +224,7 @@ export class CogbytesDialogueComponent implements OnInit {
             this.descriptionModel = this.data.repObj.description;
             this.additionalNotesModel = this.data.repObj.additionalNotes;
             this.author.setValue(this.data.repObj.authourID);
-            this.pi.setValue(this.data.repObj.piid);
+            this.pi.setValue(this.data.repObj.psid);
         }
 
 
@@ -766,7 +766,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.pi.value;
+        this._cogbytes.psID = this.pi.value;
         this._cogbytes.link = this.linkModel;
         this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false; 
         this._cogbytes.description = this.descriptionModel;
@@ -818,7 +818,7 @@ export class CogbytesDialogueComponent implements OnInit {
         this._cogbytes.title = this.title.value;
         this._cogbytes.keywords = this.keywordsModel;
         this._cogbytes.doi = this.doiModel;
-        this._cogbytes.piID = this.pi.value;
+        this._cogbytes.psID = this.pi.value;
         this._cogbytes.link = this.linkModel;
         this._cogbytes.privacyStatus = this.privacyStatus.value == "true" ? true : false;
         this._cogbytes.description = this.descriptionModel;

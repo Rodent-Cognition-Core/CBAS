@@ -4,7 +4,7 @@ export interface CogbytesSearch {
      keywords: string;
      doi: string;
      authorID: Array<number>;
-     piID: Array<number>;
+     psID: Array<number>;
 
      taskID: Array<number>;
      specieID: Array<number>;
