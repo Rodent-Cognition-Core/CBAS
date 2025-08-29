@@ -529,6 +529,11 @@ namespace AngularSPAWebAPI.Services
             return RepList;
         }
 
+        public List<> GetRepositoryMetadata(int repID)
+        {
+            
+        }
+
         // Function Definition to edit a respository in database Cogbytes
         public bool EditRepository(int repositoryID, Cogbytes repository, string Username)
         {
@@ -579,7 +584,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetTask (TaskID, RepID) Values ({repository.TaskID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetSpecies where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -588,7 +594,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetSpecies (SpeciesID, RepID) Values ({repository.SpecieID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetSex where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -597,7 +604,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetSex (SexID, RepID) Values ({repository.SexID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetStrain where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -606,7 +614,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetStrain (StrainID, RepID) Values ({repository.StrainID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetGeno where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -615,7 +624,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetGeno (GenoID, RepID) Values ({repository.GenoID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetDiseaseModel where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -624,7 +634,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetDiseaseModel (DMID, RepID) Values ({repository.DiseaseID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetDiseaseSubModel where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -633,7 +644,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetDiseaseSubModel (DMSID, RepID) Values ({repository.SubModelID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetMethod where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -642,7 +654,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetMethod (MID, RepID) Values ({repository.MethodID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetSubMethod where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -651,7 +664,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetSubMethod (SMID, RepID) Values ({repository.SubMethodID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetBrainRegion where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -660,7 +674,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetBrainRegion (BRID, RepID) Values ({repository.RegionID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetBrainSubRegion where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -669,7 +684,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetBrainSubRegion (BSRID, RepID) Values ({repository.SubRegionID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetNeurotransmitter where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -678,7 +694,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetNeurotransmitter (NID, RepID) Values ({repository.TransmitterID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             sqlDelete = $"DELETE From mbr.DatasetCellType where RepID = {repositoryID}";
             Dal.ExecuteNonQuery(sqlDelete);
@@ -687,7 +704,8 @@ namespace AngularSPAWebAPI.Services
             {
                 sqlCmd += $@"Insert into mbr.DatasetCellType (CTID, RepID) Values ({repository.CellTypeID[i]}, {repositoryID});";
             }
-            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); };
+            if (sqlCmd != "") { Dal.ExecuteNonQuery(sqlCmd); }
+            ;
 
             return true;
 

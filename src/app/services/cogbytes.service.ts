@@ -174,6 +174,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getRepositoryMetadata(repID: number): any {
+
+        return this.http
+            .get("/api/cogbytes/GetRepositoryMetadata?repID=" + repID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     // Editing a publication 
     public editRepository(repositoryID: number, repObj: Cogbytes) {
 
