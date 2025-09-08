@@ -20,4 +20,13 @@ export interface CogbytesSearch {
      intervention: string;
 
      fileTypeID: Array<number>;
+
+     diseaseID: Array<number>;
+     subModelID: Array<number>;
+     regionID: Array<number>;
+     subRegionID: Array<number>;
+     cellTypeID: Array<number>;
+     methodID: Array<number>;
+     subMethodID: Array<number>;
+     transmitterID: Array<number>;
 }

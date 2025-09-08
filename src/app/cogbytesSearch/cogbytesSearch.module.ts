@@ -16,7 +16,7 @@ import { PISiteService } from '../services/piSite.service';
     declarations: [
         CogbytesSearchComponent
     ],
-    providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService, PISiteService],
+    providers: [ManageUserService, PubScreenService, CogbytesService, IdentityService, PISiteService, PubScreenService],
 
     bootstrap: [CogbytesSearchComponent],
 

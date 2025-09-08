@@ -22,5 +22,13 @@ namespace AngularSPAWebAPI.Models
         public string Intervention { get; set; }
 
         public int?[] FileTypeID { get; set; }
+        public int?[] DiseaseID { get; set; }
+        public int?[] SubModelID { get; set; }
+        public int?[] RegionID { get; set; }
+        public int?[] SubRegionID { get; set; }
+        public int?[] CellTypeID { get; set; }
+        public int?[] MethodID { get; set; }
+        public int?[] SubMethodID { get; set; }
+        public int?[] TransmitterID { get; set; }
     }
 }

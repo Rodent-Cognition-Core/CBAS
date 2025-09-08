@@ -529,10 +529,10 @@ namespace AngularSPAWebAPI.Services
             return RepList;
         }
 
-        public List<> GetRepositoryMetadata(int repID)
-        {
+        // public List<> GetRepositoryMetadata(int repID)
+        // {
             
-        }
+        // }
 
         // Function Definition to edit a respository in database Cogbytes
         public bool EditRepository(int repositoryID, Cogbytes repository, string Username)
@@ -1181,6 +1181,96 @@ namespace AngularSPAWebAPI.Services
                 //}
             }
 
+            // search query for Disease
+            if (cogbytesSearch.DiseaseID != null && cogbytesSearch.DiseaseID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.DiseaseID.Length; i++)
+                {
+                    sql += $@"DMID = {cogbytesSearch.DiseaseID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.SubModelID != null && cogbytesSearch.SubModelID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.SubModelID.Length; i++)
+                {
+                    sql += $@"DMSID = {cogbytesSearch.SubModelID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.RegionID != null && cogbytesSearch.RegionID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.RegionID.Length; i++)
+                {
+                    sql += $@"BRID = {cogbytesSearch.RegionID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.SubRegionID != null && cogbytesSearch.SubRegionID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.SubRegionID.Length; i++)
+                {
+                    sql += $@"BSRID = {cogbytesSearch.SubRegionID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.CellTypeID != null && cogbytesSearch.CellTypeID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.CellTypeID.Length; i++)
+                {
+                    sql += $@"CTID = {cogbytesSearch.CellTypeID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.MethodID != null && cogbytesSearch.MethodID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.MethodID.Length; i++)
+                {
+                    sql += $@"MID = {cogbytesSearch.MethodID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.SubMethodID != null && cogbytesSearch.SubMethodID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.SubMethodID.Length; i++)
+                {
+                    sql += $@"SMID = {cogbytesSearch.SubMethodID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+            if (cogbytesSearch.TransmitterID != null && cogbytesSearch.TransmitterID.Length != 0)
+            {
+                sql += "(";
+                for (int i = 0; i < cogbytesSearch.TransmitterID.Length; i++)
+                {
+                    sql += $@"NID = {cogbytesSearch.TransmitterID[i]} OR ";
+                }
+                sql = sql.Substring(0, sql.Length - 3);
+                sql += ") AND ";
+            }
+
+
             // filter for intervention
 
             if (cogbytesSearch.Intervention == "Only")
@@ -1198,6 +1288,7 @@ namespace AngularSPAWebAPI.Services
             {
                 return Uploadlist;
             }
+        
 
             sql = sql.Substring(0, sql.Length - 4); // to remvoe the last NAD from the query
             sql += "GROUP BY UploadID, Name, DateUpload, Description, AdditionalNotes, IsIntervention, InterventionDescription, " +
