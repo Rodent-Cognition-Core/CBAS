@@ -22,6 +22,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     readonly DATASET = 1;
 
+    allRepositories: any[] = [];
+    filteredRepositories: any[] = [];
+
     authorModel: any;
     piModel: any;
     titleModel: any;
@@ -91,7 +94,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     isFullDataAccess: boolean;
 
     _cogbytesSearch: CogbytesSearch;
-    isSearch: boolean;
     filteredSearchList: any;
 
     //yearFrom = new UntypedFormControl('', []);
@@ -119,8 +121,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     public filteredSubMethodList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public neurotransmitterMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredNeurotransmitterList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-
-    showAll: boolean;
 
     private subscription: Subscription = new Subscription();
 
@@ -150,8 +150,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.isAdmin = false;
         this.isUser = false;
         this.isFullDataAccess = false;
-        this.isSearch = false;
-        this.showAll = false;
         this.authorModel= [];
         this.piModel = [];
         this.titleModel = [];
@@ -189,40 +187,31 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.interventionModel = '';
         this.panelOpenState = false;
         this.yearTo = fb.control('')
-        this.route.queryParams.subscribe(params => {
-            this.showAll = false;
-            if (params['showall'] != null && params['showall'] == 'true') {
-                this.showAll = true;
-            }
-            //console.log(this.showAll);
-        });
     }
 
     ngOnInit() {
-
-        if (this.showAll == true) {
-            this.ShowRepositories();
-        } else {
-            this.GetRepositories();
-            this.GetAuthorList();
-            this.GetPIList();
-            this.GetDiseaseList();
-            this.GetSubModelList();
-            this.GetRegionList();
-            this.GetSubRegionList();
-            this.GetCellTypeList();
-            this.GetMethodList();
-            this.GetSubMethodList();
-            this.GetNeurotransmitterList();
-            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
-            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
-            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
-            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
-            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
-            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
-        }
-
-
+        this.cogbytesService.getAllRepositories().subscribe((data: any) => {
+            this.allRepositories = data;
+            console.log(this.allRepositories);
+            this.filteredRepositories = [...this.allRepositories];
+        });
+        this.GetAuthorList();
+        this.GetPIList();
+        this.GetDiseaseList();
+        this.GetSubModelList();
+        this.GetRegionList();
+        this.GetSubRegionList();
+        this.GetCellTypeList();
+        this.GetMethodList();
+        this.GetSubMethodList();
+        this.GetNeurotransmitterList();
+        this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+        this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+        // ...existing code...
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
@@ -230,8 +219,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.yearList = this.GetYear(1970).sort().reverse();
 
         this.interventionModel = "All";
-
-        this.isSearch = false;
 
         this.subscription.add(
             this.router.events
@@ -259,7 +246,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.isAdmin = false;
         this.isUser = false;
         this.isFullDataAccess = false;
-        this.isSearch = false;
         this.authorModel= [];
         this.piModel = [];
         this.titleModel = [];
@@ -275,32 +261,26 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.interventionModel = '';
         this.panelOpenState = false;
         this.yearTo.setValue('');
-        if (this.showAll == true) {
-            this.ShowRepositories();
-        } else {
-            this.GetRepositories();
-            this.GetAuthorList();
-            this.GetPIList();
-            this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
-            this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
-            this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
-            this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
-            this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
-            this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
-            this.GetRepositories();
-            this.GetAuthorList();
-            this.GetPIList();
-            this.GetDiseaseList();
-            this.GetSubModelList();
-            this.GetRegionList();
-            this.GetSubRegionList();
-            this.GetCellTypeList();
-            this.GetMethodList();
-            this.GetSubMethodList();
-            this.GetNeurotransmitterList();
-        }
-
-
+        this.GetRepositories();
+        this.GetAuthorList();
+        this.GetPIList();
+        this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
+        this.cogbytesService.getSpecies().subscribe((data: any) => { this.specieList = data; });
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+        this.cogbytesService.getFileTypes().subscribe((data: any) => { this.fileTypeList = data; });
+        this.GetRepositories();
+        this.GetAuthorList();
+        this.GetPIList();
+        this.GetDiseaseList();
+        this.GetSubModelList();
+        this.GetRegionList();
+        this.GetSubRegionList();
+        this.GetCellTypeList();
+        this.GetMethodList();
+        this.GetSubMethodList();
+        this.GetNeurotransmitterList();
 
         this.isAdmin = this.authenticationService.isInRole("administrator");
         this.isUser = this.authenticationService.isInRole("user");
@@ -308,8 +288,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         this.yearList = this.GetYear(1970).sort().reverse();
 
         this.interventionModel = "All";
-
-        this.isSearch = false;
     }
 
     // Function definition to get list of years
@@ -322,368 +300,24 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return years;
     }
 
-    GetRepositories() {
+    // Remove ShowRepositories and GetRepositories logic related to showAll/isSearch
 
-        this.cogbytesService.getAllRepositories().subscribe((data : any) => {
-            this.repList = data;
-
-            // load the initial expList
-            this.filteredRepList.next(this.repList.slice());
-
-            this.repMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
-                .subscribe(() => {
-                    this.filterRep();
-                });
-
-        });
-
-        return this.repList;
-    }
-
-    ShowRepositories() {
-
-        this.cogbytesService.showAllRepositories().subscribe(data => {
-            this.repShowList = data;
-            //console.log(this.repShowList);
-
-        });
-    }
-
-    // handling multi filtered Rep list
-    private filterRep() {
-        if (!this.repList) {
-            return;
-        }
-
-        // get the search keyword
-        let searchRep = this.repMultiFilterCtrl.value;
-
-        if (!searchRep) {
-            this.filteredRepList.next(this.repList.slice());
-            return;
-        } else {
-            searchRep = searchRep.toLowerCase();
-        }
-
-        // filter the rep
-        this.filteredRepList.next(
-            this.repList.filter((x : any) => x.title.toLowerCase().indexOf(searchRep) > -1)
-        );
-    }
-
-
-    GetAuthorList() {
-
-
-        this.cogbytesService.getAuthor().subscribe((data: any) => {
-            this.authorList = data;
-
-            // load the initial expList
-            this.filteredAutorList.next(this.authorList.slice());
-
-            this.authorMultiFilterCtrl.valueChanges
-                .pipe(
-                                    debounceTime(100),
-                                    filter(search => search && search.length >= 3),
-                                    takeUntil(this._onDestroy)
-                            )
-                .subscribe(() => {
-                    this.filterAuthor();
-                });
-
-        });
-
-        return this.authorList;
-    }
-
-
-    GetPIList() {
-
-        this.piSiteService.getPISite().subscribe((data: any) => {
-            this.piList = data;
-
-            // load the initial expList
-            this.filteredPIList.next(this.piList.slice());
-
-            this.piMultiFilterCtrl.valueChanges
-                .pipe(takeUntil(this._onDestroy))
-                .subscribe(() => {
-                    this.filterPI();
-                });
-
-        });
-
-        return this.piList;
-    }
-
-    //// handling multi filtered PI list
-    private filterPI() {
-        if (!this.piList) {
-            return;
-        }
-
-        // get the search keyword
-        let searchPI = this.piMultiFilterCtrl.value;
-
-        if (!searchPI) {
-            this.filteredPIList.next(this.piList.slice());
-            return;
-        } else {
-            searchPI = searchPI.toLowerCase();
-        }
-
-        // filter the PI
-        this.filteredPIList.next(
-            this.piList.filter((x : any) => x.piSiteName.toLowerCase().indexOf(searchPI) > -1)
-        );
-    }
-
-    // handling multi filtered Author list
-    private filterAuthor() {
-        if (!this.authorList) {
-            return;
-        }
-
-        // get the search keyword
-        let searchAuthor = this.authorMultiFilterCtrl.value;
-
-        if (!searchAuthor) {
-            this.filteredAutorList.next(this.authorList.slice());
-            return;
-        } else {
-            searchAuthor = searchAuthor.toLowerCase();
-        }
-
-        // filter the Author
-        this.filteredAutorList.next(
-            this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
-        );
-    }
-
-    // Disease filter for multi-select search
-    private filterDisease() {
-        if (!this.diseaseList) {
-            return;
-        }
-        let searchDisease = this.diseaseMultiFilterCtrl?.value;
-        if (!searchDisease) {
-            this.filteredDiseaseList?.next(this.diseaseList.slice());
-            return;
-        } else {
-            searchDisease = searchDisease.toLowerCase();
-        }
-        this.filteredDiseaseList?.next(
-            this.diseaseList.filter((x: any) => x.diseaseModel.toLowerCase().indexOf(searchDisease) > -1)
-        );
-    }
-
-    // SubModel filter for multi-select search
-    private filterSubModel() {
-        if (!this.subModelList) {
-            return;
-        }
-        let searchSubModel = this.subModelMultiFilterCtrl?.value;
-        if (!searchSubModel) {
-            this.filteredSubModelList?.next(this.subModelList.slice());
-            return;
-        } else {
-            searchSubModel = searchSubModel.toLowerCase();
-        }
-        this.filteredSubModelList?.next(
-            this.subModelList.filter((x: any) => x.subModel.toLowerCase().indexOf(searchSubModel) > -1)
-        );
-    }
-
-    // Region filter for multi-select search
-    private filterRegion() {
-        if (!this.regionList) {
-            return;
-        }
-        let searchRegion = this.regionMultiFilterCtrl?.value;
-        if (!searchRegion) {
-            this.filteredRegionList?.next(this.regionList.slice());
-            return;
-        } else {
-            searchRegion = searchRegion.toLowerCase();
-        }
-        this.filteredRegionList?.next(
-            this.regionList.filter((x: any) => x.brainRegion.toLowerCase().indexOf(searchRegion) > -1)
-        );
-    }
-
-    // SubRegion filter for multi-select search
-    private filterSubRegion() {
-        if (!this.subRegionList) {
-            return;
-        }
-        let searchSubRegion = this.subRegionMultiFilterCtrl?.value;
-        if (!searchSubRegion) {
-            this.filteredSubRegionList?.next(this.subRegionList.slice());
-            return;
-        } else {
-            searchSubRegion = searchSubRegion.toLowerCase();
-        }
-        this.filteredSubRegionList?.next(
-            this.subRegionList.filter((x: any) => x.subRegion.toLowerCase().indexOf(searchSubRegion) > -1)
-        );
-    }
-
-    // CellType filter for multi-select search
-    private filterCellType() {
-        if (!this.cellTypeList) {
-            return;
-        }
-        let searchCellType = this.cellTypeMultiFilterCtrl?.value;
-        if (!searchCellType) {
-            this.filteredCellTypeList?.next(this.cellTypeList.slice());
-            return;
-        } else {
-            searchCellType = searchCellType.toLowerCase();
-        }
-        this.filteredCellTypeList?.next(
-            this.cellTypeList.filter((x: any) => x.cellType.toLowerCase().indexOf(searchCellType) > -1)
-        );
-    }
-
-    // Method filter for multi-select search
-    private filterMethod() {
-        if (!this.methodList) {
-            return;
-        }
-        let searchMethod = this.methodMultiFilterCtrl?.value;
-        if (!searchMethod) {
-            this.filteredMethodList?.next(this.methodList.slice());
-            return;
-        } else {
-            searchMethod = searchMethod.toLowerCase();
-        }
-        this.filteredMethodList?.next(
-            this.methodList.filter((x: any) => x.method.toLowerCase().indexOf(searchMethod) > -1)
-        );
-    }
-
-    // SubMethod filter for multi-select search
-    private filterSubMethod() {
-        if (!this.subMethodList) {
-            return;
-        }
-        let searchSubMethod = this.subMethodMultiFilterCtrl?.value;
-        if (!searchSubMethod) {
-            this.filteredSubMethodList?.next(this.subMethodList.slice());
-            return;
-        } else {
-            searchSubMethod = searchSubMethod.toLowerCase();
-        }
-        this.filteredSubMethodList?.next(
-            this.subMethodList.filter((x: any) => x.subMethod.toLowerCase().indexOf(searchSubMethod) > -1)
-        );
-    }
-
-    // Neurotransmitter filter for multi-select search
-    private filterNeurotransmitter() {
-        if (!this.neurotransmitterList) {
-            return;
-        }
-        let searchNeuro = this.neurotransmitterMultiFilterCtrl?.value;
-        if (!searchNeuro) {
-            this.filteredNeurotransmitterList?.next(this.neurotransmitterList.slice());
-            return;
-        } else {
-            searchNeuro = searchNeuro.toLowerCase();
-        }
-        this.filteredNeurotransmitterList?.next(
-            this.neurotransmitterList.filter((x: any) => x.neuroTransmitter.toLowerCase().indexOf(searchNeuro) > -1)
-        );
-    }
-
-    // Handle changes in selected disease models
-    selectedModelChange(selectedModels: number[]) {
-        // Implement logic to update subModelList or subSubModelList based on selectedModels if needed
-        // This is a placeholder for any dynamic update logic
-    }
-
-    // Handle changes in selected methods
-    selectedMethodChange(selectedMethods: number[]) {
-        // Implement logic to update subMethodList or subSubMethodList based on selectedMethods if needed
-        // This is a placeholder for any dynamic update logic
-    }
-
-    // Handle changes in selected regions
-    selectedRegionChange(selectedRegions: number[]) {
-        // Implement logic to update subRegionList or subSubRegionList based on selectedRegions if needed
-        // This is a placeholder for any dynamic update logic
-    }
-
-    setDisabledValSearch() {
-
-        if
-            (
-            this.authorModel.length == 0 && this.piModel.length == 0 && this.titleModel.length == 0 && this.keywordsModel == ''
-            && this.doiModel == '' && this.cognitiveTaskModel.length == 0 && this.specieModel.length == 0 && this.sexModel.length == 0
-            && this.strainModel.length == 0 && this.genoModel.length == 0
-        ) {
-            return true;
-        }
-
-        return false;
-
-    }
-
-    selectYearToChange(yearFromVal : number, yearToVal : number) {
-        //console.log(yearToVal)
-        yearFromVal = yearFromVal === null ? 0 : yearFromVal;
-
-        yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
-
-    }
-
-
-    getErrorMessageYearTo() {
-        //return this.yearTo.getError('Year To should be greater than Year From');
-        return INVALIDYEAR;
-    }
-
-
-    //GetRepositories() {
-    //    this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(data); });
-    //    return this.repList;
-    //}
-
-    // Function definition for searching publications based on search criteria
+    // Update search to filter in-memory
     search() {
+        this.filterRepositories();
+    }
 
-        this._cogbytesSearch.authorID = this.authorModel;
-        this._cogbytesSearch.psID = this.piModel;
-        this._cogbytesSearch.repID = this.titleModel;
-        this._cogbytesSearch.keywords = this.keywordsModel;
-        this._cogbytesSearch.doi = this.doiModel;
-        this._cogbytesSearch.taskID = this.cognitiveTaskModel;
-        this._cogbytesSearch.specieID = this.specieModel;
-        this._cogbytesSearch.sexID = this.sexModel;
-        this._cogbytesSearch.strainID = this.strainModel;
-        this._cogbytesSearch.genoID = this.genoModel;
-        this._cogbytesSearch.startAge = this.ageStartModel;
-        this._cogbytesSearch.endAge = this.ageEndModel;
-        this._cogbytesSearch.yearFrom = this.yearFromSearchModel;
-        this._cogbytesSearch.yearTo = (this.yearTo.value === '') ? undefined : +this.yearTo.value;
-        this._cogbytesSearch.intervention = this.interventionModel;
-        this._cogbytesSearch.fileTypeID = this.fileTypeModel;
-        this._cogbytesSearch.diseaseID = this.diseaseModel;
-        this._cogbytesSearch.subModelID = this.subModel;
-        this._cogbytesSearch.regionID = this.regionModel;
-        this._cogbytesSearch.subRegionID = this.subRegionModel;
-        this._cogbytesSearch.cellTypeID = this.cellTypeModel;
-        this._cogbytesSearch.methodID = this.methodModel;
-        this._cogbytesSearch.subMethodID = this.subMethodModel;
-        this._cogbytesSearch.transmitterID = this.neurotransmitterModel;
-
-
-        this.cogbytesService.searchRepositories(this._cogbytesSearch).subscribe(data => {
-
-            this.searchResultList = data;
-            //console.log(this.searchResultList);
-            this.isSearch = true;
+    filterRepositories() {
+        this.filteredRepositories = this.allRepositories.filter(rep => {
+            let matches = true;
+            if (this.titleModel && this.titleModel.length > 0) {
+                matches = matches && rep.title && rep.title.toLowerCase().includes(this.titleModel.toLowerCase());
+            }
+            if (this.authorModel && this.authorModel.length > 0) {
+                matches = matches && this.authorModel.every((authorId: any) => rep.authourID && rep.authourID.includes(authorId));
+            }
+            // Add more filter conditions for other fields as needed
+            return matches;
         });
     }
 
@@ -787,6 +421,22 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return this.diseaseList;
     }
 
+    private filterDisease() {
+        if (!this.diseaseList) {
+            return;
+        }
+        let searchDisease = this.diseaseMultiFilterCtrl.value;
+        if (!searchDisease) {
+            this.filteredDiseaseList.next(this.diseaseList.slice());
+            return;
+        } else {
+            searchDisease = searchDisease.toLowerCase();
+        }
+        this.filteredDiseaseList.next(
+            this.diseaseList.filter((x: any) => x.diseaseName && x.diseaseName.toLowerCase().indexOf(searchDisease) > -1)
+        );
+    }
+
     GetSubModelList() {
 
         this.pubScreenService.getSubModels().subscribe((data: any) => {
@@ -803,6 +453,23 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return this.subModelList;
     }
 
+    // SubModel filter for multi-select search
+    private filterSubModel() {
+        if (!this.subModelList) {
+            return;
+        }
+        let searchSubModel = this.subModelMultiFilterCtrl.value;
+        if (!searchSubModel) {
+            this.filteredSubModelList.next(this.subModelList.slice());
+            return;
+        } else {
+            searchSubModel = searchSubModel.toLowerCase();
+        }
+        this.filteredSubModelList.next(
+            this.subModelList.filter((x: any) => x.subModelName && x.subModelName.toLowerCase().indexOf(searchSubModel) > -1)
+        );
+    }
+
     GetRegionList() {
 
         this.pubScreenService.getRegion().subscribe((data: any) => {
@@ -817,6 +484,21 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         });
 
         return this.regionList;
+    }
+    private filterRegion() {
+        if (!this.regionList) {
+            return;
+        }
+        let searchRegion = this.regionMultiFilterCtrl.value;
+        if (!searchRegion) {
+            this.filteredRegionList.next(this.regionList.slice());
+            return;
+        } else {
+            searchRegion = searchRegion.toLowerCase();
+        }
+        this.filteredRegionList.next(
+            this.regionList.filter((x: any) => x.regionName && x.regionName.toLowerCase().indexOf(searchRegion) > -1)
+        );
     }
 
     GetSubRegionList() {
@@ -835,6 +517,22 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return this.subRegionList;
     }
 
+    private filterSubRegion() {
+        if (!this.subRegionList) {
+            return;
+        }
+        let searchSubRegion = this.subRegionMultiFilterCtrl.value;
+        if (!searchSubRegion) {
+            this.filteredSubRegionList.next(this.subRegionList.slice());
+            return;
+        } else {
+            searchSubRegion = searchSubRegion.toLowerCase();
+        }
+        this.filteredSubRegionList.next(
+            this.subRegionList.filter((x: any) => x.subRegionName && x.subRegionName.toLowerCase().indexOf(searchSubRegion) > -1)
+        );
+    }
+
     GetCellTypeList() {
 
         this.pubScreenService.getCellType().subscribe((data: any) => {
@@ -849,6 +547,21 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         });
 
         return this.cellTypeList;
+    }
+    private filterCellType() {
+        if (!this.cellTypeList) {
+            return;
+        }
+        let searchCellType = this.cellTypeMultiFilterCtrl.value;
+        if (!searchCellType) {
+            this.filteredCellTypeList.next(this.cellTypeList.slice());
+            return;
+        } else {
+            searchCellType = searchCellType.toLowerCase();
+        }
+        this.filteredCellTypeList.next(
+            this.cellTypeList.filter((x: any) => x.cellTypeName && x.cellTypeName.toLowerCase().indexOf(searchCellType) > -1)
+        );
     }
 
     GetMethodList() {
@@ -867,6 +580,22 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return this.methodList;
     }
 
+    private filterMethod() {
+        if (!this.methodList) {
+            return;
+        }
+        let searchMethod = this.methodMultiFilterCtrl.value;
+        if (!searchMethod) {
+            this.filteredMethodList.next(this.methodList.slice());
+            return;
+        } else {
+            searchMethod = searchMethod.toLowerCase();
+        }
+        this.filteredMethodList.next(
+            this.methodList.filter((x: any) => x.methodName && x.methodName.toLowerCase().indexOf(searchMethod) > -1)
+        );
+    }
+
     GetSubMethodList() {
 
         this.pubScreenService.getSubMethod().subscribe((data: any) => {
@@ -883,6 +612,22 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         return this.subMethodList;
     }
 
+    private filterSubMethod() {
+        if (!this.subMethodList) {
+            return;
+        }
+        let searchSubMethod = this.subMethodMultiFilterCtrl.value;
+        if (!searchSubMethod) {
+            this.filteredSubMethodList.next(this.subMethodList.slice());
+            return;
+        } else {
+            searchSubMethod = searchSubMethod.toLowerCase();
+        }
+        this.filteredSubMethodList.next(
+            this.subMethodList.filter((x: any) => x.subMethodName && x.subMethodName.toLowerCase().indexOf(searchSubMethod) > -1)
+        );
+    }
+
     GetNeurotransmitterList() {
 
         this.pubScreenService.getNeurotransmitter().subscribe((data: any) => {
@@ -897,6 +642,22 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         });
 
         return this.neurotransmitterList;
+    }
+
+    private filterNeurotransmitter() {
+        if (!this.neurotransmitterList) {
+            return;
+        }
+        let searchNeurotransmitter = this.neurotransmitterMultiFilterCtrl.value;
+        if (!searchNeurotransmitter) {
+            this.filteredNeurotransmitterList.next(this.neurotransmitterList.slice());
+            return;
+        } else {
+            searchNeurotransmitter = searchNeurotransmitter.toLowerCase();
+        }
+        this.filteredNeurotransmitterList.next(
+            this.neurotransmitterList.filter((x: any) => x.neurotransmitterName && x.neurotransmitterName.toLowerCase().indexOf(searchNeurotransmitter) > -1)
+        );
     }
 
     DownloadFile(file: any): void {
@@ -935,6 +696,107 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     getLinkURL(rep : any) {
         return "http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid;
+    }
+
+    GetRepositories() {
+        this.cogbytesService.getAllRepositories().subscribe((data: any) => {
+            this.repList = data;
+            this.filteredRepList.next(this.repList.slice());
+            this.repMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterRep();
+                });
+        });
+        return this.repList;
+    }
+
+    // handling multi filtered Rep list
+    private filterRep() {
+        if (!this.repList) {
+            return;
+        }
+        let searchRep = this.repMultiFilterCtrl.value;
+        if (!searchRep) {
+            this.filteredRepList.next(this.repList.slice());
+            return;
+        } else {
+            searchRep = searchRep.toLowerCase();
+        }
+        this.filteredRepList.next(
+            this.repList.filter((x: any) => x.title.toLowerCase().indexOf(searchRep) > -1)
+        );
+    }
+
+    GetAuthorList() {
+        this.cogbytesService.getAuthor().subscribe((data: any) => {
+            this.authorList = data;
+            this.filteredAutorList.next(this.authorList.slice());
+            this.authorMultiFilterCtrl.valueChanges
+                .pipe(
+                    debounceTime(100),
+                    filter(search => search && search.length >= 3),
+                    takeUntil(this._onDestroy)
+                )
+                .subscribe(() => {
+                    this.filterAuthor();
+                });
+        });
+        return this.authorList;
+    }
+
+    private filterAuthor() {
+        if (!this.authorList) {
+            return;
+        }
+        let searchAuthor = this.authorMultiFilterCtrl.value;
+        if (!searchAuthor) {
+            this.filteredAutorList.next(this.authorList.slice());
+            return;
+        } else {
+            searchAuthor = searchAuthor.toLowerCase();
+        }
+        this.filteredAutorList.next(
+            this.authorList.filter((x: any) => x.lastName.toLowerCase().indexOf(searchAuthor) > -1)
+        );
+    }
+
+    GetPIList() {
+        this.piSiteService.getPISite().subscribe((data: any) => {
+            this.piList = data;
+            this.filteredPIList.next(this.piList.slice());
+            this.piMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterPI();
+                });
+        });
+        return this.piList;
+    }
+
+    private filterPI() {
+        if (!this.piList) {
+            return;
+        }
+        let searchPI = this.piMultiFilterCtrl.value;
+        if (!searchPI) {
+            this.filteredPIList.next(this.piList.slice());
+            return;
+        } else {
+            searchPI = searchPI.toLowerCase();
+        }
+        this.filteredPIList.next(
+            this.piList.filter((x: any) => x.piSiteName.toLowerCase().indexOf(searchPI) > -1)
+        );
+    }
+
+    selectYearToChange(yearFromVal: number, yearToVal: number) {
+        // Ensure yearTo is not less than yearFrom
+        if (yearToVal < yearFromVal) {
+            this.yearTo.setErrors({ 'incorrect': true });
+        } else {
+            this.yearTo.setErrors(null);
+        }
     }
 }
 
