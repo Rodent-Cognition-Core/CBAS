@@ -191,8 +191,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.cogbytesService.getAllRepositories().subscribe((data: any) => {
-            this.allRepositories = data;
-            console.log(this.allRepositories);
+            this.allRepositories = this.filterReposByAccess(data);
             this.filteredRepositories = [...this.allRepositories];
         });
         this.GetAuthorList();
@@ -308,17 +307,259 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     }
 
     filterRepositories() {
+        // Defensive: if no repositories loaded, return empty
+        if (!Array.isArray(this.allRepositories)) {
+            this.filteredRepositories = [];
+            return;
+        }
+
+        const titleFilter = this.titleModel && this.titleModel.length > 0 ? (Array.isArray(this.titleModel) ? this.titleModel : [this.titleModel]) : [];
+        const authorFilter = Array.isArray(this.authorModel) && this.authorModel.length > 0 ? this.authorModel : [];
+        const piFilter = Array.isArray(this.piModel) && this.piModel.length > 0 ? this.piModel : [];
+        const fileTypeFilter = Array.isArray(this.fileTypeModel) && this.fileTypeModel.length > 0 ? this.fileTypeModel : [];
+        const taskFilter = Array.isArray(this.cognitiveTaskModel) && this.cognitiveTaskModel.length > 0 ? this.cognitiveTaskModel : [];
+        const specieFilter = Array.isArray(this.specieModel) && this.specieModel.length > 0 ? this.specieModel : [];
+        const sexFilter = Array.isArray(this.sexModel) && this.sexModel.length > 0 ? this.sexModel : [];
+        const strainFilter = Array.isArray(this.strainModel) && this.strainModel.length > 0 ? this.strainModel : [];
+        const genoFilter = Array.isArray(this.genoModel) && this.genoModel.length > 0 ? this.genoModel : [];
+        const diseaseFilter = Array.isArray(this.diseaseModel) && this.diseaseModel.length > 0 ? this.diseaseModel : [];
+        const subModelFilter = Array.isArray(this.subModel) && this.subModel.length > 0 ? this.subModel : [];
+        const regionFilter = Array.isArray(this.regionModel) && this.regionModel.length > 0 ? this.regionModel : [];
+        const subRegionFilter = Array.isArray(this.subRegionModel) && this.subRegionModel.length > 0 ? this.subRegionModel : [];
+        const cellTypeFilter = Array.isArray(this.cellTypeModel) && this.cellTypeModel.length > 0 ? this.cellTypeModel : [];
+        const methodFilter = Array.isArray(this.methodModel) && this.methodModel.length > 0 ? this.methodModel : [];
+        const subMethodFilter = Array.isArray(this.subMethodModel) && this.subMethodModel.length > 0 ? this.subMethodModel : [];
+        const neurotransmitterFilter = Array.isArray(this.neurotransmitterModel) && this.neurotransmitterModel.length > 0 ? this.neurotransmitterModel : [];
+
+        const yearFrom = this.yearFromSearchModel ? Number(this.yearFromSearchModel) : null;
+        const yearTo = this.yearTo && this.yearTo.value ? Number(this.yearTo.value) : null;
+        const doiFilter = this.doiModel && this.doiModel.toString().trim() !== '' ? this.doiModel.toString().toLowerCase() : null;
+        const keywordsFilter = this.keywordsModel && this.keywordsModel.toString().trim() !== '' ? this.keywordsModel.toString().toLowerCase() : null;
+        const interventionOpt = this.interventionModel || 'All';
+
         this.filteredRepositories = this.allRepositories.filter(rep => {
-            let matches = true;
-            if (this.titleModel && this.titleModel.length > 0) {
-                matches = matches && rep.title && rep.title.toLowerCase().includes(this.titleModel.toLowerCase());
+            // For each repo, apply multiple filters. Use defensive getters for renamed/missing properties.
+            let ok = true;
+
+            // Title(s)
+            if (titleFilter.length > 0) {
+                const repoTitle = (rep.title || '').toString().toLowerCase();
+                ok = ok && titleFilter.some((t: any) => repoTitle.includes(t.toString().toLowerCase()));
             }
-            if (this.authorModel && this.authorModel.length > 0) {
-                matches = matches && this.authorModel.every((authorId: any) => rep.authourID && rep.authourID.includes(authorId));
+
+            // Authors (repo.authourID expected to be array of author ids)
+            if (authorFilter.length > 0) {
+                const repoAuthors = this.safeArray(rep, 'authourID');
+                ok = ok && authorFilter.every((aid: any) => repoAuthors.indexOf(aid) !== -1);
             }
-            // Add more filter conditions for other fields as needed
-            return matches;
+
+            // PIs
+            if (piFilter.length > 0) {
+                const repoPIs = this.safeArray(rep, 'psid') || this.safeArray(rep, 'psID');
+                ok = ok && piFilter.every((pid: any) => repoPIs.indexOf(pid) !== -1);
+            }
+
+            // DOI
+            if (doiFilter) {
+                const repoDoi = (rep.doi || '').toString().toLowerCase();
+                ok = ok && repoDoi.includes(doiFilter);
+            }
+
+            // Keywords
+            if (keywordsFilter) {
+                const repoKeywords = (rep.keywords || '').toString().toLowerCase();
+                ok = ok && repoKeywords.includes(keywordsFilter);
+            }
+
+            // Year range (repo.date expected to be a string like 'YYYY-MM-DD...')
+            if (yearFrom || yearTo) {
+                const repoYear = this.getYearFromRepo(rep);
+                if (repoYear != null) {
+                    if (yearFrom && repoYear < yearFrom) ok = false;
+                    if (yearTo && repoYear > yearTo) ok = false;
+                }
+            }
+
+            // Intervention: repo-level metadata may include 'hasIntervention' boolean or check uploads/subexperiments
+            if (interventionOpt && interventionOpt !== 'All') {
+                const wantOnly = interventionOpt === 'Only';
+                const wantNone = interventionOpt === 'No';
+                const repoHasIntervention = this.repoHasIntervention(rep);
+                if (wantOnly && !repoHasIntervention) ok = false;
+                if (wantNone && repoHasIntervention) ok = false;
+            }
+
+            // Multi-select filters that were previously on uploads/datasets may now be stored at repository level
+            // For each, check if repository has matching arrays; if not, try to infer from rep.experiment or rep.uploads
+            if (fileTypeFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['fileTypeIDs', 'fileTypeID', 'fileTypeIds', 'fileTypes']);
+                if (vals.length === 0) {
+                    ok = ok && false;
+                } else {
+                    ok = ok && fileTypeFilter.every((f: any) => vals.indexOf(f) !== -1);
+                }
+            }
+
+            if (taskFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['taskID', 'taskIDs', 'taskIds', 'taskid', 'task']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && taskFilter.every((t: any) => vals.indexOf(t) !== -1);
+            }
+
+            if (specieFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['specieID', 'specieIDs', 'specieIds', 'specie']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && specieFilter.every((s: any) => vals.indexOf(s) !== -1);
+            }
+
+            if (sexFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['sexID', 'sexIDs', 'sexIds', 'sex']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && sexFilter.every((s: any) => vals.indexOf(s) !== -1);
+            }
+
+            if (strainFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['strainID', 'strainIDs', 'strainIds', 'strain']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && strainFilter.every((s: any) => vals.indexOf(s) !== -1);
+            }
+
+            if (genoFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['genoID', 'genoIDs', 'genoIds', 'geno']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && genoFilter.every((g: any) => vals.indexOf(g) !== -1);
+            }
+
+            if (diseaseFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['diseaseID', 'diseaseIDs', 'diseaseIds', 'disease']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && diseaseFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (subModelFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['subModelID', 'subModelIDs', 'subModelIds', 'subModel']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && subModelFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (regionFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['regionID', 'regionIDs', 'regionIds', 'region']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && regionFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (subRegionFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['subRegionID', 'subRegionIDs', 'subRegionIds', 'subRegion']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && subRegionFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (cellTypeFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['cellTypeID', 'cellTypeIDs', 'cellTypeIds', 'cellType']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && cellTypeFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (methodFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['methodID', 'methodIDs', 'methodIds', 'method']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && methodFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (subMethodFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['subMethodID', 'subMethodIDs', 'subMethodIds', 'subMethod']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && subMethodFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            if (neurotransmitterFilter.length > 0) {
+                const vals = this.combineRepoArrays(rep, ['transmitterID', 'transmitterIDs', 'transmitterIds', 'neurotransmitterID', 'neurotransmitterIDs']);
+                if (vals.length === 0) ok = ok && false; else ok = ok && neurotransmitterFilter.every((d: any) => vals.indexOf(d) !== -1);
+            }
+
+            return ok;
         });
+    }
+
+    // Helper: safely return an array property from repo or empty array
+    private safeArray(obj: any, prop: string): any[] {
+        if (!obj) return [];
+        if (Array.isArray(obj[prop])) return obj[prop];
+        // support comma-separated string of ids
+        if (typeof obj[prop] === 'string' && obj[prop].trim() !== '') {
+            return obj[prop].split(',').map((s: string) => s.trim());
+        }
+        return [];
+    }
+
+    // Helper: combine several possible property names into one array
+    private combineRepoArrays(obj: any, propCandidates: string[]): any[] {
+        for (const p of propCandidates) {
+            const arr = this.safeArray(obj, p);
+            if (arr && arr.length > 0) return arr.map((v: any) => (typeof v === 'string' ? v : v));
+        }
+
+        // try to infer from nested structures: uploads, experiment, subexperiment
+        if (Array.isArray(obj.uploads) && obj.uploads.length > 0) {
+            // collect unique values from uploads for common properties
+            const collected: any[] = [];
+            for (const u of obj.uploads) {
+                for (const p of propCandidates) {
+                    if (u[p]) {
+                        if (Array.isArray(u[p])) collected.push(...u[p]); else collected.push(u[p]);
+                    }
+                }
+            }
+            return Array.from(new Set(collected));
+        }
+
+        if (Array.isArray(obj.experiment) && obj.experiment.length > 0) {
+            const collected: any[] = [];
+            for (const e of obj.experiment) {
+                for (const p of propCandidates) {
+                    if (e[p]) {
+                        if (Array.isArray(e[p])) collected.push(...e[p]); else collected.push(e[p]);
+                    }
+                }
+                // try subexperiment inside experiment
+                if (Array.isArray(e.subexperiment)) {
+                    for (const se of e.subexperiment) {
+                        for (const p of propCandidates) {
+                            if (se[p]) {
+                                if (Array.isArray(se[p])) collected.push(...se[p]); else collected.push(se[p]);
+                            }
+                        }
+                    }
+                }
+            }
+            return Array.from(new Set(collected));
+        }
+
+        return [];
+    }
+
+    // Helper: extract a year number from repo date or date-like fields
+    private getYearFromRepo(rep: any): number | null {
+        if (!rep) return null;
+        const dateStr = rep.date || rep.Date || rep.createdDate || rep.created || '';
+        if (!dateStr) return null;
+        // try to parse leading 4-digit year
+        const m = dateStr.toString().match(/(\d{4})/);
+        if (m) return Number(m[1]);
+        return null;
+    }
+
+    // Helper: determine if repository has any intervention flagged in experiments/uploads
+    private repoHasIntervention(rep: any): boolean {
+        if (!rep) return false;
+        if (typeof rep.hasIntervention === 'boolean') return rep.hasIntervention;
+        if (typeof rep.isIntervention === 'boolean') return rep.isIntervention;
+        // search uploads
+        if (Array.isArray(rep.uploads)) {
+            for (const u of rep.uploads) {
+                if (u.isIntervention === true) return true;
+            }
+        }
+        // search experiments/subexperiments
+        if (Array.isArray(rep.experiment)) {
+            for (const e of rep.experiment) {
+                if (Array.isArray(e.subexperiment)) {
+                    for (const se of e.subexperiment) {
+                        if (se.isIntervention === true) return true;
+                    }
+                }
+                if (e.isIntervention === true) return true;
+            }
+        }
+        return false;
     }
 
     // Function to filter search list based on repository
@@ -340,8 +581,17 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     // Function for getting string of repository PIs
     getRepPIString(rep: any) {
         let PIString: string = "";
-        for (let id of rep.psID) {
-            PIString += this.piList[this.piList.map(function (x: any) { return x.id }).indexOf(id)].psFullName + ", ";
+        if (!rep || !rep.psid || !this.piList || !Array.isArray(rep.psid)) return "";
+        for (let id of rep.psid) {
+            // find matching PI entry (try common id property names)
+            const piIndex = this.piList.findIndex((x: any) => x.id === id || x.ID === id || x.PSID === id || x.Psid === id);
+            if (piIndex === -1) continue;
+            const pi = this.piList[piIndex];
+            // try several common name property variants
+            const name = pi.pname ?? pi.PName ?? pi.PIFullName ?? pi.PISiteName ?? pi.piSiteName ?? "";
+            if (name) {
+                PIString += name + ", ";
+            }
         }
         return PIString.slice(0, -2);
     }
@@ -419,6 +669,15 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         });
 
         return this.diseaseList;
+    }
+
+    ShowRepositories() {
+
+        this.cogbytesService.showAllRepositories().subscribe(data => {
+            this.repShowList = data;
+            //console.log(this.repShowList);
+
+        });
     }
 
     private filterDisease() {
@@ -797,6 +1056,16 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         } else {
             this.yearTo.setErrors(null);
         }
+    }
+
+    private filterReposByAccess(repos: any[]): any[] {
+        if (!Array.isArray(repos)) { return repos; }
+        const isAdmin = this.authenticationService.isInRole('administrator');
+        const isFull = this.authenticationService.isInRole('fulldataaccess');
+        if (isAdmin || isFull) {
+            return repos;
+        }
+        return repos.filter(r => r && r.privacyStatus === true);
     }
 }
 

@@ -25,7 +25,8 @@ namespace AngularSPAWebAPI.Models
         public string Sex { get; set; }
         public string Strain { get; set; }
         public string GenoType { get; set; }
-        public string Age { get; set; }
+        public string StartAgeMonths { get; set; }
+        public string EndAgeMonths { get; set; }
         public int? NumSubjects { get; set; }
 
         public System.Collections.Generic.List<FileUploadResult> UploadFileList { get; set; }

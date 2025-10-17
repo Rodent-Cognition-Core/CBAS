@@ -1592,7 +1592,8 @@ namespace AngularSPAWebAPI.Services
                         Sex = Convert.ToString(dr["Sex"].ToString()),
                         Strain = Convert.ToString(dr["Strain"].ToString()),
                         GenoType = Convert.ToString(dr["GenoType"].ToString()),
-                        Age = Convert.ToString(dr["Age"].ToString()),
+                        StartAgeMonths = Convert.ToString(dr["StartAgeMonths"].ToString()),
+                        EndAgeMonths = Convert.ToString(dr["EndAgeMonths"].ToString()),
                         UploadFileList = FileList,
                         NumSubjects = numSubjects
                     });

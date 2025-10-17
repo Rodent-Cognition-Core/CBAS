@@ -314,7 +314,7 @@
         </thead>
         <tbody class="docs-markdown-tbody">
             <ng-container *ngFor="let rep of filteredRepositories">
-                <tr style="border-bottom:1pt solid #8D8E90;" *ngIf="getFilteredSearchList(rep.id).length > 0">
+                <tr style="border-bottom:1pt solid #8D8E90;">
                     <td>
                         <!-- ...repository display code (title, authors, uploads, etc.)... -->
                         <label><b>Repository Information:</b></label><br /><br />
@@ -330,8 +330,8 @@
                         <label>Status:</label> &nbsp; <span style="color:#696d70;">{{rep.privacyStatus === true ? 'Public' : 'Private'}}</span> &nbsp; &nbsp; &nbsp;
                         <span *ngIf="rep.privacyStatus === true"><label>Repository Link:</label>&nbsp; <span style="color:#696d70;" [innerHTML]='"<a href=" + getLinkURL(rep) + " target=_blank>" + getLinkURL(rep) + "</a>"'></span></span>
                         <br /><br />
-                        <label><b>Uploads:</b></label><br /><br />
-                        <div>
+                        <!-- <label><b>Uploads:</b></label><br /><br /> -->
+                        <!-- <div>
                             <mat-accordion multi>
                                 <mat-expansion-panel *ngFor="let upload of getFilteredSearchList(rep.id)">
                                     <mat-expansion-panel-header>
@@ -382,7 +382,7 @@
                         <mat-expansion-panel *ngIf="rep.paper !== null">
                             <mat-expansion-panel-header>
                             </mat-expansion-panel-header>
-                        </mat-expansion-panel>
+                        </mat-expansion-panel> -->
                     </td>
                 </tr>
             </ng-container>
