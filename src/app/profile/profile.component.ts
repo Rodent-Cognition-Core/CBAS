@@ -231,6 +231,24 @@ export class ProfileComponent implements OnInit {
         dialogref.afterClosed().subscribe();
     }
 
+    // Remove a PI site from the user's associated list and persist change
+    removePiSite(psid: any): void {
+        if (!psid || !this.piSiteListByUserID) return;
+
+        // remove locally
+        this.piSiteListByUserID = this.piSiteListByUserID.filter((p: any) => p.psid !== psid);
+
+        // Build user object and call updateProfile to persist the change
+        this._user.selectedPiSiteIds = (this.piSiteListByUserID || []).map((p: any) => p.psid);
+        this.profileService.updateProfile(this._user).subscribe(() => {
+            // refresh lists
+            this.GetPISiteListByUserID();
+            this.GetFilteredPiSiteList();
+        }, (err: any) => {
+            console.error('Failed to remove PI site', err);
+        });
+    }
+
 
 
 }
