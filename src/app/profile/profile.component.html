@@ -32,7 +32,7 @@
                 <mat-list>
                     <mat-list-item *ngFor="let PIS of piSiteListByUserID">
                         <small matListItemTitle>{{ PIS.piSiteName }}</small>
-                        <button mat-icon-button matListItemMeta color="warn" (click)="removePiSite(PIS.psid)" [aria-label]="'Remove ' + PIS.piSiteName">
+                        <button mat-icon-button matListItemMeta color="warn" (click)="removePiSite(PIS.psid)" attr.aria-label="'Remove ' + PIS.piSiteName">
                             <mat-icon>remove_circle_outline</mat-icon>
                         </button>
                     </mat-list-item>
