@@ -14,6 +14,8 @@ import { Geno } from '../models/geno';
 import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
+import { PubScreenService } from '../services/pubScreen.service';
+import { CogbytesService } from '../services/cogbytes.service';
 import { FIELDISREQUIRED } from '../shared/messages';
 
 declare var $: any;
@@ -40,7 +42,37 @@ export class DataExtractionComponent implements OnInit {
     _geno: Geno;
     filteredGenoList: any[] = [];
     InterventionList: any[] = [];
-    speciesList: any
+    speciesList: any;
+    sexList: any;
+    strainList: any;
+    genoList: any;
+    diseaseList: any;
+    subModelList: any;
+    regionList: any;
+    subRegionList: any;
+    cellTypeList: any;
+    methodList: any;
+    subMethodList: any;
+    neurotransmitterList: any;
+
+    // Metadata filter models
+    metadataTaskModel: any[] = [];
+    metadataSpeciesModel: any[] = [];
+    metadataSexModel: any[] = [];
+    metadataStrainModel: any[] = [];
+    metadataGenotypeModel: any[] = [];
+    metadataAgeStartModel: any;
+    metadataAgeEndModel: any;
+    metadataDiseaseModel: any[] = [];
+    metadataSubModelModel: any[] = [];
+    metadataRegionModel: any[] = [];
+    metadataSubRegionModel: any[] = [];
+    metadataCellTypeModel: any[] = [];
+    metadataMethodModel: any[] = [];
+    metadataSubMethodModel: any[] = [];
+    metadataNeurotransmitterModel: any[] = [];
+    metadataHousingModel: any;
+    metadataLightCycleModel: any;
 
     // ngModels vars
     selectedPiSiteValue: any;
@@ -138,6 +170,8 @@ export class DataExtractionComponent implements OnInit {
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
+        private pubScreenService: PubScreenService,
+        private cogbytesService: CogbytesService,
         private fb: UntypedFormBuilder,
         public dialogRefLink: MatDialog
     ) {
@@ -191,21 +225,119 @@ export class DataExtractionComponent implements OnInit {
         // loading speciesList for Species Dropdown 
         this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; console.log(this.speciesList); });
 
-
         // loading TaskList for Task Dropdown
         this.dataExtractionService.getAllTask().subscribe((data: any) => { this.taskList = data; });
 
+        // Load metadata lists from cogbytes service
+        this.loadMetadataLists();
+
+    }
+
+    loadMetadataLists() {
+        // Load all metadata lists that will be used for filtering
+        this.expDialogeService.getAllSpecies().subscribe((data: any) => { this.speciesList = data; });
+        this.dataExtractionService.getAllTask().subscribe((data: any) => { this.taskList = data; });
+        
+        // Load additional metadata from CogbytesService (has the correct methods)
+        this.cogbytesService.getSex().subscribe((data: any) => { this.sexList = data; });
+        this.cogbytesService.getStrain().subscribe((data: any) => { this.strainList = data; });
+        this.cogbytesService.getGenos().subscribe((data: any) => { this.genoList = data; });
+
+        // Load disease/model/region/method/neurotransmitter from pubScreen service
+        this.pubScreenService.getDisease().subscribe((data: any) => { this.diseaseList = data; });
+        this.pubScreenService.getSubModels().subscribe((data: any) => { this.subModelList = data; });
+        this.pubScreenService.getRegion().subscribe((data: any) => { this.regionList = data; });
+        this.pubScreenService.getRegionSubRegion().subscribe((data: any) => { this.subRegionList = data; });
+        this.pubScreenService.getCellType().subscribe((data: any) => { this.cellTypeList = data; });
+        this.pubScreenService.getMethod().subscribe((data: any) => { this.methodList = data; });
+        this.pubScreenService.getSubMethod().subscribe((data: any) => { this.subMethodList = data; });
+        this.pubScreenService.getNeurotransmitter().subscribe((data: any) => { this.neurotransmitterList = data; });
     }
 
     selectedSpeciesChange() {
+        // This method is now deprecated - metadata filtering is done via onMetadataChange()
+        this.onMetadataChange();
+    }
 
-
-        this.task.setValue('');
+    // New method: triggered when any metadata filter changes
+    onMetadataChange() {
+        // Reset experiments list
+        this.exp.setValue([]);
         this.resetDdls();
+        
+        // Fetch experiments filtered by the selected metadata
+        this.getFilteredExpList();
+    }
 
+    // Get experiments filtered by metadata (AND condition - all selected criteria must match)
+    getFilteredExpList() {
+        var isUser = this.authenticationService.isInRole("user");
+        var isAdmin = this.authenticationService.isInRole("administrator");
+        this.subSessionList = [];
+
+        if (isUser || isAdmin) {
+            this.dataExtractionService.getUserGuid().subscribe((userGuid : any) => {
+                this.getMetadataFilteredExpList(userGuid);
+                this.showGeneratedLink = false;
+            });
+        } else {
+            this.getMetadataFilteredExpList("");
+            this.showGeneratedLink = false;
+        }
+    }
+
+    // Fetch experiments matching the metadata criteria
+    getMetadataFilteredExpList(userGuid: any) {
+        // Build metadata filter criteria
+        const metadataFilter = {
+            taskIds: this.metadataTaskModel && this.metadataTaskModel.length > 0 ? this.metadataTaskModel : [],
+            speciesIds: this.metadataSpeciesModel && this.metadataSpeciesModel.length > 0 ? this.metadataSpeciesModel : [],
+            sexIds: this.metadataSexModel && this.metadataSexModel.length > 0 ? this.metadataSexModel : [],
+            strainIds: this.metadataStrainModel && this.metadataStrainModel.length > 0 ? this.metadataStrainModel : [],
+            genotypeIds: this.metadataGenotypeModel && this.metadataGenotypeModel.length > 0 ? this.metadataGenotypeModel : [],
+            ageStart: this.metadataAgeStartModel,
+            ageEnd: this.metadataAgeEndModel,
+            diseaseIds: this.metadataDiseaseModel && this.metadataDiseaseModel.length > 0 ? this.metadataDiseaseModel : [],
+            subModelIds: this.metadataSubModelModel && this.metadataSubModelModel.length > 0 ? this.metadataSubModelModel : [],
+            regionIds: this.metadataRegionModel && this.metadataRegionModel.length > 0 ? this.metadataRegionModel : [],
+            subRegionIds: this.metadataSubRegionModel && this.metadataSubRegionModel.length > 0 ? this.metadataSubRegionModel : [],
+            cellTypeIds: this.metadataCellTypeModel && this.metadataCellTypeModel.length > 0 ? this.metadataCellTypeModel : [],
+            methodIds: this.metadataMethodModel && this.metadataMethodModel.length > 0 ? this.metadataMethodModel : [],
+            subMethodIds: this.metadataSubMethodModel && this.metadataSubMethodModel.length > 0 ? this.metadataSubMethodModel : [],
+            neurotransmitterIds: this.metadataNeurotransmitterModel && this.metadataNeurotransmitterModel.length > 0 ? this.metadataNeurotransmitterModel : [],
+            housing: this.metadataHousingModel || '',
+            lightCycle: this.metadataLightCycleModel || ''
+        };
+
+        var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+
+        // Call service to get filtered experiments
+        this.dataExtractionService.getExpByMetadata(metadataFilter, userGuid, isFullDataAccess).subscribe((data : any) => {
+            this.expList = data;
+
+            // load the initial expList
+            this.filteredExpMulti.next(this.expList.slice());
+
+            this.expMultiFilterCtrl.valueChanges
+                .pipe(takeUntil(this._onDestroy))
+                .subscribe(() => {
+                    this.filterExpMulti();
+                    this.setToggleAllExp();
+                });
+
+            this.expMultiCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+                this.setToggleAllExp();
+            })
+
+            this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+                this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
+            });
+
+        });
     }
 
     // Getting Selected Task ID and Pass it to get Explist & SubtaskList
+    // NOTE: This method is kept for backward compatibility but is now called via onMetadataChange
     selectedTaskChange(selectedTaskVal : any, selectedSpeciesvalue :any) {
 
         var isUser = this.authenticationService.isInRole("user");

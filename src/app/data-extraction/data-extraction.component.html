@@ -12,34 +12,149 @@
             <tr>
                 <td style="padding: 13px 16px;">
 
-                    <!--Species dropDown-->
-                    <mat-form-field>
-                        <mat-select placeholder="Select the Species" [formControl]="species" (selectionChange)="selectedSpeciesChange()" required>
+                    <!--METADATA FILTERS SECTION-->
+                    <label style="color:#465563; font-weight: bold;">Metadata Filters:</label><br /><br />
+
+                    <!-- Row 1: Cognitive Task, Species, Sex -->
+                    <mat-form-field style="width:15%;">
+                        <mat-select placeholder="Select Cognitive Task(s)" [(ngModel)]="metadataTaskModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let task of taskList" [value]="task.id">
+                                <span matTooltip="{{task.task}}">{{task.task}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Specie(s)" [(ngModel)]="metadataSpeciesModel" (selectionChange)="onMetadataChange()" multiple>
                             <mat-option *ngFor="let species of speciesList" [value]="species.id">
                                 <span matTooltip="{{species.species}}">{{species.species}}</span>
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="species.invalid">{{getErrorMessageSpecies()}}</mat-error>
-                    </mat-form-field>
-                    &nbsp; &nbsp;  &nbsp;
-                    <!--Task dropDown-->
-                    <mat-form-field *ngIf="species.value!==null">
-                        <mat-select placeholder="Select the Task" [formControl]="task" (selectionChange)="selectedTaskChange(task.value, species.value)" required>
-                            <mat-option *ngFor="let task of taskList" [value]="task.id">
-                                <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
                     </mat-form-field>
 
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Sex" [(ngModel)]="metadataSexModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let sex of sexList" [value]="sex.id">
+                                <span matTooltip="{{sex.sex}}">{{sex.sex}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <br />
+
+                    <!-- Row 2: Strain, Genotype, Start Age, End Age -->
+                    <mat-form-field style="width:15%;">
+                        <mat-select placeholder="Select Strain(s)" [(ngModel)]="metadataStrainModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let strain of strainList" [value]="strain.id">
+                                <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Genotype(s)" [(ngModel)]="metadataGenotypeModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let geno of genoList" [value]="geno.id">
+                                <span matTooltip="{{geno.genotype}}">{{geno.genotype}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div style="display: flex; width: 25%; padding-left: 30px;">
+                        <mat-form-field style="width: 50%; margin-right: 10px;">
+                            <input matInput type="number" placeholder="Start Age (months)" [(ngModel)]="metadataAgeStartModel" (change)="onMetadataChange()">
+                        </mat-form-field>
+                        <mat-form-field style="width: 50%;">
+                            <input matInput type="number" placeholder="End Age (months)" [(ngModel)]="metadataAgeEndModel" (change)="onMetadataChange()">
+                        </mat-form-field>
+                    </div>
+                    <br />
+
+                    <!-- Row 3: Rodent Model, Sub-Rodent Model, Anatomical Region, Sub-Anatomical Region, Cell Type -->
+                    <mat-form-field style="width:15%">
+                        <mat-select placeholder="Select Rodent Model(s)" [(ngModel)]="metadataDiseaseModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let disease of diseaseList" [value]="disease.id">
+                                <span matTooltip="{{disease.diseaseModel}}">{{disease.diseaseModel}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <span [hidden]="subModelList.length === 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Rodent Model(s)" [(ngModel)]="metadataSubModelModel" (selectionChange)="onMetadataChange()" multiple>
+                                <mat-option *ngFor="let sub of subModelList" [value]="sub.id">
+                                    <span matTooltip="{{sub.subModel}}">{{sub.subModel}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Anatomical Region(s)" [(ngModel)]="metadataRegionModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let region of regionList" [value]="region.id">
+                                <span matTooltip="{{region.brainRegion}}">{{region.brainRegion}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <span [hidden]="subRegionList.length === 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Anatomical Region(s)" [(ngModel)]="metadataSubRegionModel" (selectionChange)="onMetadataChange()" multiple>
+                                <mat-option *ngFor="let subregion of subRegionList" [value]="subregion.id">
+                                    <span matTooltip="{{subregion.subRegion}}">{{subregion.subRegion}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Cell Type(s)" [(ngModel)]="metadataCellTypeModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let cell of cellTypeList" [value]="cell.id">
+                                <span matTooltip="{{cell.cellType}}">{{cell.cellType}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <br />
+
+                    <!-- Row 4: Method, Sub-Method, Neurochemical -->
+                    <mat-form-field style="width:15%">
+                        <mat-select placeholder="Select Method(s)" [(ngModel)]="metadataMethodModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let method of methodList" [value]="method.id">
+                                <span matTooltip="{{method.method}}">{{method.method}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <span [hidden]="subMethodList.length === 0">
+                        <mat-form-field style="width:15%; padding-left:30px">
+                            <mat-select placeholder="Select Sub-Method(s)" [(ngModel)]="metadataSubMethodModel" (selectionChange)="onMetadataChange()" multiple>
+                                <mat-option *ngFor="let sub of subMethodList" [value]="sub.id">
+                                    <span matTooltip="{{sub.subMethod}}">{{sub.subMethod}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                    <mat-form-field style="width:15%; padding-left:30px">
+                        <mat-select placeholder="Select Neurochemical(s)" [(ngModel)]="metadataNeurotransmitterModel" (selectionChange)="onMetadataChange()" multiple>
+                            <mat-option *ngFor="let neuro of neurotransmitterList" [value]="neuro.id">
+                                <span matTooltip="{{neuro.neuroTransmitter}}">{{neuro.neuroTransmitter}}</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <br />
+
+                    <!-- Row 5: Housing Info, Light Cycle Info -->
+                    <mat-form-field style="width:30%;">
+                        <textarea matInput placeholder="Housing Info" [(ngModel)]="metadataHousingModel" (change)="onMetadataChange()" matTextareaAutosize matAutosizeMinRows="2"
+                                matAutosizeMaxRows="5"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field style="width:30%; padding-left:30px">
+                        <textarea matInput placeholder="Light Cycle Info" [(ngModel)]="metadataLightCycleModel" (change)="onMetadataChange()" matTextareaAutosize matAutosizeMinRows="2"
+                                matAutosizeMaxRows="5"></textarea>
+                    </mat-form-field>
+                    <br /><br />
+
                     <!--Trial by Trial-->
-                    &nbsp; &nbsp;  &nbsp;
                     <mat-checkbox [(ngModel)]="isTrialByTrial">Extracting Data Trial by Trial</mat-checkbox>
                     <br /><br />
 
-                    <!--Experiment dropDown-->
-                    <mat-form-field *ngIf="task.value!==null">
-                        <mat-select [formControl]="exp" placeholder="Select Experiments" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
+                    <!--Experiment dropDown (filtered by metadata)-->
+                    <mat-form-field style="width: 100%;">
+                        <mat-select [formControl]="exp" placeholder="Select Experiments (Filtered by Metadata Above)" [multiple]="true" (selectionChange)="selectedExpChange(exp.value)">
 
                             <mat-option>
                                 <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" 
@@ -49,16 +164,6 @@
                                 (toggleAll)="selectAllExperiments($event)"
                                 [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
                             </mat-option>
-                                <!-- <button mat-raised-button
-                                        class="mat-primary fill text-sm"
-                                        (click)="selectAllExperiments()">
-                                    Select All
-                                </button>
-                                <button mat-raised-button
-                                        class="mat-accent fill text-sm"
-                                        (click)="deselectAllExperiments()">
-                                    Deselect All
-                                </button> -->
                             <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID" (onSelectionChange)="onToggleSingle()">
                                 <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
                             </mat-option>

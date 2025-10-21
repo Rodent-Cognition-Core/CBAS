@@ -30,6 +30,17 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    // Getting list of experiments filtered by metadata criteria
+    public getExpByMetadata(metadataFilter: any, userGuid: any, isFullDataAccess: any): any {
+
+        const body: string = JSON.stringify(metadataFilter);
+        return this.http
+            .post("/api/dataExtraction/GetExpByMetadata?userGuid=" + userGuid + "&isFullDataAccess=" + isFullDataAccess, body, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+
+    }
+
     public getUserGuid(): any {
         //console.log(this.authenticationService.getAuthorizationHeader());
         return this.http
