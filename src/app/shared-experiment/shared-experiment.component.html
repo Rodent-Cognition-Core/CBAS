@@ -10,7 +10,7 @@
         <tr>
             <td class="docs-markdown-td" style="vertical-align:top; width:300px">
                 <div>
-                    <label>please select your experiment: </label><br /><br />
+                    <label>Please select your experiment: </label><br /><br />
                     <mat-form-field>
                         <mat-select placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
                             <mat-option *ngFor="let exp of expList" [value]="exp.expID">
@@ -20,7 +20,12 @@
 
                     </mat-form-field>
                     &nbsp;
-                    <button mat-icon-button matTooltip="Add new experiment" (click)="openDialog(null)"><mat-icon>add</mat-icon></button>
+                    <!--<button mat-icon-button matTooltip="Add new experiment" (click)="openDialog(null)"><mat-icon>add</mat-icon></button>-->
+                    <button mat-button [matMenuTriggerFor]="menu"><mat-icon>add</mat-icon></button>
+                    <mat-menu #menu="matMenu">
+                        <button matTooltip="Add new experiment" (click)="openDialog(null)" mat-menu-item>Add Experiment</button>
+                        <button matTooltip="Add new time series data" (click)="openTimeSeries(null)" mat-menu-item>Add Time Series Data</button>
+                    </mat-menu>
                 </div>
                 <div *ngIf="selectedExpValue!==null && hideSubExperiment===false">
                     <label>please select your sub-experiment: </label><br /><br />
