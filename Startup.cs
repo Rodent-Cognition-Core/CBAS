@@ -113,7 +113,7 @@ namespace AngularSPAWebAPI
                     .AddJwtBearer(options =>
                     {
                         options.Authority = publicURL;
-                        options.RequireHttpsMetadata = false;
+                        options.RequireHttpsMetadata = true;
                         options.Audience = "WebAPI";
                         
                         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
