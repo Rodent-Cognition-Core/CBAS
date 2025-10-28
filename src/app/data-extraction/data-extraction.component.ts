@@ -353,9 +353,10 @@ export class DataExtractionComponent implements OnInit {
                 this.setToggleAllExp();
             })
 
-            this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+            // Set compareWith only if multiSelect is defined
+            if (this.multiSelect) {
                 this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
-            });
+            }
 
         });
 
@@ -1120,6 +1121,11 @@ export class DataExtractionComponent implements OnInit {
     }
 
     checkToggleAll() {
+        // Check if expList and expMultiCtrl.value exist before accessing their length
+        if (!this.expList || !this.expMultiCtrl.value) {
+            this.isAllExpChecked = false;
+            return;
+        }
         if(this.expList.length === this.expMultiCtrl.value.length) {
             this.isAllExpChecked = true;
         } else {

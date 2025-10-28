@@ -1,36 +1,123 @@
-name: Approve and Merge PR
+# name: Merge Dev to Staging and Deploy via Docker
 
+# # Trigger this workflow when code is pushed to the dev branch
+# on:
+#   pull_request:
+#     branches:
+#       - develop
+
+# jobs:
+#   merge-and-deploy:
+#     runs-on: self-hosted  # Use the latest Ubuntu runner
+#     #environment: staging
+
+#     steps:
+#       # Step 1: Checkout the full repository including all branches
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Required to access all branches for merging
+
+#       # Step 2: Set up Git user for committing the merge
+#       - name: Set up Git
+#         run: |
+#           git config user.name "github-actions"
+#           git config user.email "github-actions@github.com"
+
+#       # Step 3: Merge dev into staging and push the changes
+#       - name: Merge dev into staging
+#         run: |
+#           git checkout staging                      # Switch to staging branch
+#           git merge origin/develop --no-ff -m "Auto-merge dev into staging"  # Merge dev
+#           git push origin staging                   # Push updated staging branch
+
+#       # Step 4: SSH into the server and deploy using Docker
+#       - name: Deploy to self-hosted server via SSH
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host: ${{ secrets.SSH_HOST }}             # Server IP or domain
+#           username: ${{ secrets.SSH_USER }}         # SSH username
+#           key: ${{ secrets.SSH_KEY }}               # SSH private key
+#           script: |
+#             cd /cephfs/staging/CBAS                    # Navigate to app directory
+#             git pull origin staging                 # Pull latest code from staging
+#             docker compose down                     # Stop running containers
+#             docker compose up -d --build            # Rebuild and start containers in detached mode
+
+name: Merge Dev to Staging and Deploy with Docker Compose
+
+# Trigger this workflow when code is pushed to the 'dev' branch
 on:
+
   pull_request:
+    branches:
+      - develop
     types: [opened, synchronize, reopened]
 
 jobs:
-  approve-and-merge:
+  merge-to-staging:
+    name: Merge dev into staging
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get PR Author Username
-      id: get_pr_author
-      run: |
-        PR_AUTHOR=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | jq -r '.user.login')
-        echo "PR_AUTHOR=$PR_AUTHOR" >> $GITHUB_ENV
+      # Checkout the repository with full history
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Debug PR Author Username
-      run: |
-        echo "PR_AUTHOR: ${{ env.PR_AUTHOR }}"
+      # Configure Git user for automated commits
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Check PR Author Username
-      env:
-        PR_AUTHOR: ${{ env.PR_AUTHOR }}
-      run: |
-        if [[ "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_1 }}" && "${{ env.PR_AUTHOR }}" != "${{ secrets.ALLOWED_AUTHOR_2 }}" ]]; then
-          echo "PR author is not allowed to merge."
-          exit 1
-        fi
+      # Fetch all remote branches
+      - name: Fetch all branches
+        run: git fetch origin
 
-    - name: Merge PR
-      if: success()
-      run: |
-        gh pr merge ${{ github.event.pull_request.number }} --merge
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Switch to the staging branch
+      - name: Checkout staging
+        run: git checkout staging
+
+      # Merge the latest changes from dev into staging
+      - name: Merge dev into staging
+        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
+
+
+      # Push the updated staging branch back to the remote
+      - name: Push to staging
+        run: git push origin staging
+
+  deploy-to-staging:
+    name: Deploy to Staging Site with Docker Compose
+    needs: merge-to-staging
+    runs-on: self-hosted  # This job runs on your self-hosted runner (staging server)
+    # if: github.ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop'
+
+    steps:
+      # Checkout the updated staging branch
+      - name: Checkout staging branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          
+      - name: Copy code to staging directory
+        run: |
+          rsync -av --delete --exclude='.env' . /cephfs/staging/CBAS/
+
+          
+      - name: Stop and remove only app_staging container
+        working-directory: /cephfs/staging/CBAS
+        run: |
+              docker stop app_staging || true
+              docker rm app_staging || true
+      - name: Remove unused images (safe prune)
+        run: |
+              docker image prune -f
+      - name: Force fresh rebuild and restart app_staging
+        working-directory: /cephfs/
+        run: |
+              DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
+              docker compose up -d app_staging
+

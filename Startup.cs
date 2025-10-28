@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Nest;
 using Serilog;
 using Serilog.Exceptions;
+using static System.Net.WebRequestMethods;
 
 namespace AngularSPAWebAPI
 {
@@ -38,6 +39,7 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var publicURL = Environment.GetEnvironmentVariable("PUBLIC_ORIGIN");
             // By setting EnableEndpointRouting to false, you can continue using the traditional MVC routing setup
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //// SQLite & Identity.
@@ -89,10 +91,36 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
-            // Uncomment this line for publuishing
-            //services.AddIdentityServer(options =>
-            //         options.PublicOrigin = "https://mousebytes.ca")
-            services.AddIdentityServer()
+            if (currentEnvironment.IsProduction())
+            {
+                // Uncomment this line for publuishing
+                services.AddIdentityServer(options =>
+                         options.PublicOrigin = publicURL)
+                    //services.AddIdentityServer()
+                    // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                    // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                    // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                    .AddDeveloperSigningCredential()
+                    .AddInMemoryPersistedGrants()
+                    // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
+                    // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
+                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                    .AddInMemoryApiResources(Config.GetApiResources())
+                    .AddInMemoryClients(Config.GetClients())
+                    .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+
+                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = publicURL;
+                        options.RequireHttpsMetadata = false;
+
+                        options.ApiName = "WebAPI";
+                    });
+            }
+            else
+            {
+                services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
@@ -104,20 +132,6 @@ namespace AngularSPAWebAPI
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-
-            if (currentEnvironment.IsProduction())
-            {
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = "http://localhost:5000/";
-                        options.RequireHttpsMetadata = false;
-
-                        options.ApiName = "WebAPI";
-                    });
-            }
-            else
-            {
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -141,7 +155,7 @@ namespace AngularSPAWebAPI
 
                 options.AddPolicy("ProductionCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("https://mousebytes.ca") // Production origins
+                    builder.WithOrigins(publicURL) // Production origins
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -163,6 +177,7 @@ namespace AngularSPAWebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
+
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -172,13 +187,28 @@ namespace AngularSPAWebAPI
             }
             else
             {
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                });
                 app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandlingPath = "/Home/Error",
+                    AllowStatusCode404Response = true
+                });
                 app.UseHsts();
             }
            
 
             app.UseHttpsRedirection();
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
             app.UseRouting();
 
 
@@ -238,14 +268,6 @@ namespace AngularSPAWebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
-            // Uses default files as index.html.
-            app.UseDefaultFiles();
-            // this should always be the last middleware
-            app.UseStaticFiles();
-
-
         }
     }
 }

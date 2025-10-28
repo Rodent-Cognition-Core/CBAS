@@ -132,6 +132,12 @@ export class ProfileComponent implements OnInit {
 
     }
 
+    removePiSite(psid: any) {
+        this.piSiteService.deletePIUserSiteByPSID(psid).subscribe(() => {
+            this.GetPISiteListByUserID();
+        });
+    }
+
 
     getErrorMessageGN() {
 
