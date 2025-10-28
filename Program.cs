@@ -32,7 +32,7 @@ namespace AngularSPAWebAPI
                         .UseStartup<Startup>()
                         .UseKestrel(o => { o.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10); o.Limits.MaxRequestBodySize = null; })
                         .UseIIS()
-                        .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Any, 8082, listenOptions =>
+                        .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Any, 8081, listenOptions =>
                         {
                             var cert = X509Certificate2.CreateFromPemFile("/https/mousebytes-cert.pem", "/https/mousebytes-key.pem");
                             cert = new X509Certificate2(cert.Export(X509ContentType.Pfx));

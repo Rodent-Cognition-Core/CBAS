@@ -155,7 +155,7 @@ namespace AngularSPAWebAPI
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
                 {
-                    builder.WithOrigins(Environment.GetEnvironmentVariable("APP_URL"))
+                    builder.WithOrigins(publicURL)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
