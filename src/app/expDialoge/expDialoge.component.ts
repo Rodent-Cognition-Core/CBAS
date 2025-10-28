@@ -88,6 +88,7 @@ export class ExpDialogeComponent implements OnInit {
 
         //console.log(this.data.experimentObj);
         // if it is an Edit model
+        debugger;
         if (this.data.experimentObj != null) {
             this.exp.setValue(this.data.experimentObj.expName);
             this.sDate.setValue(this.data.experimentObj.startExpDate);
