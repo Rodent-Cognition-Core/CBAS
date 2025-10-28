@@ -21,7 +21,7 @@ using Remotion.Linq.Clauses;
 using System.Reflection;
 using System.Net;
 using Nest;
-using IdentityServer4.Models;
+using IdentityServer8.Models;
 using CBAS.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal.Networking;
 using Elasticsearch.Net;

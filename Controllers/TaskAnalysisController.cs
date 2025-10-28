@@ -1,6 +1,6 @@
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
-using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace AngularSPAWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Access Resources")]
     public class TaskAnalysisController : Controller
     {
         private readonly TaskAnalysisService _taskAnalysysService1;

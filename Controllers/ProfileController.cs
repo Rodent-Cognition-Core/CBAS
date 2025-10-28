@@ -1,6 +1,6 @@
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
-using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ namespace AngularSPAWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Access Resources")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Access Resources")]
     public class ProfileController : Controller
     {
         private readonly ProfileService _profileService;

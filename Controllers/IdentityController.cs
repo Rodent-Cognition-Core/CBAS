@@ -3,7 +3,7 @@ using AngularSPAWebAPI.Models.AccountViewModels;
 using AngularSPAWebAPI.Services;
 using CBAS.Helpers;
 using IdentityModel;
-using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace AngularSPAWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     // Authorization policy for this API.
-    [Authorize(AuthenticationSchemes = IdentityServerAuthenticationDefaults.AuthenticationScheme, Policy = "Manage Accounts")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Manage Accounts")]
     public class IdentityController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
