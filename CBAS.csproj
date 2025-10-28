@@ -25,10 +25,10 @@
 
   <ItemGroup>
     <PackageReference Include="dropzone" Version="4.3.0" />
-    <PackageReference Include="IdentityServer4" Version="2.0.0" />
+    <PackageReference Include="HigginsSoft.IdentityServer8" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
-    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.0.0" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.0.0" />
+    <PackageReference Include="HigginsSoft.IdentityServer8.AspNetIdentity" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv" Version="6.0.33" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
