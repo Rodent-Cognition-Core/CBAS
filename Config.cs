@@ -1,5 +1,5 @@
-using IdentityServer4;
-using IdentityServer4.Models;
+using IdentityServer8;
+using IdentityServer8.Models;
 using System.Collections.Generic;
 
 namespace AngularSPAWebAPI
@@ -17,13 +17,25 @@ namespace AngularSPAWebAPI
             };
         }
 
+        // Api scopes.
+        public static IEnumerable<ApiScope> GetApiScopes()
+        {
+            return new List<ApiScope>
+            {
+                new ApiScope("WebAPI", "WebAPI scope") {
+                    UserClaims = { "role", "sub", "name" }
+                }
+            };
+        }
+
         // Api resources.
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
             {
-                new ApiResource("WebAPI" ) {
-                    UserClaims = { "role" }
+                new ApiResource("WebAPI", "WebAPI resource") {
+                    Scopes = { "WebAPI" },
+                    UserClaims = { "role", "sub", "name" }
                 }
             };
         }
@@ -43,6 +55,12 @@ namespace AngularSPAWebAPI
                     RequireClientSecret = false, // This client does not need a secret to request tokens from the token endpoint.
                     IdentityTokenLifetime = 3600, //Lifetime to identity token in seconds (defaults to 300 seconds / 5 minutes)
                     AccessTokenLifetime = 7200, // Lifetime of access token in seconds.
+                    
+                    // Use JWT access tokens and include user claims
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    AlwaysSendClientClaims = true,
+                    IncludeJwtId = true,
 
                     AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId, // For UserInfo endpoint.

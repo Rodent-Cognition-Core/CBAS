@@ -4,7 +4,7 @@ using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
-using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -72,15 +72,11 @@ namespace AngularSPAWebAPI
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(1);
-            });
 
-            // Role based Authorization: policy based role checks.
-            services.AddAuthorization(options =>
-            {
-                // Policy for dashboard: only administrator role.
-                options.AddPolicy("Manage Accounts", policy => policy.RequireRole("administrator"));
-                // Policy for resources: user or administrator roles. 
-                options.AddPolicy("Access Resources", policy => policy.RequireRole("administrator", "user"));
+                // Ensure ASP.NET Identity uses the same claim types as the JWT
+                options.ClaimsIdentity.RoleClaimType = "role";
+                options.ClaimsIdentity.UserIdClaimType = "sub";
+                options.ClaimsIdentity.UserNameClaimType = "name";
             });
 
             // Adds application services.
@@ -91,11 +87,13 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
+            System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
             if (currentEnvironment.IsProduction())
             {
                 // Uncomment this line for publuishing
                 services.AddIdentityServer(options =>
-                         options.PublicOrigin = publicURL)
+                         options.IssuerUri = publicURL)
                     //services.AddIdentityServer()
                     // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                     // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
@@ -105,17 +103,35 @@ namespace AngularSPAWebAPI
                     // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
                     // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                    .AddInMemoryApiScopes(Config.GetApiScopes())
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryClients(Config.GetClients())
-                    .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+                    .AddAspNetIdentity<ApplicationUser>() // IdentityServer8.AspNetIdentity.
+                    .AddProfileService<IdentityServer8.AspNetIdentity.ProfileService<ApplicationUser>>(); // Ensure profile service includes claims
 
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
                     {
                         options.Authority = publicURL;
                         options.RequireHttpsMetadata = false;
+                        options.Audience = "WebAPI";
+                        
+                        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                        {
+                            NameClaimType = "name",
+                            RoleClaimType = "role"
+                        };
 
-                        options.ApiName = "WebAPI";
+                        // Diagnostic: dump token claims to debug output on successful validation
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnTokenValidated = ctx =>
+                            {
+                                var claims = ctx.Principal.Claims.Select(c => new { c.Type, c.Value });
+                                System.Diagnostics.Debug.WriteLine(System.Text.Json.JsonSerializer.Serialize(claims));
+                                return System.Threading.Tasks.Task.CompletedTask;
+                            }
+                        };
                     });
             }
             else
@@ -129,20 +145,46 @@ namespace AngularSPAWebAPI
                 // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
                 // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
-                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
+                .AddAspNetIdentity<ApplicationUser>() // IdentityServer8.AspNetIdentity.
+                .AddProfileService<IdentityServer8.AspNetIdentity.ProfileService<ApplicationUser>>(); // Ensure profile service includes claims
+                
+                services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
                     options.Authority = "http://localhost:5000/";
                     options.RequireHttpsMetadata = false;
+                    options.Audience = "WebAPI";
+                    
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role"
+                    };
 
-                    options.ApiName = "WebAPI";
+                    // Diagnostic: dump token claims to debug output on successful validation
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = ctx =>
+                        {
+                            var claims = ctx.Principal.Claims.Select(c => new { c.Type, c.Value });
+                            System.Diagnostics.Debug.WriteLine(System.Text.Json.JsonSerializer.Serialize(claims));
+                            return System.Threading.Tasks.Task.CompletedTask;
+                        }
+                    };
                 });
             }
 
-
+            // Role based Authorization: policy based role checks.
+            services.AddAuthorization(options =>
+            {
+                // Policy for dashboard: only administrator role.
+                options.AddPolicy("Manage Accounts", policy => policy.RequireRole("administrator"));
+                // Policy for resources: user or administrator roles. 
+                options.AddPolicy("Access Resources", policy => policy.RequireRole("administrator", "user"));
+            });
             services.AddCors(options =>
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
@@ -261,6 +303,8 @@ namespace AngularSPAWebAPI
             });
 
             app.UseIdentityServer();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseMvc(routes =>
             {
