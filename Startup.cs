@@ -6,6 +6,7 @@ using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -33,6 +34,7 @@ namespace AngularSPAWebAPI
             currentEnvironment = env;
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
+
 
         public IConfiguration Configuration { get; }
 
@@ -93,6 +95,8 @@ namespace AngularSPAWebAPI
 
             if (currentEnvironment.IsProduction())
             {
+                var appName = Environment.GetEnvironmentVariable("APP_NAME");
+
                 // Uncomment this line for publuishing
                 services.AddIdentityServer(options =>
                          options.PublicOrigin = publicURL)
@@ -117,6 +121,8 @@ namespace AngularSPAWebAPI
 
                         options.ApiName = "WebAPI";
                     });
+                services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
+                    .SetApplicationName(appName);
             }
             else
             {
@@ -161,7 +167,6 @@ namespace AngularSPAWebAPI
                            .AllowCredentials();
                 });
             });
-
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
 
             services.AddMvc();
