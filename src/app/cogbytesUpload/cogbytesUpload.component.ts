@@ -170,6 +170,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
             this.uploadFileList = this.uploadObj.uploadFileList;
             // this.UpdateFileList();
         }
+
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -410,8 +411,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     DownloadFile(file: any): void {
 
-        let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
-
+        let path = file.permanentFilePath + '\\' + file.sysFileName;
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
 
@@ -462,7 +462,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
                     this.spinnerService.hide();
                 }, 500);
 
-                let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
+                let path = file.permanentFilePath + '\\' + file.sysFileName;
                 this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
                 })).subscribe(
