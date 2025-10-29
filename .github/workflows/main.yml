@@ -104,7 +104,13 @@ jobs:
           
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete --exclude='.env' . /cephfs/staging/CBAS/
+              rsync -av --delete \
+                --exclude='.env' \
+                --exclude='wwwroot/' \
+                --exclude=UPLOAD/ \
+                --exclude=TempUpload/ \
+                --exclude='persistent_data/' \
+                . /cephfs/staging/CBAS/
 
           
       - name: Stop and remove only app_staging container
