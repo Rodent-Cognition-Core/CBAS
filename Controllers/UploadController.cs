@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AngularSPAWebAPI.Controllers
@@ -109,7 +111,26 @@ namespace AngularSPAWebAPI.Controllers
                 path = fur.PermanentFilePath + "\\" + fur.SysFileName;
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+
                 path = fur.PermanentFilePath + "/" + fur.SysFileName;
+                // Checks for patterns like "C:\" or "D:\"
+                if (Regex.IsMatch(fur.PermanentFilePath, @"^[A-Za-z]:\\"))
+                {
+                    string[] parts = Regex.Split(fur.PermanentFilePath, @"\\");
+
+                    path = "/app/UPLOAD/";
+                    Boolean afterUpload = false;
+                    foreach (string part in parts) {
+                        if (afterUpload) {
+                            path += part + "/";
+                        }
+                        if (part.Equals("UPLOAD"))
+                        {
+                            afterUpload = true;
+                        }
+                    }
+                    path += fur.SysFileName;
+                }
             }
 
             var memory = new MemoryStream();
