@@ -135,7 +135,7 @@ namespace AngularSPAWebAPI
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = Environment.GetEnvironmentVariable("api_url");
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "WebAPI";
@@ -147,7 +147,7 @@ namespace AngularSPAWebAPI
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins(Environment.GetEnvironmentVariable("app_url"))
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -161,6 +161,7 @@ namespace AngularSPAWebAPI
                            .AllowCredentials();
                 });
             });
+
 
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
 

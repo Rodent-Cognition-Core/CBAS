@@ -10,9 +10,14 @@ import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
+
+const api_url = environment.api_url;
+
 const COGUPLOAD_DROPZONE_CONFIG: DropzoneConfigInterface = {
     // Change this to your upload POST address:
-    url: 'http://localhost:5000/api/cogbytes/AddFiles',
+
+    url: api_url + '/api/cogbytes/AddFiles',
     maxFilesize: 10000,
     //acceptedFiles: '.*',
     // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
