@@ -569,7 +569,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     }
 
     getLinkURL(rep : any) {
-        return "http://localhost:4200/comp-edit?repolinkguid=" + rep.repoLinkGuid;
+        return "app_url/comp-edit?repolinkguid=" + rep.repoLinkGuid;
     }
 }
 

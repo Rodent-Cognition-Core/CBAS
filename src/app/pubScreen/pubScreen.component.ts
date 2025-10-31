@@ -857,7 +857,7 @@ export class PubScreenComponent implements OnInit, OnDestroy {
 
             const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
+            dialogRefLink.componentInstance.message = "app_url/pubScreen-edit?paperlinkguid=" + guid;
 
     }
 

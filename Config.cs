@@ -1,5 +1,6 @@
 using IdentityServer4;
 using IdentityServer4.Models;
+using System;
 using System.Collections.Generic;
 
 namespace AngularSPAWebAPI
@@ -57,7 +58,7 @@ namespace AngularSPAWebAPI
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AllowedCorsOrigins = new List<string>
                     {
-                        "http://localhost:4200"
+                        Environment.GetEnvironmentVariable("app_url")
                     } // Only for development.
                 }
             };
