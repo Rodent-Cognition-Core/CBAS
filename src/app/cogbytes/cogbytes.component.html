@@ -84,7 +84,7 @@
                                         <span style="color: #A569BD;">MouseBytes datasets associated to this repository:</span>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                                <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="{{app_url}}/data-extraction" target="_blank">Extracting Data</a></p>
                                 <table>
                                     <tr *ngFor="let exp of getRep().experiment">
                                         <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>

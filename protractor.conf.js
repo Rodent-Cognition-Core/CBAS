@@ -1,7 +1,8 @@
 // Protractor configuration file, see link for more information
 // https://github.com/angular/protractor/blob/master/lib/config.ts
-
+import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
 const { SpecReporter } = require('jasmine-spec-reporter');
+const app_url = environment.app_url;
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -12,7 +13,7 @@ exports.config = {
     'browserName': 'chrome'
   },
   directConnect: true,
-  baseUrl: 'app_url/',
+    baseUrl: app_url ,
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

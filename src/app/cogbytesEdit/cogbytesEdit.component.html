@@ -35,7 +35,7 @@
                         <label>Description:</label> &nbsp; <span style="color:#696d70;">{{( repObj.description ==="") ?  "N/A" : repObj.description}}</span><br /><br />
                         <label>Additional Notes:</label> &nbsp; <span style="color:#696d70;">{{( repObj.additionalNotes ==="") ?  "N/A" : repObj.additionalNotes}}</span><br /><br />
                         <label>Status:</label> &nbsp; <span style="color:#696d70;">{{repObj.privacyStatus === true ? 'Public' : 'Private'}}</span> <br /><br />
-
+                        <label>Suji</label>
                         <label><b>Uploads:</b></label><br /><br />
 
                         <div>
@@ -109,7 +109,7 @@
                                     <span style="color: #A569BD;">MouseBytes datasets associate to this repository:</span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
-                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="https://mousebytes.ca/data-extraction" target="_blank">Extracting Data</a></p>
+                            <p><span>You can search and extract the data using the following link and information:</span>&nbsp;<a href="{{app_url}}/data-extraction" target="_blank">Extracting Data</a></p>
                             <table>
                                 <tr *ngFor="let exp of repObj.experiment">
                                     <td>Experiment Name:&nbsp; <span style="color:#696d70;">{{exp.expName}}</span></td>
