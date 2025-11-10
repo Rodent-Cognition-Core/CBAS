@@ -6,7 +6,7 @@ RUN rm -rf node_modules
 RUN rm package-lock.json
 RUN npm cache clean --force
 RUN npm install
-RUN npm run build:prod
+RUN npm run build:staging
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
