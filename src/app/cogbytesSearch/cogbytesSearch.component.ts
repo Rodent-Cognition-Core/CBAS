@@ -9,6 +9,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { INVALIDYEAR } from '../shared/messages';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -74,7 +75,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     //yearFrom = new UntypedFormControl('', []);
     yearTo: UntypedFormControl;
-
+    public app_url = environment.app_url;
     public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
@@ -563,7 +564,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     }
 
     getLinkURL(rep : any) {
-        return "https://staging.mousebytes.ca/comp-edit?repolinkguid=" + rep.repoLinkGuid;
+        return this.app_url +  "/comp-edit?repolinkguid=" + rep.repoLinkGuid;
     }
 }
 

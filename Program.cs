@@ -39,7 +39,7 @@ namespace AngularSPAWebAPI
                             listenOptions.UseHttps(cert);
                         }))
                         //.UseHttpSys(options => { options.MaxRequestBodySize = 100_000_000;})
-                        //.UseUrls("https://0.0.0.0:8082")
+                        //.UseUrls("api_url")
                         .Build();
     }
 }

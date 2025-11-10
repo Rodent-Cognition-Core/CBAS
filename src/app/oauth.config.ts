@@ -5,12 +5,15 @@ import { AuthenticationService } from './services/authentication.service';
 
 import { environment } from '../environments/environment';
 
+
+const api_url = environment.api_url;
+debugger;
 export const oAuthDevelopmentConfig: AuthConfig = {
 
     clientId: "AngularCBAS",
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
-    issuer: "https://staging.mousebytes.ca",
+    issuer: api_url,
     requireHttps: false,
     waitForTokenInMsec: 0
 
@@ -21,7 +24,7 @@ export const oAuthProductionConfig: AuthConfig = {
     clientId: "AngularCBAS",
     scope: "openid offline_access WebAPI profile roles",
     oidc: false,
-    issuer: "https://staging.mousebytes.ca",
+    issuer: api_url,
     requireHttps: false,
     waitForTokenInMsec: 0
 

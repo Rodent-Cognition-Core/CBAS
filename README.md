@@ -22,11 +22,11 @@ The database schema can be found in file <b>mb_script_schemaOnly.sql</b>.
 1. Navigate to Run and Debug
 2. Select .NET Core Launch (Web)
 3. Application will begin launcher
-4. Access the MouseBytes web page with https://staging.mousebytes.ca
+4. Access the MouseBytes web page with app_url
 
 ## Visual Studio:
 1. Select AngularSPAWebAPI_dev and launch
-2. Access the MouseBytes web page with https://staging.mousebytes.ca
+2. Access the MouseBytes web page with app_url
 
 
 Please cite this article for any use of this platform: https://doi.org/10.1038/s41597-023-02106-1

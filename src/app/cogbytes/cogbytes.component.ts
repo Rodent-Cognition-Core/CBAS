@@ -10,6 +10,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { map } from 'rxjs/operators';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFRIMREPOSITORYDETLETE } from '../shared/messages';
+import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
+
 
 
 @Component({
@@ -26,7 +28,7 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     panelOpenState: boolean;
     showGeneratedLink: boolean;
     public repModel: any;
-
+    public app_url = environment.app_url;
     // Definiing List Variables
     repList: any;
     uploadList: any;
@@ -236,14 +238,14 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
             const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            dialogRefLink.componentInstance.message = "https://staging.mousebytes.ca/comp-edit?repolinkguid=" + guid;
+            dialogRefLink.componentInstance.message = this.app_url + "/comp-edit?repolinkguid=" + guid;
 
         });
 
     }
 
     getLinkURL() {
-        return "https://staging.mousebytes.ca/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
+        return this.app_url + "/comp-edit?repolinkguid=" + this.getRep().repoLinkGuid;
     }
 
 }

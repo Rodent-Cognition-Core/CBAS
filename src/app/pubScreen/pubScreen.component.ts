@@ -13,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { ReqGeneralDialogeComponent } from '../reqGeneralDialoge/reqGeneralDialoge.component';
 import { CONFIRMDELETE, YEARNEEDSTOBEGREATER } from '../shared/messages';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -122,6 +123,7 @@ export class PubScreenComponent implements OnInit, OnDestroy {
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
+    public app_url = environment.app_url;
 
 
 
@@ -857,7 +859,7 @@ export class PubScreenComponent implements OnInit, OnDestroy {
 
             const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            dialogRefLink.componentInstance.message = "https://staging.mousebytes.ca/pubScreen-edit?paperlinkguid=" + guid;
+            dialogRefLink.componentInstance.message = this.app_url + "/pubScreen-edit?paperlinkguid=" + guid;
 
     }
 
