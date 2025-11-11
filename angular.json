@@ -51,12 +51,13 @@
               ]
             },
             "staging": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
-                }
-              ]
+                "fileReplacements": [
+                    {
+                        "replace": "src/environments/environment.ts",
+                        "with": "src/environments/environment.staging.ts"
+                    }
+                ],
+                "proxyConfig": "proxy.staging.js"
             },
             "production": {
               "optimization": true,
@@ -64,7 +65,8 @@
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
-              "extractLicenses": true,
+               "extractLicenses": true,
+              "proxyConfig": "proxy.production.js",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
