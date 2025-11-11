@@ -57,6 +57,7 @@
                         "with": "src/environments/environment.staging.ts"
                     }
                 ],
+
                 "proxyConfig": "proxy.staging.js"
             },
             "production": {
@@ -85,13 +86,15 @@
           },
           "configurations": {
             "hmr": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build"
             },
             "staging": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build",
+                "proxyConfig": "proxy.staging.js"
             },
             "production": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build",
+                "proxyConfig": "proxy.production.js"
             }
           }
         },
