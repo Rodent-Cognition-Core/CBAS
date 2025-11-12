@@ -359,7 +359,7 @@ Thumbs.db
 /.npmignore
 
 #enviroment
-src/environments/environment.hmr.ts
-src/environments/environment.prod.ts
-src/environments/environment.staging.ts
+/src/environments/environment.hmr.ts
+/src/environments/environment.prod.ts
+/src/environments/environment.staging.ts
 
