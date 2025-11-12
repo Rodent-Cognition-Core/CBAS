@@ -7,7 +7,6 @@ import { environment } from '../environments/environment';
 
 
 const api_url = environment.api_url;
-debugger;
 export const oAuthDevelopmentConfig: AuthConfig = {
 
     clientId: "AngularCBAS",
@@ -30,6 +29,17 @@ export const oAuthProductionConfig: AuthConfig = {
 
 }
 
+export const oAuthStagingConfig: AuthConfig = {
+
+    clientId: "AngularCBAS", // Adjust if staging uses a different Client ID
+    scope: "openid offline_access WebAPI profile roles",
+    oidc: false,
+    issuer: api_url,
+    requireHttps: false, // Adjust if staging requires HTTPS
+    waitForTokenInMsec: 0
+
+}
+
 /**
  * angular-oauth2-oidc configuration.
  */
@@ -42,9 +52,15 @@ export class OAuthConfig {
     ) { }
 
     load(): Promise<void> {
-        const config = environment.production
-            ? oAuthProductionConfig
-            : oAuthDevelopmentConfig;
+        let config: AuthConfig;
+
+        if (environment.production) {
+            config = oAuthProductionConfig;
+        } else if (environment.staging) { // Check for staging environment
+            config = oAuthStagingConfig;
+        } else {
+            config = oAuthDevelopmentConfig;
+        }
 
         // Configure OAuthService
         this.oAuthService.configure(config);
