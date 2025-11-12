@@ -58,7 +58,7 @@ namespace AngularSPAWebAPI
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AllowedCorsOrigins = new List<string>
                     {
-                        Environment.GetEnvironmentVariable("app_url")
+                        Environment.GetEnvironmentVariable("APP_URL")
                     } // Only for development.
                 }
             };
