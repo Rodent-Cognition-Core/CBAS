@@ -104,7 +104,7 @@ jobs:
           
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete --exclude='.env' --exclude='/cephfs/staging/CBAS/src/environments' . /cephfs/staging/CBAS/
+          rsync -av --delete --exclude='.env' --exclude='src/environments/' . /cephfs/staging/CBAS/
 
           
       - name: Stop and remove only app_staging container
