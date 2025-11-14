@@ -6,7 +6,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { environment } from '../environments/environment';
 
 
-const api_url = environment.api_url;
+const api_url = environment.API_URL;
 export const oAuthDevelopmentConfig: AuthConfig = {
 
     clientId: "AngularCBAS",
