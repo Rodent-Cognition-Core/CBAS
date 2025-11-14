@@ -104,7 +104,6 @@ jobs:
           
       - name: Copy code to staging directory
         run: |
-<<<<<<< HEAD
               rsync -av --delete \
                 --exclude='.env' \
                 --exclude='wwwroot/' \
@@ -112,10 +111,6 @@ jobs:
                 --exclude=TempUpload/ \
                 --exclude='persistent_data/' \
                 . /cephfs/staging/CBAS/
-=======
-          rsync -av --delete --exclude='.env' /cephfs/staging/CBAS/ /cephfs/staging/CBAS/
->>>>>>> 057b301 (change gitworkflow to copy staging directory only)
-
           
       - name: Stop and remove only app_staging container
         working-directory: /cephfs/staging/CBAS
