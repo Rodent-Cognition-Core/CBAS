@@ -141,7 +141,7 @@ export class SharedExperimentComponent implements OnInit {
         let dialogref = this.dialog.open(ExpDialogeComponent, {
             //height: '700px',
             width: '600px',
-            data: { isTimeSeriese: true }
+            data: { isTimeSeries: true }
         });
 
         dialogref.afterClosed().subscribe(result => {
