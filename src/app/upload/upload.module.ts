@@ -10,7 +10,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button'
 import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
 
-debugger;
 var api_url = environment.APP_URL;
 @NgModule({
     imports: [
