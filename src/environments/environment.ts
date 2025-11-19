@@ -7,6 +7,6 @@ export const environment: any = {
     production: false,
     staging: false,
     hmr: false,
-    app_url: "http://localhost:4200",
-    api_url: "http://localhost:5000"
+    APP_URL: "http://localhost:4200",
+    API_URL: "http://localhost:5000"
 };

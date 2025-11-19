@@ -28,7 +28,7 @@ export class CogbytesComponent implements OnInit, OnDestroy {
     panelOpenState: boolean;
     showGeneratedLink: boolean;
     public repModel: any;
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
     // Definiing List Variables
     repList: any;
     uploadList: any;

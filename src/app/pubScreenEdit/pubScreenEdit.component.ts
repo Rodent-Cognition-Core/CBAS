@@ -34,7 +34,7 @@ export class PubScreenEditComponent implements OnInit {
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,

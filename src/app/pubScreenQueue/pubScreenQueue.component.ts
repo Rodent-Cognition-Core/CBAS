@@ -26,7 +26,7 @@ export class PubScreenQueueComponent implements OnInit {
     showGeneratedLink: any;
 
     private _onDestroy = new Subject<void>();
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,

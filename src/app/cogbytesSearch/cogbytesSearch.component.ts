@@ -75,7 +75,7 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
     //yearFrom = new UntypedFormControl('', []);
     yearTo: UntypedFormControl;
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
     public repMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public filteredRepList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public authorMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
