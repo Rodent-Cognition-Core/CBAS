@@ -8,8 +8,9 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button'
+import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
 
-
+var api_url = environment.APP_URL;
 @NgModule({
     imports: [
         UploadRoutingModule,
@@ -31,7 +32,7 @@ import { MatButtonModule } from '@angular/material/button'
             provide: DROPZONE_CONFIG,
             useValue: {
                 // Change this to your upload POST address:
-                url: 'http://localhost:5000/api/upload/UploadFiles',
+                url: api_url+ '/api/upload/UploadFiles',
                 // maxFilesize: 50,
                 acceptedFiles: '.xml',
                 // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
