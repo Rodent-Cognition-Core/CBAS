@@ -123,7 +123,7 @@ export class DataExtractionComponent implements OnInit {
     public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     private filteredExpCache: any[];
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 

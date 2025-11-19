@@ -148,7 +148,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
-    public app_url = environment.app_url;
+    public app_url = environment.APP_URL;
 
     faQuestionCircle = faQuestionCircle;
 
