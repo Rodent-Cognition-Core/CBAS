@@ -52,7 +52,7 @@ export class ExpDialogeComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     private _experiment: Experiment;
-
+    private isTimeSeries: boolean;
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
@@ -76,6 +76,7 @@ export class ExpDialogeComponent implements OnInit {
             PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), Status: false,
             TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: ''
         }
+        this.isTimeSeries = false;
     }
 
     ngOnInit() {
@@ -88,6 +89,7 @@ export class ExpDialogeComponent implements OnInit {
 
         //console.log(this.data.experimentObj);
         // if it is an Edit model
+        debugger;
         if (this.data.experimentObj != null) {
             this.exp.setValue(this.data.experimentObj.expName);
             this.sDate.setValue(this.data.experimentObj.startExpDate);
@@ -105,6 +107,10 @@ export class ExpDialogeComponent implements OnInit {
                 this.repModel = this.data.experimentObj.repoGuid;
             }
         }
+        if (this.data.isTimeSeries === true) {
+            this.isTimeSeries = this.data.isTimeSeries;
+        }
+
     }
 
     GetRepList() {

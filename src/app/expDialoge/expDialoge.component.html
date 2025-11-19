@@ -31,11 +31,12 @@
 
         <!--Cognitive Task-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!==null">
+            <mat-select *ngIf=!isTimeSeries placeholder="Select the Task" [formControl]="task" required [disabled]="data.experimentObj!==null">
                 <mat-option *ngFor="let task of taskList" [value]="task.id">
                     {{task.name}}
                 </mat-option>
             </mat-select>
+            <input *ngIf=isTimeSeries matInput placeholder="Enter your Task" [formControl]="task" required>
             <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
         </mat-form-field>
 
@@ -51,11 +52,12 @@
 
         <!--PI & Institution-->
         <mat-form-field class="full-width">
-            <mat-select placeholder="Select the PI & institution" [formControl]="piSite" required>
+            <mat-select *ngIf=!isTimeSeries placeholder="Select the PI & institution" [formControl]="piSite" required>
                 <mat-option *ngFor="let PIS of piSiteList" [value]="PIS.pusid">
                     {{PIS.piSiteName}}
                 </mat-option>
             </mat-select>
+            <input *ngIf=isTimeSeries matInput placeholder="Enter your PI" [formControl]="piSite" required>
             <mat-error *ngIf="piSite.invalid">{{getErrorMessageTask()}}</mat-error>
         </mat-form-field>
 
