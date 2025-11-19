@@ -66,6 +66,20 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(result);
         }
 
+        [HttpPost("UploadTimeSerires")]
+        [RequestSizeLimit(900_000_000)]
+        public async Task<IActionResult> UploadTimeSerires()
+        {
+            var files = HttpContext.Request.Form.Files;
+
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
+
+            var result = await _uploadService.UploadTimeSeriesFiles(files, userEmail, userID);
+            return new JsonResult(result);
+        }
+
         [HttpGet("GetUploadInfoByID")]
         public IActionResult GetUploadInfoByID(int expId)
         {

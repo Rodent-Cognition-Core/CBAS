@@ -31,6 +31,34 @@ namespace AngularSPAWebAPI.Services
             _qualityControlService = new QualityControlService();
         }
 
+        public async Task<List<FileUploadResult>> UploadTimeSeriesFiles(IFormFileCollection files, string userName, string userID)
+        {
+            List<FileUploadResult> uploadResult = new List<FileUploadResult>();
+            int expID = 0;
+            foreach (IFormFile file in files)
+            {
+                string tempFileName = Guid.NewGuid().ToString() + "-" + file.FileName;
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "TempUpload");
+                if (file.Length > 0)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(uploads, tempFileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "UPLOAD", userName, expID.ToString());
+                    System.IO.Directory.CreateDirectory(pathString);
+                    if (file.Length > 0)
+                    {
+                        using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream1);
+                        }
+                    }
+
+                }
+            }
+            return uploadResult;
+        }
         // Function Definition to read the file sent by the client, read the content, do some processing (e.g. Quality Control Rules), then insert it into Database
         public async Task<List<FileUploadResult>> UploadFiles(IFormFileCollection files, string TaskName, int expID, int subExpId, string ExpName,
                                                                 string Username, string userID, string SessionName, int TaskID, int sessionID)

@@ -136,6 +136,22 @@ export class SharedExperimentComponent implements OnInit {
         });
     }
 
+    //Creating Time Series:
+    openTimeSeries(): void {
+        let dialogref = this.dialog.open(ExpDialogeComponent, {
+            //height: '700px',
+            width: '600px',
+            data: { isTimeSeriese: true }
+        });
+
+        dialogref.afterClosed().subscribe(result => {
+            //console.log('the dialog was closed');
+            this.DialogResult = result;
+            this.GetExpSelect();
+        });
+
+    }
+
     // Creating Sub experiment
     openDialogSubExp(SubExperiment : any, ExpID : any): void {
         //console.log(SubExperiment);
