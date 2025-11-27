@@ -27,6 +27,7 @@ export class ExpDialogeComponent implements OnInit {
     isTaken: boolean;
     isRepoLink: any;
     repModel: any;
+    isTimeSeries: boolean;
 
     taskList: any;
     piSiteList: any;
@@ -52,7 +53,6 @@ export class ExpDialogeComponent implements OnInit {
     private _onDestroy = new Subject<void>();
 
     private _experiment: Experiment;
-    private isTimeSeries: boolean;
     constructor(public thisDialogRef: MatDialogRef<ExpDialogeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
@@ -71,12 +71,12 @@ export class ExpDialogeComponent implements OnInit {
         this.expDescription = fb.control('',[Validators.required])
         this.expBattery = fb.control('',[Validators.required])
         this.isMultipleSessions = fb.control('', [Validators.required])
+        this.isTimeSeries = false;
         this._experiment = {
             DOI: '', EndExpDate: new Date(), ExpID: 0, ExpName: '', ImageIds: [], ImageInfo: '', multipleSessions: true,
-            PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), Status: false,
-            TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: ''
+            PISiteName: '', PISiteUser: '', PUSID: 0, repoGuid: '', species: '', SpeciesID: 0, StartExpDate: new Date(), RepoStatus: false,
+            TaskBattery: '', TaskDescription: '', TaskID: 0, TaskName: '', UserID: '', UserName: '',timeseries: this.isTimeSeries
         }
-        this.isTimeSeries = false;
     }
 
     ngOnInit() {
@@ -89,7 +89,6 @@ export class ExpDialogeComponent implements OnInit {
 
         //console.log(this.data.experimentObj);
         // if it is an Edit model
-        debugger;
         if (this.data.experimentObj != null) {
             this.exp.setValue(this.data.experimentObj.expName);
             this.sDate.setValue(this.data.experimentObj.startExpDate);
@@ -163,17 +162,23 @@ export class ExpDialogeComponent implements OnInit {
 
     onCloseSubmit(): void {
         this.spinnerService.show();
+        this._experiment.timeseries = this.isTimeSeries;
         this._experiment.ExpName = this.exp.value;
         this._experiment.StartExpDate = new Date(this.sDate.value);
         this._experiment.EndExpDate = new Date(this.eDate.value);
-        this._experiment.TaskID = this.getSelectedTask(this.task.value).id; // should be readonly
         this._experiment.SpeciesID = parseInt(this.species.value);
         this._experiment.TaskDescription = this.expDescription.value;
         this._experiment.TaskBattery = this.expBattery.value;
-        this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
         this._experiment.DOI = this.DOIModel;
-        this._experiment.Status = this.status.value == "1" ? true : false;
+        this._experiment.RepoStatus = this.status.value == "1" ? true : false;
         this._experiment.multipleSessions = this.isMultipleSessions.value == "1" ? true : false;
+        if (this.isTimeSeries) {
+           this._experiment.TaskName = this.task.value 
+           this._experiment.PISiteName = this.piSite.value; 
+        } else {
+            this._experiment.TaskID = this.getSelectedTask(this.task.value).id;
+            this._experiment.PUSID = this.getSelectedPIS(this.piSite.value).pusid;
+        }
         if (this.isRepoLink == '1') {
             this._experiment.repoGuid = this.repModel;
         }
@@ -182,7 +187,23 @@ export class ExpDialogeComponent implements OnInit {
             // Insert Mode: Insert Experiment
             this.isTaken = false;
 
-            this.expDialogeService.create(this._experiment).pipe(map((res : any) => {
+            if(this.isTimeSeries) {
+                this.expDialogeService.createTimeSeriesExp(this._experiment).pipe(map((res : any) => {
+                    if (res == "Taken") {
+                        this.isTaken = true;
+                        this.exp.setErrors({ 'taken': true });
+                    } else {
+                        this.thisDialogRef.close();
+                    }
+                })).subscribe((_data : any) => {
+
+                    setTimeout(() => {
+                        this.spinnerService.hide();
+                    }, 500);
+
+                });
+            } else {
+                this.expDialogeService.create(this._experiment).pipe(map((res : any) => {
                 if (res == "Taken") {
                     this.isTaken = true;
                     this.exp.setErrors({ 'taken': true });
@@ -199,6 +220,8 @@ export class ExpDialogeComponent implements OnInit {
                 }, 500);
 
             });
+            }
+
         } else { // Edit Mode: edit experiment
 
 
