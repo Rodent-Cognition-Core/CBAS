@@ -60,6 +60,25 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("CreateTimeSeriesExperiment")]
+        public IActionResult CreateTimeSeriesExperiment([FromBody]Experiment experiment)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            var userID = user.Result.Id;
+
+            // throw new Exception("This Experiment Name was already taken!");
+            if (_experimentService.DoesExperimentNameExist(experiment.ExpName))
+            {
+                return new JsonResult("Taken");
+            }
+            else
+            {
+
+                return new JsonResult(_experimentService.InsertTimeSeriesExperiment(experiment, userID, userEmail));
+            }
+        }
+
         [HttpPost("UpdateExperiment")]
         public IActionResult UpdateExperiment([FromBody]Experiment experiment)
         {
