@@ -57,7 +57,7 @@ namespace AngularSPAWebAPI.Services
                         DOI = Convert.ToString(dr["DOI"].ToString()),
                         //IsPostProcessingPass = bool.Parse(dr["IsPostProcessingPass"].ToString()),
                         PISiteName = Convert.ToString(dr["PISiteName"].ToString()),
-                        Status = Convert.ToBoolean(dr["Status"]),
+                        RepoStatus = Convert.ToBoolean(dr["Status"]),
                         SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
                         Species = Convert.ToString(dr["Species"].ToString()),
                         TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
@@ -135,12 +135,12 @@ namespace AngularSPAWebAPI.Services
               $"(UserID, PUSID, ExpName, StartExpDate, EndExpDate, TaskID, SpeciesID, TaskDescription, DOI, Status, TaskBattery, MultipleSessions, RepoGuid) Values " +
               $"('{userID}', {experiment.PUSID}, '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
               $"'{experiment.TaskID}', '{experiment.SpeciesID}', '{HelperService.EscapeSql((HelperService.NullToString(experiment.TaskDescription)).Trim())}'," +
-              $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.Status ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}', {(experiment.MultipleSessions ? 1 : 0)}, " +
+              $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.RepoStatus ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}', {(experiment.MultipleSessions ? 1 : 0)}, " +
               $" {repoString} );" +
               $" SELECT @@IDENTITY AS 'Identity';";
 
             // Calling function to send an email to Admin that new Exp with public Status has been added to MouseBytes
-            if (experiment.Status)
+            if (experiment.RepoStatus)
             {
                 string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just created the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
                                     with public Status!  <br /><br />";
@@ -157,6 +157,40 @@ namespace AngularSPAWebAPI.Services
             return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }
 
+        public int InsertTimeSeriesExperiment(Experiment experiment, string userID, string Email)
+        {
+            var repoGuid = new Guid();
+            string repoString = "null";
+            if (Guid.TryParse(experiment.RepoGuid, out repoGuid))
+            {
+                repoString = "'" + experiment.RepoGuid + "'";
+            }
+
+            string sql = $"insert into ExperimentTimeSeries " +
+              $"(UserID, PIName, ExpName, StartExpDate, EndExpDate, TaskName, SpeciesID, TaskDescription, DOI, RepoStatus, TaskBattery, MultipleSessions, RepoGuid) Values " +
+              $"('{userID}', '{HelperService.EscapeSql(experiment.PISiteName.Trim())}', '{HelperService.EscapeSql(experiment.ExpName.Trim())}', '{experiment.StartExpDate}', '{experiment.EndExpDate}', " +
+              $"'{HelperService.EscapeSql(experiment.TaskName.Trim())}', '{experiment.SpeciesID}', '{HelperService.EscapeSql((HelperService.NullToString(experiment.TaskDescription)).Trim())}'," +
+              $" '{HelperService.EscapeSql(experiment.DOI)}', {(experiment.RepoStatus ? 1 : 0)}, '{HelperService.EscapeSql(experiment.TaskBattery)}', {(experiment.MultipleSessions ? 1 : 0)}, " +
+              $" {repoString} );" +
+              $" SELECT @@IDENTITY AS 'Identity';";
+
+            
+            if (experiment.RepoStatus)
+            {
+                string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just created the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
+                                    with public Status!  <br /><br />";
+                if (!String.IsNullOrEmpty(experiment.DOI))
+                {
+                    strBody += $@"DOI: {experiment.DOI} - please consider adding data to CONP <br /><br />";
+                }
+                strBody += $@"Thanks <br /> MouseBytes";
+
+                HelperService.SendEmail("", "", "New Experiment with pubic status added!", strBody);
+            }
+
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
+        }
+
         public void UpdateExp(Experiment experiment, string userID, string Email)
         {
             var repoGuid = new Guid();
@@ -169,11 +203,11 @@ namespace AngularSPAWebAPI.Services
             string sql = $@"UPDATE Experiment " +
                  $"SET PUSID = {experiment.PUSID}, ExpName = '{HelperService.EscapeSql(experiment.ExpName)}', StartExpDate = '{experiment.StartExpDate}'," +
                  $"EndExpDate = '{experiment.EndExpDate}', SpeciesID = {experiment.SpeciesID}, TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
-                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.Status ? 1 : 0)}," +
+                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  Status = {(experiment.RepoStatus ? 1 : 0)}," +
                  $" MultipleSessions = {(experiment.MultipleSessions ? 1 : 0)}, RepoGuid = {repoString}" +
                  $" WHERE ExpID = {experiment.ExpID}  AND UserID = '{userID}';";
 
-            if (experiment.Status)
+            if (experiment.RepoStatus)
             {
                 string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just changed the status of the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
                                     to public!  <br /><br />";
