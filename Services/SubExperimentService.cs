@@ -74,9 +74,8 @@ namespace AngularSPAWebAPI.Services
                         SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
                         ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
                         SubExpName = Convert.ToString(dr["SubExpName"].ToString()),
-                        StartAge = DateTime.Parse(dr["StartAge"].ToString()),
-                        EndAge = DateTime.Parse(dr["EndAge"].ToString()),
-                        AgeInMonth = Convert.ToString(dr["AgeInMonth"].ToString()),
+                        StartAge = Int32.Parse(dr["StartAge"].ToString()),
+                        EndAge = Int32.Parse(dr["EndAge"].ToString()),
                         IsIntervention = bool.Parse(dr["IsIntervention"].ToString()),
                         IsDrug = bool.Parse(dr["IsDrug"].ToString()),
                         DrugName = Convert.ToString(dr["DrugName"].ToString()),
@@ -151,6 +150,7 @@ namespace AngularSPAWebAPI.Services
         public (bool flagSubExp, bool flagAge) DoesSubExperimentNameExist(SubExperiment subexpObj, int subExpId)
         {
             string sqlsubexp = $"select count(*) from SubExperiment where ltrim(rtrim(SubExpName)) = '{HelperService.EscapeSql(subexpObj.SubExpName.Trim())}' {(subExpId == 0 ? "" : " AND SubExpID != " + subexpObj.SubExpID)} ";
+            string sqlsubexpts = $"select count(*) from SubExperimentTimeSeries where ltrim(rtrim(SubExpName)) = '{HelperService.EscapeSql(subexpObj.SubExpName.Trim())}' {(subExpId == 0 ? "" : " AND SubExperimentID != " + subexpObj.SubExpID)} ";
             string sqlage = $@"select count(*) from SubExperiment where AgeID={subexpObj.AgeID} and Isintervention={(subexpObj.IsIntervention ? 1 : 0)} and
                             IsDrug = {(subexpObj.IsDrug ? 1 : 0)} and
                             ltrim(rtrim(DrugName)) = '{HelperService.EscapeSql(subexpObj.DrugName.Trim())}' and
@@ -162,6 +162,8 @@ namespace AngularSPAWebAPI.Services
                             ExpID = {subexpObj.ExpID} {(subExpId == 0 ? "" : " AND SubExpID != " + subexpObj.SubExpID)} ";
 
             int countResultSubExpName = Int32.Parse(Dal.ExecScalar(sqlsubexp).ToString());
+            int countResultSubExpTimeSeriesName = Int32.Parse(Dal.ExecScalar(sqlsubexpts).ToString());
+            countResultSubExpName += countResultSubExpTimeSeriesName;
             int countResultAge = Int32.Parse(Dal.ExecScalar(sqlage).ToString());
                         
             bool flagSubExp1 = (countResultSubExpName == 0) ? false : true;
@@ -193,6 +195,27 @@ namespace AngularSPAWebAPI.Services
             return Int32.Parse(Dal.ExecScalar(sql).ToString());
         }
 
+        public int InsertSubExperimentTimeSeries(SubExperiment subexperiment)
+        {
+            string ImageIDcsv = "";
+            if (subexperiment.ImageIds != null && subexperiment.ImageIds.Length != 0)
+            {
+
+                ImageIDcsv = String.Join(",", subexperiment.ImageIds.Select(x => x.ToString()).ToArray());
+
+            }
+
+            string sql = $@"Insert into SubExperimentTimeSeries  
+                        (ExperimentID, StartAge, EndAge, SubExpName, IsIntervention, IsDrug, DrugName, DrugUnit, DrugQuantity, InterventionDescription, ImageIds, ImageDescription, Housing, LightCycle) Values  
+                ({subexperiment.ExpID}, {subexperiment.StartAge}, {subexperiment.EndAge}, '{HelperService.EscapeSql(subexperiment.SubExpName.Trim())}',
+                {(subexperiment.IsIntervention ? 1 : 0)}, {(subexperiment.IsDrug ? 1 : 0)}, '{HelperService.EscapeSql(subexperiment.DrugName)}',
+                '{HelperService.EscapeSql(subexperiment.DrugUnit)}', '{HelperService.EscapeSql(subexperiment.DrugQuantity)}',
+                '{HelperService.EscapeSql(subexperiment.InterventionDescription)}',
+                '{ImageIDcsv}', '{HelperService.EscapeSql(subexperiment.ImageDescription)}',
+                '{HelperService.EscapeSql(subexperiment.Housing)}', '{HelperService.EscapeSql(subexperiment.LightCycle)}'); SELECT @@IDENTITY AS 'Identity';";
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
+        }
+
         public void UpdateSubExperiment(SubExperiment subexperiment)
         {
 
@@ -219,6 +242,29 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sql);
         }
 
+        public void UpdateSubExperimentTimeSeries(SubExperiment subexperiment)
+        {
+
+            string ImageIDcsv = "";
+
+            if (subexperiment.ImageIds != null && subexperiment.ImageIds.Length != 0)
+            {
+
+                ImageIDcsv = String.Join(",", subexperiment.ImageIds.Select(x => x.ToString()).ToArray());
+
+            }
+            
+            string sql = $@"UPDATE SubExperimentTimeSeries 
+                        SET SubExpName = '{HelperService.EscapeSql(subexperiment.SubExpName.Trim())}', StartAge = {subexperiment.StartAge}, EndAge = {subexperiment.EndAge},
+                        IsIntervention = {(subexperiment.IsIntervention ? 1 : 0)}, IsDrug = {(subexperiment.IsDrug ? 1 : 0)}, DrugName = '{HelperService.EscapeSql(subexperiment.DrugName)}',
+                        DrugUnit = '{HelperService.EscapeSql(subexperiment.DrugUnit)}', DrugQuantity= '{HelperService.EscapeSql(subexperiment.DrugQuantity)}',
+                        InterventionDescription = '{HelperService.EscapeSql(subexperiment.InterventionDescription)}',
+                        ImageIds = '{ImageIDcsv}', ImageDescription = '{subexperiment.ImageDescription}',
+                        Housing = '{subexperiment.Housing}', LightCycle = '{subexperiment.LightCycle}'
+                        WHERE SubExpID = {subexperiment.SubExpID} ;";
+
+            Dal.ExecuteNonQuery(sql);
+        }
 
         public void DeleteSubExpBySubExpID(int subExpID)
         {

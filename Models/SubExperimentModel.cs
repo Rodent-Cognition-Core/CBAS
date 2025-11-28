@@ -9,8 +9,8 @@ namespace AngularSPAWebAPI.Models
         public int ExpID { get; set; }
         public int AgeID { get; set; }
 
-        public DateTime StartAge { get; set; }
-        public DateTime EndAge { get; set; }
+        public int StartAge { get; set; }
+        public int EndAge { get; set; }
         public string AgeInMonth { get; set; }
         public string SubExpName { get; set; }
         public bool IsPostProcessingPass { get; set; }
