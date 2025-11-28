@@ -1225,7 +1225,7 @@ namespace AngularSPAWebAPI.Services
                         StartExpDate = Convert.ToDateTime(drExp["StartExpDate"].ToString()),
                         TaskName = Convert.ToString(drExp["TaskName"].ToString()),
                         DOI = Convert.ToString(drExp["DOI"].ToString()),
-                        Status = Convert.ToBoolean(drExp["Status"]),
+                        RepoStatus = Convert.ToBoolean(drExp["Status"]),
                         TaskBattery = Convert.ToString(drExp["TaskBattery"].ToString()),
 
                     });
