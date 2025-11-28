@@ -34,6 +34,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getAllSubExpTimeSeries(id: any): any {
+
+        return this.http
+            .get("/api/subexperiment/GetAllSubExpTimeSeriesbyExpID?expID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     // Adding subexperiment
     public createSubExp(subexperiment: SubExperiment): Observable<any> {
 

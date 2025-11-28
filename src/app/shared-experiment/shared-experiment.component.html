@@ -24,7 +24,7 @@
                     <button mat-button [matMenuTriggerFor]="menu"><mat-icon>add</mat-icon></button>
                     <mat-menu #menu="matMenu">
                         <button matTooltip="Add new experiment" (click)="openDialog(null)" mat-menu-item>Add Experiment</button>
-                        <button matTooltip="Add new time series data" (click)="openTimeSeries(null)" mat-menu-item>Add Time Series Data</button>
+                        <button matTooltip="Add new time series data" (click)="openTimeSeries()" mat-menu-item>Add Time Series Data</button>
                     </mat-menu>
                 </div>
                 <div *ngIf="selectedExpValue!==null && hideSubExperiment===false">

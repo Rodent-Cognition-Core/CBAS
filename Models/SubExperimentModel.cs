@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace AngularSPAWebAPI.Models
 {
@@ -7,6 +8,9 @@ namespace AngularSPAWebAPI.Models
         public int SubExpID { get; set; }
         public int ExpID { get; set; }
         public int AgeID { get; set; }
+
+        public DateTime StartAge { get; set; }
+        public DateTime EndAge { get; set; }
         public string AgeInMonth { get; set; }
         public string SubExpName { get; set; }
         public bool IsPostProcessingPass { get; set; }

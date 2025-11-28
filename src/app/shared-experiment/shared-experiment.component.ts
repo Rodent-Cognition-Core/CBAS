@@ -96,7 +96,11 @@ export class SharedExperimentComponent implements OnInit {
         var selectedExp: any;
         selectedExp = this.getSelectedExp(this.selectedExpValue);
         this.outSelectedExperiment.emit(selectedExp);
-        this.GetSubExpSelect(this.selectedExpValue)
+        if (!selectedExp.timeSeries) {
+           this.GetSubExpSelect(this.selectedExpValue) 
+        } else {
+            this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+        }
     }
 
     SelectedSubExpChangedRD(event : any) {
@@ -231,6 +235,12 @@ export class SharedExperimentComponent implements OnInit {
     GetSubExpSelect(selectedExpVal: any) {
         this.subexpDialogeService.getAllSubExp(selectedExpVal).subscribe((data: any) => {
             this.subExpList = data.sort((a: any, b: any) => a.ageID - b.ageID);
+        });
+    }
+
+    getSubExpTimeSeriesSelect(selectedExpVal: any) {
+        this.subexpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data: any) => {
+            this.subExpList = data.sort((a: any, b: any) => a.StartAge - b.StartAge);
         });
     }
 

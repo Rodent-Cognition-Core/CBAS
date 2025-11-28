@@ -55,6 +55,47 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        // Function to get all sub experiments for time series data based on Experiment ID
+        public List<SubExperiment> GetAllSubExperimentsTimeSeriesByExpID(int ExpID)
+        {
+            List<SubExperiment> SubExpList = new List<SubExperiment>();
+
+            using (DataTable dt = Dal.GetDataTable($@"Select se.SubExperimentID, se.ExperimentID, se.StartAge, se.EndAge, se.SubExpName,
+                                                        se.IsIntervention, se.IsDrug, se.DrugName, se.DrugUnit, se.DrugQuantity, se.InterventionDescription, se.ImageIds, se.ImageDescription,
+                                                        se.Housing, se.LightCycle
+                                                        From SubExperimentTimeSeries se Where ExperimentID = {ExpID} order by se.StartAge"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    var imageIds = Convert.ToString(dr["ImageIds"].ToString());
+
+                    SubExpList.Add(new SubExperiment
+                    {
+                        SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
+                        ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                        SubExpName = Convert.ToString(dr["SubExpName"].ToString()),
+                        StartAge = DateTime.Parse(dr["StartAge"].ToString()),
+                        EndAge = DateTime.Parse(dr["EndAge"].ToString()),
+                        AgeInMonth = Convert.ToString(dr["AgeInMonth"].ToString()),
+                        IsIntervention = bool.Parse(dr["IsIntervention"].ToString()),
+                        IsDrug = bool.Parse(dr["IsDrug"].ToString()),
+                        DrugName = Convert.ToString(dr["DrugName"].ToString()),
+                        DrugQuantity = Convert.ToString(dr["DrugQuantity"].ToString()),
+                        DrugUnit = Convert.ToString(dr["DrugUnit"].ToString()),
+                        InterventionDescription = Convert.ToString(dr["InterventionDescription"].ToString()),
+                        ImageIds = string.IsNullOrEmpty(imageIds) ? null : imageIds.Split(',').Select(s => Int32.Parse(s)).ToArray(),
+                        ImageInfo = $@"{GetImagePathFromImageIdCsv(Convert.ToString(dr["ImageIds"]))}",
+                        ImageDescription = Convert.ToString(dr["ImageDescription"].ToString()),
+                        Housing = Convert.ToString(dr["Housing"].ToString()),
+                        LightCycle = Convert.ToString(dr["LightCycle"].ToString()),
+                    });
+                }
+            }
+
+                return SubExpList;
+
+        }
+
         // Function Definition to get Imagepath from ImageIDCsv
         public static string GetImagePathFromImageIdCsv(string imageIdCsv)
         {

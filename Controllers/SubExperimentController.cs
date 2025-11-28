@@ -48,6 +48,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_subexperimentService.GetAllSubExperimentsByExpID(expID));
         }
 
+        [HttpGet("GetAllSubExpTimeSeriesbyExpID")]
+        public IActionResult GetAllSubExpTimeSeriesbyExpID(int expID)
+        {
+
+            return new JsonResult(_subexperimentService.GetAllSubExperimentsTimeSeriesByExpID(expID));
+        }
+
         [HttpPost("CreateSubExperiment")]
         public IActionResult CreateSubExperiment([FromBody]SubExperiment subexperiment)
         {
