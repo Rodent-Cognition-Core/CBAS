@@ -21,6 +21,7 @@ export class ExperimentComponent {
     UploadList: any;
     selectedSubExperiment: any;
     expfilter: any = '';
+    timeSeries: boolean = false;
     // ExpModel: any;
     pager: any = {};
     pagerTblFile: any = {};
@@ -46,8 +47,16 @@ export class ExperimentComponent {
     GetUploadInfo(selectedSubExperimentID: number) {
 
         this.spinnerService.show();
-
-        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
+        if (this.timeSeries) {
+            this.experimentService.getUploadInfoBySubExpIdTimeSeries(selectedSubExperimentID).subscribe((data : any) => {
+            this.UploadList = data;
+            this.setPageTblFile(1);
+            setTimeout(() => {
+                this.spinnerService.hide();
+            }, 500);
+        });
+        } else {
+            this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
             this.UploadList = data;
             //console.log(this.UploadList);
             this.setPageTblFile(1);
@@ -61,11 +70,13 @@ export class ExperimentComponent {
                     this.spinnerService.hide();
                 }, 500);
             });
+        }
 
     }
 
     SelectedExpChanged(_experiment : any) {
         this.selectedSubExperiment = null;
+        this.timeSeries = _experiment ? _experiment.timeSeries : false;
     }
 
     SelectedSubExpChanged(subExperiment : any) {
