@@ -20,15 +20,29 @@
 
     </mat-form-field>-->
 
-        <mat-form-field class="full-width">
-            <mat-select placeholder="Select the age range" [formControl]="ageInMonth" required>
-                <mat-option *ngFor="let age of ageList" [value]="age.id">
-                    {{age.ageInMonth}}
-                </mat-option>
-            </mat-select>
-            <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageAge()}}</mat-error>
-            <!--<mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageTakenAge()}}</mat-error>-->
-        </mat-form-field>
+        <div *ngIf="!data.expObj.timeSeries">
+            <mat-form-field class="full-width">
+                <mat-select placeholder="Select the age range" [formControl]="ageInMonth" required>
+                    <mat-option *ngFor="let age of ageList" [value]="age.id">
+                        {{age.ageInMonth}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageAge()}}</mat-error>
+                <!--<mat-error *ngIf="ageInMonth.invalid">{{getErrorMessageTakenAge()}}</mat-error>-->
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="data.expObj.timeSeries">
+            <mat-form-field class="full-width">
+                <input matInput placeholder="Start Date" [formControl]="startAge" required>
+                <mat-error *ngIf="startAge.invalid">{{getErrorMessageStartAge()}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+                <input matInput placeholder="End Date" [formControl]="endAge" required>
+                <mat-error *ngIf="endAge.invalid">{{getErrorMessageEndAge()}}</mat-error>
+            </mat-form-field>
+        </div>
 
         <!--Image Drop-down list if the selected task is PAL or PD-->
         <div [hidden]="taskID !== 3 && taskID !== 4 && taskID !== 11 && taskID!== 12">
