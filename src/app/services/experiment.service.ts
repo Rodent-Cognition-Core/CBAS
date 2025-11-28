@@ -21,6 +21,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getUploadInfoBySubExpIdTimeSeries(id: any): any {
+
+        return this.http
+            .get("/api/upload/GetUploadInfoBySubExpIdTimeSeries?subExpId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     public deleteExperimentbyID(id: any): any {
 
         return this.http
