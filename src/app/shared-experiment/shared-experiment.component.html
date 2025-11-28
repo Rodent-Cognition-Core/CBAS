@@ -38,7 +38,7 @@
 
                     </mat-form-field>
                     &nbsp;
-                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
+                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, getSelectedExp(selectedExpValue))"><mat-icon>add</mat-icon></button>
                 </div>
             </td>
             <td class="docs-markdown-td" style="vertical-align:top;">
@@ -139,7 +139,7 @@
                             <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><span><button mat-raised-button (click)="runPostQC(subexp)" [disabled]="subexp.isPostProcessingPass">Run Post Processing QC</button></span></td>
                             <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><span><button mat-raised-button (click)="openPostProcessingResult(subexp.subExpID)" [disabled]="subexp.errorMessage === ''">Show Result</button></span></td>
 
-                            <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="openDialogSubExp(subexp, getSelectedExp(selectedExpValue).expID)"><mat-icon>edit</mat-icon></button></td>
+                            <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="openDialogSubExp(subexp, getSelectedExp(selectedExpValue))"><mat-icon>edit</mat-icon></button></td>
                             <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="delSubExp(subexp)" color="warn"><mat-icon>delete</mat-icon></button></td>
 
 

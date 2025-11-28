@@ -28,6 +28,8 @@ export class SubExpDialogeComponent implements OnInit {
 
     // formControl vars
     ageInMonth: UntypedFormControl;
+    startAge: UntypedFormControl;
+    endAge: UntypedFormControl;
     subExp: UntypedFormControl;
     intervention: UntypedFormControl;
     isDrug: UntypedFormControl;
@@ -54,6 +56,8 @@ export class SubExpDialogeComponent implements OnInit {
         this.isTakenAgeSubExp = false;
         this.subExpList = [];
         this.ageInMonth = fb.control('', [Validators.required]);
+        this.startAge = fb.control('');
+        this.endAge = fb.control('');
         this.subExp = fb.control('', [Validators.required]);
         this.intervention = fb.control('', [Validators.required]);
         this.isDrug = fb.control('', [Validators.required]);
@@ -66,7 +70,7 @@ export class SubExpDialogeComponent implements OnInit {
         this.housing = fb.control('', [Validators.required]);
         this.lightCycle = fb.control('', [Validators.required]);
         this._subexperiment = {
-            AgeID: 0, AgeInMonth: '', drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
+            AgeID: 0, AgeInMonth: '',  StartAge: 0, EndAge: 0, drugName: '', drugQuantity: '', drugUnit: '', ErrorMessage: '', ExpID: 0, Housing: '', ImageDescription: '',
             ImageIds: [], ImageInfo: '', interventionDescription: '', isDrug: false, isIntervention: false, IsPostProcessingPass: false, LightCycle: '',
             SubExpID: 0, SubExpName: ''
         }
@@ -77,6 +81,15 @@ export class SubExpDialogeComponent implements OnInit {
         this.taskID = this.data.expObj.taskID;
         //console.log(this.taskID)
 
+        if (this.data.expObj.timeSeries) {
+            this.ageInMonth.clearValidators();
+            this.ageInMonth.updateValueAndValidity();
+            this.startAge.setValidators([Validators.required]);
+            this.startAge.updateValueAndValidity();
+            this.endAge.setValidators([Validators.required]);
+            this.endAge.updateValueAndValidity();
+        }
+
         this.subexpDialogeService.getAllAge().subscribe((data: any) => { this.ageList = data; });
 
         this.subexpDialogeService.getAllImages().subscribe((data: any) => { this.imageList = data;  });
@@ -84,7 +97,12 @@ export class SubExpDialogeComponent implements OnInit {
         //console.log(this.data.subexperimentObj);
         if (this.data.subexperimentObj != null) {
             this.subExp.setValue(this.data.subexperimentObj.subExpName);
-            this.ageInMonth.setValue(this.data.subexperimentObj.ageID);
+            if (this.data.expObj.timeSeries) {
+                this.startAge.setValue(this.data.subexperimentObj.startAge);
+                this.endAge.setValue(this.data.subexperimentObj.endAge);
+            } else {
+                this.ageInMonth.setValue(this.data.subexperimentObj.ageID);
+            }
             this.intervention.setValue(this.data.subexperimentObj.isIntervention == true ? "1" : "0");
             this.isDrug.setValue(this.data.subexperimentObj.isDrug == true ? "1" : "0");
             this.drug.setValue(this.data.subexperimentObj.drugName);
@@ -143,6 +161,14 @@ export class SubExpDialogeComponent implements OnInit {
 
     getErrorMessageAge() {
         return this.ageInMonth.hasError('required') ? FIELDISREQUIRED : '';
+    }
+
+    getErrorMessageStartAge() {
+        return this.startAge.hasError('required') ? FIELDISREQUIRED : '';
+    }
+
+    getErrorMessageEndAge() {
+        return this.endAge.hasError('required') ? FIELDISREQUIRED : '';
     }
 
     getErrorMessageIntervention() {
@@ -213,6 +239,8 @@ export class SubExpDialogeComponent implements OnInit {
 
         if (this.subExp.hasError('required') ||
             this.ageInMonth.hasError('required') ||
+            this.startAge.hasError('required') ||
+            this.endAge.hasError('required') ||
             this.subExp.hasError('takenSubExpName') ||
             //this.ageInMonth.hasError('takenAge') ||
             this.ageInMonth.hasError('required') ||
@@ -275,7 +303,15 @@ export class SubExpDialogeComponent implements OnInit {
 
         }
         this._subexperiment.SubExpName = this.subExp.value;
-        this._subexperiment.AgeID = parseInt(this.ageInMonth.value);
+        if (this.data.expObj.timeSeries) {
+            this._subexperiment.StartAge = parseInt(this.startAge.value);
+            this._subexperiment.EndAge = parseInt(this.endAge.value);
+            this._subexperiment.AgeID = 0;
+        } else {
+            this._subexperiment.StartAge = 0;
+            this._subexperiment.EndAge = 0;
+            this._subexperiment.AgeID = parseInt(this.ageInMonth.value);
+        }
         this._subexperiment.ExpID = this.data.expObj.expID;
         this._subexperiment.isIntervention = this.intervention.value == "1" ? true : false;
         this._subexperiment.isDrug = this.isDrug.value == "1" ? true : false;
@@ -294,8 +330,22 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenSubExpName = false;
             this.isTakenAge = false;
 
-
-            this.subexpDialogeService.createSubExp(this._subexperiment).pipe(map((res: any) => {
+            if (this.data.expObj.timeSeries) {
+                this.subexpDialogeService.createSubExpTimeSeries(this._subexperiment).pipe(map((res: any) => {
+                    if (res == "TakenSubExpName") {
+                        this.isTakenSubExpName = true;
+                        this.subExp.setErrors({ 'takenSubExpName': true });
+                    }
+                    else if (res == "takenSubExp") {
+                        this.isTakenAge = true;
+                        this.ageInMonth.setErrors({ 'takenAge': true });
+                    }
+                    else {
+                        this.thisDialogRef.close();
+                    }
+                })).subscribe();
+            } else {
+                this.subexpDialogeService.createSubExp(this._subexperiment).pipe(map((res: any) => {
 
                 //console.log('create');
                 //console.log(res);
@@ -313,6 +363,7 @@ export class SubExpDialogeComponent implements OnInit {
                 }
 
             })).subscribe();
+            }
 
         } else { // Edit Mode: edit sub experiment
 
@@ -329,7 +380,22 @@ export class SubExpDialogeComponent implements OnInit {
             this.isTakenAge = false;
 
             this._subexperiment.SubExpID = this.data.subexperimentObj.subExpID;
-            this.subexpDialogeService.updateSubExp(this._subexperiment).pipe(map((res : any) => {
+            if (this.data.expObj.timeSeries) {
+                this.subexpDialogeService.updateSubExpTimeSeries(this._subexperiment).pipe(map((res : any) => {
+
+                    if (res == "TakenSubExpName") {
+                        this.isTakenSubExpName = true;
+                        this.subExp.setErrors({ 'takenSubExpName': true });
+                    }
+                    else if (res == "takenSubExp") {
+                        this.isTakenAge = true;
+                        this.ageInMonth.setErrors({ 'takenAge': true });
+                    }
+                    else {
+                        this.thisDialogRef.close();}
+            })).subscribe();
+            } else {
+                this.subexpDialogeService.updateSubExp(this._subexperiment).pipe(map((res : any) => {
 
                 //console.log('update');
                 //console.log(res);
@@ -348,11 +414,10 @@ export class SubExpDialogeComponent implements OnInit {
 
             })).subscribe();
 
+            }
+
+
         }
-
-
     }
-
-
 
 }

@@ -155,12 +155,11 @@ export class SharedExperimentComponent implements OnInit {
     }
 
     // Creating Sub experiment
-    openDialogSubExp(SubExperiment : any, ExpID : any): void {
+    openDialogSubExp(SubExperiment : any, Exp : any): void {
         //console.log(SubExperiment);
-        var Experiment = this.getSelectedExp(ExpID)
         let dialogref = this.dialog.open(SubExpDialogeComponent, {
             width: '600px',
-            data: { subexperimentObj: SubExperiment, expObj: Experiment} // change it for editing
+            data: { subexperimentObj: SubExperiment, expObj: Exp} // change it for editing
 
         });
 
