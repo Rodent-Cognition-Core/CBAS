@@ -75,7 +75,7 @@
 
 
         <!--Insert Table for Sub-Experiment -->  <!--Insert the condition to hide this row for all pages except experiment-->
-        <tr *ngIf="selectedExpValue!==null && showSubExpTbl===true && subExpList.length>0">
+        <tr *ngIf="selectedExpValue!==null && showSubExpTbl===true && subExpList.length>0 && !getSelectedExp(selectedExpValue).timeSeries">
 
             <td class="docs-markdown-td" colspan="2">
                 <br />
