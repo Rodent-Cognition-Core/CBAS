@@ -64,12 +64,47 @@ namespace AngularSPAWebAPI.Services
                         MultipleSessions = Convert.ToBoolean(dr["MultipleSessions"].ToString()),
                         RepoGuid = Convert.ToString(dr["RepoGuid"].ToString()),
                     });
-                }
 
+                            }
+            }
+
+        using (DataTable dt = Dal.GetDataTable($@"
+                SELECT ets.*,
+                        STUFF((
+                            SELECT ' <br/>' + sets.SubExpName
+                            FROM SubExperimentTimeSeries sets
+                            WHERE sets.ExperimentID = ets.ExperimentID
+                            ORDER BY sets.SubExpName
+                            FOR XML PATH(''), type
+                        ).value('.', 'nvarchar(max)'),1,6,'') AS SubExpNames
+                FROM ExperimentTimeSeries ets
+                WHERE ets.UserID = '{userID}'"))
+                        {
+            foreach (DataRow dr in dt.Rows)
+            {
+
+                    lstExperiment.Add(new Experiment
+                    {
+                        ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                        PISiteName = Convert.ToString(dr["PIName"].ToString()),
+                        ExpName = Convert.ToString(dr["ExpName"].ToString()),
+                        SubExperimentNames = Convert.ToString(dr["SubExpNames"].ToString()),
+                        StartExpDate = Convert.ToDateTime(dr["StartExpDate"].ToString()),
+                        EndExpDate = Convert.ToDateTime(dr["EndExpDate"].ToString()),
+                        TaskName = Convert.ToString(dr["TaskName"].ToString()),
+                        TaskDescription = Convert.ToString(dr["TaskDescription"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        RepoStatus = Convert.ToBoolean(dr["RepoStatus"]),
+                        SpeciesID = Int32.Parse(dr["SpeciesID"].ToString()),
+                        TaskBattery = Convert.ToString(dr["TaskBattery"].ToString()),
+                        MultipleSessions = Convert.ToBoolean(dr["MultipleSessions"].ToString()),
+                        RepoGuid = Convert.ToString(dr["RepoGuid"].ToString()),
+                        TimeSeries = true,
+                    });
+                }
             }
 
             return lstExperiment;
-
         }
 
         // Function Definition to get Imagepath from ImageID
