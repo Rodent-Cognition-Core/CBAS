@@ -11,20 +11,20 @@
     "AngularSPAWebAPI_Dev": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://mousebytes.ca",
+      "launchUrl": "http://localhost:4200",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://mousebytes.ca/"
+      "applicationUrl": "http://localhost:5000"
     },
     "AngularSPAWebAPI_Staging": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://mousebytes.ca",
+      "launchUrl": "https://staging.mousebytes.ca",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "applicationUrl": "https://mousebytes.ca/"
+      "applicationUrl": "https://staging.mousebytes.ca/"
     }
   },
   "iisSettings": {
