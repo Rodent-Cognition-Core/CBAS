@@ -13,6 +13,7 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
 import { OAuthService } from 'angular-oauth2-oidc';
 import { map } from 'rxjs/operators';
 import { CONFIRMDELETE, FAILEDTOADDUPLOADDUETOMISSINGFEATURES, FAILEDTOADDUPLOADDUETOSERVER, FEATUREEDITFAILED, FEATUREEDITSUCCESSFULL, FEATURESUPLOADFAILED, FEATURESUPLOADSUCESS, INVALIDNUMBERICALVALUE, FIELDISREQUIRED, UPLOADSUCCESS } from '../shared/messages';
+import { environment } from '../../environments/environment';
 
 @Component({
 
@@ -87,7 +88,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
     uploadErrorFileType: string = "";
 
     uploadConfirmShowed: boolean = false;
-
+    public app_url = environment.APP_URL;
     //DropZone
     public config: DropzoneConfigInterface = {
         clickable: true,
@@ -170,7 +171,6 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
             this.uploadFileList = this.uploadObj.uploadFileList;
             // this.UpdateFileList();
         }
-
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -411,7 +411,8 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     DownloadFile(file: any): void {
 
-        let path = file.permanentFilePath + '\\' + file.sysFileName;
+        let path = "/app/COGBYTES_FILES/" + file.uploadID + "/" + file.sysFileName;
+
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
 
@@ -462,7 +463,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
                     this.spinnerService.hide();
                 }, 500);
 
-                let path = file.permanentFilePath + '\\' + file.sysFileName;
+                let path = "/app/COGBYTES_FILES/" + file.uploadID + "/" + file.sysFileName;
                 this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
                 })).subscribe(

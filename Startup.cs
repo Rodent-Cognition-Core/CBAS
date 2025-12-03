@@ -1,13 +1,17 @@
 using System;
 using System.Linq;
+using System.Net;
+
 using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Nest;
 using Serilog;
 using Serilog.Exceptions;
+using static System.Net.WebRequestMethods;
 
 namespace AngularSPAWebAPI
 {
@@ -33,11 +38,13 @@ namespace AngularSPAWebAPI
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
 
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var publicURL = Environment.GetEnvironmentVariable("PUBLIC_ORIGIN");
             // By setting EnableEndpointRouting to false, you can continue using the traditional MVC routing setup
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //// SQLite & Identity.
@@ -89,10 +96,39 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
-            // Uncomment this line for publuishing
-            //services.AddIdentityServer(options =>
-            //         options.PublicOrigin = "https://mousebytes.ca")
-            services.AddIdentityServer()
+            if (currentEnvironment.IsProduction())
+            {
+                var appName = Environment.GetEnvironmentVariable("APP_NAME");
+
+                // Uncomment this line for publuishing
+                services.AddIdentityServer(options =>
+                         options.PublicOrigin = publicURL)
+                    //services.AddIdentityServer()
+                    // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                    // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                    // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                    .AddDeveloperSigningCredential()
+                    .AddInMemoryPersistedGrants()
+                    // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
+                    // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
+                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                    .AddInMemoryApiResources(Config.GetApiResources())
+                    .AddInMemoryClients(Config.GetClients())
+                    .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+
+                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = publicURL;
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = "WebAPI";
+                    });
+                services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
+                    .SetApplicationName(appName);
+            }
+            else
+            {
+                services.AddIdentityServer()
                 // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
                 // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
                 // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
@@ -104,24 +140,10 @@ namespace AngularSPAWebAPI
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-
-            if (currentEnvironment.IsProduction())
-            {
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = "http://localhost:5000/";
-                        options.RequireHttpsMetadata = false;
-
-                        options.ApiName = "WebAPI";
-                    });
-            }
-            else
-            {
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
-                    options.Authority = "http://localhost:5000/";
+                    options.Authority = Environment.GetEnvironmentVariable("API_URL");
                     options.RequireHttpsMetadata = false;
 
                     options.ApiName = "WebAPI";
@@ -133,7 +155,7 @@ namespace AngularSPAWebAPI
             {
                 options.AddPolicy("LocalCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.WithOrigins(publicURL)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
@@ -141,12 +163,13 @@ namespace AngularSPAWebAPI
 
                 options.AddPolicy("ProductionCorsPolicy", builder =>
                 {
-                    builder.WithOrigins("https://mousebytes.ca") // Production origins
+                    builder.WithOrigins(publicURL) // Production origins
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
                 });
             });
+
 
             services.Configure<FormOptions>(x => x.ValueCountLimit = 2048);
 
@@ -162,7 +185,9 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
+
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -173,14 +198,14 @@ namespace AngularSPAWebAPI
             else
             {
                 app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
-           
+
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseForwardedHeaders();
 
             // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
             var appRoutes = new[] {
@@ -244,7 +269,6 @@ namespace AngularSPAWebAPI
             app.UseDefaultFiles();
             // this should always be the last middleware
             app.UseStaticFiles();
-
 
         }
     }

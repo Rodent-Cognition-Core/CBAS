@@ -358,3 +358,15 @@ Thumbs.db
 /package - backup mar 29 2023.json
 /.npmignore
 
+#enviroment
+/src/environments/environment.hmr.ts
+/src/environments/environment.prod.ts
+/src/environments/environment.staging.ts
+
+docker-compose.yml
+.env
+Dockerfile
+node_app
+README.md
+.github/workflows/main.yml
+cat

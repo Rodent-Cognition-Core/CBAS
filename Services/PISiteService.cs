@@ -32,7 +32,7 @@ namespace AngularSPAWebAPI.Services
                         PName = Convert.ToString(dr["PName"].ToString()),
                         Institution = Convert.ToString(dr["Institution"].ToString()),
                         PISiteName = Convert.ToString(dr["PISiteName"].ToString()),
-                      
+
                     });
                 }
 
@@ -109,6 +109,12 @@ namespace AngularSPAWebAPI.Services
             }
 
             return lstPISite;
+        }
+
+        public void DeletePIUserSitebyPSID(string userID, int psid)
+        {
+            string sql = $@"DELETE FROM PIUserSite Where PUSID={psid} AND userID={userID};";
+            Dal.ExecuteNonQuery(sql);
         }
 
 

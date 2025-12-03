@@ -7,7 +7,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NotificationDialogComponent } from '../notification-dialog/notification-dialog.component';
 import { CONFIRMACCEPTPAPERTOPUBSCREEN, CONFIRMREJECTPAPER, PAPERREJECTED, SUCCESSFULLYADDEDPUBLICATION  } from '../shared/messages';
-
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'app-pubscreen-queue',
@@ -26,7 +26,7 @@ export class PubScreenQueueComponent implements OnInit {
     showGeneratedLink: any;
 
     private _onDestroy = new Subject<void>();
-
+    public app_url = environment.APP_URL;
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private pubScreenService: PubScreenService,
@@ -140,7 +140,7 @@ export class PubScreenQueueComponent implements OnInit {
 
             const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
             });
-            dialogRefLink.componentInstance.message = "http://localhost:4200/pubScreen-edit?paperlinkguid=" + guid;
+            dialogRefLink.componentInstance.message = this.app_url + "/pubScreen-edit?paperlinkguid=" + guid;
 
 
 

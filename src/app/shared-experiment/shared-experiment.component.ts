@@ -15,6 +15,7 @@ import { CogbytesService } from '../services/cogbytes.service'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CONFIRMDELETE, PLEASERUNPREPROCESSING, POSTPROCESSINGDONE } from '../shared/messages';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'app-shared-experiment',
@@ -45,6 +46,7 @@ export class SharedExperimentComponent implements OnInit {
     Math: any;
     imageDescriptionNotNullVal: boolean = false;
     repList: any;
+    public app_url = environment.APP_URL;
     
 
     constructor(

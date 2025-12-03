@@ -6,7 +6,7 @@ module.exports = {
         logLevel: "debug"
     },
     "/connect": {
-        target: "https://mousebytes.ca", 
+        target: "https://mousebytes.ca",
         secure: false,
         changeOrigin: true,
         logLevel: "debug"

@@ -15,23 +15,23 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5000/"
+      "applicationUrl": "http://localhost:5000"
     },
     "AngularSPAWebAPI_Staging": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:4200",
+      "launchUrl": "https://staging.mousebytes.ca",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "applicationUrl": "http://localhost:5000/"
+      "applicationUrl": "https://staging.mousebytes.ca/"
     }
   },
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5000/",
+      "applicationUrl": "https://mousebytes.ca/",
       "sslPort": 0
     }
   }

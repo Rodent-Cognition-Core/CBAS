@@ -15,6 +15,7 @@ import { TermsDialogeComponent } from '../termsDialoge/termsDialoge.component';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { FIELDISREQUIRED } from '../shared/messages';
+import { environment } from '../../environments/environment';
 
 declare var $: any;
 
@@ -26,7 +27,6 @@ declare var $: any;
 })
 export class DataExtractionComponent implements OnInit {
     //private formBuilder = inject(UntypedFormBuilder);
-
     taskList: any;
     expList: any;
     subTakList: any;
@@ -123,7 +123,7 @@ export class DataExtractionComponent implements OnInit {
     public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     private filteredExpCache: any[];
-
+    public app_url = environment.APP_URL;
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
 
@@ -353,9 +353,10 @@ export class DataExtractionComponent implements OnInit {
                 this.setToggleAllExp();
             })
 
-            this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+            // Set compareWith only if multiSelect is defined
+            if (this.multiSelect) {
                 this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
-            });
+            }
 
         });
 
@@ -1006,7 +1007,7 @@ export class DataExtractionComponent implements OnInit {
 
                 const dialogRefLink = this.dialog.open(NotificationDialogComponent, {
                 });
-                dialogRefLink.componentInstance.message = "http://localhost:4200/data-link?linkguid=" + this.linkGuid;
+                dialogRefLink.componentInstance.message = this.app_url + "/data-link?linkguid=" + this.linkGuid;
 
 
 
@@ -1120,6 +1121,11 @@ export class DataExtractionComponent implements OnInit {
     }
 
     checkToggleAll() {
+        // Check if expList and expMultiCtrl.value exist before accessing their length
+        if (!this.expList || !this.expMultiCtrl.value) {
+            this.isAllExpChecked = false;
+            return;
+        }
         if(this.expList.length === this.expMultiCtrl.value.length) {
             this.isAllExpChecked = true;
         } else {
