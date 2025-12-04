@@ -1582,6 +1582,40 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<FileUploadResult> GetUploadInfoBySubExpIDForTimeSeries(int subExpId)
+        {
+
+            List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeries.UploadID, UploadTimeSeries.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, UploadTimeSeries.IsUploaded, UploadTimeSeries.IsDuplicateSession
+                                                       From UploadTimeSeries inner join Animal on Animal.AnimalID = UploadTimeSeries.AnimalID
+                                                       WHERE UploadTimeSeries.SubExperimentID = {subExpId} Order By DateUpload;"))
+
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadLogForExp.Add(new FileUploadResult
+                    {
+                        UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                        SubExpID = subExpId,
+                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+                        DateUpload = HelperService.ConvertToNullableDateTime(dr["DateUpload"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
+                        IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
+                        SessionName = Convert.ToString(dr["SessionName"].ToString()),
+                        IsDuplicateSession = Convert.ToBoolean(dr["IsDuplicateSession"].ToString()),
+                    });
+                }
+
+            }
+
+            return lstUploadLogForExp;
+
+        }
+
         // Function Definition: Clear UploadErrorLog table
         public void ClearUploadLogTblbyID(int expID)
         {

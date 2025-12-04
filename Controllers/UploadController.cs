@@ -109,7 +109,14 @@ namespace AngularSPAWebAPI.Controllers
         {
 
             return new JsonResult(_uploadService.GetUploadInfoBySubExpIDForExperiemnt(subExpId));
-        }         
+        }
+
+        [HttpGet("GetUploadInfoBySubExpIdTimeSeries")]
+        public IActionResult GetUploadInfoBySubExpIdTimeSeries(int subExpId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadInfoBySubExpIDForTimeSeries(subExpId));
+        }
 
         [HttpGet("DownloadFile")]
         public async Task<IActionResult> DownloadFile(int uploadId)
