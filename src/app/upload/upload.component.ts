@@ -32,6 +32,7 @@ export class UploadComponent implements OnInit {
     interventionDescription: string;
     isIntervention: boolean;
     isDrug: boolean;
+    isTimeSeries: boolean;
     ageInMonth: string;
     sessionNameVal: any;
     expTask: string;
@@ -60,6 +61,17 @@ export class UploadComponent implements OnInit {
         headers: { }
     };
 
+    public configTimeSeries: DropzoneConfigInterface = {
+        clickable: true,
+        maxFiles: 5000,
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
+        timeout: 36000000,
+        headers: { },
+        url: 'http://localhost:5000/api/upload/UploadTimeSeriesFiles',
+    };
+
     constructor(
         private oAuthService: OAuthService,
         public dialog: MatDialog,
@@ -74,12 +86,14 @@ export class UploadComponent implements OnInit {
         this.interventionDescription = '';
         this.isIntervention = false;
         this.isDrug = false;
+        this.isTimeSeries = false;
         this.ageInMonth = '';
         this.expTask = '';
         this.experimentID = null;
         this.subExpID = null;
         this.sessionNameVal = null;
         this.config.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
+        this.configTimeSeries.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
 
     }
 
@@ -96,6 +110,7 @@ export class UploadComponent implements OnInit {
         this.experimentID = experiment.expID;
         this.expTask = experiment.taskName;
         this.expTaskID = experiment.taskID;
+        this.isTimeSeries = experiment.timeSeries;
 
         this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
         this.subExpID = null;
@@ -116,7 +131,8 @@ export class UploadComponent implements OnInit {
         this.sessionNameVal = null;
         //console.log(this.expTaskID);
 
-        switch (this.expTaskID) {
+        if (!this.isTimeSeries) {
+            switch (this.expTaskID) {
             case 2: { // 5-choice
                 this.SessionList = this.SessionList.filter(((x : any) => x.taskID === 1 || x.taskID === 2));
                 //console.log(this.SessionList);
@@ -176,6 +192,7 @@ export class UploadComponent implements OnInit {
                 //statements; {}
                 break;
             }
+        }
         }
 
 
