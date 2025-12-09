@@ -755,9 +755,17 @@ namespace AngularSPAWebAPI.Services
             string Max_Schedule_Time = "";
             string Date = "";
             string Animal_ID = "";
+            string Schedule_Name = "";
             string FinalTrialCount = "";
             string FinalScheduleTime = "";
             bool FinalTimeFound = false;
+            bool NonTrialDependentTask = false;
+
+            // Trial Dependent Task List
+            List<string> TrialDependentTaskList = new List<string>
+            {
+                "cpt","icpt"
+            };
 
 
             string path = string.Empty;
@@ -774,7 +782,11 @@ namespace AngularSPAWebAPI.Services
             foreach (string line in SessionData)
             {
                 string [] SplitLine = line.Split(',');
-                if (SplitLine[0] == "Date/Time")
+                if (SplitLine[0] == "Schedule")
+                {
+                    Schedule_Name = SplitLine[1];
+                }
+                else if (SplitLine[0] == "Date/Time")
                 {
                     Date = SplitLine[1];
                 }
@@ -834,6 +846,7 @@ namespace AngularSPAWebAPI.Services
             FileUniqueID1 = FileUniqueID1.Replace(" ", "_");
             FileUniqueID1 = FileUniqueID1.Replace("-", "_");
             FileUniqueID1 = FileUniqueID1.Replace("/", "_");
+            FileUniqueID1 = FileUniqueID1.Replace(".", "_");
 
             // Check FileUniqueID in DB to see if the file already exist in DB. If so retrun its uploadID, FileUniqueID, and IsQCpassed 
             var duplicateFileUniqueID = GetFileUniqueIDIsQCPassedTimeSeries(FileUniqueID1, expID);
@@ -886,13 +899,21 @@ namespace AngularSPAWebAPI.Services
             // Conduct Basic QC Check for All Schedules
             bool Flag = false;
 
+            NonTrialDependentTask = TrialDependentTaskList.Any(s => Schedule_Name.Trim().ToLower().Contains(s));
+
             if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0)
             {
                 Flag = true;
             }
             else
             {
-                ErrorMessage1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+                if (NonTrialDependentTask)
+                {
+                    Flag = true;
+                } else
+                {
+                    ErrorMessage1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";      
+                }
             }
 
             if (float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
@@ -921,13 +942,19 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            if ((float.Parse(HandleNullStr(FinalScheduleTime)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(FinalTrialCount)) <= float.Parse(HandleNullStr(Max_Number_Trials))))
+            if ((float.Parse(HandleNullStr(FinalScheduleTime)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(FinalTrialCount)) < float.Parse(HandleNullStr(Max_Number_Trials))))
             {
                 Flag = true;
             }
             else
             {
-                WarningMessage1 += $@"Final Schedule Time should either be less than Max_Schedule_Time with Max_Trials or equal to Max_Schedule_Time with less than Max_Number_Trials in the uploaded file. <br />";
+                if (NonTrialDependentTask)
+                {
+                    Flag = true;
+                } else
+                {
+                    WarningMessage1 += $@"Final Schedule Time should either be less than Max_Schedule_Time with Max_Trials or equal to Max_Schedule_Time with less than Max_Number_Trials in the uploaded file. <br />";   
+                }
 
             }
 
@@ -977,7 +1004,7 @@ namespace AngularSPAWebAPI.Services
 
                 };
 
-                SysAnimalID1 = InsertToAnimalTbl(animal);
+                SysAnimalID1 = InsertToAnimalTimeSeriesTbl(animal);
 
 
             }
@@ -1802,7 +1829,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<Animal> lstAnimal = new List<Animal>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.* From AnimalTimeSeries
+            using (DataTable dt = Dal.GetDataTable($@"SELECT * From AnimalTimeSeries
                                                          Where UserAnimalID = '{Animal_ID}' and ExperimentID = {expID}"))
             {
                 foreach (DataRow dr in dt.Rows)
@@ -1896,6 +1923,16 @@ namespace AngularSPAWebAPI.Services
 
             string sql = $"insert into Animal (ExpID, UserAnimalID, SID, GID, Sex)" +
             $"Values('{animal.ExpID}', '{animal.UserAnimalID}', {SID}, {GID}, '{animal.Sex}'); SELECT @@IDENTITY AS 'Identity'; ";
+
+            return Int32.Parse(Dal.ExecScalar(sql).ToString());
+
+        }
+
+        // ********************************Insert To Table AnimalTimeSeries in DataBase****************************
+        public int InsertToAnimalTimeSeriesTbl(Animal animal)
+        {
+            string sql = $"insert into AnimalTimeSeries (ExperimentID, UserAnimalID, Strain, Genotype, Sex)" +
+            $"Values('{animal.ExpID}', '{animal.UserAnimalID}', '{animal.Strain}', '{animal.Genotype}', '{animal.Sex}'); SELECT @@IDENTITY AS 'Identity'; ";
 
             return Int32.Parse(Dal.ExecScalar(sql).ToString());
 
