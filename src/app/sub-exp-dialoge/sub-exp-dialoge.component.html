@@ -34,12 +34,12 @@
 
         <div *ngIf="data.expObj.timeSeries">
             <mat-form-field class="full-width">
-                <input matInput placeholder="Start Date" [formControl]="startAge" required>
+                <input matInput placeholder="Start Age (Months)" [formControl]="startAge" required>
                 <mat-error *ngIf="startAge.invalid">{{getErrorMessageStartAge()}}</mat-error>
             </mat-form-field>
 
             <mat-form-field class="full-width">
-                <input matInput placeholder="End Date" [formControl]="endAge" required>
+                <input matInput placeholder="End Age (Months)" [formControl]="endAge" required>
                 <mat-error *ngIf="endAge.invalid">{{getErrorMessageEndAge()}}</mat-error>
             </mat-form-field>
         </div>
