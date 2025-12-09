@@ -64,6 +64,7 @@ export class UploadComponent implements OnInit {
     public configTimeSeries: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
+        acceptedFiles: '.csv',
         autoReset: undefined,
         errorReset: undefined,
         cancelReset: undefined,
@@ -112,7 +113,11 @@ export class UploadComponent implements OnInit {
         this.expTaskID = experiment.taskID;
         this.isTimeSeries = experiment.timeSeries;
 
-        this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        if (this.isTimeSeries) {
+            this.SessionList = [{"Id":0,"TaskID":0,"TaskName":"Time Series", "SessionName":"Time Series Data", "SessionDescription":"Task Agnostic Time Series Data"}];
+        } else {
+            this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        }
         this.subExpID = null;
         this.sessionNameVal = null;
 
@@ -126,9 +131,14 @@ export class UploadComponent implements OnInit {
         this.isIntervention = subExperiment.isIntervention;
         this.isDrug = subExperiment.isDrug;
         this.subExpName = subExperiment.subExpName;
-        this.ageInMonth = subExperiment.ageInMonth;
 
-        this.sessionNameVal = null;
+        if (this.isTimeSeries) {
+            this.ageInMonth = subExperiment.StartAge + " - " + subExperiment.EndAge + " months";
+            this.sessionNameVal = "Time Series Data"
+        } else {
+            this.ageInMonth = subExperiment.AgeInMonth;
+            this.sessionNameVal = null;
+        }
         //console.log(this.expTaskID);
 
         if (!this.isTimeSeries) {
@@ -335,8 +345,12 @@ export class UploadComponent implements OnInit {
         this.spinnerService.show();
 
 
-        var obj = this.SessionList.filter((x : any) => x.sessionName === this.sessionNameVal);
-        var sessionID = obj[0].id
+        if(!this.isTimeSeries) {
+            var obj = this.SessionList.filter((x : any) => x.sessionName === this.sessionNameVal);
+            var sessionID = obj[0].id
+        } else {
+            sessionID = this.SessionList[0].Id
+        }
 
 
         const formData = data[2];
