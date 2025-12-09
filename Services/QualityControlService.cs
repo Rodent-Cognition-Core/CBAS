@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
@@ -11,6 +12,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -736,6 +738,253 @@ namespace AngularSPAWebAPI.Services
 
         // *************End of QualityControl Function****************************************************************************************************************************
         //************************************************************************************************************************************************************************
+
+        // ************* Start of Time Series Quality Control **************
+        public (bool IsQcPassed, bool IsIdentifierPassed, string FileUniqueID, string ErrorMessage, string WarningMessage, bool InsertToTblUpload, int SysAnimalID, int UploadId, string AnimalID)
+            QualityControlTimeSeries(string Filename, string Filepath, int expID, int subExpID, bool MultipleSessions)
+        {
+            // Variable Initialization
+            bool IsQcPassed1 = false;
+            bool IsIdentifierPassed1 = false;
+            string FileUniqueID1 = "";
+            string ErrorMessage1 = "";
+            string WarningMessage1 = "";
+            bool InsertToTblUpload1 = false;
+            int SysAnimalID1 = -1;
+            string Max_Number_Trials = "";
+            string Max_Schedule_Time = "";
+            string Date = "";
+            string Animal_ID = "";
+            string FinalTrialCount = "";
+            string FinalScheduleTime = "";
+            bool FinalTimeFound = false;
+
+
+            string path = string.Empty;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                path = Filepath + "\\" + Filename;
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                path = Filepath + "/" + Filename;
+            }
+
+            // Open Time Series CSV and Extract Date, Animal ID, Max_Number_Trials, Max_Schedule_Time
+            string[] SessionData = File.ReadAllLines(path);
+            foreach (string line in SessionData)
+            {
+                string [] SplitLine = line.Split(',');
+                if (SplitLine[0] == "Date/Time")
+                {
+                    Date = SplitLine[1];
+                }
+                else if (SplitLine[0] == "Animal ID")
+                {
+                    Animal_ID = SplitLine[1];
+                }
+                else if (SplitLine[0] == "Max_Number_Trials")
+                {
+                    Max_Number_Trials = SplitLine[1];
+                }
+                else if (SplitLine[0] == "Max_Schedule_Time")
+                {
+                    Max_Schedule_Time = SplitLine[1];
+                }
+                else if (SplitLine[0] == "Evnt_Time")
+                {
+                    break;
+                }
+            }
+
+            // Search from end of csv to find Last recorded time and last _Trial_Counter value
+            for (int i = SessionData.Length - 1; i >= 0; i--)
+            {
+                string[] SplitLine = SessionData[i].Split(',');
+                if (!FinalTimeFound)
+                {
+                    if (!string.IsNullOrEmpty(SplitLine[0]) && SplitLine[0] != "Evnt_Time")
+                    {
+                        FinalScheduleTime = SplitLine[0];
+                        FinalTimeFound = true;
+                    }
+                }
+                if (SplitLine[3] == "_Trial_Counter")
+                {
+                  FinalTrialCount = SplitLine[8];
+                  break;  
+                }
+                
+            }
+
+            // Check to make sure Animal ID is not Null
+            if (string.IsNullOrEmpty(Animal_ID))
+            {
+                ErrorMessage1 += "No Animal ID was found in the uploaded file <br/>";
+            }
+
+            // Make FileUniqueID to handle Duplication
+            // Make FileUniqueID to handle Duplication
+            string Date1 = "";
+            if (!string.IsNullOrEmpty(Date))
+            {
+                Date1 = Date.Split(" ")[0];
+            }
+
+            FileUniqueID1 = expID + "_" + Date1 + "_" + Animal_ID;
+            FileUniqueID1 = FileUniqueID1.Replace(" ", "_");
+            FileUniqueID1 = FileUniqueID1.Replace("-", "_");
+            FileUniqueID1 = FileUniqueID1.Replace("/", "_");
+
+            // Check FileUniqueID in DB to see if the file already exist in DB. If so retrun its uploadID, FileUniqueID, and IsQCpassed 
+            var duplicateFileUniqueID = GetFileUniqueIDIsQCPassedTimeSeries(FileUniqueID1, expID);
+            //var duplicateFileUniqueID = FileUniqueIsQcPassed.Where(x => x.FileUniqueID == FileUniqueID1).FirstOrDefault();
+            int uploadId1 = (duplicateFileUniqueID != null) ? duplicateFileUniqueID.UploadID : -1;
+
+            //Check if file already exist, its errorMessage is Null & its IsQCpassed is true then it is the duplication
+            if (string.IsNullOrEmpty(ErrorMessage1))
+            {
+
+                if (duplicateFileUniqueID != null && !MultipleSessions)
+                {
+                    if (duplicateFileUniqueID.IsQcPassed == true)
+                    {
+                        ErrorMessage1 += " This File already uploaded to the database";
+                    }
+
+                }
+
+
+            }
+
+            // if errorMessage was not null, insert to table uploadErrorLog and return, else go ahead with QC Rules checking
+            if (!string.IsNullOrEmpty(ErrorMessage1))
+            {
+                // Insert to table UploadErrorLog
+                UploadErrorLog uploadErrorLog = new UploadErrorLog
+                {
+                    ExpID = expID,
+                    SubExpID = subExpID,
+                    UserFileName = Filename.Split("-").Last(),
+                    ErrorMessage = ErrorMessage1,
+                    UploadDate = DateTime.UtcNow,
+
+                };
+
+                insertToUploadErrorLog(uploadErrorLog);
+
+                return (IsQcPassed: IsQcPassed1, IsIdentifierPassed: IsIdentifierPassed1, FileUniqueID: FileUniqueID1, ErrorMessage: ErrorMessage1, WarningMessage: WarningMessage1,
+                    InsertToTblUpload: InsertToTblUpload1, SysAnimalID: SysAnimalID1, UploadId: uploadId1, AnimalID: Animal_ID);
+            }
+            else
+
+            {
+                // set the Variable InsertToTblUpload
+                InsertToTblUpload1 = true;
+            }
+
+
+            // Conduct Basic QC Check for All Schedules
+            bool Flag = false;
+
+            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0)
+            {
+                Flag = true;
+            }
+            else
+            {
+                ErrorMessage1 += $@"Max_Number_Trials should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Number_Trials))}</b> in the uploaded file. <br />";
+            }
+
+            if (float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            {
+                Flag = true;
+            }
+            else
+            {
+                ErrorMessage1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
+            }
+
+            if ((float.Parse(HandleNullStr(FinalScheduleTime)) > 0) && (float.Parse(HandleNullStr(FinalTrialCount)) > 0))
+            {
+                Flag = true;
+            }
+            else
+            {
+                if (float.Parse(HandleNullStr(FinalScheduleTime)) <= 0)
+                {
+                    ErrorMessage1 += $@"Final Schedule Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(FinalScheduleTime))}</b> in the uploaded file. <br />";
+                }
+
+                if (float.Parse(HandleNullStr(FinalTrialCount)) <= 0)
+                {
+                    ErrorMessage1 += $@"Final Trial Count should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(FinalTrialCount))}</b> in the uploaded file. <br />";
+                }
+            }
+
+            if ((float.Parse(HandleNullStr(FinalScheduleTime)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(FinalTrialCount)) <= float.Parse(HandleNullStr(Max_Number_Trials))))
+            {
+                Flag = true;
+            }
+            else
+            {
+                WarningMessage1 += $@"Final Schedule Time should either be less than Max_Schedule_Time with Max_Trials or equal to Max_Schedule_Time with less than Max_Number_Trials in the uploaded file. <br />";
+
+            }
+
+            // set the value of IsQcPassed based on ErrorMessage    
+            IsQcPassed1 = (string.IsNullOrEmpty(ErrorMessage1)) ? true : false;
+
+            // Check if Animal ID of input file exists in table animal in Database
+            List<Animal> lstAnimal = GetAnimalByUserAnimalIDTimeSeries(Animal_ID, expID);
+
+            // if animal exist in DB, use the existing animal information
+            if (lstAnimal.Any())
+            {
+                //set the value of IsIdentifierPassed if IsQCPassed
+
+                // new: loop through lstAnimal and check if any animalinfo of each element in the animal list is not null  (operator and i && i+1)
+                IsIdentifierPassed1 = (!string.IsNullOrEmpty(lstAnimal[0].Sex) && lstAnimal[0].GID != null && lstAnimal[0].SID != null) ? true : false;
+
+
+                if (IsIdentifierPassed1 == false)
+                {
+                    ErrorMessage1 = $"Missing Animal Information: No values have been provided for any of the following fields:" +
+                                  $"<ul> <li>Sex</li> <li>Strain</li> <li>Genotype</li></ul>";
+                }
+
+                // Set the Value for Sys Animal ID if Animal already exist in DB
+                SysAnimalID1 = lstAnimal[0].AnimalID;
+
+            }
+            else // Animal does not exist in DB
+            {
+
+                if (IsQcPassed1 == true)
+                {
+                    ErrorMessage1 = $"Missing Animal Information: No values have been provided for any of the following fields:" +
+                                 $"<ul> <li>Sex</li> <li>Strain</li> <li>Genotype</li></ul>";
+
+                }
+
+                //Create an object from Animal Model and assign values to its attributes based on info in the uploaded xml file
+                Animal animal = new Animal
+                {
+                    ExpID = expID,
+                    UserAnimalID = Animal_ID,
+                    Sex = null,
+                    Genotype = null,
+                    Strain = null,
+
+                };
+
+                SysAnimalID1 = InsertToAnimalTbl(animal);
+
+
+            }
+
+            return (IsQcPassed: IsQcPassed1, IsIdentifierPassed: IsIdentifierPassed1, FileUniqueID: FileUniqueID1, ErrorMessage: ErrorMessage1, WarningMessage: WarningMessage1,
+                 InsertToTblUpload: InsertToTblUpload1, SysAnimalID: SysAnimalID1, UploadId: uploadId1, AnimalID: Animal_ID);
+        }
 
         // Function Definition for extracting the required fields from XML Files ******************
         public string FeatureExtraction(string Tag1, string Tag2, string TagName, string TagValue, XDocument xdoc1)
@@ -1548,6 +1797,36 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        // ************************Check if Animal ID of input file exist in tbl Animal in Database
+        public List<Animal> GetAnimalByUserAnimalIDTimeSeries(string Animal_ID, int expID)
+        {
+            List<Animal> lstAnimal = new List<Animal>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Animal.* From AnimalTimeSeries
+                                                         Where UserAnimalID = '{Animal_ID}' and ExperimentID = {expID}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstAnimal.Add(new Animal
+                    {
+
+                        ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+                        Strain = Convert.ToString(dr["Strain"].ToString()),
+                        Genotype = Convert.ToString(dr["Genotype"].ToString()),
+                        Sex = Convert.ToString(dr["Sex"].ToString()),
+
+
+                    });
+                }
+
+            }
+
+            return lstAnimal;
+
+        }
+
         //***************************Insert to Table UploadErrorLog**************************
         public void insertToUploadErrorLog(UploadErrorLog errorLog)
         {
@@ -1582,6 +1861,31 @@ namespace AngularSPAWebAPI.Services
 
             return FileUniqueIDIsQcPassed;
 
+        }
+
+        public FileUploadResult GetFileUniqueIDIsQCPassedTimeSeries(string FileUniqueID1, int expID)
+        {
+            FileUploadResult FileUniqueIDIsQcPassed;
+
+            using (DataTable dt = Dal.GetDataTable($@"select UploadID, ltrim(rtrim(FileUniqueID)) As FileUniqueID, IsQcPassed, IsIdentifierPassed from UploadTimeSeries
+                                                        where ltrim(rtrim([FileUniqueID])) = '{FileUniqueID1.Trim()}' and  ExperimentID = {expID};"))
+            {
+                if (dt.Rows.Count == 0)
+                {
+                    return null;
+                }
+
+                FileUniqueIDIsQcPassed = new FileUploadResult
+                {
+                    FileUniqueID = Convert.ToString(dt.Rows[0]["FileUniqueID"].ToString()),
+                    IsQcPassed = Convert.ToBoolean(dt.Rows[0]["IsQcPassed"].ToString()),
+                    UploadID = Int32.Parse(dt.Rows[0]["UploadID"].ToString()),
+                    //IsIdentifierPassed = Convert.ToBoolean(dr["IsIdentifierPassed"].ToString()),
+                };
+
+            }
+
+            return FileUniqueIDIsQcPassed;
         }
 
         // ********************************Insert To Table Animal in DataBase****************************
