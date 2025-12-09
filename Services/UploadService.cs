@@ -85,14 +85,49 @@ namespace AngularSPAWebAPI.Services
 
                     };
 
-                    if (file.Length > 0)
+                    // Only objects whose errorMessage & warningMessage is not Null returned to client 
+                    if (!string.IsNullOrEmpty(fur.ErrorMessage) || !string.IsNullOrEmpty(fur.WarningMessage))
                     {
-                        using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
-                        {
-                            await file.CopyToAsync(fileStream1);
-                        }
+                        uploadResult.Add(fur);
                     }
 
+                    int uploadID = -1;
+
+                    //Inserting to Upload Table in DB
+                    if (info.InsertToTblUpload == true)
+                    {
+
+                        if (info.QC_UploadID == -1)
+                        {
+                            // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
+                            uploadID = await InsertUploadTimeSeriesAsync(fur);
+
+                        }
+
+                        // If there is a duplicate, but multiple sessions for an animal in a day are allowed
+                        else if (MultipleSessions)
+                        {
+                            uploadID = await InsertUploadTimeSeriesAsync(fur);
+                            await UpdateDuplicateSessionsTimeSeriesAsync(info.QC_FileUniqueID);
+                        }
+
+                        else
+                        {
+                            //Update Upload table and return uploadID
+                            await UpdateUploadTimeSeriesAsync(fur, info.QC_UploadID);
+                            uploadID = info.QC_UploadID;
+
+                        }
+                        System.IO.Directory.CreateDirectory(pathString);
+                        if (file.Length > 0)
+                        {
+                            using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream1);
+                            }
+                    
+                        }
+                    }
                 }
             }
             return uploadResult;
@@ -385,6 +420,53 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+         // Function to Insert To UploadTimeseries Table in Database
+        public async Task<int> InsertUploadTimeSeriesAsync(FileUploadResult upload)
+        {
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
+
+            const string sql = @"
+                INSERT INTO UploadTimeSeries 
+                (ExperimentID, AnimalID, SubExperimentID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath) 
+                VALUES 
+                (@ExpID, @AnimalID, @SubExpID, @UserFileName, @SysFileName, @SessionName, @ErrorMessage, @WarningMessage, @IsUploaded, @DateFileCreated, @DateUpload, @FileSize, @FileUniqueID, @IsQcPassed, @IsIdentifierPassed, @PermanentFilePath); 
+                SELECT SCOPE_IDENTITY();";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", upload.ErrorMessage),
+                new SqlParameter("@WarningMessage", upload.WarningMessage),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@PermanentFilePath", upload.PermanentFilePath)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in InsertUploadAsync");
+                throw;
+            }
+        }
+
         //Function to update Upload Table
         public async Task UpdateUploadAsync(FileUploadResult upload, int uploadId)
         {
@@ -396,6 +478,53 @@ namespace AngularSPAWebAPI.Services
             const string sql = @"
                 UPDATE Upload 
                 SET ExpID = @ExpID, AnimalID = @AnimalID, SubExpID = @SubExpID, UserFileName = @UserFileName, SysFileName = @SysFileName, 
+                    SessionName = @SessionName, ErrorMessage = @ErrorMessage, WarningMessage = @WarningMessage, 
+                    IsUploaded = @IsUploaded, DateFileCreated = @DateFileCreated, DateUpload = @DateUpload, FileSize = @FileSize, 
+                    IsQcPassed = @IsQcPassed, IsIdentifierPassed = @IsIdentifierPassed 
+                WHERE FileUniqueID = @FileUniqueID AND UploadID = @UploadID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", HelperService.EscapeSql(upload.ErrorMessage)),
+                new SqlParameter("@WarningMessage", HelperService.EscapeSql(upload.WarningMessage)),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@UploadID", uploadId)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateUploadAsync");
+                throw;
+            }
+        }
+
+        //Function to update UploadTimeSeries Table
+        public async Task UpdateUploadTimeSeriesAsync(FileUploadResult upload, int uploadId)
+        {
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
+
+            const string sql = @"
+                UPDATE Upload 
+                SET ExperimentID = @ExpID, AnimalID = @AnimalID, SubExperimentID = @SubExpID, UserFileName = @UserFileName, SysFileName = @SysFileName, 
                     SessionName = @SessionName, ErrorMessage = @ErrorMessage, WarningMessage = @WarningMessage, 
                     IsUploaded = @IsUploaded, DateFileCreated = @DateFileCreated, DateUpload = @DateUpload, FileSize = @FileSize, 
                     IsQcPassed = @IsQcPassed, IsIdentifierPassed = @IsIdentifierPassed 
@@ -453,6 +582,30 @@ namespace AngularSPAWebAPI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in UpdateDuplicateSessionsAsync");
+                throw;
+            }
+        }
+
+        // Function to flag duplicate fileUniqueIDs in the Upload Table
+        public async Task UpdateDuplicateSessionsTimeSeriesAsync(string fileUniqueID)
+        {
+            const string sql = @"
+                UPDATE UploadTimeSeries 
+                SET IsDuplicateSession = 1 
+                WHERE FileUniqueID = @FileUniqueID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@FileUniqueID", fileUniqueID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateDuplicateSessionsTimeSeriesAsync");
                 throw;
             }
         }
