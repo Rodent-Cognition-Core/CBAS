@@ -31,22 +31,60 @@ namespace AngularSPAWebAPI.Services
             _qualityControlService = new QualityControlService();
         }
 
-        public async Task<List<FileUploadResult>> UploadTimeSeriesFiles(IFormFileCollection files, string userName, string userID)
+        public async Task<List<FileUploadResult>> UploadTimeSeriesFiles(IFormFileCollection files, string userName, string userID, int expID,
+                                                                            int subExpId)
         {
             List<FileUploadResult> uploadResult = new List<FileUploadResult>();
-            int expID = 0;
+
             foreach (IFormFile file in files)
             {
                 string tempFileName = Guid.NewGuid().ToString() + "-" + file.FileName;
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "TempUpload");
+
                 if (file.Length > 0)
                 {
                     using (var fileStream = new FileStream(Path.Combine(uploads, tempFileName), FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
                     }
+
+                    // Check if multiple sessions allowed in a single day
+                    bool MultipleSessions = await GetMultipleSessionsAsync(expID);
+
+                    // Extracting SubExpName , Age for the selected Subexperiment
+                    string SubExpNameAge1 = await GetSubExpNameAgeTimeSeriesAsync(subExpId);
+
+                    // Start Time Series Quality Control
+                    bool IsUploaded1 = false;
+
+                    (bool QC_IsQcPassed, bool QC_IsIdentifierPassed, string QC_FileUniqueID, string QC_ErrorMessage, string QC_WarningMessage, bool InsertToTblUpload, int SysAnimalID, int QC_UploadID, string QC_AnimalID) info =
+                        _qualityControlService.QualityControlTimeSeries(tempFileName, uploads, expID, subExpId, MultipleSessions);
+
                     string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "UPLOAD", userName, expID.ToString());
                     System.IO.Directory.CreateDirectory(pathString);
+
+                    FileUploadResult fur = new FileUploadResult
+                    {
+                        ExpID = expID,
+                        SubExpID = subExpId,
+                        AnimalID = info.SysAnimalID,
+                        UserFileName = file.FileName,
+                        SysFileName = tempFileName,
+                        ErrorMessage = info.QC_ErrorMessage, // message from QC
+                        WarningMessage = info.QC_WarningMessage, // message from QC
+                        IsUploaded = IsUploaded1,
+                        DateFileCreated = DateTime.UtcNow,
+                        DateUpload = DateTime.UtcNow,
+                        FileSize = HelperService.ConvertToNullableInt(file.Length.ToString()),
+                        FileUniqueID = info.QC_FileUniqueID,
+                        IsQcPassed = info.QC_IsQcPassed,
+                        IsIdentifierPassed = info.QC_IsIdentifierPassed,
+                        UserAnimalID = info.QC_AnimalID,
+                        PermanentFilePath = pathString,
+                        SubExpNameAge = SubExpNameAge1
+
+                    };
+
                     if (file.Length > 0)
                     {
                         using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
@@ -1645,6 +1683,32 @@ namespace AngularSPAWebAPI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in GetSubExpNameAgeAsync");
+                throw;
+            }
+        }
+
+        //Function to Extract Age of Animal from Time Series SubExperiment Table
+
+        public async Task<string> GetSubExpNameAgeTimeSeriesAsync(int subExpID)
+        {
+            const string sql = @"
+                SELECT CONCAT(SubExpName, ', ', StartAge, ' Months') AS SubExpNameAge 
+                FROM SubExperimentTimeSeries
+                WHERE SubExperimentID = @SubExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@SubExpID", subExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetSubExpNameAgeTimeSeriesAsync");
                 throw;
             }
         }
