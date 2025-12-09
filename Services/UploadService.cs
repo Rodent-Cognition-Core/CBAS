@@ -49,7 +49,7 @@ namespace AngularSPAWebAPI.Services
                     }
 
                     // Check if multiple sessions allowed in a single day
-                    bool MultipleSessions = await GetMultipleSessionsAsync(expID);
+                    bool MultipleSessions = await GetMultipleSessionsTimeSeriesAsync(expID);
 
                     // Extracting SubExpName , Age for the selected Subexperiment
                     string SubExpNameAge1 = await GetSubExpNameAgeTimeSeriesAsync(subExpId);
@@ -313,6 +313,27 @@ namespace AngularSPAWebAPI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in GetMultipleSessionsAsync");
+                throw;
+            }
+        }
+
+        // function to determine if multiple sessions of an animal in a single day are allowed
+        public async Task<bool> GetMultipleSessionsTimeSeriesAsync(int ExpID)
+        {
+            const string sql = "SELECT MultipleSessions FROM ExperimentTimeSeries WHERE ExperimentTimeSeries.ExperimentID = @ExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToBoolean(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetMultipleSessionsTimeSeriesAsync");
                 throw;
             }
         }
