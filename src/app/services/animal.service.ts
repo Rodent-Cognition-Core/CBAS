@@ -45,6 +45,14 @@ export interface animalResponse {
             });
     }
 
+    public getAnimalTimeSeriesInfo(id: any): Observable<animalResponse[]> {
+
+        return this.http
+            .get<animalResponse[]>("/api/animal/GetAnimalTimeSeriesInfoByExpID?expId="+id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     public getCountOfAnimals(): Observable<number> {
 
         return this.http
@@ -78,6 +86,14 @@ export interface animalResponse {
 
         return this.http
             .delete<any>("/api/animal/DeleteAnimalById?animalID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    public deleteAnimalTimeSeriesbyID(id: any): Observable<any> {
+
+        return this.http
+            .delete<any>("/api/animal/DeleteAnimalTimeSeriesById?animalID=" + id, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
     }
