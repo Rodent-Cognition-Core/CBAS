@@ -48,6 +48,36 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<List<Animal>> GetAnimalTimeSeriesByExpIDAsync(int expID)
+        {
+            string query = @"SELECT *
+                             FROM AnimalTimeSeries
+                             WHERE ExperimentID = @ExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", expID)
+            };
+
+            try
+            {
+                return await Dal.ExecuteQueryAsync(query, reader => new Animal
+                {
+                    ExpID = reader.GetInt32(reader.GetOrdinal("ExperimentID")),
+                    AnimalID = reader.GetInt32(reader.GetOrdinal("AnimalID")),
+                    UserAnimalID = reader.GetString(reader.GetOrdinal("UserAnimalID")),
+                    Sex = reader.GetString(reader.GetOrdinal("Sex")),
+                    Genotype = reader.IsDBNull(reader.GetOrdinal("Genotype")) ? null : reader.GetString(reader.GetOrdinal("Genotype")),
+                    Strain = reader.IsDBNull(reader.GetOrdinal("Strain")) ? null : reader.GetString(reader.GetOrdinal("Strain"))
+                }, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting animals by ExpID: {ExpID}", expID);
+                return new List<Animal>();
+            }
+        }
+
         public async Task<bool> DoesAnimalIDExistAsync(string userAnimalId, int expID)
         {
             string sql = "SELECT COUNT(*) FROM Animal WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExpID = @ExpID";
@@ -149,6 +179,27 @@ namespace AngularSPAWebAPI.Services
                    Delete From SessionInfo Where AnimalID = @AnimalID;
                    Delete From Upload Where AnimalID = @AnimalID;
                    Delete From Animal Where AnimalID = @AnimalID;";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AnimalID", animalID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting animal with AnimalID: {AnimalID}", animalID);
+                throw;
+            }
+        }
+
+        public async Task DeleteAnimalTimeSeriesByAnimalIDAsync(int animalID)
+        {
+            string sql = @"Delete From UploadTimeSeries Where AnimalID = @AnimalID;
+                   Delete From AnimalTimeSeries Where AnimalID = @AnimalID;";
 
             var parameters = new List<SqlParameter>
             {
