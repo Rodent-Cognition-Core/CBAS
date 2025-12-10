@@ -19,11 +19,14 @@ export class AnimalDialogComponent implements OnInit {
     _animal: Animal;
     experimentId: number;
     isTaken: boolean;
+    isTimeSeries: boolean;
 
     userAnimalId: UntypedFormControl;
     gender: UntypedFormControl;
     strain: UntypedFormControl;
+    strainTimeSeries: UntypedFormControl;
     genotype: UntypedFormControl;
+    genotypeTimeSeries: UntypedFormControl;
 
     GenoList: any;
     StrainList: any;
@@ -37,9 +40,12 @@ export class AnimalDialogComponent implements OnInit {
         this.userAnimalId = fb.control('', [Validators.required])
         this.gender = fb.control('', [Validators.required])
         this.strain = fb.control('', [Validators.required])
+        this.strainTimeSeries = fb.control('', [Validators.required])
         this.genotype = fb.control('', [Validators.required])
+        this.genotypeTimeSeries = fb.control('', [Validators.required])
         this.experimentId = 0;
         this.isTaken = false;
+        this.isTimeSeries = data.isTimeSeries;
         this._animal = { AnimalID: 0, ExpID: 0, Genotype: '', GID: 0, Sex: '', SID: 0, Strain: '', UserAnimalID: '' }
     }
 
@@ -121,13 +127,19 @@ export class AnimalDialogComponent implements OnInit {
         this._animal.ExpID = this.data.experimentId;
         this._animal.UserAnimalID = this.userAnimalId.value;
         this._animal.Sex = this.gender.value;
-        this._animal.SID = this.strain.value;
-        this._animal.GID = this.genotype.value;
+        if(this.isTimeSeries){
+            this._animal.Strain = this.strainTimeSeries.value;
+            this._animal.Genotype = this.genotypeTimeSeries.value;
+        } else {
+            this._animal.SID = this.strain.value;
+            this._animal.GID = this.genotype.value;
+        }
 
         if (this.data.animalObj == null) {   // Insert Mode: Insert Animal
             this.isTaken = false;
 
-            this.animalService.createAnimal(this._animal).pipe(map(res => {
+            if (this.isTimeSeries) {
+                this.animalService.createAnimalTimeSeries(this._animal).pipe(map(res => {
                 if (res == TAKEN) {
                     this.isTaken = true;
                     this.userAnimalId.setErrors({ 'taken': true });
@@ -136,6 +148,17 @@ export class AnimalDialogComponent implements OnInit {
                 }
             })
             ).subscribe();
+            } else {
+                this.animalService.createAnimal(this._animal).pipe(map(res => {
+                if (res == TAKEN) {
+                    this.isTaken = true;
+                    this.userAnimalId.setErrors({ 'taken': true });
+                } else {
+                    this.thisDialogRef.close(true);
+                }
+            })
+            ).subscribe();
+            }
 
         } else {  // Edit Mode: Edit Animal
 
