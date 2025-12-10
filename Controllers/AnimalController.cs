@@ -57,6 +57,19 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("CreateAnimalTimeSeries")]
+        public async Task<IActionResult> CreateAnimalTimeSeries([FromBody]Animal animal)
+        {
+            if (await _animalService.DoesAnimalIDTimeSeriesExistAsync(animal.UserAnimalID, animal.ExpID))
+            {
+                return new JsonResult("Taken");
+            }
+            else
+            {
+                return new JsonResult(await _animalService.InsertAnimalTimeSeriesAsync(animal));
+            }
+        }
+
         [HttpPost("UpdateAnimal")]
         public async Task<IActionResult> UpdateAnimal([FromBody]Animal animal)
         {
