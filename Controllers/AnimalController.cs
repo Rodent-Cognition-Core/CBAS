@@ -35,6 +35,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(res);
         }
 
+        [HttpGet("GetAnimalTimeSeriesInfoByExpID")]
+        public async Task<IActionResult> GetAnimalTimeSeriesInfoByExpID(int expId)
+        {
+            var res = await _animalService.GetAnimalTimeSeriesByExpIDAsync(expId);
+            return new JsonResult(res);
+        }
+
         [HttpPost("CreateAnimal")]
         public async Task<IActionResult> CreateAnimal([FromBody]Animal animal)
         {
@@ -63,6 +70,14 @@ namespace AngularSPAWebAPI.Controllers
         public async Task<IActionResult> DeleteAnimalById(int animalID)
         {
             await _animalService.DeleteAnimalByAnimalIDAsync(animalID);
+            return new JsonResult("Done!");
+
+        }
+
+        [HttpDelete("DeleteAnimalTimeSeriesById")]
+        public async Task<IActionResult> DeleteAnimalTimeSeriesById(int animalID)
+        {
+            await _animalService.DeleteAnimalTimeSeriesByAnimalIDAsync(animalID);
             return new JsonResult("Done!");
 
         }
