@@ -100,6 +100,28 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<bool> DoesAnimalIDTimeSeriesExistAsync(string userAnimalId, int expID)
+        {
+            string sql = "SELECT COUNT(*) FROM AnimalTimeSeries WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExperimentID = @ExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserAnimalID", userAnimalId.Trim()),
+                new SqlParameter("@ExpID", expID)
+            };
+
+            try
+            {
+                int countResult = Convert.ToInt32(await Dal.ExecScalarAsync(sql, parameters));
+                return countResult > 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error checking if AnimalTimeSeriesID exists for UserAnimalID: {UserAnimalID}, ExpID: {ExpID}", userAnimalId, expID);
+                return false;
+            }
+        }
+
         public async Task<int> InsertAnimalAsync(Animal animal)
         {
             string sql = @"INSERT INTO Animal (ExpID, UserAnimalID, SID, GID, Sex) 
