@@ -71,6 +71,15 @@ export interface animalResponse {
 
     }
 
+    public createAnimalTimeSeries(animal: Animal): Observable<any> {
+
+        const body: string = JSON.stringify(animal);
+        return this.http.post<any>("/api/animal/CreateAnimalTimeSeries", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
     // definiton to Edit/update the animal
     public updateAniaml(animal: Animal): Observable<any> {
 
