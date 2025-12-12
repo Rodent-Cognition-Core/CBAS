@@ -91,6 +91,9 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
+            //Adds httpsClient
+            services.AddHttpClient();
+
             if (currentEnvironment.IsProduction())
             {
                 // Uncomment this line for publuishing
