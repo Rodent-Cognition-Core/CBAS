@@ -182,5 +182,28 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpGet("EditUserAnimalTimeSeriesID")]
+        public async Task<IActionResult> EditUserAnimalIDTimeSeries(string EditedUserAnimalId, int OldAnimalId, int ExpId)
+        {
+            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = await _animalService.GetAnimalIDByUserAnimalIdTimeSeriesAndExpIdAsync(EditedUserAnimalId, ExpId);
+
+            bool updated = await _animalService.ReplaceAnimalTimeSeriesIdAsync(OldAnimalId, ExistingAnimalIdToUse);
+            if (isAnimalInfocompleted)
+            {
+                var user = await _manager.GetUserAsync(HttpContext.User);
+                var userID = user.Id;
+                UploadService uploadService = new UploadService();
+                await uploadService.SetAsResolvedForEditedAnimalIdAsync(ExistingAnimalIdToUse, userID);
+            }
+            if (updated == true)
+            {
+                return new JsonResult("Successful");
+            }
+            else
+            {
+                return new JsonResult("Failed");
+            }
+        }
+
     }
 }
