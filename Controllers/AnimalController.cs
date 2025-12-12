@@ -79,6 +79,15 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpPost("UpdateAnimalTimeSeries")]
+        public async Task<IActionResult> UpdateAnimalTimeSeries([FromBody]Animal animal)
+        {
+
+            await _animalService.UpdateAnimalTimeSeriesAsync(animal);
+            return new JsonResult("Done!");
+
+        }
+
         [HttpDelete("DeleteAnimalById")]
         public async Task<IActionResult> DeleteAnimalById(int animalID)
         {
@@ -122,6 +131,22 @@ namespace AngularSPAWebAPI.Controllers
         {
 
             bool flag = await _animalService.IsUserAnimalIDExistAsync(UserAnimalID, ExpID);
+            if (flag == true)
+            {
+                return new JsonResult("Exist");
+            }
+            else
+            {
+                return new JsonResult("Not Exist");
+            }
+
+        }
+
+        [HttpGet("UserAnimalTimeSeriesIDExist")]
+        public async Task<IActionResult> UserAnimalTimeSeriesIDExist(string UserAnimalID, int ExpID)
+        {
+
+            bool flag = await _animalService.IsUserAnimalTimeSeriesIDExistAsync(UserAnimalID, ExpID);
             if (flag == true)
             {
                 return new JsonResult("Exist");
