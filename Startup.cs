@@ -96,6 +96,9 @@ namespace AngularSPAWebAPI
             //Adds serilog to 
             services.AddSerilog();
 
+            //Adds httpsClient
+            services.AddHttpClient();
+
             if (currentEnvironment.IsProduction())
             {
                 var appName = Environment.GetEnvironmentVariable("APP_NAME");
