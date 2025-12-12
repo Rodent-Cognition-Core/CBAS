@@ -420,6 +420,40 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<(int, bool)> GetAnimalIDByUserAnimalIdTimeSeriesAndExpIdAsync(string editedUserAnimalId, int expId)
+        {
+            string sql = @"
+                SELECT 
+                    AnimalID, 
+                    CASE 
+                        WHEN Sex IS NOT NULL AND Genotype IS NOT NULL AND Strain IS NOT NULL THEN 1 
+                        ELSE 0 
+                    END AS IsInfoCompleted
+                FROM AnimalTimeSeries 
+                WHERE LTRIM(RTRIM(UserAnimalID)) = @UserAnimalID AND ExperimentID = @ExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UserAnimalID", editedUserAnimalId.Trim()),
+                new SqlParameter("@ExpID", expId)
+            };
+
+            try
+            {
+                return await Dal.ExecuteQuerySingleAsync(sql, reader =>
+                {
+                    int animalId = reader.GetInt32(reader.GetOrdinal("AnimalID"));
+                    bool isInfoCompleted = reader.IsDBNull(reader.GetOrdinal("IsInfoCompleted")) ? false : reader.GetInt32(reader.GetOrdinal("IsInfoCompleted")) == 1;
+                    return (animalId, isInfoCompleted);
+                }, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error getting AnimalID and checking info completeness for UserAnimalID: {UserAnimalID}, ExpID: {ExpID}", editedUserAnimalId, expId);
+                return (0, false);
+            }
+        }
+
         public async Task<bool> ReplaceAnimalIdAsync(int oldAnimalId, int existingAnimalIdToUse)
         {
             string sql = @"
