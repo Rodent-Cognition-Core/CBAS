@@ -162,46 +162,75 @@ export class AnimalDialogComponent implements OnInit {
 
         } else {  // Edit Mode: Edit Animal
 
-            // Check If UserAnimalID has been edited
-            if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) {
-
-                this._animal.AnimalID = this.data.animalObj.animalID;
-                this.animalService.updateAniaml(this._animal).pipe(map((_res: {id: string}) => {
-                    // close it so we can see the loading
-                    this.thisDialogRef.close(true);
-
-                })
-             ).subscribe();
-
-            }
-            else {
-
-                // Check If edited UserAnimalID exist in Table Animal
-                this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
-                    if (!res) {
-                        alert("ERROR: " + ANIMALIDDOESNOTEXIST);
-
-                    } else {
-                        // Edit UserAnimalId based what exists in tbl Animal in Database
-                        this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
+            if (this.isTimeSeries) 
+                {
+                    if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) 
+                        {
+                          this._animal.AnimalID = this.data.animalObj.animalID;
+                            this.animalService.updateAnimalTimeSeries(this._animal).pipe(map((_res: {id: string}) => {
                             // close it so we can see the loading
-                            if (res) {
-                                this.thisDialogRef.close(false);
-                            }
-                            else {
-                                alert(CANNOTSAVEEDITS);
-                            }
+                            this.thisDialogRef.close(true);
 
-                        })
-                    ).subscribe();
-                    }
-                })
-            ).subscribe();
-            }
+                            })
+                            ).subscribe();  
+                        }
+                        else {
+                            this.animalService.IsUserAnimalTimeSeriesIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
+                            if (!res) {
+                                alert("ERROR: " + ANIMALIDDOESNOTEXIST);
 
+                            } else {
+                                // Edit UserAnimalId based what exists in tbl Animal in Database
+                            this.animalService.EditUserAnimalTimeSeriesID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
+                                // close it so we can see the loading
+                                if (res) {
+                                    this.thisDialogRef.close(false);
+                                }
+                                else {
+                                    alert(CANNOTSAVEEDITS);
+                                }
 
+                            })
+                        ).subscribe();
+                        }
+                    })
+                ).subscribe();
+                        }
+                } else {
+                   if (this.userAnimalLoadVal.trim().toUpperCase() == this.userAnimalId.value.trim().toUpperCase()) 
+                        {
+                          this._animal.AnimalID = this.data.animalObj.animalID;
+                            this.animalService.updateAnimal(this._animal).pipe(map((_res: {id: string}) => {
+                            // close it so we can see the loading
+                            this.thisDialogRef.close(true);
 
+                            })
+                            ).subscribe();  
+                        }
+                        else {
+                            this.animalService.IsUserAnimalIDExist(this.userAnimalId.value.trim(), this.data.experimentId).pipe(map((res) => {
+                            if (!res) {
+                                alert("ERROR: " + ANIMALIDDOESNOTEXIST);
 
+                            } else {
+                                // Edit UserAnimalId based what exists in tbl Animal in Database
+                            this.animalService.EditUserAnimalID(this.userAnimalId.value.trim(), this.data.animalObj.animalID, this.data.experimentId).pipe(map((res) => {
+                                // close it so we can see the loading
+                                if (res) {
+                                    this.thisDialogRef.close(false);
+                                }
+                                else {
+                                    alert(CANNOTSAVEEDITS);
+                                }
+
+                            })
+                        ).subscribe();
+                        }
+                    })
+                ).subscribe();
+                        }
+                }
+                
         }
 
 
