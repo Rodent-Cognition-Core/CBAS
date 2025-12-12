@@ -28,9 +28,9 @@ namespace AngularSPAWebAPI.Services
     public class CogbytesService
     {
         // Function Definition to get paper info from DOI
-        // private static readonly HttpClient client = new HttpClient();
+        private static readonly IHttpClientFactory _httpClientFactory;
         private readonly IElasticClient _elasticClient;
-
+     
         public List<CogbytesFileType> GetFileTypes()
         {
             List<CogbytesFileType> FileTypeList = new List<CogbytesFileType>();
@@ -1242,7 +1242,7 @@ namespace AngularSPAWebAPI.Services
                 return null;
             }
 
-            var pubscreenService = new PubScreenService(_elasticClient);
+            var pubscreenService = new PubScreenService(_elasticClient, _httpClientFactory);
             var pub = new PubScreen { DOI = doi };
             var result = pubscreenService.SearchPublications(pub);
             if (result != null && result.Any())

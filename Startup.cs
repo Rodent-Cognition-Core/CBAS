@@ -93,6 +93,7 @@ namespace AngularSPAWebAPI
 
             //Adds httpsClient
             services.AddHttpClient();
+            services.AddTransient<PubScreenService>();
 
             if (currentEnvironment.IsProduction())
             {
