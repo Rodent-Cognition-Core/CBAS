@@ -752,6 +752,47 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
+        public async Task<bool> SetAsResolvedForEditedAnimalTimeSeriesIdAsync(int animalId, string userId)
+        {
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListUploadsByAnimalIDErrorMessegeAsync(animalId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
+
+            foreach (var furInstance in lstFur)
+            {
+                const string sql = @"
+                    UPDATE Upload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
+
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
+
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private async Task<int> getUploadSessionIDbySessionNameAsync(string sessionName)
         {
             const string sql = "SELECT id FROM Upload_SessionInfo WHERE SessionName = @SessionName";
