@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Nest;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 
 
@@ -28,10 +29,12 @@ namespace AngularSPAWebAPI.Controllers
 
         private readonly UserManager<ApplicationUser> _manager;
         private readonly IElasticClient _elasticClient;
-        public PubScreenController(UserManager<ApplicationUser> manager, IElasticClient client)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public PubScreenController(UserManager<ApplicationUser> manager, IElasticClient client, IHttpClientFactory httpClient)
         {
             _elasticClient = client;
-            _pubScreenService = new PubScreenService(_elasticClient);
+            _httpClientFactory = httpClient;
+            _pubScreenService = new PubScreenService(_elasticClient, _httpClientFactory);
             _manager = manager;
         }
 
