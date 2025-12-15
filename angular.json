@@ -51,12 +51,12 @@
               ]
             },
             "staging": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
-                }
-              ]
+                "fileReplacements": [
+                    {
+                        "replace": "src/environments/environment.ts",
+                        "with": "src/environments/environment.staging.ts"
+                    }
+                ]
             },
             "production": {
               "optimization": true,
@@ -64,7 +64,7 @@
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
-              "extractLicenses": true,
+               "extractLicenses": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -83,13 +83,15 @@
           },
           "configurations": {
             "hmr": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build"
             },
             "staging": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build",
+                "proxyConfig": "proxy.staging.js"
             },
             "production": {
-              "buildTarget": "angular-spaweb-api:build"
+                "buildTarget": "angular-spaweb-api:build",
+                "proxyConfig": "proxy.production.js"
             }
           }
         },

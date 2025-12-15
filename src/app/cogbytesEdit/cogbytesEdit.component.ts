@@ -6,6 +6,7 @@ import { ReplaySubject ,  Subject } from 'rxjs';
 import { CogbytesService } from '../services/cogbytes.service'
 import { AuthenticationService } from '../services/authentication.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class CogbytesEditComponent implements OnInit {
     public filteredAutorList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     /** Subject that emits when the component has been destroyed. */
     private _onDestroy = new Subject<void>();
-
+    public app_url = environment.APP_URL;
     constructor(public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private cogbytesService: CogbytesService,
