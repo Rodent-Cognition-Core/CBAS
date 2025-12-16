@@ -92,7 +92,11 @@ export class DashboardComponent {
     }
 
     SelectedExpChanged(experiment : any) {
-
+        if (experiment.timeSeries) {
+            this.isTimeSeries = true;
+        } else {
+            this.isTimeSeries = false;
+        }
         this.GetUploadLogList(experiment.expID);
         this.GetUploadErrorLogList(experiment.expID);
         this.experimentName = experiment.expName;
