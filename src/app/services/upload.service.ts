@@ -22,16 +22,6 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    //public GetUploadResult(): any {
-
-    //    return this.http
-    //        .get("/api/upload/UploadFiles", {
-    //            headers: this.authenticationService.getAuthorizationHeader()
-    //        });
-    //};
-
-
-
     public setUploadAsResolved(uploadId: number): any {
 
         return this.http
@@ -43,6 +33,13 @@ import { AuthenticationService } from './authentication.service';
     downloadFile(id: number): Observable<Blob> {
 
         return this.http.get("/api/upload/downloadFile?uploadId=" + id,
+            { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
+
+    }
+
+    downloadTimeSeriesFile(id: number): Observable<Blob> {
+
+        return this.http.get("/api/upload/DownloadTimeSeriesFile?uploadId=" + id,
             { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
 
     }
