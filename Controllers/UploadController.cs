@@ -90,11 +90,26 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_uploadService.GetUploadInfoByExpID(expId));
         }
 
+        [HttpGet("GetUploadInfoByTimeSeriesID")]
+        public IActionResult GetUploadInfoByTimeSeriesID(int expId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadInfoByTimeSeriesExpID(expId));
+        }
+
+
         [HttpGet("GetUploadErrorLogByID")]
         public IActionResult GetUploadErrorLogByID(int expId)
         {
 
             return new JsonResult(_uploadService.GetUploadErrorLogByExpID(expId));
+        }
+
+        [HttpGet("GetUploadErrorLogByTimeSeriesID")]
+        public IActionResult GetUploadErrorLogByTimeSeriesID(int expId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadErrorLogByTimeSeriesExpID(expId));
         }
 
         [HttpGet("SetUploadAsResolved")]
@@ -104,6 +119,17 @@ namespace AngularSPAWebAPI.Controllers
             var userEmail = user.UserName;
             var userID = user.Id;
             var res = await _uploadService.SetUploadAsResolvedAsync(uploadId, userID);
+
+            return new JsonResult(res);
+        }
+
+        [HttpGet("SetTimeSeriesUploadAsResolved")]
+        public async Task<IActionResult> SetTimeSeriesUploadAsResolved(int uploadId)
+        {
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
+            var res = await _uploadService.SetTimeSeriesUploadAsResolvedAsync(uploadId, userID);
 
             return new JsonResult(res);
         }
@@ -128,6 +154,30 @@ namespace AngularSPAWebAPI.Controllers
         {
 
             var fur = await _uploadService.GetUploadByUploadIDAsync(uploadId);
+            var path = string.Empty;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+
+                path = fur.PermanentFilePath + "\\" + fur.SysFileName;
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                path = fur.PermanentFilePath + "/" + fur.SysFileName;
+            }
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path), Path.GetFileName(path));
+        }
+
+        [HttpGet("DownloadTimeSeriesFile")]
+        public async Task<IActionResult> DownloadFileTimeSeries(int uploadId)
+        {
+
+            var fur = await _uploadService.GetTimeSeriesUploadByUploadIDAsync(uploadId);
             var path = string.Empty;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
@@ -176,6 +226,14 @@ namespace AngularSPAWebAPI.Controllers
         public IActionResult DelUploadLogTblbyId(int expID)
         {
             _uploadService.ClearUploadLogTblbyID(expID);
+            return new JsonResult("Done!");
+
+        }
+
+        [HttpDelete("DelUploadLogTblbyTimeSeriesId")]
+        public IActionResult DelUploadLogTblbyTimeSeriesId(int expID)
+        {
+            _uploadService.ClearUploadLogTblbyTimeSeriesID(expID);
             return new JsonResult("Done!");
 
         }

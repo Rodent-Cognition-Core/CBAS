@@ -687,6 +687,58 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
+        public async Task<bool> SetTimeSeriesUploadAsResolvedAsync(int uploadID, string userId)
+        {
+            FileUploadResult fur;
+            try
+            {
+                fur = await GetTimeSeriesUploadByUploadIDAsync(uploadID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetTimeSeriesUploadByUploadIDAsync");
+                return false;
+            }
+
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync(fur.AnimalID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
+
+            foreach (var furInstance in lstFur)
+            {
+                const string sql = @"
+                    UPDATE TimeSeriesUpload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
+
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
+
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public async Task<bool> SetAsResolvedForEditedAnimalIdAsync(int animalId, string userId)
         {
             List<FileUploadResult> lstFur;
@@ -846,12 +898,81 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<FileUploadResult> GetTimeSeriesUploadByUploadIDAsync(int uploadID)
+        {
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskID 
+                FROM UploadTimeSeries AS Upload
+                INNER JOIN Experiment ON Experiment.ExperimentID = Upload.ExperimentID
+                WHERE UploadID = @UploadID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UploadID", uploadID)
+            };
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    if (dt.Rows.Count != 1)
+                    {
+                        throw new Exception("UploadID Not Found");
+                    }
+
+                    return ParseUploadRow(dt.Rows[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetUploadByUploadIDAsync");
+                throw;
+            }
+        }
+
+        
+
         public async Task<List<FileUploadResult>> GetListUploadsByAnimalIDErrorMessegeAsync(int animalID)
         {
             const string sql = @"
                 SELECT Upload.*, Experiment.TaskID 
                 FROM Upload
                 INNER JOIN Experiment ON Experiment.ExpID = Upload.ExpID
+                WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AnimalID", animalID)
+            };
+
+            var retVal = new List<FileUploadResult>();
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        FileUploadResult uploadResult = ParseUploadRow(dr);
+                        retVal.Add(uploadResult);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                throw;
+            }
+
+            return retVal;
+        }
+
+         public async Task<List<FileUploadResult>> GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync(int animalID)
+        {
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskID 
+                FROM UploadTimeSeries AS Upload
+                INNER JOIN Experiment ON Experiment.ExperimentID = Upload.ExperimentID
                 WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
 
             var parameters = new List<SqlParameter>
@@ -1772,6 +1893,49 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<FileUploadResult> GetUploadInfoByTimeSeriesExpID(int expId)
+        {
+            List<FileUploadResult> lstUploadLog = new List<FileUploadResult>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID,  UserFileName, Animal.UserAnimalID, DateFileCreated, WarningMessage, 
+                                                        Upload.ErrorMessage,  CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge, se.SubExpID 
+                                                        From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
+                                                        inner join SubExperimentTimeSeries se on Upload.SubExperimentID = se.SubExperimentID
+                                                        WHERE Upload.ExperimentID = {expId} and ((Upload.ErrorMessage!='' and Upload.ErrorMessage IS NOT NUll) OR (ISNULL(WarningMessage,'')!='')) Order By UserAnimalID;"))
+
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadLog.Add(new FileUploadResult
+                    {
+                        UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                        ExpID = expId,
+                        SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
+                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+                        DateFileCreated = HelperService.ConvertToNullableDateTime(dr["DateFileCreated"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
+                        SubExpNameAge = Convert.ToString(dr["SubExpNameAge"].ToString()),
+                        AnimalObj = new Animal
+                        {
+                            ExpID = expId,
+                            AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                            UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+
+
+                        }
+
+                    });
+                }
+
+            }
+
+            return lstUploadLog;
+
+        }
+
         public List<UploadErrorLog> GetUploadErrorLogByExpID(int expId)
         {
             List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
@@ -1780,6 +1944,32 @@ namespace AngularSPAWebAPI.Services
                                                         inner join SubExperiment se on UploadErrorLog.SubExpID = se.SubExpID
 														inner join Age on Age.ID = se.AgeID
                                                         WHERE UploadErrorLog.ExpID = {expId};"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadErrorLog.Add(new UploadErrorLog
+                    {
+                        ExpID = expId,
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        UploadDate = HelperService.ConvertToNullableDateTime(dr["UploadDate"].ToString()),
+                        SubExpNameAge = Convert.ToString(dr["SubExpNameAge"].ToString()),
+                    });
+                }
+
+            }
+
+            return lstUploadErrorLog;
+
+        }
+
+        public List<UploadErrorLog> GetUploadErrorLogByTimeSeriesExpID(int expId)
+        {
+            List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge  FROM UploadErrorLogTimeSeries
+                                                        inner join SubExperimentTimeSeries se on UploadErrorLogTimeSeries.SubExperimentID = se.SubExperimentID
+                                                        WHERE UploadErrorLogTimeSeries.ExperimentID = {expId};"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1873,6 +2063,13 @@ namespace AngularSPAWebAPI.Services
         public void ClearUploadLogTblbyID(int expID)
         {
             string sql = $@"Delete From UploadErrorLog Where ExpID={expID}";
+
+            Dal.ExecuteNonQuery(sql);
+        }
+
+        public void ClearUploadLogTblbyTimeSeriesID(int expID)
+        {
+            string sql = $@"Delete From UploadErrorLogTimeSeries Where ExperimentID={expID}";
 
             Dal.ExecuteNonQuery(sql);
         }
