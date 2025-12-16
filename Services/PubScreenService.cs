@@ -46,11 +46,6 @@ namespace AngularSPAWebAPI.Services
         // private static readonly HttpClient client = new HttpClient();
         public PubScreenService(IElasticClient client, IHttpClientFactory httpClient){
             var PROXY_ADDR = Environment.GetEnvironmentVariable("PROXY_ADDR");
-            HttpClientHandler handler = new HttpClientHandler()
-            {
-                //Proxy = new WebProxy(PROXY_ADDR, 8080),
-                //UseProxy = true
-            };
             pubScreenHttpClient = httpClient;
 
             _elasticClient = client;
