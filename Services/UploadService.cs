@@ -18,6 +18,7 @@ using MathNet.Numerics.Statistics;
 using Serilog;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
+using System.IO.Compression;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -3277,8 +3278,58 @@ namespace AngularSPAWebAPI.Services
             return lstFeatures;
         }
 
+        public byte[] DownloadTimeSeriesData(List<int> subExpIds)
+        {
+            if (subExpIds == null || subExpIds.Count == 0)
+            {
+                return null;
+            }
 
+            string ids = string.Join(",", subExpIds);
+            string sql = $@"
+                SELECT DISTINCT u.PermanentFilePath, e.ExpName 
+                FROM UploadTimeSeries u 
+                JOIN ExperimentTimeSeries e ON u.ExperimentID = e.ExperimentID 
+                WHERE u.SubExperimentID IN ({ids}) AND u.PermanentFilePath IS NOT NULL AND u.PermanentFilePath != ''";
 
+            var paths = new List<(string Path, string ExpName)>();
+
+            using (DataTable dt = Dal.GetDataTable(sql))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    paths.Add((dr["PermanentFilePath"].ToString(), dr["ExpName"].ToString()));
+                }
+            }
+
+            if (paths.Count == 0)
+            {
+                return null;
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var item in paths)
+                    {
+                        if (Directory.Exists(item.Path))
+                        {
+                            string folderName = string.Join("_", item.ExpName.Split(Path.GetInvalidFileNameChars()));
+                            
+                            foreach (string filePath in Directory.GetFiles(item.Path, "*", SearchOption.AllDirectories))
+                            {
+                                string relativePath = filePath.Substring(item.Path.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                                string entryName = Path.Combine(folderName, relativePath);
+                                
+                                archive.CreateEntryFromFile(filePath, entryName);
+                            }
+                        }
+                    }
+                }
+                return memoryStream.ToArray();
+            }
+        }
 
     }
 }
