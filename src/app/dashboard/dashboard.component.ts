@@ -180,7 +180,7 @@ export class DashboardComponent {
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',
-            data: { experimentId: this.experimentID, animalObj: animal }
+            data: { experimentId: this.experimentID, animalObj: animal, isTimeSeries: this.isTimeSeries }
 
         });
 
@@ -200,6 +200,49 @@ export class DashboardComponent {
                 console.log('show spinner');
                 this.spinnerService.show();
 
+                if (this.isTimeSeries) {
+                    this.uploadService.setTimeSeriesUploadAsResolved(uploadId).subscribe((_data : any) => {
+
+                        this.GetUploadLogList(this.experimentID);
+
+                        setTimeout(() => {
+                            this.spinnerService.hide();
+                        }, 500);
+
+                        //this.uploadLogList = this.uploadLogList.filter(obj => obj.uploadID !== uploadId);
+                        //For updating dashboards, all the files with the same animal ID & Same error should get disapeared from the uploadLogList
+
+                    },
+                        (error : any) => {
+                            if (error.error instanceof Error) {
+                                console.log('An error occurred:', error.error.message);
+                            } else {
+                                console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                        }
+                        });
+                        
+                } else 
+                {
+                    this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
+
+                        this.GetUploadLogList(this.experimentID);
+
+                        setTimeout(() => {
+                            this.spinnerService.hide();
+                        }, 500);
+
+                        //this.uploadLogList = this.uploadLogList.filter(obj => obj.uploadID !== uploadId);
+                        //For updating dashboards, all the files with the same animal ID & Same error should get disapeared from the uploadLogList
+
+                    },
+                        (error : any) => {
+                            if (error.error instanceof Error) {
+                                console.log('An error occurred:', error.error.message);
+                            } else {
+                                console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                            }
+                        });
+                }
                 this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
 
                     this.GetUploadLogList(this.experimentID);

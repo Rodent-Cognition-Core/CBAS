@@ -30,6 +30,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public setTimeSeriesUploadAsResolved(uploadId: number): any {
+
+        return this.http
+            .get("/api/upload/SetTimeSeriesUploadAsResolved?uploadId=" + uploadId, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     downloadFile(id: number): Observable<Blob> {
 
         return this.http.get("/api/upload/downloadFile?uploadId=" + id,
