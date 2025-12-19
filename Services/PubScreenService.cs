@@ -37,21 +37,17 @@ namespace AngularSPAWebAPI.Services
     {
         const int MOUSEID = 2;
         const int RATID = 1;
-        private readonly HttpClient httpClient;
+        private readonly IHttpClientFactory pubScreenHttpClient;
         private static string[] MULTISEARCHFIELDS = { "title", "keywords", "author", "abstract" };
         private static HashSet<string> MULTISELCETFIELD = new HashSet<string> {"Author", "Task", "SubTask", "PaperType", "Species", "Sex", "Strain", "DiseaseModel", "SubModel", "BrainRegion", "SubRegion", "CellType", "Method", "SubMethod", "NeuroTransmitter", };
-        private const int SEARCHRESULTSIZE = 10000;
+        private const int SEARCHRESULTSIZE = 5000;
         private readonly IElasticClient _elasticClient;
         // Function Definition to get paper info from DOI
         // private static readonly HttpClient client = new HttpClient();
-        public PubScreenService(IElasticClient client){
+        public PubScreenService(IElasticClient client, IHttpClientFactory httpClient){
             var PROXY_ADDR = Environment.GetEnvironmentVariable("PROXY_ADDR");
-            HttpClientHandler handler = new HttpClientHandler()
-            {
-                //Proxy = new WebProxy(PROXY_ADDR, 8080),
-                //UseProxy = true
-            };
-            httpClient = new HttpClient(handler);
+            pubScreenHttpClient = httpClient;
+
             _elasticClient = client;
         }
 
@@ -75,7 +71,8 @@ namespace AngularSPAWebAPI.Services
             {
                 try
                 {
-                    var response = await httpClient.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term={doi}&rettype=Id", content);
+                    var client = pubScreenHttpClient.CreateClient();
+                    var response = await client.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&WebEnv=1&usehistory=y&term={doi}&rettype=Id", content);
                     responseString = await response.Content.ReadAsStringAsync();
                     if (responseString.Contains("<OutputMessage>No items found.</OutputMessage>", StringComparison.OrdinalIgnoreCase) ||
                         responseString.Contains("<ErrorList>", StringComparison.OrdinalIgnoreCase))
@@ -141,7 +138,8 @@ namespace AngularSPAWebAPI.Services
             {
                 try
                 {
-                    var response = await httpClient.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubMedKey}&retmode=xml", content);
+                    var client = pubScreenHttpClient.CreateClient();
+                    var response = await client.PostAsync($"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubMedKey}&retmode=xml", content);
                     responseString = await response.Content.ReadAsStringAsync();
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
@@ -307,7 +305,8 @@ namespace AngularSPAWebAPI.Services
             StringContent content = new System.Net.Http.StringContent(String.Empty);
             try
             {
-                var response = await httpClient.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/na/json", content);
+                var client = pubScreenHttpClient.CreateClient();
+                var response = await client.PostAsync("https://api.biorxiv.org/details/biorxiv/" + doi + "/na/json", content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Log.Information($"responseString: {responseString}");
                 JsonPubscreen jsonPubscreen = JsonConvert.DeserializeObject<JsonPubscreen>(responseString);
@@ -387,7 +386,8 @@ namespace AngularSPAWebAPI.Services
             {
                 try
                 {
-                    var response = await httpClient.PostAsync("https://doi.crossref.org/servlet/query?pid=mousebyt@uwo.ca&format=unixref&id=" + doi, content);
+                    var client = pubScreenHttpClient.CreateClient();
+                    var response = await client.PostAsync("https://doi.crossref.org/servlet/query?pid=mousebyt@uwo.ca&format=unixref&id=" + doi, content);
                     responseString = await response.Content.ReadAsStringAsync();
                     incomingXml = XElement.Parse(responseString);
                     isSuccess = true;
