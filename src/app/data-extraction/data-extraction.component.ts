@@ -1,8 +1,9 @@
-import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, OnDestroy } from '@angular/core';
 import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
 import { DataExtractionService } from '../services/dataextraction.service'
+import { SubExpDialogeService } from '../services/subexpdialoge.service';
 import { DataExtraction } from '../models/dataextraction';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelect } from '@angular/material/select';
@@ -24,7 +25,7 @@ declare var $: any;
     templateUrl: './data-extraction.component.html',
     styleUrls: ['./data-extraction.component.scss']
 })
-export class DataExtractionComponent implements OnInit {
+export class DataExtractionComponent implements OnInit, OnDestroy {
     //private formBuilder = inject(UntypedFormBuilder);
 
     taskList: any;
@@ -55,9 +56,11 @@ export class DataExtractionComponent implements OnInit {
 
     // FormControls vars
     //dataextractionForm = new FormGroup({
+    dataType: UntypedFormControl;
     task: UntypedFormControl;
     subtask: UntypedFormControl;
     exp: UntypedFormControl;
+    subexp: UntypedFormControl;
     sessioninfo: UntypedFormControl;
     markerinfo: UntypedFormControl;
     PISite: UntypedFormControl;
@@ -66,6 +69,7 @@ export class DataExtractionComponent implements OnInit {
     //});
 
     data : any
+    dataTypeList: any[]
 
     _dataExtractionObj: DataExtraction;
 
@@ -78,7 +82,10 @@ export class DataExtractionComponent implements OnInit {
     pagedItems: any[];
 
     isAllExpChecked: boolean;
+    isAllSubExpChecked: boolean;
     isExpIndeterminate: boolean;
+    isSubExpIndeterminate: boolean;
+    isTimeSeries: boolean;
 
     dataextractionForm = UntypedFormControl;
 
@@ -113,13 +120,16 @@ export class DataExtractionComponent implements OnInit {
 
     /** control for the selected experiments for multi-selection */
     public expMultiCtrl: UntypedFormControl = new UntypedFormControl();
+    public subExpMultiCtrl: UntypedFormControl = new UntypedFormControl();
     /** control for the MatSelect filter keyword multi-selection */
     public expMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
+    public subExpMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
     public MarkerInfoMultiFilterCtrl: UntypedFormControl = new UntypedFormControl();
 
     //dataSource: MatTableDataSource<Element[]>;
     /** list of experiments filtered by search keyword for multi-selection */
     public filteredExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    public filteredSubExpMulti: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     public filteredMarkerInfoList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     private filteredExpCache: any[];
@@ -138,6 +148,7 @@ export class DataExtractionComponent implements OnInit {
         public dialogTerms: MatDialog,
         public uploadService: UploadService,
         private expDialogeService: ExpDialogeService,
+        private subExpDialogeService: SubExpDialogeService,
         private fb: UntypedFormBuilder,
         public dialogRefLink: MatDialog
     ) {
@@ -145,7 +156,9 @@ export class DataExtractionComponent implements OnInit {
         this.showGeneratedLink = false;
         this.termsChecked = false;
         this.isAllExpChecked = false;
+        this.isAllSubExpChecked = false;
         this.isExpIndeterminate = false;
+        this.isSubExpIndeterminate = false;
         this.pagedItems = [];
         this.filteredExpCache = [];
         this._geno = { Description: '', Genotype: '', ID: 0, Link: '' }
@@ -154,15 +167,35 @@ export class DataExtractionComponent implements OnInit {
             sessionInfoNames: [], sessionName: [], sexVals: [], species: '', speciesID: 0, strainVals: [], subExpID: [], subtaskID: 0,
             subTaskName: '', taskID: 0, taskName: ''
         }
+        this.dataType = fb.control('', [Validators.required])
+        this.dataTypeList = [{ dataType: 'Summary Data', description : 'Submitted Data with Summary Statistics' }, { dataType: 'Time Series Data', description: 'Submitted Data with Event Driven Time Series' }]
         this.task = fb.control('', [Validators.required])
         this.subtask = fb.control('', [Validators.required])
         this.exp = fb.control('', [Validators.required])
+        this.subexp = fb.control('', [Validators.required])
         this.sessioninfo = fb.control('', [Validators.required])
         this.markerinfo = fb.control('', [Validators.required])
         this.PISite = fb.control('', [Validators.required])
         this.aggFunc = fb.control('', [Validators.required])
         this.species = fb.control('', [Validators.required])
+        this.isTimeSeries = false;
         this.resetDdls();
+    }
+
+    resetTopDdls() {
+        this.subtask.setValue('');
+        this.exp.setValue([]);
+        this.species.setValue('');
+        this.sessioninfo.setValue([]);
+        this.markerinfo.setValue([]);
+        this.selectedPiSiteValue = [];
+        this.aggFunc.setValue('');
+        this.selectedAgeValue = [];
+        this.selectedStrainValue = [];
+        this.selectedGenotypeValue = [];
+        this.selectedSexValue = [];
+        this.isTrialByTrial = false;
+        this.selectedSubSessionValue = [];
     }
 
     resetDdls() {
@@ -197,11 +230,41 @@ export class DataExtractionComponent implements OnInit {
 
     }
 
+    selectedDataTypeChange() {
+        if (this.dataType.value === 'Time Series Data') {
+            this.isTimeSeries = true;
+        } else {
+            this.isTimeSeries = false;
+        }
+        this.resetTopDdls();
+        this.task.setValue('');
+    }
+
     selectedSpeciesChange() {
 
 
         this.task.setValue('');
         this.resetDdls();
+        if (this.isTimeSeries) {
+            var isUser = this.authenticationService.isInRole("user");
+            var isAdmin = this.authenticationService.isInRole("administrator");
+            if (isUser || isAdmin) {
+
+                this.dataExtractionService.getUserGuid().subscribe((userGuid : any) => {
+
+                    this.resetDdls();
+                    this.getExpTimeSeriesList( userGuid, this.species.value);
+                    this.showGeneratedLink = false;
+
+                });
+
+            } else {
+
+                this.resetDdls();
+                this.showGeneratedLink = false;
+
+        } 
+        }
 
     }
 
@@ -324,6 +387,12 @@ export class DataExtractionComponent implements OnInit {
 
     selectedExpChange(selectedExpVal : number) {
         this.subtask.setValue('');
+        if (this.isTimeSeries) 
+            {
+                this.subExpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data : any) => {
+
+                });
+        }
         this.selectedSubTaskChange(this.subtask.value, selectedExpVal);
         // call function for extracting intervention list
         this.getInterventionList(selectedExpVal);
@@ -361,6 +430,37 @@ export class DataExtractionComponent implements OnInit {
 
         return this.expList;
 
+    }
+
+    getExpTimeSeriesList(userGuid : any, selectedSpeciesvalue : number): any {
+
+        var isFullDataAccess = this.authenticationService.isInRole("fulldataaccess");
+
+        this.dataExtractionService.getAllTimeSeriesExp(userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe((data : any) => {
+            this.expList = data;
+            if (Array.isArray(this.expList)) {
+                this.expList.forEach((expItem: any) => {
+                    expItem.piSiteUser = expItem.piSiteName;
+                });
+            }
+
+            this.filteredExpMulti.next(this.expList.slice());
+
+            this.expMultiFilterCtrl.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.filterExpMulti();
+                this.setToggleAllExp();
+            });
+
+            this.expMultiCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+                this.setToggleAllExp();
+            });
+
+            this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+                this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
+            });
+        });
     }
 
     // Getting subTakList for the selected Task ID
@@ -800,6 +900,11 @@ export class DataExtractionComponent implements OnInit {
 
     }
 
+    getErrorMessageSubExp() {
+        return this.subexp.hasError('required') ? FIELDISREQUIRED :
+            '';
+    }
+
     // Subtask Dropdown
     getErrorMessageSubTask() {
 
@@ -841,6 +946,12 @@ export class DataExtractionComponent implements OnInit {
             '';
     }
 
+    getErrorMessageDataType() {
+
+        return this.dataType.hasError('required') ? FIELDISREQUIRED :
+            '';
+    }
+
     setDisabledVal() {
 
 
@@ -859,6 +970,16 @@ export class DataExtractionComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    setDisabledTimeSeriesVal() {
+        if(!this.termsChecked || 
+            (this.species.hasError('required') ||
+            this.exp.hasError('required') )) {
+                return true
+            } else {
+                return false
+            }
     }
 
     //***************End of Error Handling***********************
@@ -1086,8 +1207,29 @@ export class DataExtractionComponent implements OnInit {
 
     }
 
+    downloadTimeSeriesArchive() {
+        this.spinnerService.show();
+    }
+
     selectAllExperiments(selectAll: boolean) {
         this.filteredExpMulti.pipe(take(1), takeUntil(this._onDestroy))
+        .subscribe((val: any) => {
+            var allExpIds: any[] = [];
+            if (selectAll) {
+                allExpIds = val.map((exp : any) => exp.expID);
+                this.exp.setValue(allExpIds);
+            } else {
+                this.exp.setValue([]);
+            }
+
+            if (allExpIds && allExpIds.length > 0) {
+                this.selectedExpChange(this.exp.value);
+              }
+        })
+    }
+
+    selectAllSubExperiments(selectAll: boolean) {
+         this.filteredSubExpMulti.pipe(take(1), takeUntil(this._onDestroy))
         .subscribe((val: any) => {
             var allExpIds: any[] = [];
             if (selectAll) {

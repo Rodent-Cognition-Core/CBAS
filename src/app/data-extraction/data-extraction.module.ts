@@ -7,6 +7,7 @@ import { DataExtractionService } from '../services/dataextraction.service'
 import { PagerService } from '../services/pager.service';
 import { UploadService } from '../services/upload.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
+import { SubExpDialogeService } from '../services/subexpdialoge.service';
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { ExpDialogeService } from '../services/expdialoge.service';
         PagerService,
         UploadService,
         ExpDialogeService,
+        SubExpDialogeService
         
     ],
     bootstrap: [DataExtractionComponent],
