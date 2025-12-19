@@ -5,7 +5,7 @@
 <app-shared-experiment (outSelectedExperiment)="SelectedExpChanged($event)" [hideSubExperiment]="true"></app-shared-experiment> <!--$event is the experiment obj sent to animal component-->
 
 <br /><br />
-<div *ngIf="experimentID!=null">
+<div *ngIf="experimentID!==null">
 
     <!-- Search-->
     <div style="float: left; margin-left: 10%; width: 80%;">

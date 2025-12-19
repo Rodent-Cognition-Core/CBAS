@@ -51,23 +51,37 @@ export class AnimalDialogComponent implements OnInit {
 
     ngOnInit() {
 
-        this.animalService.getAllStraine().subscribe(data => { this.StrainList = data; });
-        //this.animalService.getAllGeno(this.strainModel).subscribe(data => { this.GenoList = data; });
+        this.animalService.getAllStraine().subscribe(data => { 
+            this.StrainList = data; 
+            if (this.isTimeSeries) {
+                this.StrainList.push({ id: -1, strain: 'Other', link: '' });
+            }
+
+            // if it is the edit mode
+            if (this.data.animalObj != null) {
+                if (this.isTimeSeries) {
+                    const foundStrain = this.StrainList.find((s: any) => s.strain === this.data.animalObj.strain);
+                    if (foundStrain) {
+                        this.strain.setValue(foundStrain.id);
+                        this.getGenoList(foundStrain.id);
+                    } else {
+                        this.strain.setValue(-1);
+                        this.strainTimeSeries.setValue(this.data.animalObj.strain);
+                        this.getGenoList(-1);
+                    }
+                } else {
+                    this.strain.setValue(this.data.animalObj.sid);
+                    this.getGenoList(this.data.animalObj.sid);
+                }
+            }
+        });
 
         // if it is the edit mode
         if (this.data.animalObj != null) {
             this.userAnimalLoadVal = this.data.animalObj.userAnimalID;
             this.userAnimalId.setValue(this.data.animalObj.userAnimalID);
             this.gender.setValue(this.data.animalObj.sex);
-            this.strain.setValue(this.data.animalObj.sid);
-            this.getGenoList(this.data.animalObj.sid);
-            this.genotype.setValue(this.data.animalObj.gid);
-            
-           
         }
-
-        
-
 
     }
 
@@ -81,8 +95,42 @@ export class AnimalDialogComponent implements OnInit {
     }
 
     getGenoList(selected_StrainValue: number): any {
+        if (selected_StrainValue === -1) {
+            this.GenoList = [];
+            if (this.isTimeSeries) {
+                this.GenoList.push({ id: -1, genotype: 'Other', link: '', description: '' });
+                if (this.data.animalObj != null) {
+                    const foundGeno = this.GenoList.find((g : any) => g.genotype === this.data.animalObj.genotype);
+                    if (foundGeno) {
+                        this.genotype.setValue(foundGeno.id);
+                    } else {
+                        this.genotype.setValue(-1);
+                        this.genotypeTimeSeries.setValue(this.data.animalObj.genotype);
+                    }
+                }
+            }
+            return;
+        }
+        this.animalService.getAllGeno(selected_StrainValue).subscribe(data => { 
+            this.GenoList = data; 
+            if (this.isTimeSeries) {
+                this.GenoList.push({ id: -1, genotype: 'Other', link: '', description: '' });
+            }
 
-        this.animalService.getAllGeno(selected_StrainValue).subscribe(data => { this.GenoList = data; });
+            if (this.data.animalObj != null) {
+                if (this.isTimeSeries) {
+                    const foundGeno = this.GenoList.find((g : any) => g.genotype === this.data.animalObj.genotype);
+                    if (foundGeno) {
+                        this.genotype.setValue(foundGeno.id);
+                    } else {
+                        this.genotype.setValue(-1);
+                        this.genotypeTimeSeries.setValue(this.data.animalObj.genotype);
+                    }
+                } else {
+                    this.genotype.setValue(this.data.animalObj.gid);
+                }
+            }
+        });
     }
 
     onCloseCancel(): void {
@@ -118,6 +166,16 @@ export class AnimalDialogComponent implements OnInit {
         ) {
             return true;
         }
+
+        if (this.isTimeSeries) {
+            if (this.strain.value === -1 && this.strainTimeSeries.hasError('required')) {
+                return true;
+            }
+            if (this.genotype.value === -1 && this.genotypeTimeSeries.hasError('required')) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -127,9 +185,20 @@ export class AnimalDialogComponent implements OnInit {
         this._animal.ExpID = this.data.experimentId;
         this._animal.UserAnimalID = this.userAnimalId.value;
         this._animal.Sex = this.gender.value;
-        if(this.isTimeSeries){
-            this._animal.Strain = this.strainTimeSeries.value;
-            this._animal.Genotype = this.genotypeTimeSeries.value;
+        if (this.isTimeSeries) {
+            if (this.strain.value === -1) {
+                this._animal.Strain = this.strainTimeSeries.value;
+            } else {
+                const selectedStrain = this.StrainList.find((s: any) => s.id === this.strain.value);
+                this._animal.Strain = selectedStrain ? selectedStrain.strain : '';
+            }
+
+            if (this.genotype.value === -1) {
+                this._animal.Genotype = this.genotypeTimeSeries.value;
+            } else {
+                const selectedGeno = this.GenoList.find((g: any) => g.id === this.genotype.value);
+                this._animal.Genotype = selectedGeno ? selectedGeno.genotype : '';
+            }
         } else {
             this._animal.SID = this.strain.value;
             this._animal.GID = this.genotype.value;
