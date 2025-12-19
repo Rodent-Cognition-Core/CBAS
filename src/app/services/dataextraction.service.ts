@@ -30,6 +30,14 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public getAllTimeSeriesExp(userGuid: any, isFullDataAccess: any, speciesID: any): any {
+
+        return this.http
+            .get("/api/dataExtraction/GetAllTimeSeriesExp?userGuid=" + userGuid + "&isFullDataAccess=" + isFullDataAccess + "&speciesId=" + speciesID, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
     public getUserGuid(): any {
         //console.log(this.authenticationService.getAuthorizationHeader());
         return this.http
