@@ -20,7 +20,7 @@
         </mat-radio-group>
 
        <!--Animal Strain-->
-        <mat-form-field class="full-width" *ngIf="!isTimeSeries">
+        <mat-form-field class="full-width">
             <mat-select placeholder="Animal Strain" [formControl]="strain" required (selectionChange)="selectedStrainChange(strain.value)">
                 <mat-option *ngFor="let strain of StrainList" [value]="strain.id">
                     <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
@@ -30,7 +30,7 @@
         </mat-form-field>
 
         <!--Animal Strain Time Series Alternate-->
-        <mat-form-field class="full-width" *ngIf="isTimeSeries">
+        <mat-form-field class="full-width" *ngIf="isTimeSeries && strain.value === -1">
             <input matInput placeholder="Animal Strain" [formControl]="strainTimeSeries" required>
         </mat-form-field>
 
@@ -45,7 +45,7 @@
         </mat-form-field>
 
         <!--Animal Genotype Time Series Alternate-->
-        <mat-form-field class="full-width" *ngIf="isTimeSeries">
+        <mat-form-field class="full-width" *ngIf="isTimeSeries && genotype.value === -1">
             <input matInput placeholder="Animal Genotype" [formControl]="genotypeTimeSeries" required>
         </mat-form-field>
 
