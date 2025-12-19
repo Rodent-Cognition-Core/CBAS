@@ -1,5 +1,6 @@
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
+using CBAS.Helpers;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -28,6 +29,7 @@ namespace AngularSPAWebAPI.Controllers
     public class UploadController : Controller
     {
         private readonly UploadService _uploadService;
+        private readonly HelperService _helperService;
         private readonly UserManager<ApplicationUser> _manager;
 
         // constructor
@@ -157,10 +159,10 @@ namespace AngularSPAWebAPI.Controllers
             var path = string.Empty;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
-
                 path = fur.PermanentFilePath + "\\" + fur.SysFileName;
             }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+            else
+            {
                 path = fur.PermanentFilePath + "/" + fur.SysFileName;
             }
 
@@ -170,7 +172,18 @@ namespace AngularSPAWebAPI.Controllers
                 await stream.CopyToAsync(memory);
             }
             memory.Position = 0;
-            return File(memory, GetContentType(path), Path.GetFileName(path));
+            return File(memory, GetContentType(path), fur.UserFileName);
+        }
+
+        [HttpPost("DownloadTimeSeriesData")]
+        public IActionResult DownloadTimeSeriesData([FromBody] List<int> subExpIds)
+        {
+            var fileBytes = _uploadService.DownloadTimeSeriesData(subExpIds);
+            if (fileBytes == null)
+            {
+                return NotFound("No data found for the selected experiments.");
+            }
+            return File(fileBytes, "application/zip", "TimeSeriesData.zip");
         }
 
         [HttpGet("DownloadTimeSeriesFile")]
