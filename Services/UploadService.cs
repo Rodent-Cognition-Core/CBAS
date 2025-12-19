@@ -1967,9 +1967,9 @@ namespace AngularSPAWebAPI.Services
         {
             List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge  FROM UploadErrorLogTimeSeries
-                                                        inner join SubExperimentTimeSeries se on UploadErrorLogTimeSeries.SubExperimentID = se.SubExperimentID
-                                                        WHERE UploadErrorLogTimeSeries.ExperimentID = {expId};"))
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge  FROM UploadTimeSeriesErrorLog
+                                                        inner join SubExperimentTimeSeries se on UploadTimeSeriesErrorLog.SubExperimentID = se.SubExperimentID
+                                                        WHERE UploadTimeSeriesErrorLog.ExperimentID = {expId};"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -2069,7 +2069,7 @@ namespace AngularSPAWebAPI.Services
 
         public void ClearUploadLogTblbyTimeSeriesID(int expID)
         {
-            string sql = $@"Delete From UploadErrorLogTimeSeries Where ExperimentID={expID}";
+            string sql = $@"Delete From UploadTimeSeriesErrorLog Where ExperimentID={expID}";
 
             Dal.ExecuteNonQuery(sql);
         }
