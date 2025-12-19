@@ -61,4 +61,9 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    downloadTimeSeriesData(subExpIds: number[]): Observable<Blob> {
+        return this.http.post("/api/upload/DownloadTimeSeriesData", subExpIds,
+            { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
+    }
+
 }
