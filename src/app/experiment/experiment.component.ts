@@ -141,6 +141,28 @@ export class ExperimentComponent {
             })
     }
 
+    DownloadDataset(): void {
+        if (this.selectedSubExperiment && this.selectedSubExperiment.subExpID) {
+            this.spinnerService.show();
+            var subExpIds = [this.selectedSubExperiment.subExpID];
+            this.uploadService.downloadTimeSeriesData(subExpIds)
+                .subscribe(result => {
+                    this.spinnerService.hide();
+                    var blob = new Blob([result], { type: 'application/zip' });
+                    var url = window.URL.createObjectURL(blob);
+                    var tempLink = document.createElement('a');
+                    tempLink.href = url;
+                    tempLink.setAttribute('download', 'TimeSeriesData.zip');
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
+                    document.body.removeChild(tempLink);
+                }, error => {
+                    this.spinnerService.hide();
+                    console.error(error);
+                });
+        }
+    }
+
 
     // Function defintion of pagination for Table File
     setPageTblFile(page: number) {

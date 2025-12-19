@@ -6,6 +6,9 @@
 <br /><br />
 
 <div *ngIf="selectedSubExperiment!==null">
+    <div *ngIf="timeSeries" style="text-align: center; margin-bottom: 10px;">
+        <button mat-raised-button color="primary" (click)="DownloadDataset()">Download Dataset</button>
+    </div>
     <div style="float: left; margin-left: 10%; width: 80%;">
         <mat-form-field class="md-icon-float full-width">
             <input matInput [(ngModel)]="expfilter" placeholder="search file, animal ID, or sessionName" (keyup.enter)="search()">
