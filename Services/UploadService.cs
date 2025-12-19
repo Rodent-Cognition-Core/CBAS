@@ -1898,8 +1898,8 @@ namespace AngularSPAWebAPI.Services
             List<FileUploadResult> lstUploadLog = new List<FileUploadResult>();
 
             using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID,  UserFileName, Animal.UserAnimalID, DateFileCreated, WarningMessage, 
-                                                        Upload.ErrorMessage,  CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge, se.SubExpID 
-                                                        From Upload inner join Animal on Animal.AnimalID = Upload.AnimalID
+                                                        Upload.ErrorMessage,  CONCAT(se.SubExpName, ', ' , se.StartAge, ' Months') as SubExpNameAge, se.SubExperimentID 
+                                                        From UploadTimeSeries as Upload inner join AnimalTimeSeries As Animal on Animal.AnimalID = Upload.AnimalID
                                                         inner join SubExperimentTimeSeries se on Upload.SubExperimentID = se.SubExperimentID
                                                         WHERE Upload.ExperimentID = {expId} and ((Upload.ErrorMessage!='' and Upload.ErrorMessage IS NOT NUll) OR (ISNULL(WarningMessage,'')!='')) Order By UserAnimalID;"))
 
@@ -1967,7 +1967,7 @@ namespace AngularSPAWebAPI.Services
         {
             List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadErrorLog.* , CONCAT(se.SubExpName, ', ' , Upload.StartAge, ' Months') as SubExpNameAge  FROM UploadTimeSeriesErrorLog
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeriesErrorLog.* , CONCAT(se.SubExpName, ', ' , se.StartAge, ' Months') as SubExpNameAge  FROM UploadTimeSeriesErrorLog
                                                         inner join SubExperimentTimeSeries se on UploadTimeSeriesErrorLog.SubExperimentID = se.SubExperimentID
                                                         WHERE UploadTimeSeriesErrorLog.ExperimentID = {expId};"))
             {
@@ -2049,7 +2049,7 @@ namespace AngularSPAWebAPI.Services
                         WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
                         IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
                         SessionName = Convert.ToString(dr["SessionName"].ToString()),
-                        IsDuplicateSession = Convert.ToBoolean(dr["IsDuplicateSession"].ToString()),
+                        IsDuplicateSession = dr["IsDuplicateSession"] != DBNull.Value && (dr["IsDuplicateSession"] is bool ? (bool)dr["IsDuplicateSession"] : Convert.ToInt32(dr["IsDuplicateSession"]) == 1),
                     });
                 }
 
