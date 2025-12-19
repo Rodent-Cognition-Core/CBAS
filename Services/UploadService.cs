@@ -714,7 +714,7 @@ namespace AngularSPAWebAPI.Services
             foreach (var furInstance in lstFur)
             {
                 const string sql = @"
-                    UPDATE TimeSeriesUpload 
+                    UPDATE UploadTimeSeries
                     SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
                         IsQcPassed = 1, IsIdentifierPassed = 1 
                     WHERE UploadID = @UploadID";
@@ -901,9 +901,9 @@ namespace AngularSPAWebAPI.Services
         public async Task<FileUploadResult> GetTimeSeriesUploadByUploadIDAsync(int uploadID)
         {
             const string sql = @"
-                SELECT Upload.*, Experiment.TaskID 
+                SELECT Upload.*, Experiment.TaskName 
                 FROM UploadTimeSeries AS Upload
-                INNER JOIN Experiment ON Experiment.ExperimentID = Upload.ExperimentID
+                INNER JOIN ExperimentTimeSeries as Experiment ON Experiment.ExperimentID = Upload.ExperimentID
                 WHERE UploadID = @UploadID";
 
             var parameters = new List<SqlParameter>
@@ -920,7 +920,7 @@ namespace AngularSPAWebAPI.Services
                         throw new Exception("UploadID Not Found");
                     }
 
-                    return ParseUploadRow(dt.Rows[0]);
+                    return ParseUploadTimeSeriesRow(dt.Rows[0]);
                 }
             }
             catch (Exception ex)
@@ -970,9 +970,9 @@ namespace AngularSPAWebAPI.Services
          public async Task<List<FileUploadResult>> GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync(int animalID)
         {
             const string sql = @"
-                SELECT Upload.*, Experiment.TaskID 
+                SELECT Upload.*, Experiment.TaskName
                 FROM UploadTimeSeries AS Upload
-                INNER JOIN Experiment ON Experiment.ExperimentID = Upload.ExperimentID
+                INNER JOIN ExperimentTimeSeries as Experiment ON Experiment.ExperimentID = Upload.ExperimentID
                 WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
 
             var parameters = new List<SqlParameter>
@@ -988,7 +988,7 @@ namespace AngularSPAWebAPI.Services
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        FileUploadResult uploadResult = ParseUploadRow(dr);
+                        FileUploadResult uploadResult = ParseUploadTimeSeriesRow(dr);
                         retVal.Add(uploadResult);
                     }
                 }
@@ -1026,6 +1026,33 @@ namespace AngularSPAWebAPI.Services
                 PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
                 SessionName = Convert.ToString(dr["SessionName"]),
                 TaskID = Int32.Parse(dr["TaskID"].ToString()),
+            };
+        }
+
+        private FileUploadResult ParseUploadTimeSeriesRow(DataRow dr)
+        {
+            return new FileUploadResult
+            {
+                UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
+                AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                UserFileName = Convert.ToString(dr["UserFileName"]),
+                SysFileName = Convert.ToString(dr["SysFileName"]),
+                ErrorMessage = Convert.ToString(dr["ErrorMessage"]),
+                WarningMessage = Convert.ToString(dr["WarningMessage"]),
+                IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
+                IsDismissed = bool.Parse(dr["IsDismissed"].ToString()),
+                DateUpload = HelperService.ConvertToNullableDateTime(dr["DateUpload"].ToString()),
+                DateFileCreated = HelperService.ConvertToNullableDateTime(dr["DateFileCreated"].ToString()),
+                FileSize = HelperService.ConvertToNullableInt(dr["FileSize"].ToString()),
+                FileUniqueID = Convert.ToString(dr["FileUniqueID"]),
+                FileContent = Convert.ToString(dr["FileContentType"]),
+                IsQcPassed = bool.Parse(dr["IsQcPassed"].ToString()),
+                IsIdentifierPassed = bool.Parse(dr["IsIdentifierPassed"].ToString()),
+                PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
+                SessionName = Convert.ToString(dr["SessionName"]),
+                TaskName = Convert.ToString(dr["TaskName"]),
             };
         }
 
