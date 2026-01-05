@@ -175,6 +175,7 @@ namespace AngularSPAWebAPI.Controllers
             return File(memory, GetContentType(path), fur.UserFileName);
         }
 
+        [AllowAnonymous]
         [HttpPost("DownloadTimeSeriesData")]
         public IActionResult DownloadTimeSeriesData([FromBody] List<int> subExpIds)
         {
