@@ -30,6 +30,7 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
     //private formBuilder = inject(UntypedFormBuilder);
     taskList: any;
     expList: any;
+    subExpList: any;
     subTakList: any;
     markerInfoList: any;
     AnimalInfoListAge: any;
@@ -390,7 +391,22 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
         if (this.isTimeSeries) 
             {
                 this.subExpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data : any) => {
+                    this.subExpList = data;
+                    console.log(this.subExpList);
+                    this.filteredSubExpMulti.next(this.subExpList.slice());
 
+                    this.subExpMultiFilterCtrl.valueChanges
+                    .pipe(takeUntil(this._onDestroy))
+                    .subscribe(() => {
+                        this.filterSubExpMulti();
+                        this.setToggleAllSubExp();
+                    });
+                    this.subExpMultiCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+                        this.setToggleAllSubExp();
+                    });
+                    this.filteredSubExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+                        this.multiSelect.compareWith = (a: any, b: any) => a && b && a.id === b.id;
+                    });
                 });
         }
         this.selectedSubTaskChange(this.subtask.value, selectedExpVal);
@@ -444,7 +460,7 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
                     expItem.piSiteUser = expItem.piSiteName;
                 });
             }
-
+            console.log(this.expList);
             this.filteredExpMulti.next(this.expList.slice());
 
             this.expMultiFilterCtrl.valueChanges
@@ -1007,6 +1023,26 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
         );
     }
 
+    private filterSubExpMulti() {
+        if (!this.subExpList) {
+            return;
+        }
+
+        let search = this.subExpMultiFilterCtrl.value;
+
+        if (!search) {
+            this.filteredSubExpMulti.next(this.subExpList.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+
+        this.filteredSubExpMulti.next(
+            this.subExpList.filter((t : any) => t.subExpName.toLowerCase().indexOf(search) > -1)
+        );
+
+    }
+
     // handling multi filtered Markerinfo list
     private filterMarkerInfo() {
         if (!this.markerInfoList) {
@@ -1210,6 +1246,19 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
     downloadTimeSeriesArchive() {
         this.spinnerService.show();
+        this.dataExtractionService.downloadTimeSeriesData(this.subExpMultiCtrl.value).subscribe((data: any) => {
+            this.spinnerService.hide();
+            const blob = new Blob([data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'TimeSeriesData_' + new Date().getTime() + '.zip';
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }, (error: any) => {
+            this.spinnerService.hide();
+            console.error(error);
+        });
     }
 
     selectAllExperiments(selectAll: boolean) {
@@ -1234,15 +1283,11 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
         .subscribe((val: any) => {
             var allExpIds: any[] = [];
             if (selectAll) {
-                allExpIds = val.map((exp : any) => exp.expID);
-                this.exp.setValue(allExpIds);
+                allExpIds = val.map((exp : any) => exp.subExpID);
+                this.subExpMultiCtrl.setValue(allExpIds);
             } else {
-                this.exp.setValue([]);
+                this.subExpMultiCtrl.setValue([]);
             }
-
-            if (allExpIds && allExpIds.length > 0) {
-                this.selectedExpChange(this.exp.value);
-              }
         })
     }
 
@@ -1256,6 +1301,18 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
             this.isAllExpChecked = selectedCount === totalFilteredCount;
             this.isExpIndeterminate = selectedCount > 0 && selectedCount < totalFilteredCount;
   });
+    }
+
+    setToggleAllSubExp() {
+        if (!this.subExpMultiCtrl || !this.subExpMultiCtrl.value) return;
+
+        this.filteredSubExpMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe((filteredSubExperiments: any[]) => {
+            const selectedCount = this.subExpMultiCtrl.value.length;
+            const totalFilteredCount = filteredSubExperiments.length;
+
+            this.isAllSubExpChecked = selectedCount === totalFilteredCount;
+            this.isSubExpIndeterminate = selectedCount > 0 && selectedCount < totalFilteredCount;
+        });
     }
 
     onToggleSingle() {

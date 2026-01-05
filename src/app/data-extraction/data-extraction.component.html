@@ -68,7 +68,7 @@
 
                     <!--Select SubExperiments for Time Series-->
                     <mat-form-field *ngIf="exp.value!==null && isTimeSeries">
-                        <mat-select [formControl]="subexp" placeholder="Select Sub-Experiments" [multiple]="true">
+                        <mat-select [formControl]="subExpMultiCtrl" placeholder="Select Sub-Experiments" [multiple]="true">
                             <mat-option>
                                 <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" 
                                 [showToggleAllCheckbox]="true"
@@ -77,11 +77,11 @@
                                 (toggleAll)="selectAllSubExperiments($event)"
                                 [formControl]="subExpMultiFilterCtrl"></ngx-mat-select-search>
                             </mat-option>
-                            <mat-option *ngFor="let subexp of filteredSubExpMulti | async" [value]="subexp.subexpID" (onSelectionChange)="onToggleSingle()">
-                                <span matTooltip="{{subexp.subexpName}}">{{subexp.subexpName}}</span>
+                            <mat-option *ngFor="let subexp of filteredSubExpMulti | async" [value]="subexp.subExpID" (onSelectionChange)="onToggleSingle()">
+                                <span matTooltip="{{subexp.subExpName}}">{{subexp.subExpName}}</span>
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="subexp.invalid">{{getErrorMessageSubExp()}}</mat-error>
+                        <mat-error *ngIf="subExpMultiCtrl.invalid">{{getErrorMessageSubExp()}}</mat-error>
                     </mat-form-field>
                     &nbsp; &nbsp; &nbsp;
 
