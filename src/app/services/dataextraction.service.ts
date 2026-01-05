@@ -164,5 +164,12 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public downloadTimeSeriesData(subExpIDs: number[]): any {
+        return this.http.post("/api/upload/DownloadTimeSeriesData", subExpIDs, {
+            headers: this.authenticationService.getAuthorizationHeader(),
+            responseType: 'blob'
+        });
+    }
+
     
 }
