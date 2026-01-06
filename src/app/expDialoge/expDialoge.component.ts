@@ -6,6 +6,7 @@ import { Location } from '@angular/common';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
 import { ExpDialogeService } from '../services/expdialoge.service';
 import { PISiteService } from '../services/piSite.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CogbytesService } from '../services/cogbytes.service'
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -57,6 +58,7 @@ export class ExpDialogeComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private location: Location,
         private taskAnalysisService: TaskAnalysisService, private expDialogeService: ExpDialogeService,
         private piSiteService: PISiteService, private spinnerService: NgxSpinnerService, private cogbytesService: CogbytesService,
+        private pubScreenService: PubScreenService,
         private fb: UntypedFormBuilder
     ) {
         this.DOIModel = '';
@@ -80,7 +82,18 @@ export class ExpDialogeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/ });
+        if (this.data.isTimeSeries === true) {
+            this.isTimeSeries = this.data.isTimeSeries;
+            this.pubScreenService.getTaskSubTask().subscribe((data : any) => {
+                console.log(data);
+                this.taskList = data.map((x: any) => ({ ...x, name: x.subTask })); 
+                /*console.log(this.taskList)*/ 
+            });
+        } else {
+            this.isTimeSeries = false;
+            this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/ });
+        }
+
         this.piSiteService.getPISitebyUserID().subscribe((data : any) => { this.piSiteList = data; });
         this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/ });
         this.GetRepList();
@@ -93,7 +106,13 @@ export class ExpDialogeComponent implements OnInit {
             this.exp.setValue(this.data.experimentObj.expName);
             this.sDate.setValue(this.data.experimentObj.startExpDate);
             this.eDate.setValue(this.data.experimentObj.endExpDate);
-            this.task.setValue(this.data.experimentObj.taskID);
+            
+            if (this.isTimeSeries) {
+                this.task.setValue(this.data.experimentObj.taskName);
+            } else {
+                this.task.setValue(this.data.experimentObj.taskID);
+            }
+
             this.species.setValue(this.data.experimentObj.speciesID);
             this.expDescription.setValue(this.data.experimentObj.taskDescription);
             this.expBattery.setValue(this.data.experimentObj.taskBattery);
@@ -105,9 +124,6 @@ export class ExpDialogeComponent implements OnInit {
                 this.isRepoLink = '1';
                 this.repModel = this.data.experimentObj.repoGuid;
             }
-        }
-        if (this.data.isTimeSeries === true) {
-            this.isTimeSeries = this.data.isTimeSeries;
         }
 
     }
