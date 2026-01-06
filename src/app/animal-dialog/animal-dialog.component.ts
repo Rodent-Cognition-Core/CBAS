@@ -39,39 +39,43 @@ export class AnimalDialogComponent implements OnInit {
     ) {
         this.userAnimalId = fb.control('', [Validators.required])
         this.gender = fb.control('', [Validators.required])
-        this.strain = fb.control('', [Validators.required])
-        this.strainTimeSeries = fb.control('', [Validators.required])
-        this.genotype = fb.control('', [Validators.required])
-        this.genotypeTimeSeries = fb.control('', [Validators.required])
+        
         this.experimentId = 0;
         this.isTaken = false;
         this.isTimeSeries = data.isTimeSeries;
         this._animal = { AnimalID: 0, ExpID: 0, Genotype: '', GID: 0, Sex: '', SID: 0, Strain: '', UserAnimalID: '' }
+
+        if (this.isTimeSeries) {
+            this.strain = fb.control('');
+            this.strainTimeSeries = fb.control('', [Validators.required]);
+            this.genotype = fb.control('');
+            this.genotypeTimeSeries = fb.control('', [Validators.required]);
+        } else {
+            this.strain = fb.control('', [Validators.required]);
+            this.strainTimeSeries = fb.control('');
+            this.genotype = fb.control('', [Validators.required]);
+            this.genotypeTimeSeries = fb.control('');
+        }
     }
 
     ngOnInit() {
 
         this.animalService.getAllStraine().subscribe(data => { 
             this.StrainList = data; 
-            if (this.isTimeSeries) {
-                this.StrainList.push({ id: -1, strain: 'Other', link: '' });
-            }
-
+            
             // if it is the edit mode
             if (this.data.animalObj != null) {
                 if (this.isTimeSeries) {
+                    this.strainTimeSeries.setValue(this.data.animalObj.strain);
+                    this.genotypeTimeSeries.setValue(this.data.animalObj.genotype);
+
                     const foundStrain = this.StrainList.find((s: any) => s.strain === this.data.animalObj.strain);
                     if (foundStrain) {
-                        this.strain.setValue(foundStrain.id);
-                        this.getGenoList(foundStrain.id);
-                    } else {
-                        this.strain.setValue(-1);
-                        this.strainTimeSeries.setValue(this.data.animalObj.strain);
-                        this.getGenoList(-1);
+                        this.getGenoList(foundStrain.id, true);
                     }
                 } else {
                     this.strain.setValue(this.data.animalObj.sid);
-                    this.getGenoList(this.data.animalObj.sid);
+                    this.getGenoList(this.data.animalObj.sid, true);
                 }
             }
         });
@@ -87,46 +91,39 @@ export class AnimalDialogComponent implements OnInit {
 
     // Getting Selected Strain ID and Pass it to get Genolist
     selectedStrainChange(selectedStrainVal: number) {
-
         this.genotype.setValue([]);
-
-        this.getGenoList(selectedStrainVal);
-
+        this.getGenoList(selectedStrainVal, false);
+    }
+    
+    onStrainSelection(event: any) {
+        const strainName = event.option.value;
+        const found = this.StrainList.find((s: any) => s.strain === strainName);
+        if (found) {
+            this.getGenoList(found.id, false);
+        } else {
+            this.GenoList = [];
+        }
+    }
+    
+    onStrainInput(strainVal: string) {
+        const found = this.StrainList.find((s: any) => s.strain === strainVal);
+        if (found) {
+            this.getGenoList(found.id, false);
+        } else {
+            this.GenoList = [];
+        }
     }
 
-    getGenoList(selected_StrainValue: number): any {
+    getGenoList(selected_StrainValue: number, isInit: boolean = false): any {
         if (selected_StrainValue === -1) {
             this.GenoList = [];
-            if (this.isTimeSeries) {
-                this.GenoList.push({ id: -1, genotype: 'Other', link: '', description: '' });
-                if (this.data.animalObj != null) {
-                    const foundGeno = this.GenoList.find((g : any) => g.genotype === this.data.animalObj.genotype);
-                    if (foundGeno) {
-                        this.genotype.setValue(foundGeno.id);
-                    } else {
-                        this.genotype.setValue(-1);
-                        this.genotypeTimeSeries.setValue(this.data.animalObj.genotype);
-                    }
-                }
-            }
             return;
         }
         this.animalService.getAllGeno(selected_StrainValue).subscribe(data => { 
             this.GenoList = data; 
-            if (this.isTimeSeries) {
-                this.GenoList.push({ id: -1, genotype: 'Other', link: '', description: '' });
-            }
-
-            if (this.data.animalObj != null) {
-                if (this.isTimeSeries) {
-                    const foundGeno = this.GenoList.find((g : any) => g.genotype === this.data.animalObj.genotype);
-                    if (foundGeno) {
-                        this.genotype.setValue(foundGeno.id);
-                    } else {
-                        this.genotype.setValue(-1);
-                        this.genotypeTimeSeries.setValue(this.data.animalObj.genotype);
-                    }
-                } else {
+            
+            if (isInit && this.data.animalObj != null) {
+                if (!this.isTimeSeries) {
                     this.genotype.setValue(this.data.animalObj.gid);
                 }
             }
@@ -149,9 +146,15 @@ export class AnimalDialogComponent implements OnInit {
         return this.gender.hasError('required') ? FIELDISREQUIRED : '';
     }
     getErrorMessageStrain() {
+        if (this.isTimeSeries) {
+            return this.strainTimeSeries.hasError('required') ? FIELDISREQUIRED : '';
+        }
         return this.strain.hasError('required') ? FIELDISREQUIRED : '';
     }
     getErrorMessageGenotype() {
+        if (this.isTimeSeries) {
+            return this.genotypeTimeSeries.hasError('required') ? FIELDISREQUIRED : '';
+        }
         return this.genotype.hasError('required') ? FIELDISREQUIRED : '';
     }
 
@@ -160,18 +163,19 @@ export class AnimalDialogComponent implements OnInit {
 
         if (this.userAnimalId.hasError('required') ||
 
-            this.gender.hasError('required') ||
-            this.strain.hasError('required') ||
-            this.genotype.hasError('required')
+            this.gender.hasError('required')
         ) {
             return true;
         }
 
         if (this.isTimeSeries) {
-            if (this.strain.value === -1 && this.strainTimeSeries.hasError('required')) {
+            if (this.strainTimeSeries.hasError('required') ||
+                this.genotypeTimeSeries.hasError('required')) {
                 return true;
             }
-            if (this.genotype.value === -1 && this.genotypeTimeSeries.hasError('required')) {
+        } else {
+            if (this.strain.hasError('required') ||
+                this.genotype.hasError('required')) {
                 return true;
             }
         }
@@ -185,23 +189,17 @@ export class AnimalDialogComponent implements OnInit {
         this._animal.ExpID = this.data.experimentId;
         this._animal.UserAnimalID = this.userAnimalId.value;
         this._animal.Sex = this.gender.value;
+        
         if (this.isTimeSeries) {
-            if (this.strain.value === -1) {
-                this._animal.Strain = this.strainTimeSeries.value;
-            } else {
-                const selectedStrain = this.StrainList.find((s: any) => s.id === this.strain.value);
-                this._animal.Strain = selectedStrain ? selectedStrain.strain : '';
-            }
-
-            if (this.genotype.value === -1) {
-                this._animal.Genotype = this.genotypeTimeSeries.value;
-            } else {
-                const selectedGeno = this.GenoList.find((g: any) => g.id === this.genotype.value);
-                this._animal.Genotype = selectedGeno ? selectedGeno.genotype : '';
-            }
+            this._animal.Strain = this.strainTimeSeries.value;
+            this._animal.Genotype = this.genotypeTimeSeries.value;
         } else {
             this._animal.SID = this.strain.value;
             this._animal.GID = this.genotype.value;
+             const selectedStrain = this.StrainList.find((s: any) => s.id === this.strain.value);
+             this._animal.Strain = selectedStrain ? selectedStrain.strain : '';
+             const selectedGeno = this.GenoList.find((g: any) => g.id === this.genotype.value);
+             this._animal.Genotype = selectedGeno ? selectedGeno.genotype : '';
         }
 
         if (this.data.animalObj == null) {   // Insert Mode: Insert Animal
