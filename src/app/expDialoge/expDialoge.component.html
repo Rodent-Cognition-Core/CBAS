@@ -36,7 +36,14 @@
                     {{task.name}}
                 </mat-option>
             </mat-select>
-            <input *ngIf=isTimeSeries matInput placeholder="Enter your Task" [formControl]="task" required>
+            
+            <input *ngIf="isTimeSeries" type="text" placeholder="Enter or Select Task" matInput [formControl]="task" [matAutocomplete]="autoTask" required>
+            <mat-autocomplete #autoTask="matAutocomplete">
+                <mat-option *ngFor="let task of taskList" [value]="task.name">
+                    {{task.name}}
+                </mat-option>
+            </mat-autocomplete>
+
             <mat-error *ngIf="task.invalid">{{getErrorMessageTask()}}</mat-error>
         </mat-form-field>
 

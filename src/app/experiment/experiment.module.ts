@@ -7,6 +7,7 @@ import { ExperimentService } from '../services/experiment.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button'
 import { UploadService } from '../services/upload.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { PagerService } from '../services/pager.service';
 import { OrderModule } from 'ngx-order-pipe';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
@@ -29,6 +30,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     providers: [
         ExperimentService,
         UploadService,
+        PubScreenService,
         PagerService,
 
     ],
