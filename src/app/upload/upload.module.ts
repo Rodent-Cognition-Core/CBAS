@@ -3,6 +3,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UploadRoutingModule } from './upload-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { UploadService } from '../services/upload.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { UploadComponent } from './upload.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
@@ -27,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button'
     ],
     providers: [
         UploadService,
+        PubScreenService,
         {
             provide: DROPZONE_CONFIG,
             useValue: {
