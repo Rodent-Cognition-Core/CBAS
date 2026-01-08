@@ -47,6 +47,7 @@ export class SharedExperimentComponent implements OnInit {
     imageDescriptionNotNullVal: boolean = false;
     repList: any;
     public app_url = environment.APP_URL;
+    isTimeSeries: boolean = false;
     
 
     constructor(
@@ -99,8 +100,10 @@ export class SharedExperimentComponent implements OnInit {
         selectedExp = this.getSelectedExp(this.selectedExpValue);
         this.outSelectedExperiment.emit(selectedExp);
         if (!selectedExp.timeSeries) {
-           this.GetSubExpSelect(this.selectedExpValue) 
+            this.isTimeSeries = false;
+            this.GetSubExpSelect(this.selectedExpValue) 
         } else {
+            this.isTimeSeries = true;
             this.getSubExpTimeSeriesSelect(this.selectedExpValue);
         }
     }
@@ -168,7 +171,11 @@ export class SharedExperimentComponent implements OnInit {
         dialogref.afterClosed().subscribe((_result : any) => {
             //console.log('the dialog was closed');
 
-            this.GetSubExpSelect(this.selectedExpValue);
+            if (this.isTimeSeries) {
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                } else {
+                    this.GetSubExpSelect(this.selectedExpValue);
+                }
         });
     } 
 
@@ -211,7 +218,11 @@ export class SharedExperimentComponent implements OnInit {
                 this.spinnerService.show();
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
                    // location.reload()
-                    this.GetSubExpSelect(this.selectedExpValue);
+                    if (this.isTimeSeries) {
+                        this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                    } else {
+                        this.GetSubExpSelect(this.selectedExpValue);
+                    }
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
                    
@@ -287,8 +298,11 @@ export class SharedExperimentComponent implements OnInit {
                     verticalPosition: 'top',
                 });
 
-                this.GetSubExpSelect(this.selectedExpValue);
-
+                if (this.isTimeSeries) {
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                } else {
+                    this.GetSubExpSelect(this.selectedExpValue);
+                }
             }
 
         });
