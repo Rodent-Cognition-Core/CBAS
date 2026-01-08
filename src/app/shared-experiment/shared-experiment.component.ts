@@ -83,28 +83,18 @@ export class SharedExperimentComponent implements OnInit {
 
     }
 
-    getSelectedExp(selValue : any) {
-        
-        return this.expList.find((x : any) => x.expID === selValue);
-    }
-
-
     getSelectedSubExp(selValue : any) {
         return this.subExpList.find((x: any) => x.subExpID === selValue);
     }
 
     selectExpChange() {
-        //this.outSelectChangeMethod.emit(this.selectedValue);
         this.selectedSubExpValue = null;
-        var selectedExp: any;
-        selectedExp = this.getSelectedExp(this.selectedExpValue);
-        this.outSelectedExperiment.emit(selectedExp);
-        if (!selectedExp.timeSeries) {
-            this.isTimeSeries = false;
-            this.GetSubExpSelect(this.selectedExpValue) 
+        this.isTimeSeries = this.selectedExpValue.timeSeries;
+        this.outSelectedExperiment.emit(this.selectedExpValue);
+        if (!this.isTimeSeries) {
+            this.GetSubExpSelect(this.selectedExpValue.expID) 
         } else {
-            this.isTimeSeries = true;
-            this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+            this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
         }
     }
 
@@ -172,9 +162,9 @@ export class SharedExperimentComponent implements OnInit {
             //console.log('the dialog was closed');
 
             if (this.isTimeSeries) {
-                    this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
                 } else {
-                    this.GetSubExpSelect(this.selectedExpValue);
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
                 }
         });
     } 
@@ -219,9 +209,9 @@ export class SharedExperimentComponent implements OnInit {
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
                    // location.reload()
                     if (this.isTimeSeries) {
-                        this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                        this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
                     } else {
-                        this.GetSubExpSelect(this.selectedExpValue);
+                        this.GetSubExpSelect(this.selectedExpValue.expID);
                     }
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
@@ -253,6 +243,7 @@ export class SharedExperimentComponent implements OnInit {
     getSubExpTimeSeriesSelect(selectedExpVal: any) {
         this.subexpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data: any) => {
             this.subExpList = data.sort((a: any, b: any) => a.StartAge - b.StartAge);
+            console.log(this.subExpList);
         });
     }
 
@@ -299,9 +290,9 @@ export class SharedExperimentComponent implements OnInit {
                 });
 
                 if (this.isTimeSeries) {
-                    this.getSubExpTimeSeriesSelect(this.selectedExpValue);
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
                 } else {
-                    this.GetSubExpSelect(this.selectedExpValue);
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
                 }
             }
 
