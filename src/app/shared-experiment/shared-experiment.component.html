@@ -13,7 +13,7 @@
                     <label>Please select your experiment: </label><br /><br />
                     <mat-form-field>
                         <mat-select placeholder="select your experiment" [(ngModel)]="selectedExpValue" (selectionChange)="selectExpChange()">
-                            <mat-option *ngFor="let exp of expList" [value]="exp.expID">
+                            <mat-option *ngFor="let exp of expList" [value]="exp">
                                 <span matTooltip="{{exp.expName}}">{{exp.expName}}</span>
                             </mat-option>
                         </mat-select>
@@ -38,7 +38,7 @@
 
                     </mat-form-field>
                     &nbsp;
-                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, getSelectedExp(selectedExpValue))"><mat-icon>add</mat-icon></button>
+                    <button mat-icon-button matTooltip="Add new sub-experiment based on animal age" (click)="openDialogSubExp(null, selectedExpValue)"><mat-icon>add</mat-icon></button>
                 </div>
             </td>
             <td class="docs-markdown-td" style="vertical-align:top;">
@@ -48,24 +48,24 @@
                             Experiment Information
                         </label>
                     </div>
-                    <span style="float:right;"><button mat-icon-button matTooltip="Edit Experiment" (click)="openDialog(getSelectedExp(selectedExpValue))"><mat-icon>edit</mat-icon></button></span>&nbsp;
-                    <span style="float:right;"><button mat-icon-button matTooltip="Delete Experiment" (click)="delExp(getSelectedExp(selectedExpValue).expID)" color="warn"><mat-icon>delete</mat-icon></button></span>
+                    <span style="float:right;"><button mat-icon-button matTooltip="Edit Experiment" (click)="openDialog(selectedExpValue.expID)"><mat-icon>edit</mat-icon></button></span>&nbsp;
+                    <span style="float:right;"><button mat-icon-button matTooltip="Delete Experiment" (click)="delExp(selectedExpValue.expID)" color="warn"><mat-icon>delete</mat-icon></button></span>
                     <div style="clear:both"></div>
                     <hr /><br />
-                    <label>Experiment name:</label>&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).expName}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Task name:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).taskName}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Species:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).species}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Experiment name:</label>&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.expName}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Task name:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.taskName}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Species:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.species}}</span>&nbsp; &nbsp; &nbsp;
                     <br /><br />
-                    <label>Start date:</label>&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).startExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>End date:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).endExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
-                    <label>Status:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).status === true ? 'Public' : 'Private'}}</span> <br /><br />
-                    <label>Experiment description:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).taskDescription}}</span><br /><br />
-                    <label>Battery of Tasks:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).taskBattery}}</span><br /><br />
-                    <label>PI and Institution:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).piSiteName}}</span><br /><br />
-                    <label>DOI:</label>&nbsp;&nbsp; <a href="{{'http://www.doi.org/' + getSelectedExp(selectedExpValue).doi}}" target="_blank" style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).doi}}</a><br /><br />
-                    <label>Multiple sessions for an animal within a single day?:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{getSelectedExp(selectedExpValue).multipleSessions === true ? 'Yes' : 'No'}}</span> <br /><br />
-                    <div *ngIf="selectedExpValue!==null&&getSelectedExp(selectedExpValue).repoGuid!==''">
-                        <label>Associated MouseBytes+ Data Repository:</label>&nbsp;&nbsp; <a href="{{'http://localhost:4200/comp-edit?repolinkguid=' + getSelectedExp(selectedExpValue).repoGuid}}" target="_blank" style="color:#696d70;">{{getRepTitle(getSelectedExp(selectedExpValue).repoGuid)}}</a><br /><br />
+                    <label>Start date:</label>&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.startExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>End date:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.endExpDate | date: 'dd/MM/yyyy'}}</span>&nbsp; &nbsp; &nbsp;
+                    <label>Status:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.status === true ? 'Public' : 'Private'}}</span> <br /><br />
+                    <label>Experiment description:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.taskDescription}}</span><br /><br />
+                    <label>Battery of Tasks:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.taskBattery}}</span><br /><br />
+                    <label>PI and Institution:</label>&nbsp;&nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.piSiteName}}</span><br /><br />
+                    <label>DOI:</label>&nbsp;&nbsp; <a href="{{'http://www.doi.org/' + selectedExpValue.doi}}" target="_blank" style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.doi}}</a><br /><br />
+                    <label>Multiple sessions for an animal within a single day?:</label> &nbsp; <span style="color:#696d70;" *ngIf="selectedExpValue!==null">{{selectedExpValue.multipleSessions === true ? 'Yes' : 'No'}}</span> <br /><br />
+                    <div *ngIf="selectedExpValue!==null&&selectedExpValue.repoGuid!==''">
+                        <label>Associated MouseBytes+ Data Repository:</label>&nbsp;&nbsp; <a href="{{'http://localhost:4200/comp-edit?repolinkguid=' + selectedExpValue.repoGuid}}" target="_blank" style="color:#696d70;">{{getRepTitle(selectedExpValue.repoGuid)}}</a><br /><br />
                     </div>
                 </div>
 
@@ -81,12 +81,12 @@
                 <br />
                 <table class="docs-markdown-table">
                     <thead>
-                        <tr><th colspan="9" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{getSelectedExp(selectedExpValue).expName}}</th></tr>
+                        <tr><th colspan="9" style="text-align:center; padding: 15px 0px; text-transform: uppercase; color:#34495E;" class="docs-markdown-th">{{selectedExpValue.expName}}</th></tr>
                         <tr style=" text-align: center; color:#465563;">
                             <td class="docs-markdown-td">Select Sub-Experiment</td>
                             <td class="docs-markdown-td">Sub-Experiment Info</td>
                             <td class="docs-markdown-td">Animal Age</td>
-                            <td *ngIf=" selectedExpValue!==null && (getSelectedExp(selectedExpValue).taskID === 3 || getSelectedExp(selectedExpValue).taskID === 4)" class="docs-markdown-td">Images</td>
+                            <td *ngIf=" selectedExpValue!==null && (selectedExpValue.taskID === 3 || selectedExpValue.taskID === 4)" class="docs-markdown-td">Images</td>
                             <!--<td *ngIf="selectedExpValue!=null && ((imageDescriptionNotNull && getSelectedExp(selectedExpValue).taskID == 3) || (imageDescriptionNotNull && getSelectedExp(selectedExpValue).taskID == 4))" class="docs-markdown-td">Image Description</td>-->
                             <td class="docs-markdown-td">Status</td>
                             <td class="docs-markdown-td">Post Processing QC</td>
@@ -123,7 +123,7 @@
 
                             <td style="text-align: center; color:#696d70;" class="docs-markdown-td">{{subexp.ageInMonth}}</td>
 
-                            <td *ngIf=" selectedExpValue!==null && (getSelectedExp(selectedExpValue).taskID === 3 || getSelectedExp(selectedExpValue).taskID === 4)" class="docs-markdown-td">
+                            <td *ngIf=" selectedExpValue!==null && (selectedExpValue.taskID === 3 || selectedExpValue.taskID === 4)" class="docs-markdown-td">
                             <span [innerHTML]="subexp.imageInfo"></span><span *ngIf="subexp.imageDescription!==''"><mat-icon matTooltip="{{subexp.imageDescription}}">help</mat-icon></span></td>
 
                             <!--<td *ngIf=" selectedExpValue!=null && ((getSelectedExp(selectedExpValue).taskID == 3 && imageDescriptionNotNull )  || (getSelectedExp(selectedExpValue).taskID == 4 && imageDescriptionNotNull ))" class="docs-markdown-td"><span [innerHTML]="subexp.imageDescription"></span></td>-->
@@ -139,7 +139,7 @@
                             <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><span><button mat-raised-button (click)="runPostQC(subexp)" [disabled]="subexp.isPostProcessingPass">Run Post Processing QC</button></span></td>
                             <td style="text-align: center; color:#696d70;" class="docs-markdown-td"><span><button mat-raised-button (click)="openPostProcessingResult(subexp.subExpID)" [disabled]="subexp.errorMessage === ''">Show Result</button></span></td>
 
-                            <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="openDialogSubExp(subexp, getSelectedExp(selectedExpValue))"><mat-icon>edit</mat-icon></button></td>
+                            <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="openDialogSubExp(subexp, selectedExpValue)"><mat-icon>edit</mat-icon></button></td>
                             <td style="text-align: center; color:#696d70;"><button mat-icon-button (click)="delSubExp(subexp)" color="warn"><mat-icon>delete</mat-icon></button></td>
 
 
