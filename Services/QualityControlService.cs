@@ -1,6 +1,7 @@
 using AngularSPAWebAPI.Models;
 using CBAS.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,6 +14,7 @@ using System.Xml.XPath;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Reflection.Metadata;
+using Elasticsearch.Net;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -760,6 +762,8 @@ namespace AngularSPAWebAPI.Services
             string FinalScheduleTime = "";
             bool FinalTimeFound = false;
             bool NonTrialDependentTask = false;
+            bool UnrestrictedTime = false;
+            bool UnrestrictedTrials = false;
 
             // Trial Dependent Task List
             List<string> TrialDependentTaskList = new List<string>
@@ -807,6 +811,22 @@ namespace AngularSPAWebAPI.Services
                     break;
                 }
             }
+            if (Max_Schedule_Time == "" )
+            {
+               Max_Schedule_Time = "0";
+               UnrestrictedTime = true;
+            }
+
+            if (Max_Number_Trials == "")
+            {
+                Max_Number_Trials = "0";
+                UnrestrictedTrials = true;
+            }
+
+            if (Schedule_Name == "" || Date == "" || Animal_ID == "")
+            {
+                Log.Error($"QC Time Series: Missing Header Information in the uploaded file: {Filename} ");
+            }
 
             // Search from end of csv to find Last recorded time and last _Trial_Counter value
             for (int i = SessionData.Length - 1; i >= 0; i--)
@@ -826,6 +846,16 @@ namespace AngularSPAWebAPI.Services
                   break;  
                 }
                 
+            }
+
+            if (FinalScheduleTime == "")
+            {
+                Log.Error($"QC Time Series: Could not find Final Schedule Time in the uploaded file: {Filename} ");
+            }
+
+            if (FinalTrialCount == "")
+            {
+                Log.Error($"QC Time Series: Could not find Final Trial Count in the uploaded file: {Filename} ");
             }
 
             // Check to make sure Animal ID is not Null
@@ -901,7 +931,7 @@ namespace AngularSPAWebAPI.Services
 
             NonTrialDependentTask = TrialDependentTaskList.Any(s => Schedule_Name.Trim().ToLower().Contains(s));
 
-            if (float.Parse(HandleNullStr(Max_Number_Trials)) > 0)
+            if ((float.Parse(HandleNullStr(Max_Number_Trials)) > 0) || UnrestrictedTrials)
             {
                 Flag = true;
             }
@@ -916,7 +946,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            if (float.Parse(HandleNullStr(Max_Schedule_Time)) > 0)
+            if ((float.Parse(HandleNullStr(Max_Schedule_Time)) > 0) || UnrestrictedTime)
             {
                 Flag = true;
             }
@@ -925,7 +955,7 @@ namespace AngularSPAWebAPI.Services
                 ErrorMessage1 += $@"Max_Schedule_Time should be greater than 0, but this value is equal to <b>{float.Parse(HandleNullStr(Max_Schedule_Time))}</b> in the uploaded file. <br />";
             }
 
-            if ((float.Parse(HandleNullStr(FinalScheduleTime)) > 0) && (float.Parse(HandleNullStr(FinalTrialCount)) > 0))
+            if (((float.Parse(HandleNullStr(FinalScheduleTime)) > 0) && (float.Parse(HandleNullStr(FinalTrialCount)) > 0)) || (UnrestrictedTime && UnrestrictedTrials))
             {
                 Flag = true;
             }
@@ -942,7 +972,7 @@ namespace AngularSPAWebAPI.Services
                 }
             }
 
-            if ((float.Parse(HandleNullStr(FinalScheduleTime)) < float.Parse(HandleNullStr(Max_Schedule_Time))) && (float.Parse(HandleNullStr(FinalTrialCount)) < float.Parse(HandleNullStr(Max_Number_Trials))))
+            if (((float.Parse(HandleNullStr(FinalScheduleTime)) < float.Parse(HandleNullStr(Max_Schedule_Time))) || UnrestrictedTime) && (float.Parse(HandleNullStr(FinalTrialCount)) < float.Parse(HandleNullStr(Max_Number_Trials))) || UnrestrictedTrials)
             {
                 Flag = true;
             }
