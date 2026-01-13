@@ -872,7 +872,7 @@ namespace AngularSPAWebAPI.Services
             // if errorMessage was not null, insert to table uploadErrorLog and return, else go ahead with QC Rules checking
             if (!string.IsNullOrEmpty(ErrorMessage1))
             {
-                // Insert to table UploadErrorLog
+                // Insert to table UploadTimeSeriesErrorLog
                 UploadErrorLog uploadErrorLog = new UploadErrorLog
                 {
                     ExpID = expID,
@@ -883,7 +883,7 @@ namespace AngularSPAWebAPI.Services
 
                 };
 
-                insertToUploadErrorLog(uploadErrorLog);
+                insertToUploadTimeSeriesErrorLog(uploadErrorLog);
 
                 return (IsQcPassed: IsQcPassed1, IsIdentifierPassed: IsIdentifierPassed1, FileUniqueID: FileUniqueID1, ErrorMessage: ErrorMessage1, WarningMessage: WarningMessage1,
                     InsertToTblUpload: InsertToTblUpload1, SysAnimalID: SysAnimalID1, UploadId: uploadId1, AnimalID: Animal_ID);
@@ -1858,6 +1858,15 @@ namespace AngularSPAWebAPI.Services
         public void insertToUploadErrorLog(UploadErrorLog errorLog)
         {
             string sql = $"insert into UploadErrorLog (ExpID, SubExpID, UserFileName, ErrorMessage, UploadDate) " +
+            $"Values({errorLog.ExpID}, {errorLog.SubExpID}, '{errorLog.UserFileName}', '{errorLog.ErrorMessage}', '{errorLog.UploadDate}'); SELECT @@IDENTITY AS 'Identity'; ";
+
+            Int32.Parse(Dal.ExecScalar(sql).ToString());
+        }
+
+        //***************************Insert to Table UploadTimeSeriesErrorLog**************************
+        public void insertToUploadTimeSeriesErrorLog(UploadErrorLog errorLog)
+        {
+            string sql = $"insert into UploadTimeSeriesErrorLog (ExperimentID, SubExperimentID, UserFileName, ErrorMessage, UploadDate) " +
             $"Values({errorLog.ExpID}, {errorLog.SubExpID}, '{errorLog.UserFileName}', '{errorLog.ErrorMessage}', '{errorLog.UploadDate}'); SELECT @@IDENTITY AS 'Identity'; ";
 
             Int32.Parse(Dal.ExecScalar(sql).ToString());
