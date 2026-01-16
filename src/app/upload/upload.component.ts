@@ -133,7 +133,8 @@ export class UploadComponent implements OnInit {
         this.subExpName = subExperiment.subExpName;
 
         if (this.isTimeSeries) {
-            this.ageInMonth = subExperiment.StartAge + " - " + subExperiment.EndAge + " months";
+            console.log(subExperiment);
+            this.ageInMonth = subExperiment.startAge + " - " + subExperiment.endAge + " months";
             this.sessionNameVal = "Time Series Data"
         } else {
             this.ageInMonth = subExperiment.AgeInMonth;
