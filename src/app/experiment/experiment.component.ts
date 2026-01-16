@@ -115,8 +115,8 @@ export class ExperimentComponent {
     }
 
     DownloadFile(uploadId: number, userFileName: string): void {
-
-        this.uploadService.downloadFile(uploadId)
+        if (!this.timeSeries){
+            this.uploadService.downloadFile(uploadId)
             .subscribe(result => {
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
@@ -127,6 +127,18 @@ export class ExperimentComponent {
                 document.body.appendChild(tempLink);
                 tempLink.click();
             })
+        } else {
+            this.uploadService.downloadTimeSeriesFile(uploadId)
+            .subscribe(result => {
+                var blob = new Blob([result], { type: 'application/octet-stream' });
+                var url = window.URL.createObjectURL(blob);
+                var tempLink = document.createElement('a');
+                tempLink.href = url;
+                tempLink.setAttribute('download', userFileName);
+                document.body.appendChild(tempLink);
+                tempLink.click();
+            })
+        }
     }
 
     DownloadDataset(): void {
