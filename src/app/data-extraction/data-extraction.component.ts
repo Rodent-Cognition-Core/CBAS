@@ -223,7 +223,7 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
     ngOnInit() {
 
         // loading speciesList for Species Dropdown 
-        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; console.log(this.speciesList); });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; });
 
 
         // loading TaskList for Task Dropdown
@@ -301,17 +301,12 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
     // Getting SubTask ID and ExpID and pass them for getting MarkerInfolist
     selectedSubTaskChange(selectedSubTaskVal : any, selectedExpVal : any) {
         this.markerinfo.setValue([]);
-
-        //this.subSessionList = [];
         this.uploadService.getSessionInfo().subscribe((data : any) => {
 
             this.subSessionList = data;
             this.selectedSubSessionValue = [];
-            //this.markerinfo = new UntypedFormControl('', [Validators.required]);
 
             this.getMarkerInfo(selectedSubTaskVal, selectedExpVal);
-            //console.log(selectedSubTaskVal)
-            //console.log(this.subSessionList)
             switch (selectedSubTaskVal) {
 
                 case 21:
@@ -382,7 +377,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
 
             }
-            //console.log(this.subSessionList);
         });
     }
 
@@ -392,7 +386,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
             {
                 this.subExpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data : any) => {
                     this.subExpList = data;
-                    console.log(this.subExpList);
                     this.filteredSubExpMulti.next(this.subExpList.slice());
 
                     this.subExpMultiFilterCtrl.valueChanges
@@ -422,7 +415,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
         this.dataExtractionService.getAllExpByTaskID(selected_TaskValue, userGuid, isFullDataAccess, selectedSpeciesvalue).subscribe((data : any) => {
             this.expList = data;
-            //console.log(this.expList);
 
             // load the initial expList
             this.filteredExpMulti.next(this.expList.slice());
@@ -459,7 +451,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
                     expItem.piSiteUser = expItem.piSiteName;
                 });
             }
-            console.log(this.expList);
             this.filteredExpMulti.next(this.expList.slice());
 
             this.expMultiFilterCtrl.valueChanges
@@ -484,8 +475,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
         this.dataExtractionService.getAllSubtaskByTaskID(selected_TaskValue).subscribe((data : any) => {
             this.subTakList = data;
-            //console.log(this.subTakList);
-
         });
 
         return this.subTakList;
@@ -497,8 +486,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
         this.dataExtractionService.getAllInterventionByExpID(selectedExpVal).subscribe((data : any) => {
             this.InterventionList = data;
-            //console.log(this.subTakList);
-
         });
 
         return this.InterventionList;
@@ -530,8 +517,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
         this.dataExtractionService.getMarkerInfoBySubTaskIDExpID(selected_SubTaskValue, selected_ExpVal).subscribe((data : any) => {
             this.markerInfoList = data;
-            //console.log(this.markerInfoList);
-
             this.spinnerService.hide();
 
 
@@ -555,19 +540,16 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
         // Age
         this.dataExtractionService.getAnimalAgebyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListAge = data;
-            //console.log(this.AnimalInfoListAge);
         });
 
         // Sex
         this.dataExtractionService.getAnimalSexbyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListSex = data;
-            //console.log(this.AnimalInfoListSex);
         });
 
         // Strain
         this.dataExtractionService.getAnimalStrainbyExpIDs(selected_ExpVal).subscribe((data : any) => {
             this.AnimalInfoListStrain = data;
-            //console.log(this.AnimalInfoListStrain);
         });
 
 
@@ -576,7 +558,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
     //To extract list of Genotypes
     selectedStrainChange(selected_StrainVal : any, _selected_ExpVal : string) {
-        //console.log(selected_StrainVal);
         this.selectedGenotypeValue = [];
         // apply filtering to Genotype list based on what selected from Strain List
         if (selected_StrainVal.length != 0 || selected_StrainVal != undefined) {
@@ -875,11 +856,9 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
 
 
-            //console.log(this.genoIDList);
             //selected_ExpVal
             this.dataExtractionService.getAnimalGenotypebyExpIDs(this.genoIDList).subscribe((data : any) => {
                 this.AnimalInfoListGenotype = data;
-                //console.log(this.AnimalInfoListGenotype);
 
 
             });
@@ -1110,8 +1089,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
         this._dataExtractionObj.sessionName = this.selectedSubSessionValue;
 
         this.dataExtractionService.getData(this._dataExtractionObj).subscribe((data : any) => {
-            //console.log(this._dataExtractionObj);
-            //console.log(data);
 
             this.result = data.listOfRows;
 
@@ -1125,7 +1102,7 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (_key : string) { return /*console.log(key)*/; });
+                Object.keys(a).forEach(function (_key : string) { return; });
                 for (var key in a) {
 
                     if (key == 'Image' || key == 'Image_Description') {
@@ -1167,9 +1144,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
 
 
 
-            } else {
-                //console.log('Not Done!');
-
             }
         });
     }
@@ -1197,7 +1171,6 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
                         // The '\r\n' adds a new line
                         if (key == 'AnimalID') { csv = ''; }
                         csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                        //console.log(csv)
                         keysCounter++
                     }
                 }

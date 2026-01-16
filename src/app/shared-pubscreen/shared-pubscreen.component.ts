@@ -137,7 +137,6 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
         this.pubScreenService.getMethod().subscribe((data: any) => { this.methodList = data; });
         this.pubScreenService.getNeurotransmitter().subscribe((data: any) => { this.neurotransmitterList = data; });
 
-        //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
 
 
@@ -187,7 +186,7 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
 
     // Getting list of all years  in database ???
     getAllYears() {
-        return this.pubScreenService.getAllYears().subscribe((data: any) => { this.yearList = data; /*console.log(this.yearList);*/ });
+        return this.pubScreenService.getAllYears().subscribe((data: any) => { this.yearList = data; });
     }
 
 
@@ -218,16 +217,13 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
 
         this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
             this.regionSubregionList = data;
-            //console.log(this.regionSubregionList);
             var filtered = this.regionSubregionList.filter(function (item : any) {
                 return SelectedRegion.indexOf(item.rid) !== -1;
             });
 
-            //console.log(filtered);
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
 
-        //console.log(this.subRegionList);
     }
 
     // Handling Error for the required fields
@@ -368,10 +364,6 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
     addDOI(doi : any) {
 
         this.pubScreenService.getPaparInfoFromDOI(doi).subscribe((data: any) => {
-
-            /*console.log(data);
-            console.log(data.result);*/
-
             if (data.result == null) {
                 alert(DOINOTVALID);
 
@@ -399,10 +391,6 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
     addPubMedID(PubMedKey : any) {
 
         this.pubScreenService.getPaparInfoFromPubmedKey(PubMedKey).subscribe((data: any) => {
-
-            //console.log(data);
-            //console.log(data.result);
-
             if (data.result == null) {
                 alert(PUBMEDKEYNOTVALID);
 
@@ -428,10 +416,6 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
     addDOIBio(doi : any) {
 
         this.pubScreenService.getPaparInfoFromDOIBio(doi).subscribe((data: any) => {
-
-            //console.log(data);
-            //console.log(data.result);
-
             if (data.result == null) {
                 alert(DOINOTVALID);
 
@@ -460,15 +444,11 @@ export class SharedPubscreenComponent implements OnInit, OnDestroy {
 
         if (this.author.value != null && this.author.value.length != 0) {
             this._pubscreen.authourID = this.author.value;
-            //console.log(this.authorModel)
         }
         else {
 
             this._pubscreen.author = this.authorList2;
             this._pubscreen.authorString = this.authorModel2;
-            //console.log(this._pubscreen.author)
-            //console.log(this.authorList2);
-
         }
 
         if (this.paperType.value != null) {

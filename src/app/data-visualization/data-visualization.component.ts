@@ -92,34 +92,12 @@ export class DataVisualizationComponent implements OnInit {
 
     loadAnalysis(spotfireAnalysisName: string) {
 
-        //console.log('loaded');
         var customization = new spotfire.webPlayer.Customization();
-        //customization.showCustomizableHeader = false;
-        //customization.showToolBar = false;
         customization.showClose = false;
-        //customization.showTopHeader = false;
-
-        //customization.showTopHeader = false;
-
-        //customization.showToolBar = true;
-
-        //customization.showAbout = false;
-        //customization.showAnalysisInfo = false;
-        //customization.showAnalysisInformationTool = false;
-        //customization.showClose = false;
-        //customization.showCustomizableHeader = false;
         customization.showDodPanel = false;
-
-        //customization.showExportFile = true;
-
-        //customization.showExportVisualization = false;
-        //customization.showFilterPanel = true;
         customization.showHelp = false;
-        //customization.showLogout = false;
-        //customization.showPageNavigation = false;
         customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
-        //customization.showUndoRedo = false;
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
@@ -128,9 +106,7 @@ export class DataVisualizationComponent implements OnInit {
         var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
-        var onOpenedfunction = function () {
-            //console.log('onopened');
-        };
+        var onOpenedfunction = function () {};
 
         this.app.onError(onError);
         this.app.onOpened(onOpenedfunction);
@@ -145,70 +121,4 @@ export class DataVisualizationComponent implements OnInit {
         this.spinnerService.hide();
 
     }
-
-    //GenerateLink() {
-    //    // get filter
-    //    if (this.selectedCogTaskValue == 1) { // 5-CSRTT
-
-    //    } if (this.selectedCogTaskValue == 2) { //PAL
-
-    //    } if (this.selectedCogTaskValue == 3) { // PD
-
-    //    }
-    //    //var filterQuerystring = "";
-    //    //this.app.analysisDocument.filtering.getActiveFilteringScheme(
-    //    //    function (args) {
-    //    //        console.log('test');
-    //    //        args.getDefaultFilterColumns(
-    //    //            spotfire.webPlayer.includedFilterSettings.ALL_WITH_UNCHECKED_HIERARCHY_NODES,
-    //    //            function (args2) {
-    //    //                console.log(args2); //log(dump(args2, "spotfire.webPlayer.Document.FilteringScheme.getDefaultFilterColumns", 2));
-
-    //    //                // this is to select ExpName filter
-    //    //                var expNameFilter = args2.filter(obj => {
-    //    //                    return obj.dataColumnName === "ExpName"
-    //    //                })
-
-    //    //                console.log(expNameFilter);
-    //    //                console.log(expNameFilter[0]);
-    //    //                console.log(expNameFilter[0].filterSettings);
-    //    //                console.log(expNameFilter[0].filterSettings.values);
-    //    //                console.log(expNameFilter[0].filterSettings.values.toString());
-
-    //    //                filterQuerystring = "&filters=" + expNameFilter[0].filterSettings.values.toString();
-
-
-    //    //            });
-    //    //    });
-
-    //    //this.dialogRefLink = this.dialog.open(NotificationDialogComponent, {
-    //    //});
-
-    //    //this.dialogRefLink.componentInstance.message = "https://mousebytes.ca/" + "?taskid=" + this.selectedCogTaskValue + filterQuerystring;
-
-
-
-    //};
-    //function getFilteringScheme("Filtering scheme Reversal", callback);
-
-    //SetFilters() {
-    //    // set filter
-    //    var filterColumn = {
-    //        filteringSchemeName: "Filtering scheme (2)",
-    //        dataTableName: "vw_dPALsPAL_visualization",
-    //        dataColumnName: "ExpName",
-    //        filteringOperation: spotfire.webPlayer.filteringOperation.REPLACE,
-    //        filterSettings: {
-    //            includeEmpty: true,
-    //            values: ["DP_AD_PAL", "FB_AD_PAL"]
-    //        }
-    //    };
-
-    //    var filteringOperation = spotfire.webPlayer.filteringOperation.REPLACE;
-    //    this.app.analysisDocument.filtering.setFilter(
-    //        filterColumn,
-    //        filteringOperation);
-    //    console.log("[spotfire.webPlayer.Document.Filtering.setFilter]");
-
-    //}
 }

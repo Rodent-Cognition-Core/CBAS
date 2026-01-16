@@ -55,16 +55,12 @@ export class DashboardComponent {
                     this.uploadLogList = data;
                     this.setPage(1);
 
-                    console.log(this.uploadLogList);
-
                 });
             } else 
             {
                 this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe((data : any) => {
                     this.uploadLogList = data;
                     this.setPage(1);
-
-                    console.log(this.uploadLogList);
 
                 });
             }
@@ -176,7 +172,6 @@ export class DashboardComponent {
 
     // Function definition for handling missing animal info (e.g. Age, Sex, Strain, and Genotype)
     ResolveIssue(animal: number, uploadId: number): void {
-        console.log(animal);
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',
@@ -196,8 +191,6 @@ export class DashboardComponent {
 
         dialogref.afterClosed().subscribe(result => {
             if (result == true) {
-
-                console.log('show spinner');
                 this.spinnerService.show();
 
                 if (this.isTimeSeries) {

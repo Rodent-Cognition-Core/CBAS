@@ -414,18 +414,8 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
 
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var fileData = new Blob([result]);
                 var csvURL = '';
-                //if (navigator.msSaveBlob) {
-                //    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
-                //} else {
-                //    csvURL = window.URL.createObjectURL(fileData);
-                //}
                 csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;

@@ -131,7 +131,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
             if (params['showall'] != null && params['showall'] == 'true') {
                 this.showAll = true;
             }
-            //console.log(this.showAll);
         });
     }
 
@@ -264,7 +263,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this.cogbytesService.showAllRepositories().subscribe(data => {
             this.repShowList = data;
-            //console.log(this.repShowList);
 
         });
     }
@@ -392,11 +390,8 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
     }
 
     selectYearToChange(yearFromVal : number, yearToVal : number) {
-        //console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
-
         yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
-
     }
 
 
@@ -404,12 +399,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         //return this.yearTo.getError('Year To should be greater than Year From');
         return INVALIDYEAR;
     }
-
-
-    //GetRepositories() {
-    //    this.cogbytesService.getAllRepositories().subscribe(data => { this.repList = data; console.log(data); });
-    //    return this.repList;
-    //}
 
     // Function definition for searching publications based on search criteria
     search() {
@@ -435,12 +424,9 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
 
         this._cogbytesSearch.fileTypeID = this.fileTypeModel;
 
-        console.log(this._cogbytesSearch);
-
         this.cogbytesService.searchRepositories(this._cogbytesSearch).subscribe(data => {
 
             this.searchResultList = data;
-            //console.log(this.searchResultList);
             this.isSearch = true;
         });
     }
@@ -539,11 +525,6 @@ export class CogbytesSearchComponent implements OnInit, OnDestroy {
         //}
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var fileData = new Blob([result]);
                 var csvURL = null;
                 const _win = window.navigator as any

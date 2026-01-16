@@ -80,7 +80,7 @@ export class CogbytesComponent implements OnInit, OnDestroy {
 
         if (this.isAdmin || this.isUser) {
 
-        this.cogbytesService.getRepositories().subscribe((data : any) => { this.repList = data; /*console.log(data) */});
+        this.cogbytesService.getRepositories().subscribe((data : any) => { this.repList = data;});
             this.GetAuthorList();
             this.GetPIList();
         }
@@ -132,7 +132,6 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
             this.repModel = null;
             this.GetRepositories();
            
@@ -151,7 +150,6 @@ export class CogbytesComponent implements OnInit, OnDestroy {
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
             this.GetRepositories();
         });
     }
