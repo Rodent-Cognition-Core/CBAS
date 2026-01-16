@@ -85,22 +85,19 @@ export class ExpDialogeComponent implements OnInit {
         if (this.data.isTimeSeries === true) {
             this.isTimeSeries = this.data.isTimeSeries;
             this.pubScreenService.getTaskSubTask().subscribe((data : any) => {
-                console.log(data);
                 this.taskList = data.map((x: any) => ({ ...x, name: x.subTask })); 
-                /*console.log(this.taskList)*/ 
             });
         } else {
             this.isTimeSeries = false;
-            this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; /*console.log(this.taskList)*/ });
+            this.taskAnalysisService.getAllSelect().subscribe((data : any) => { this.taskList = data; });
         }
 
         this.piSiteService.getPISitebyUserID().subscribe((data : any) => { this.piSiteList = data; });
-        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; /*console.log(this.speciesList)*/ });
+        this.expDialogeService.getAllSpecies().subscribe((data : any) => { this.speciesList = data; });
         this.GetRepList();
 
         this.isRepoLink = '0';
 
-        //console.log(this.data.experimentObj);
         // if it is an Edit model
         if (this.data.experimentObj != null) {
             this.exp.setValue(this.data.experimentObj.expName);

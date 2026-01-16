@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { OAuthService } from 'angular-oauth2-oidc';
@@ -14,7 +14,7 @@ import { TermsDialogeComponent } from '../../termsDialoge/termsDialoge.component
     styleUrls: ['../account.scss'],
 
 })
-export class SignupComponent extends Signin {
+export class SignupComponent extends Signin implements OnInit {
 
     piSiteList: any;
     //selectedPiSiteIds: any;
@@ -36,7 +36,6 @@ export class SignupComponent extends Signin {
 
         this.piSiteService.getPISite().subscribe((data) => {
             this.piSiteList = data;
-            //console.log(this.piSiteList);
         });
 
     }
@@ -75,9 +74,6 @@ export class SignupComponent extends Signin {
                         }
                     },
                     () => {
-                        // const errMsg = (error.message) ? error.message :
-                        //     error.status ? `${error.status} - ${error.statusText}` : "Server error";
-                        //console.log(errMsg);
                         this.errorMessages.push({ description: "Server error. Try later." });
                     });
 

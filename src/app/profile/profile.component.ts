@@ -72,7 +72,6 @@ export class ProfileComponent implements OnInit {
 
         this.piSiteService.getPISite().subscribe(data => {
             this.piSiteList = data;
-            console.log(this.piSiteList);
             this.GetPISiteListByUserID();
         });
 
@@ -83,7 +82,6 @@ export class ProfileComponent implements OnInit {
 
         this.piSiteService.getPISitebyUserID().subscribe((data : any) => {
             this.piSiteListByUserID = data;
-            console.log(this.piSiteListByUserID);
 
             this.GetFilteredPiSiteList();
         });
@@ -109,8 +107,6 @@ export class ProfileComponent implements OnInit {
 
         this.piSiteListByUserIDFilter = onlyInA;
 
-        console.log(this.piSiteListByUserIDFilter);
-
     }
 
     // Get User Info
@@ -121,7 +117,6 @@ export class ProfileComponent implements OnInit {
 
 
             this.userInfo = data;
-            console.log(this.userInfo);
 
             this.givenName.setValue(this.userInfo.givenName);
             this.familyName.setValue(this.userInfo.familyName);
@@ -211,10 +206,8 @@ export class ProfileComponent implements OnInit {
         this._user.givenName = this.givenName.value;
         this._user.familyName = this.familyName.value;
         this._user.selectedPiSiteIds = this.selectePISiteModel;
-        //console.log(this._user);
         this.profileService.updateProfile(this._user).pipe(map((_res : any) => {
 
-            //location.reload();
             this.GetUserInfo();
             this.GetPISiteList();
             this.selectePISiteModel = [];

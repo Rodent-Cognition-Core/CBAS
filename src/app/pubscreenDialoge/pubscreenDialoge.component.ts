@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UntypedFormControl, Validators, UntypedFormBuilder } from '@angular/forms';
 import { TaskAnalysisService } from '../services/taskanalysis.service';
@@ -22,7 +22,7 @@ import { environment } from '../../environments/environment';
     providers: [TaskAnalysisService,  PISiteService]
 
 })
-export class PubscreenDialogeComponent implements OnInit {
+export class PubscreenDialogeComponent implements OnInit, OnDestroy {
 
     //Models Variables for adding Publication
     keywordsModel: any;
@@ -239,19 +239,8 @@ export class PubscreenDialogeComponent implements OnInit {
         this.GetMethodList();
         this.GetSubMethodList();
         this.GetNeurotransmitterList();
-        //this.pubScreenService.getStrain().subscribe(data => { this.strainList = data; this.processList(this.strainList, "Other", "strain"); });
-        //this.pubScreenService.getDisease().subscribe(data => { this.diseaseList = data; this.processList(this.diseaseList, "Other", "diseaseModel"); });
-        //this.pubScreenService.getSubModels().subscribe(data => { this.subModelList = data; this.processList(this.subModelList, "Other", "subModel"); });
-        //this.pubScreenService.getRegion().subscribe(data => { this.regionList = data; });
-        //this.pubScreenService.getCellType().subscribe(data => { this.cellTypeList = data; this.processList(this.cellTypeList, "Other", "cellType"); });
-        //this.pubScreenService.getMethod().subscribe(data => { this.methodList = data; this.processList(this.methodList, "Other", "method"); });
-        //this.pubScreenService.getSubMethod().subscribe(data => { this.subMethodList = data; });
-        //this.pubScreenService.getNeurotransmitter().subscribe(data => { this.neurotransmitterList = data; this.processList(this.neurotransmitterList, "Other", "neuroTransmitter"); });
-
-        //this.pubScreenService.getAllYears().subscribe(data => { this.yearList = data; console.log(this.yearList); });
         this.getAllYears();
 
-        //console.log(this.data);
         // if it is an Edit model
 
         if (this.data.isPublic != null) {
@@ -260,7 +249,6 @@ export class PubscreenDialogeComponent implements OnInit {
         else {
             this.isPublicMode = false;
         }
-        //console.log("isPublicMode: " + this.isPublicMode);
         if (this.data.publicationObj != null) {
 
             this.isEditMode = true;
@@ -270,7 +258,6 @@ export class PubscreenDialogeComponent implements OnInit {
 
             this.pubScreenService.getPaperInfo(this.publicationId).subscribe((data: any) => {
                 this.paperInfo = data;
-                //console.log(this.paperInfo)
                 this.doi.setValue(this.paperInfo.doi);
                 this.keywordsModel = this.paperInfo.keywords;
                 this.title.setValue(this.paperInfo.title);
@@ -552,7 +539,7 @@ export class PubscreenDialogeComponent implements OnInit {
 
     // Getting list of all years  in database ???
     getAllYears() {
-        return this.pubScreenService.getAllYears().subscribe((data: any) => { this.yearList = data; /*console.log(this.yearList); */ });
+        return this.pubScreenService.getAllYears().subscribe((data: any) => { this.yearList = data; });
     }
 
 
@@ -776,23 +763,6 @@ export class PubscreenDialogeComponent implements OnInit {
         );
     }
 
-    // function definition to get list of all tasks and subtasks
-    //selectedTaskChange(SelectedTask) {
-
-    //    this.pubScreenService.getTaskSubTask().subscribe(data => {
-    //        this.taskSubTaskList = data;
-            
-    //        var filtered = this.taskSubTaskList.filter(function (item) {
-    //            return SelectedTask.indexOf(item.taskID) !== -1;
-    //        });
-
-    //        //console.log(filtered);
-    //        this.subTaskList = JSON.parse(JSON.stringify(filtered));
-    //    });
-
-
-    //}
-
     selectedTaskChange(SelectedTask : any) {
         this.subTaskModel = [];
         this.subSubTaskList = this.subTaskList.filter((x: any) => SelectedTask.includes(x.taskID));
@@ -805,32 +775,6 @@ export class PubscreenDialogeComponent implements OnInit {
         this.subStrainList = this.strainList.filter((x: any) => SelectedSpecies.includes(x.speciesID));
         this.filteredStrainList.next(this.subStrainList.slice());
     }
-
-    //selectedModelChange(SelectedModels) {
-    //    this.subModel = [];
-    //    this.subSubModelList = this.subModelList.filter(x => SelectedModels.includes(x.modelID));
-    //}
-
-    //selectedMethodChange(SelectedMethods) {
-    //    this.subMethodModel = [];
-    //    this.subSubMethodList = this.subMethodList.filter(x => SelectedMethods.includes(x.methodID));
-    //}
-
-    //selectedRegionChange(SelectedRegion) {
-
-    //    this.pubScreenService.getRegionSubRegion().subscribe(data => {
-    //        this.regionSubregionList = data;
-    //        console.log(this.regionSubregionList);
-    //        var filtered = this.regionSubregionList.filter(function (item) {
-    //            return SelectedRegion.indexOf(item.rid) !== -1;
-    //        });
-
-    //        //console.log(filtered);
-    //        this.subRegionList = JSON.parse(JSON.stringify(filtered));
-    //    });
-
-    //    console.log(this.subRegionList);
-    //}
 
     selectedModelChange(SelectedModels : any) {
         this.subModel = [];
@@ -1026,12 +970,6 @@ export class PubscreenDialogeComponent implements OnInit {
             if (data == null) {
                 alert(DOINOTVALID);
             }
-            if (data.result) {
-                console.log('data.result: ' + data.result);
-            }
-            else {
-                console.log(data);
-            }
             let apiResult = 'result' in data ? data.result : data;
 
 
@@ -1141,14 +1079,11 @@ export class PubscreenDialogeComponent implements OnInit {
 
         if (this.author.value !== null && this.author.value.length !== 0) {
             this._pubscreen.authourID = this.author.value;
-            //console.log(this.authorModel)
         }
         else {
 
             this._pubscreen.author = this.authorList2;
             this._pubscreen.authorString = this.authorModel2;
-            //console.log(this._pubscreen.author)
-            //console.log(this.authorList2);
 
         }
 

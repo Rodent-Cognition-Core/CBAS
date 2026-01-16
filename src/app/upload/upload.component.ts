@@ -100,13 +100,11 @@ export class UploadComponent implements OnInit {
 
     ngOnInit() {
 
-        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; });
 
     }
 
     SelectedExpChanged(experiment : any) {
-
-        //console.log(experiment);
         this.experimentName = experiment.expName;
         this.experimentID = experiment.expID;
         this.expTask = experiment.taskName;
@@ -116,7 +114,7 @@ export class UploadComponent implements OnInit {
         if (this.isTimeSeries) {
             this.SessionList = [{"Id":0,"TaskID":0,"TaskName":"Time Series", "SessionName":"Time Series Data", "SessionDescription":"Task Agnostic Time Series Data"}];
         } else {
-            this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+            this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; });
         }
         this.subExpID = null;
         this.sessionNameVal = null;
@@ -124,7 +122,6 @@ export class UploadComponent implements OnInit {
     }
 
     SelectedSubExpChanged(subExperiment : any) {
-        //console.log(subExperiment);
         this.subExpID = subExperiment.subExpID;
         this.drugName = subExperiment.drugName;
         this.interventionDescription = subExperiment.interventionDescription;
@@ -133,20 +130,17 @@ export class UploadComponent implements OnInit {
         this.subExpName = subExperiment.subExpName;
 
         if (this.isTimeSeries) {
-            console.log(subExperiment);
             this.ageInMonth = subExperiment.startAge + " - " + subExperiment.endAge + " months";
             this.sessionNameVal = "Time Series Data"
         } else {
             this.ageInMonth = subExperiment.AgeInMonth;
             this.sessionNameVal = null;
         }
-        //console.log(this.expTaskID);
 
         if (!this.isTimeSeries) {
             switch (this.expTaskID) {
             case 2: { // 5-choice
                 this.SessionList = this.SessionList.filter(((x : any) => x.taskID === 1 || x.taskID === 2));
-                //console.log(this.SessionList);
                 break;
 
             }
@@ -303,7 +297,6 @@ export class UploadComponent implements OnInit {
 
         if (args[1] == CANNOTUPLOADFILETYPE) {
             this.uploadErrorFileType = this.uploadErrorFileType + "You can't upload files of this type: '" + args[0].name + "'" + "\n\r";
-            //console.log("You can't upload files of this type: '" + args[0].name + "'");
         } else {
             this.uploadErrorServer = FAILEDTOADDUPLOADDUETOSERVER;
         }

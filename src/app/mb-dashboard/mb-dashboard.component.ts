@@ -33,34 +33,12 @@ export class MBDashboardComponent implements OnInit {
     
     loadAnalysis(spotfireAnalysisName: string) {
 
-        //console.log('loaded');
         var customization = new spotfire.webPlayer.Customization();
-        //customization.showCustomizableHeader = false;
-        //customization.showToolBar = false;
         customization.showClose = false;
-        //customization.showTopHeader = false;
-
-        //customization.showTopHeader = false;
-
-        //customization.showToolBar = true;
-
-        //customization.showAbout = false;
-        //customization.showAnalysisInfo = false;
-        //customization.showAnalysisInformationTool = false;
-        //customization.showClose = false;
-        //customization.showCustomizableHeader = false;
         customization.showDodPanel = false;
-
-        //customization.showExportFile = true;
-
-        //customization.showExportVisualization = false;
-        //customization.showFilterPanel = true;
         customization.showHelp = false;
-        //customization.showLogout = false;
-        //customization.showPageNavigation = false;
         customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
-        //customization.showUndoRedo = false;
         customization.showCollaboration = false;
 
         this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
@@ -69,9 +47,7 @@ export class MBDashboardComponent implements OnInit {
         var onError = function (errorCode : any, description : any) {
             console.log('<span style="color: red;">[' + errorCode + "]: " + description + "</span>");
         };
-        var onOpenedfunction = function () {
-            //console.log('onopened');
-        };
+        var onOpenedfunction = function () {};
 
         this.app.onError(onError);
         this.app.onOpened(onOpenedfunction);
