@@ -72,7 +72,7 @@ export class SharedExperimentComponent implements OnInit {
     ngOnInit() {
         //this.imageDescriptionNotNull = false;
         this.GetExpSelect();
-        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; /*console.log(this.repList);*/ });
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; });
 
         if (this.hideSubExperiment == null) {
             this.hideSubExperiment = false;
@@ -109,7 +109,6 @@ export class SharedExperimentComponent implements OnInit {
         this.SubExpModel = this.selectedSubExpValue;
         var selectedSubExp: any;
         selectedSubExp = this.getSelectedSubExp(this.selectedSubExpValue);
-        //console.log(selectedSubExp)
         if (selectedSubExp.imageIds != null) {
             this.selectedImageResult = selectedSubExp.imageIds.length;
         }
@@ -127,7 +126,6 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            //console.log('the dialog was closed');
             this.DialogResult = result;
             this.GetExpSelect();
         });
@@ -142,7 +140,6 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            //console.log('the dialog was closed');
             this.DialogResult = result;
             this.GetExpSelect();
         });
@@ -151,7 +148,6 @@ export class SharedExperimentComponent implements OnInit {
 
     // Creating Sub experiment
     openDialogSubExp(SubExperiment : any, Exp : any): void {
-        //console.log(SubExperiment);
         let dialogref = this.dialog.open(SubExpDialogeComponent, {
             width: '600px',
             data: { subexperimentObj: SubExperiment, expObj: Exp} // change it for editing
@@ -159,8 +155,6 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
-
             if (this.isTimeSeries) {
                     this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
                 } else {
@@ -228,7 +222,6 @@ export class SharedExperimentComponent implements OnInit {
 
         this.uploadService.getAllExperiment().subscribe((data : any) => {
             this.expList = data;
-            //console.log(this.expList);
         });
 
     }
@@ -243,7 +236,6 @@ export class SharedExperimentComponent implements OnInit {
     getSubExpTimeSeriesSelect(selectedExpVal: any) {
         this.subexpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data: any) => {
             this.subExpList = data.sort((a: any, b: any) => a.StartAge - b.StartAge);
-            console.log(this.subExpList);
         });
     }
 
@@ -255,7 +247,6 @@ export class SharedExperimentComponent implements OnInit {
 
     // Deleting Sub Experiment
     delSubExp(subExp : any) {
-        //console.log(subExp)
         this.openSubExpConfirmationDialog(subExp);
 
     }
@@ -264,8 +255,6 @@ export class SharedExperimentComponent implements OnInit {
     getMinAge() {
 
        var minValue = Math.min.apply(Math, this.subExpList.map(function (o : any) { return o.ageInMonth; }));
-       //var age = JSON.parse(this.subExpList);
-       // console.log(minValue);
        return minValue;
         
     }

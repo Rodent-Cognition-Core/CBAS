@@ -58,7 +58,6 @@ export class ExperimentComponent {
         } else {
             this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
             this.UploadList = data;
-            //console.log(this.UploadList);
             this.setPageTblFile(1);
             setTimeout(() => {
                 this.spinnerService.hide();
@@ -119,25 +118,14 @@ export class ExperimentComponent {
 
         this.uploadService.downloadFile(uploadId)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
-                //if (navigator.msSaveBlob) {
-                //    csvURL = navigator.msSaveBlob(csvData, userFileName);
-                //} else {
-                //    csvURL = window.URL.createObjectURL(csvData);
-                //}
                 csvURL = window.URL.createObjectURL(csvData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', userFileName);
                 document.body.appendChild(tempLink);
                 tempLink.click();
-
             })
     }
 

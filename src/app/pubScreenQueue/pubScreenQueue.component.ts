@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
     templateUrl: './pubScreenQueue.component.html',
     styleUrls: ['./pubScreenQueue.component.scss']
 })
-export class PubScreenQueueComponent implements OnInit {
+export class PubScreenQueueComponent implements OnInit, OnDestroy {
 
     pubmedQueue: any;
     linkModel: any;
@@ -50,7 +50,6 @@ export class PubScreenQueueComponent implements OnInit {
         this.pubScreenService.getPubmedQueue().subscribe(
             (data : any) => {
                 this.pubmedQueue = data;
-                //console.log(this.pubmedQueue);
             }
         );
     }
@@ -79,14 +78,11 @@ export class PubScreenQueueComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                //console.log(pubmedID);
-
                 this.pubScreenService.addQueuePaper(pubmedID, doi).subscribe((_data : any) => {
                     alert(SUCCESSFULLYADDEDPUBLICATION)
                     this.pubScreenService.getPubmedQueue().subscribe(
                         (data : any) => {
                             this.pubmedQueue = data;
-                            //console.log(this.pubmedQueue);
                             
                         }
                     );
@@ -94,7 +90,6 @@ export class PubScreenQueueComponent implements OnInit {
                 this.spinnerService.hide();
 
             }
-            //this.dialogRef = null;
             dialogRef.close();
         });
     }
@@ -109,20 +104,16 @@ export class PubScreenQueueComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                //console.log(pubmedID);
-
                 this.pubScreenService.rejectQueuePaper(pubmedID, doi).subscribe((_result : any) => {
                     alert(PAPERREJECTED);
                     this.pubScreenService.getPubmedQueue().subscribe(
                         (data : any) => {
                             this.pubmedQueue = data;
-                            //console.log(this.pubmedQueue);
                             this.spinnerService.hide();
                         }
                     );
                 });
             }
-            //this.dialogRef = null;
             dialogRef.close();
         });
     }

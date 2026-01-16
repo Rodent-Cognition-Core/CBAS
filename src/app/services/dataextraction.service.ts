@@ -39,7 +39,6 @@ import { AuthenticationService } from './authentication.service';
     }
 
     public getUserGuid(): any {
-        //console.log(this.authenticationService.getAuthorizationHeader());
         return this.http
             .get("/api/dataExtraction/GetUserGuid", {
                 headers: this.authenticationService.getAuthorizationHeader()

@@ -48,14 +48,12 @@ export class AnimalInfoComponent implements OnInit {
             this.animalService.getAnimalTimeSeriesInfo(selectedExperimentID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
-            //console.log(this.AnimalList)
 
         });
         } else {
             this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
-            //console.log(this.AnimalList)
 
         });
         }
@@ -71,7 +69,6 @@ export class AnimalInfoComponent implements OnInit {
     }
 
     openDialog(animal?: any): void {
-        //console.log(Animal);
         if (typeof animal == 'undefined') {
             animal = null;
         }
