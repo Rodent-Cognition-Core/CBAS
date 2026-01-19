@@ -100,7 +100,30 @@ namespace AngularSPAWebAPI
             services.AddHttpClient();
             //services.AddTransient<PubScreenService>();
 
-            if (currentEnvironment.IsProduction())
+            if (currentEnvironment.IsDevelopment())
+            {
+                services.AddIdentityServer()
+                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                .AddDeveloperSigningCredential()
+                .AddInMemoryPersistedGrants()
+                // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
+                // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients())
+                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+                                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                                .AddIdentityServerAuthentication(options =>
+                                {
+                                    options.Authority = Environment.GetEnvironmentVariable("API_URL");
+                                    options.RequireHttpsMetadata = false;
+
+                                    options.ApiName = "WebAPI";
+                                });
+            }
+            else
             {
                 var appName = Environment.GetEnvironmentVariable("APP_NAME");
 
@@ -119,7 +142,6 @@ namespace AngularSPAWebAPI
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryClients(Config.GetClients())
                     .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
@@ -129,29 +151,6 @@ namespace AngularSPAWebAPI
                     });
                 services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
                     .SetApplicationName(appName);
-            }
-            else
-            {
-                services.AddIdentityServer()
-                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
-                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
-                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
-                .AddDeveloperSigningCredential()
-                .AddInMemoryPersistedGrants()
-                // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
-                // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = Environment.GetEnvironmentVariable("API_URL");
-                    options.RequireHttpsMetadata = false;
-
-                    options.ApiName = "WebAPI";
-                });
             }
 
 
