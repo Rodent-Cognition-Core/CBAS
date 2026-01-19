@@ -27,6 +27,7 @@ export class DashboardComponent {
     pager: any = {};
     pagedItems: any[];
     expfilter: any = '';
+    isTimeSeries: boolean = false;
 
 
     constructor(private dashboardService: DashboardService, private experimentService: ExperimentService,
@@ -48,27 +49,50 @@ export class DashboardComponent {
 
     // Get list major errors
     GetUploadLogList(selectedExperimentID: number) {
-        this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe((data : any) => {
-            this.uploadLogList = data;
-            this.setPage(1);
+        if(this.isTimeSeries) 
+            {
+                this.dashboardService.getUploadInfoByTimeSeriesId(selectedExperimentID).subscribe((data : any) => {
+                    this.uploadLogList = data;
+                    this.setPage(1);
 
-            console.log(this.uploadLogList);
+                });
+            } else 
+            {
+                this.dashboardService.getUploadInfoById(selectedExperimentID).subscribe((data : any) => {
+                    this.uploadLogList = data;
+                    this.setPage(1);
 
-        });
+                });
+            }
 
 
     }
 
     // Get list of minor errors
     GetUploadErrorLogList(selectedExperimentID: number) {
-        this.dashboardService.getUploadErrorLogById(selectedExperimentID).subscribe((data : any) => {
-            this.uploadErrorLogList = data;
+        if(this.isTimeSeries) 
+            {
+                this.dashboardService.getUploadErrorLogByTimeSeriesID(selectedExperimentID).subscribe((data : any) => {
+                    this.uploadErrorLogList = data;
 
-        });
+                });
+            } else 
+            {
+                this.dashboardService.getUploadErrorLogById(selectedExperimentID).subscribe((data : any) => {
+                    this.uploadErrorLogList = data;
+
+                });
+            }
+
 
     }
 
     SelectedExpChanged(experiment : any) {
+        if (experiment.timeSeries) {
+            this.isTimeSeries = true;
+        } else {
+            this.isTimeSeries = false;
+        }
         this.GetUploadLogList(experiment.expID);
         this.GetUploadErrorLogList(experiment.expID);
         this.experimentName = experiment.expName;
@@ -102,40 +126,56 @@ export class DashboardComponent {
     }
     
     DownloadFile(uploadId: number, userFileName: string): void {
+        if (this.isTimeSeries) 
+            {
+                this.uploadService.downloadTimeSeriesFile(uploadId)
+                .subscribe(result => {
+                    var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
+                    var csvURL = null;
+                    csvURL = window.URL.createObjectURL(csvData);
+                    var tempLink = document.createElement('a');
+                    tempLink.href = csvURL;
+                    tempLink.setAttribute('download', userFileName);
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
 
-        this.uploadService.downloadFile(uploadId)
-            .subscribe(result => {
+                },
+                error => {
+                    if (error.error instanceof Error) {
+                        console.log('An error occurred:', error.error.message);
+                    } else {
+                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    }
+                });
+            } else {
+                this.uploadService.downloadFile(uploadId)
+                .subscribe(result => {
+                    var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
+                    var csvURL = null;
+                    csvURL = window.URL.createObjectURL(csvData);
+                    var tempLink = document.createElement('a');
+                    tempLink.href = csvURL;
+                    tempLink.setAttribute('download', userFileName);
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
 
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
-                var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
-                var csvURL = null;
-                csvURL = window.URL.createObjectURL(csvData);
-                var tempLink = document.createElement('a');
-                tempLink.href = csvURL;
-                tempLink.setAttribute('download', userFileName);
-                document.body.appendChild(tempLink);
-                tempLink.click();
-
-            },
-            error => {
-                if (error.error instanceof Error) {
-                    console.log('An error occurred:', error.error.message);
-                } else {
-                    console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
-                }
-            });
+                },
+                error => {
+                    if (error.error instanceof Error) {
+                        console.log('An error occurred:', error.error.message);
+                    } else {
+                        console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                    }
+                });
+            }
     }
 
     // Function definition for handling missing animal info (e.g. Age, Sex, Strain, and Genotype)
     ResolveIssue(animal: number, uploadId: number): void {
-        console.log(animal);
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',
-            data: { experimentId: this.experimentID, animalObj: animal }
+            data: { experimentId: this.experimentID, animalObj: animal, isTimeSeries: this.isTimeSeries }
 
         });
 
@@ -151,10 +191,51 @@ export class DashboardComponent {
 
         dialogref.afterClosed().subscribe(result => {
             if (result == true) {
-
-                console.log('show spinner');
                 this.spinnerService.show();
 
+                if (this.isTimeSeries) {
+                    this.uploadService.setTimeSeriesUploadAsResolved(uploadId).subscribe((_data : any) => {
+
+                        this.GetUploadLogList(this.experimentID);
+
+                        setTimeout(() => {
+                            this.spinnerService.hide();
+                        }, 500);
+
+                        //this.uploadLogList = this.uploadLogList.filter(obj => obj.uploadID !== uploadId);
+                        //For updating dashboards, all the files with the same animal ID & Same error should get disapeared from the uploadLogList
+
+                    },
+                        (error : any) => {
+                            if (error.error instanceof Error) {
+                                console.log('An error occurred:', error.error.message);
+                            } else {
+                                console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                        }
+                        });
+                        
+                } else 
+                {
+                    this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
+
+                        this.GetUploadLogList(this.experimentID);
+
+                        setTimeout(() => {
+                            this.spinnerService.hide();
+                        }, 500);
+
+                        //this.uploadLogList = this.uploadLogList.filter(obj => obj.uploadID !== uploadId);
+                        //For updating dashboards, all the files with the same animal ID & Same error should get disapeared from the uploadLogList
+
+                    },
+                        (error : any) => {
+                            if (error.error instanceof Error) {
+                                console.log('An error occurred:', error.error.message);
+                            } else {
+                                console.log(`Backend returned code ${error.status}, body was: ${error.error}`);
+                            }
+                        });
+                }
                 this.uploadService.setUploadAsResolved(uploadId).subscribe((_data : any) => {
 
                     this.GetUploadLogList(this.experimentID);
@@ -224,13 +305,23 @@ export class DashboardComponent {
 
         dialogRefDelErrorList.afterClosed().subscribe(result => {
             if (result) {
+                if (this.isTimeSeries) 
+                    {
+                        this.dashboardService.clearUploadLogTblbyTimeSeriesExpID(expID).pipe(map((_res : any) => {
+                            //location.reload()
+                            this.uploadErrorLogList = [];
+                            this.GetUploadLogList(expID);
 
-                this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((_res : any) => {
-                    //location.reload()
-                    this.uploadErrorLogList = [];
-                    this.GetUploadLogList(expID);
+                        })).subscribe();
+                    } else 
+                    {
+                        this.dashboardService.clearUploadLogTblbyExpID(expID).pipe(map((_res : any) => {
+                            //location.reload()
+                            this.uploadErrorLogList = [];
+                            this.GetUploadLogList(expID);
 
-                })).subscribe();
+                        })).subscribe();
+                    }
 
             }
             //this.dialogRefDelErrorList = null;

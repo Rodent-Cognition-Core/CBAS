@@ -32,6 +32,7 @@ export class UploadComponent implements OnInit {
     interventionDescription: string;
     isIntervention: boolean;
     isDrug: boolean;
+    isTimeSeries: boolean;
     ageInMonth: string;
     sessionNameVal: any;
     expTask: string;
@@ -60,6 +61,18 @@ export class UploadComponent implements OnInit {
         headers: { }
     };
 
+    public configTimeSeries: DropzoneConfigInterface = {
+        clickable: true,
+        maxFiles: 5000,
+        acceptedFiles: '.csv',
+        autoReset: undefined,
+        errorReset: undefined,
+        cancelReset: undefined,
+        timeout: 36000000,
+        headers: { },
+        url: 'http://localhost:5000/api/upload/UploadTimeSeriesFiles',
+    };
+
     constructor(
         private oAuthService: OAuthService,
         public dialog: MatDialog,
@@ -74,52 +87,60 @@ export class UploadComponent implements OnInit {
         this.interventionDescription = '';
         this.isIntervention = false;
         this.isDrug = false;
+        this.isTimeSeries = false;
         this.ageInMonth = '';
         this.expTask = '';
         this.experimentID = null;
         this.subExpID = null;
         this.sessionNameVal = null;
         this.config.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
+        this.configTimeSeries.headers = {'Authorization': 'Bearer ' + this.oAuthService.getAccessToken()}
 
     }
 
     ngOnInit() {
 
-        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        this.uploadService.getSessionInfo().subscribe((data : any) => { this.SessionList = data; });
 
     }
 
     SelectedExpChanged(experiment : any) {
-
-        //console.log(experiment);
         this.experimentName = experiment.expName;
         this.experimentID = experiment.expID;
         this.expTask = experiment.taskName;
         this.expTaskID = experiment.taskID;
+        this.isTimeSeries = experiment.timeSeries;
 
-        this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; /*console.log(this.SessionList);*/ });
+        if (this.isTimeSeries) {
+            this.SessionList = [{"Id":0,"TaskID":0,"TaskName":"Time Series", "SessionName":"Time Series Data", "SessionDescription":"Task Agnostic Time Series Data"}];
+        } else {
+            this.uploadService.getSessionInfo().subscribe((data: any) => { this.SessionList = data; });
+        }
         this.subExpID = null;
         this.sessionNameVal = null;
 
     }
 
     SelectedSubExpChanged(subExperiment : any) {
-        //console.log(subExperiment);
         this.subExpID = subExperiment.subExpID;
         this.drugName = subExperiment.drugName;
         this.interventionDescription = subExperiment.interventionDescription;
         this.isIntervention = subExperiment.isIntervention;
         this.isDrug = subExperiment.isDrug;
         this.subExpName = subExperiment.subExpName;
-        this.ageInMonth = subExperiment.ageInMonth;
 
-        this.sessionNameVal = null;
-        //console.log(this.expTaskID);
+        if (this.isTimeSeries) {
+            this.ageInMonth = subExperiment.startAge + " - " + subExperiment.endAge + " months";
+            this.sessionNameVal = "Time Series Data"
+        } else {
+            this.ageInMonth = subExperiment.AgeInMonth;
+            this.sessionNameVal = null;
+        }
 
-        switch (this.expTaskID) {
+        if (!this.isTimeSeries) {
+            switch (this.expTaskID) {
             case 2: { // 5-choice
                 this.SessionList = this.SessionList.filter(((x : any) => x.taskID === 1 || x.taskID === 2));
-                //console.log(this.SessionList);
                 break;
 
             }
@@ -176,6 +197,7 @@ export class UploadComponent implements OnInit {
                 //statements; {}
                 break;
             }
+        }
         }
 
 
@@ -275,7 +297,6 @@ export class UploadComponent implements OnInit {
 
         if (args[1] == CANNOTUPLOADFILETYPE) {
             this.uploadErrorFileType = this.uploadErrorFileType + "You can't upload files of this type: '" + args[0].name + "'" + "\n\r";
-            //console.log("You can't upload files of this type: '" + args[0].name + "'");
         } else {
             this.uploadErrorServer = FAILEDTOADDUPLOADDUETOSERVER;
         }
@@ -318,8 +339,12 @@ export class UploadComponent implements OnInit {
         this.spinnerService.show();
 
 
-        var obj = this.SessionList.filter((x : any) => x.sessionName === this.sessionNameVal);
-        var sessionID = obj[0].id
+        if(!this.isTimeSeries) {
+            var obj = this.SessionList.filter((x : any) => x.sessionName === this.sessionNameVal);
+            var sessionID = obj[0].id
+        } else {
+            sessionID = this.SessionList[0].Id
+        }
 
 
         const formData = data[2];

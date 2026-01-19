@@ -34,6 +34,14 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getAllSubExpTimeSeries(id: any): any {
+
+        return this.http
+            .get("/api/subexperiment/GetAllSubExpTimeSeriesbyExpID?expID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     // Adding subexperiment
     public createSubExp(subexperiment: SubExperiment): Observable<any> {
 
@@ -47,11 +55,30 @@ import { AuthenticationService } from './authentication.service';
         
     }
 
+    public createSubExpTimeSeries(subexperiment: SubExperiment): Observable<any> {
+
+        const body: string = JSON.stringify(subexperiment);
+
+        return this.http.post("/api/subexperiment/CreateSubExperimentTimeSeries", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
     // Function Definition for updating SubExperiemnt when Edit button in clicked!
     public updateSubExp(subexperiment: SubExperiment): any {
 
         const body: string = JSON.stringify(subexperiment);
         return this.http.post("/api/subexperiment/UpdateSubExperiment", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
+    public updateSubExpTimeSeries(subexperiment: SubExperiment): any {
+
+        const body: string = JSON.stringify(subexperiment);
+        return this.http.post("/api/subexperiment/UpdateSubExperimentTimeSeries", body, {
             headers: this.authenticationService.getAuthorizationHeader()
         });
 

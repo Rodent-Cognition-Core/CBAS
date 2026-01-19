@@ -27,7 +27,6 @@ import { AuthenticationService } from './authentication.service';
        
 
         const body: string = JSON.stringify(obj);
-        //console.log(body);
         return this.http
             .post("/api/Profile/UpdateProfile", body, {
                 headers: this.authenticationService.getAuthorizationHeader()

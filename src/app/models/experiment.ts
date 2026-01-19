@@ -15,7 +15,7 @@ export interface Experiment {
      TaskDescription: string;
      TaskBattery: string;
      DOI: string;
-     Status: boolean;
+     RepoStatus: boolean;
      ImageIds: Array<number>;
     // ImagePath: Array<string>;
      ImageInfo: string;
@@ -24,5 +24,6 @@ export interface Experiment {
 
      multipleSessions: boolean;
      repoGuid: string;
+     timeseries: boolean;
 
 }
