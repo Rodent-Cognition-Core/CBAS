@@ -50,11 +50,7 @@ export class DataLinkComponent {
         this.spinnerService.show();
 
         this.dataExtractionService.getDataByLinkGuid(this.linkGuid).subscribe((data : any) => {
-
-            //console.log(data);
-
             this.result = data.listOfRows;
-            //console.log(this.result);
             this.description = data.description;
             this.colNames = [];
 
@@ -65,7 +61,7 @@ export class DataLinkComponent {
 
             if (this.result.length > 0) {
                 var a = this.result[0];
-                Object.keys(a).forEach(function (_key : any) { return /*console.log(key)*/; });
+                Object.keys(a).forEach(function (_key : any) { return; });
                 for (var key in a) {
 
                     this.colNames.push(key);
@@ -108,14 +104,10 @@ export class DataLinkComponent {
 
                 // Loop each property of the object
                 for (let key in items[row]) {
-                    //console.log(1)
-                    //console.log(key);
-
                     // This is to not add a comma at the last cell
                     // The '\r\n' adds a new line
                     if (key == 'AnimalID') { csv = ''; }
                     csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                    //console.log(csv)
                     keysCounter++
                 }
             }
@@ -124,7 +116,6 @@ export class DataLinkComponent {
             for (let key in items[row]) {
 
                 csv += items[row][key] + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
-                //console.log(csv)
                 keysCounter++
             }
 

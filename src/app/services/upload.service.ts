@@ -22,20 +22,18 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
-    //public GetUploadResult(): any {
-
-    //    return this.http
-    //        .get("/api/upload/UploadFiles", {
-    //            headers: this.authenticationService.getAuthorizationHeader()
-    //        });
-    //};
-
-
-
     public setUploadAsResolved(uploadId: number): any {
 
         return this.http
             .get("/api/upload/SetUploadAsResolved?uploadId=" + uploadId, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    public setTimeSeriesUploadAsResolved(uploadId: number): any {
+
+        return this.http
+            .get("/api/upload/SetTimeSeriesUploadAsResolved?uploadId=" + uploadId, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
     }
@@ -47,6 +45,13 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    downloadTimeSeriesFile(id: number): Observable<Blob> {
+
+        return this.http.get("/api/upload/DownloadTimeSeriesFile?uploadId=" + id,
+            { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
+
+    }
+
     public getSessionInfo(): any {
 
         return this.http
@@ -54,6 +59,11 @@ import { AuthenticationService } from './authentication.service';
                 //headers: this.authenticationService.getAuthorizationHeader()
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
+    }
+
+    downloadTimeSeriesData(subExpIds: number[]): Observable<Blob> {
+        return this.http.post("/api/upload/DownloadTimeSeriesData", subExpIds,
+            { headers: this.authenticationService.getAuthorizationHeader(), responseType: "blob" });
     }
 
 }

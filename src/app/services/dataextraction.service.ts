@@ -30,8 +30,15 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public getAllTimeSeriesExp(userGuid: any, isFullDataAccess: any, speciesID: any): any {
+
+        return this.http
+            .get("/api/dataExtraction/GetAllTimeSeriesExp?userGuid=" + userGuid + "&isFullDataAccess=" + isFullDataAccess + "&speciesId=" + speciesID, {
+                headers: new HttpHeaders().set('Content-Type', 'application/json')
+            });
+    }
+
     public getUserGuid(): any {
-        //console.log(this.authenticationService.getAuthorizationHeader());
         return this.http
             .get("/api/dataExtraction/GetUserGuid", {
                 headers: this.authenticationService.getAuthorizationHeader()
@@ -154,6 +161,13 @@ import { AuthenticationService } from './authentication.service';
                 headers: new HttpHeaders().set('Content-Type', 'application/json')
             });
 
+    }
+
+    public downloadTimeSeriesData(subExpIDs: number[]): any {
+        return this.http.post("/api/upload/DownloadTimeSeriesData", subExpIDs, {
+            headers: this.authenticationService.getAuthorizationHeader(),
+            responseType: 'blob'
+        });
     }
 
     

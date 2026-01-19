@@ -36,18 +36,11 @@ export class DownloadDsComponent implements OnInit {
     }
 
     ngOnInit() {
-        //console.log(this.dsName);
-        
         if (this.dsName != "") {
             this.searchexperimentService.GetSearchByExpID(parseInt(this.dsName)).subscribe((data : any) => {
                 this.expObj = data[0];
                 this.expObj.age = this.expObj.age.replaceAll('<br/>', ', ');
                 this.expObj.strain = this.expObj.strain.replaceAll('<br/>', ', ');
-                //console.log(this.expObj);
-
-                //this.text = "Data download should start shortly!";
-                //this.DownloadDsFile(this.dsName);
-
             })
             
 

@@ -35,6 +35,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(res);
         }
 
+        [HttpGet("GetAnimalTimeSeriesInfoByExpID")]
+        public async Task<IActionResult> GetAnimalTimeSeriesInfoByExpID(int expId)
+        {
+            var res = await _animalService.GetAnimalTimeSeriesByExpIDAsync(expId);
+            return new JsonResult(res);
+        }
+
         [HttpPost("CreateAnimal")]
         public async Task<IActionResult> CreateAnimal([FromBody]Animal animal)
         {
@@ -50,6 +57,19 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("CreateAnimalTimeSeries")]
+        public async Task<IActionResult> CreateAnimalTimeSeries([FromBody]Animal animal)
+        {
+            if (await _animalService.DoesAnimalIDTimeSeriesExistAsync(animal.UserAnimalID, animal.ExpID))
+            {
+                return new JsonResult("Taken");
+            }
+            else
+            {
+                return new JsonResult(await _animalService.InsertAnimalTimeSeriesAsync(animal));
+            }
+        }
+
         [HttpPost("UpdateAnimal")]
         public async Task<IActionResult> UpdateAnimal([FromBody]Animal animal)
         {
@@ -59,10 +79,27 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpPost("UpdateAnimalTimeSeries")]
+        public async Task<IActionResult> UpdateAnimalTimeSeries([FromBody]Animal animal)
+        {
+
+            await _animalService.UpdateAnimalTimeSeriesAsync(animal);
+            return new JsonResult("Done!");
+
+        }
+
         [HttpDelete("DeleteAnimalById")]
         public async Task<IActionResult> DeleteAnimalById(int animalID)
         {
             await _animalService.DeleteAnimalByAnimalIDAsync(animalID);
+            return new JsonResult("Done!");
+
+        }
+
+        [HttpDelete("DeleteAnimalTimeSeriesById")]
+        public async Task<IActionResult> DeleteAnimalTimeSeriesById(int animalID)
+        {
+            await _animalService.DeleteAnimalTimeSeriesByAnimalIDAsync(animalID);
             return new JsonResult("Done!");
 
         }
@@ -105,6 +142,22 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpGet("UserAnimalTimeSeriesIDExist")]
+        public async Task<IActionResult> UserAnimalTimeSeriesIDExist(string UserAnimalID, int ExpID)
+        {
+
+            bool flag = await _animalService.IsUserAnimalTimeSeriesIDExistAsync(UserAnimalID, ExpID);
+            if (flag == true)
+            {
+                return new JsonResult("Exist");
+            }
+            else
+            {
+                return new JsonResult("Not Exist");
+            }
+
+        }
+
 
         [HttpGet("EditUserAnimalID")]
         public async Task<IActionResult> EditUserAnimalID(string EditedUserAnimalId, int OldAnimalId, int ExpId)
@@ -112,6 +165,29 @@ namespace AngularSPAWebAPI.Controllers
             (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = await _animalService.GetAnimalIDByUserAnimalIdAndExpIdAsync(EditedUserAnimalId, ExpId);
 
             bool updated = await _animalService.ReplaceAnimalIdAsync(OldAnimalId, ExistingAnimalIdToUse);
+            if (isAnimalInfocompleted)
+            {
+                var user = await _manager.GetUserAsync(HttpContext.User);
+                var userID = user.Id;
+                UploadService uploadService = new UploadService();
+                await uploadService.SetAsResolvedForEditedAnimalIdAsync(ExistingAnimalIdToUse, userID);
+            }
+            if (updated == true)
+            {
+                return new JsonResult("Successful");
+            }
+            else
+            {
+                return new JsonResult("Failed");
+            }
+        }
+
+        [HttpGet("EditUserAnimalTimeSeriesID")]
+        public async Task<IActionResult> EditUserAnimalIDTimeSeries(string EditedUserAnimalId, int OldAnimalId, int ExpId)
+        {
+            (int ExistingAnimalIdToUse, bool isAnimalInfocompleted) = await _animalService.GetAnimalIDByUserAnimalIdTimeSeriesAndExpIdAsync(EditedUserAnimalId, ExpId);
+
+            bool updated = await _animalService.ReplaceAnimalTimeSeriesIdAsync(OldAnimalId, ExistingAnimalIdToUse);
             if (isAnimalInfocompleted)
             {
                 var user = await _manager.GetUserAsync(HttpContext.User);
