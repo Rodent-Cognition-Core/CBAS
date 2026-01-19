@@ -1,5 +1,6 @@
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
+using CBAS.Helpers;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -28,6 +29,7 @@ namespace AngularSPAWebAPI.Controllers
     public class UploadController : Controller
     {
         private readonly UploadService _uploadService;
+        private readonly HelperService _helperService;
         private readonly UserManager<ApplicationUser> _manager;
 
         // constructor
@@ -48,6 +50,7 @@ namespace AngularSPAWebAPI.Controllers
             int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"][0]);
             string SessionName = HttpContext.Request.Form["sessionName"][0];
             int sessionID = Int16.Parse(HttpContext.Request.Form["sessionID"][0]);
+            bool isTimeSeries = bool.Parse(HttpContext.Request.Form["isTimeSeries"][0]);
 
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
@@ -64,17 +67,21 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(result);
         }
 
-        [HttpPost("UploadTimeSerires")]
+        [HttpPost("UploadTimeSeriesFiles")]
         [RequestSizeLimit(900_000_000)]
-        public async Task<IActionResult> UploadTimeSerires()
+        public async Task<IActionResult> UploadTimeSeriesFiles()
         {
             var files = HttpContext.Request.Form.Files;
+            int expID = Int16.Parse(HttpContext.Request.Form["expId"]);
+            int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"]);
+            string SessionName = HttpContext.Request.Form["sessionName"];
 
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
             var userID = user.Id;
 
-            var result = await _uploadService.UploadTimeSeriesFiles(files, userEmail, userID);
+            var result = await _uploadService.UploadTimeSeriesFiles(files, userEmail, userID, expID, subExpId);
+
             return new JsonResult(result);
         }
 
@@ -85,11 +92,26 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_uploadService.GetUploadInfoByExpID(expId));
         }
 
+        [HttpGet("GetUploadInfoByTimeSeriesID")]
+        public IActionResult GetUploadInfoByTimeSeriesID(int expId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadInfoByTimeSeriesExpID(expId));
+        }
+
+
         [HttpGet("GetUploadErrorLogByID")]
         public IActionResult GetUploadErrorLogByID(int expId)
         {
 
             return new JsonResult(_uploadService.GetUploadErrorLogByExpID(expId));
+        }
+
+        [HttpGet("GetUploadErrorLogByTimeSeriesID")]
+        public IActionResult GetUploadErrorLogByTimeSeriesID(int expId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadErrorLogByTimeSeriesExpID(expId));
         }
 
         [HttpGet("SetUploadAsResolved")]
@@ -103,19 +125,73 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(res);
         }
 
+        [HttpGet("SetTimeSeriesUploadAsResolved")]
+        public async Task<IActionResult> SetTimeSeriesUploadAsResolved(int uploadId)
+        {
+            var user = await _manager.GetUserAsync(HttpContext.User);
+            var userEmail = user.UserName;
+            var userID = user.Id;
+            var res = await _uploadService.SetTimeSeriesUploadAsResolvedAsync(uploadId, userID);
+
+            return new JsonResult(res);
+        }
+
         //Uploadinfo for Experiment page
         [HttpGet("GetUploadInfoBySubExpId")]
         public IActionResult GetUploadInfoBySubExpId(int subExpId)
         {
 
             return new JsonResult(_uploadService.GetUploadInfoBySubExpIDForExperiemnt(subExpId));
-        }         
+        }
+
+        [HttpGet("GetUploadInfoBySubExpIdTimeSeries")]
+        public IActionResult GetUploadInfoBySubExpIdTimeSeries(int subExpId)
+        {
+
+            return new JsonResult(_uploadService.GetUploadInfoBySubExpIDForTimeSeries(subExpId));
+        }
 
         [HttpGet("DownloadFile")]
         public async Task<IActionResult> DownloadFile(int uploadId)
         {
 
             var fur = await _uploadService.GetUploadByUploadIDAsync(uploadId);
+            var path = string.Empty;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+                path = fur.PermanentFilePath + "\\" + fur.SysFileName;
+            }
+            else
+            {
+                path = fur.PermanentFilePath + "/" + fur.SysFileName;
+            }
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path), fur.UserFileName);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("DownloadTimeSeriesData")]
+        public IActionResult DownloadTimeSeriesData([FromBody] List<int> subExpIds)
+        {
+            var fileBytes = _uploadService.DownloadTimeSeriesData(subExpIds);
+            if (fileBytes == null)
+            {
+                return NotFound("No data found for the selected experiments.");
+            }
+            return File(fileBytes, "application/zip", "TimeSeriesData.zip");
+        }
+
+        [HttpGet("DownloadTimeSeriesFile")]
+        public async Task<IActionResult> DownloadFileTimeSeries(int uploadId)
+        {
+
+            var fur = await _uploadService.GetTimeSeriesUploadByUploadIDAsync(uploadId);
             var path = string.Empty;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
@@ -168,6 +244,14 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpDelete("DelUploadLogTblbyTimeSeriesId")]
+        public IActionResult DelUploadLogTblbyTimeSeriesId(int expID)
+        {
+            _uploadService.ClearUploadLogTblbyTimeSeriesID(expID);
+            return new JsonResult("Done!");
+
+        }
+
         [AllowAnonymous]
         [HttpGet("GetSessionInfo")]
         public IActionResult GetSessionInfo()
@@ -175,6 +259,5 @@ namespace AngularSPAWebAPI.Controllers
 
             return new JsonResult(_uploadService.GetAllSessionInfo());
         }
-
     }
 }

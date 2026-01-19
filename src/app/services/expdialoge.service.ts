@@ -36,6 +36,16 @@ import { AuthenticationService } from './authentication.service';
         
     }
 
+    public createTimeSeriesExp(experiment: Experiment): Observable<any> {
+
+        const body: string = JSON.stringify(experiment);
+
+        return this.http.post("/api/experiment/CreateTimeSeriesExperiment", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
     // Function Definition for updating Experiemnt when Edit button in clicked!
     public updateExp(experiment: Experiment): any {
 

@@ -45,6 +45,14 @@ export interface animalResponse {
             });
     }
 
+    public getAnimalTimeSeriesInfo(id: any): Observable<animalResponse[]> {
+
+        return this.http
+            .get<animalResponse[]>("/api/animal/GetAnimalTimeSeriesInfoByExpID?expId="+id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     public getCountOfAnimals(): Observable<number> {
 
         return this.http
@@ -63,11 +71,29 @@ export interface animalResponse {
 
     }
 
+    public createAnimalTimeSeries(animal: Animal): Observable<any> {
+
+        const body: string = JSON.stringify(animal);
+        return this.http.post<any>("/api/animal/CreateAnimalTimeSeries", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+
+    }
+
     // definiton to Edit/update the animal
-    public updateAniaml(animal: Animal): Observable<any> {
+    public updateAnimal(animal: Animal): Observable<any> {
 
         const body: string = JSON.stringify(animal);
         return this.http.post<any>("/api/animal/UpdateAnimal", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+
+            });
+    }
+
+    public updateAnimalTimeSeries(animal: Animal): Observable<any> {
+
+        const body: string = JSON.stringify(animal);
+        return this.http.post<any>("/api/animal/UpdateAnimalTimeSeries", body, {
             headers: this.authenticationService.getAuthorizationHeader()
 
             });
@@ -78,6 +104,14 @@ export interface animalResponse {
 
         return this.http
             .delete<any>("/api/animal/DeleteAnimalById?animalID=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
+    public deleteAnimalTimeSeriesbyID(id: any): Observable<any> {
+
+        return this.http
+            .delete<any>("/api/animal/DeleteAnimalTimeSeriesById?animalID=" + id, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
     }
@@ -111,10 +145,28 @@ export interface animalResponse {
 
     }
 
+    public IsUserAnimalTimeSeriesIDExist(id: any, expID: any): Observable<boolean> {
+
+        return this.http
+            .put<boolean>("/api/animal/UserAnimalIDTimeSeriesExist?UserAnimalID=" + id + "&ExpID=" + expID, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
     public EditUserAnimalID(editedUserAnimalId: any, animalId: any, expId: any): Observable<string> {
 
         return this.http
             .get<string>("/api/animal/EditUserAnimalID?EditedUserAnimalId=" + editedUserAnimalId + "&OldAnimalId=" + animalId + "&ExpId=" + expId, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
+    public EditUserAnimalTimeSeriesID(editedUserAnimalId: any, animalId: any, expId: any): Observable<string> {
+
+        return this.http
+            .get<string>("/api/animal/EditUserAnimalTimeSeriesID?EditedUserAnimalId=" + editedUserAnimalId + "&OldAnimalId=" + animalId + "&ExpId=" + expId, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
 

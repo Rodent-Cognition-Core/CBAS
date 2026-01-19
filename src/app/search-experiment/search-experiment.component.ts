@@ -35,7 +35,6 @@ export class SearchExperimentComponent implements OnInit {
         this.searchexperimentService.GetSearchList().subscribe((data : any) => {
             this.searchList = data;
             this.setPage(1);
-            //console.log(this.searchList);
 
         })
     }
@@ -84,18 +83,8 @@ export class SearchExperimentComponent implements OnInit {
         let path = "ds_" + file;
         this.searchexperimentService.downloadExpDs(path)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var fileData = new Blob([result]);
                 var csvURL = null;
-                //if (navigator.msSaveBlob) {
-                //    csvURL = navigator.msSaveBlob(fileData, path + '.csv');
-                //} else {
-                //    csvURL = window.URL.createObjectURL(fileData);
-                //}
                 csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
@@ -112,19 +101,5 @@ export class SearchExperimentComponent implements OnInit {
                     }
                 });
     }
-
-    //copyMessage(val: string) {
-    //    const selBox = document.createElement('textarea');
-    //    selBox.style.position = 'fixed';
-    //    selBox.style.left = '0';
-    //    selBox.style.top = '0';
-    //    selBox.style.opacity = '0';
-    //    selBox.value = val;
-    //    document.body.appendChild(selBox);
-    //    selBox.focus();
-    //    selBox.select();
-    //    document.execCommand('copy');
-    //    document.body.removeChild(selBox);
-    //}
 
 }

@@ -21,12 +21,13 @@ namespace AngularSPAWebAPI.Models
         public string TaskDescription { get; set; }
         public string TaskBattery { get; set; }
         public string DOI { get; set; }
-        public bool Status { get; set; }
+        public bool RepoStatus { get; set; }
         public int SpeciesID { get; set; }
         public string Species { get; set; }
         //public bool IsPostProcessingPass { get; set; }
         public bool MultipleSessions { get; set; }
         public string RepoGuid { get; set; }
+        public bool TimeSeries { get; set; }
         public System.Collections.Generic.List<SubExperiment> SubExpList {get; set; }
     }
 }

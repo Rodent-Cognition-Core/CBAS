@@ -25,6 +25,7 @@ export class AnimalInfoComponent implements OnInit {
     pager: any = {};
     expfilter: any = '';
     pagedItems: any[];
+    isTimeSeries: boolean = false;
 
     constructor(private animalService: AnimalService,
         public dialog: MatDialog,
@@ -43,16 +44,24 @@ export class AnimalInfoComponent implements OnInit {
     }
 
     GetAnimalInfo(selectedExperimentID: number) {
-        this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
+        if (this.isTimeSeries) {
+            this.animalService.getAnimalTimeSeriesInfo(selectedExperimentID).subscribe(data => {
             this.AnimalList = data;
             this.setPage(1);
-            //console.log(this.AnimalList)
 
         });
+        } else {
+            this.animalService.getAnimalInfo(selectedExperimentID).subscribe(data => {
+            this.AnimalList = data;
+            this.setPage(1);
+
+        });
+        }
 
     }
 
     SelectedExpChanged(experiment: any) {
+        this.isTimeSeries = experiment.timeSeries;
         this.GetAnimalInfo(experiment.expID);
         this.experimentName = experiment.expName;
         this.experimentID = experiment.expID;
@@ -60,14 +69,13 @@ export class AnimalInfoComponent implements OnInit {
     }
 
     openDialog(animal?: any): void {
-        //console.log(Animal);
         if (typeof animal == 'undefined') {
             animal = null;
         }
         let dialogref = this.dialog.open(AnimalDialogComponent, {
             height: '480px',
             width: '450px',
-            data: { experimentId: this.experimentID, animalObj: animal }
+            data: { experimentId: this.experimentID, animalObj: animal, isTimeSeries: this.isTimeSeries }
 
         });
 
@@ -88,15 +96,27 @@ export class AnimalInfoComponent implements OnInit {
         dialogRefDelAnimal.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-                this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
+                if(this.isTimeSeries){
+                    this.animalService.deleteAnimalTimeSeriesbyID(animalID).pipe(map((res) => {
 
 
-                    this.GetAnimalInfo(expId);
-                    // location.reload()
+                        this.GetAnimalInfo(expId);
+                        // location.reload()
 
-                    this.spinnerService.hide();
+                        this.spinnerService.hide();
 
                 })).subscribe();
+                } else {
+                    this.animalService.deleteAnimalbyID(animalID).pipe(map((res) => {
+
+
+                        this.GetAnimalInfo(expId);
+                        // location.reload()
+
+                        this.spinnerService.hide();
+
+                })).subscribe();
+                }
             }
             //this.dialogRefDelAnimal = null;
             dialogRefDelAnimal.close();

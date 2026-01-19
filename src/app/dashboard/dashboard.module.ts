@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard.component';
 import { DashboardService } from '../services/dashboard.service';
 import { PagerService } from '../services/pager.service';
 import { AnimalService } from '../services/animal.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { ExperimentService } from '../services/experiment.service';
 
 @NgModule({
@@ -16,6 +17,6 @@ import { ExperimentService } from '../services/experiment.service';
     declarations: [
         DashboardComponent
     ],
-    providers: [DashboardService, UploadService, PagerService, AnimalService, ExperimentService,]
+    providers: [DashboardService, UploadService, PagerService, AnimalService, ExperimentService, PubScreenService]
 })
 export class DashboardModule { }

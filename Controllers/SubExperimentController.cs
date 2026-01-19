@@ -48,6 +48,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_subexperimentService.GetAllSubExperimentsByExpID(expID));
         }
 
+        [HttpGet("GetAllSubExpTimeSeriesbyExpID")]
+        public IActionResult GetAllSubExpTimeSeriesbyExpID(int expID)
+        {
+
+            return new JsonResult(_subexperimentService.GetAllSubExperimentsTimeSeriesByExpID(expID));
+        }
+
         [HttpPost("CreateSubExperiment")]
         public IActionResult CreateSubExperiment([FromBody]SubExperiment subexperiment)
         {
@@ -71,6 +78,25 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("CreateSubExperimentTimeSeries")]
+        public IActionResult CreateSubExperimentTimeSeries([FromBody]SubExperiment subexperiment)
+        {
+            (bool flagSubExpName, bool flagSubexp) info = _subexperimentService.DoesSubExperimentNameExist(subexperiment, 0);
+
+            if (info.flagSubExpName)
+            {
+                return new JsonResult("TakenSubExpName");
+            }
+            if (info.flagSubexp)
+            {
+                return new JsonResult("takenSubExp");
+            }
+            else
+            {
+                return new JsonResult(_subexperimentService.InsertSubExperimentTimeSeries(subexperiment));
+            }
+        }
+
         [HttpPost("UpdateSubExperiment")]
         public IActionResult UpdateSubExperiment([FromBody]SubExperiment subexperiment)
         {
@@ -90,6 +116,26 @@ namespace AngularSPAWebAPI.Controllers
                 return new JsonResult("Done");
             }
             
+        }
+
+        [HttpPost("UpdateSubExperimentTimeSeries")]
+        public IActionResult UpdateSubExperimentTimeSeries([FromBody]SubExperiment subexperiment)
+        {
+            (bool flagSubExpName, bool flagSubexp) info = _subexperimentService.DoesSubExperimentNameExist(subexperiment, subexperiment.SubExpID);
+
+            if (info.flagSubExpName)
+            {
+                return new JsonResult("TakenSubExpName");
+            }
+            if (info.flagSubexp)
+            {
+                return new JsonResult("takenSubExp");
+            }
+            else
+            {
+                _subexperimentService.UpdateSubExperimentTimeSeries(subexperiment);
+                return new JsonResult("Done");
+            }
         }
 
         [HttpDelete("DeleteSubExpById")]

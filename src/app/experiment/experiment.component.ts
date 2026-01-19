@@ -21,6 +21,7 @@ export class ExperimentComponent {
     UploadList: any;
     selectedSubExperiment: any;
     expfilter: any = '';
+    timeSeries: boolean = false;
     // ExpModel: any;
     pager: any = {};
     pagerTblFile: any = {};
@@ -46,10 +47,17 @@ export class ExperimentComponent {
     GetUploadInfo(selectedSubExperimentID: number) {
 
         this.spinnerService.show();
-
-        this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
+        if (this.timeSeries) {
+            this.experimentService.getUploadInfoBySubExpIdTimeSeries(selectedSubExperimentID).subscribe((data : any) => {
             this.UploadList = data;
-            //console.log(this.UploadList);
+            this.setPageTblFile(1);
+            setTimeout(() => {
+                this.spinnerService.hide();
+            }, 500);
+        });
+        } else {
+            this.experimentService.getUploadInfoBySubExpId(selectedSubExperimentID).subscribe((data : any) => {
+            this.UploadList = data;
             this.setPageTblFile(1);
             setTimeout(() => {
                 this.spinnerService.hide();
@@ -61,11 +69,13 @@ export class ExperimentComponent {
                     this.spinnerService.hide();
                 }, 500);
             });
+        }
 
     }
 
     SelectedExpChanged(_experiment : any) {
         this.selectedSubExperiment = null;
+        this.timeSeries = _experiment ? _experiment.timeSeries : false;
     }
 
     SelectedSubExpChanged(subExperiment : any) {
@@ -105,29 +115,52 @@ export class ExperimentComponent {
     }
 
     DownloadFile(uploadId: number, userFileName: string): void {
-
-        this.uploadService.downloadFile(uploadId)
+        if (!this.timeSeries){
+            this.uploadService.downloadFile(uploadId)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var csvData = new Blob([result], { type: 'text/csv;charset=utf-8;' });
                 var csvURL = null;
-                //if (navigator.msSaveBlob) {
-                //    csvURL = navigator.msSaveBlob(csvData, userFileName);
-                //} else {
-                //    csvURL = window.URL.createObjectURL(csvData);
-                //}
                 csvURL = window.URL.createObjectURL(csvData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
                 tempLink.setAttribute('download', userFileName);
                 document.body.appendChild(tempLink);
                 tempLink.click();
-
             })
+        } else {
+            this.uploadService.downloadTimeSeriesFile(uploadId)
+            .subscribe(result => {
+                var blob = new Blob([result], { type: 'application/octet-stream' });
+                var url = window.URL.createObjectURL(blob);
+                var tempLink = document.createElement('a');
+                tempLink.href = url;
+                tempLink.setAttribute('download', userFileName);
+                document.body.appendChild(tempLink);
+                tempLink.click();
+            })
+        }
+    }
+
+    DownloadDataset(): void {
+        if (this.selectedSubExperiment && this.selectedSubExperiment.subExpID) {
+            this.spinnerService.show();
+            var subExpIds = [this.selectedSubExperiment.subExpID];
+            this.uploadService.downloadTimeSeriesData(subExpIds)
+                .subscribe(result => {
+                    this.spinnerService.hide();
+                    var blob = new Blob([result], { type: 'application/zip' });
+                    var url = window.URL.createObjectURL(blob);
+                    var tempLink = document.createElement('a');
+                    tempLink.href = url;
+                    tempLink.setAttribute('download', 'TimeSeriesData.zip');
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
+                    document.body.removeChild(tempLink);
+                }, error => {
+                    this.spinnerService.hide();
+                    console.error(error);
+                });
+        }
     }
 
 
