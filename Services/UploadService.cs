@@ -17,7 +17,6 @@ using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
 using Serilog;
 using System.Data.SqlClient;
-using System.Runtime.InteropServices;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -639,16 +638,7 @@ namespace AngularSPAWebAPI.Services
             List<MarkerData> lstMD = new List<MarkerData>();
             try
             {
-                string path = string.Empty;
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-
-                    path = filePath + "\\" + fileName;
-                }
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    path = filePath + "/" + fileName;
-                }
+                string path = filePath + "\\" + fileName;
                 var xdoc = XDocument.Load(path);
 
                 // Console.WriteLine(path);

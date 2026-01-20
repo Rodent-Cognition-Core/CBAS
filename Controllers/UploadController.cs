@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -102,15 +101,7 @@ namespace AngularSPAWebAPI.Controllers
         {
 
             var fur = await _uploadService.GetUploadByUploadIDAsync(uploadId);
-            var path = string.Empty;
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
-
-                path = fur.PermanentFilePath + "\\" + fur.SysFileName;
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-                path = fur.PermanentFilePath + "/" + fur.SysFileName;
-            }
+            var path = fur.PermanentFilePath + "\\" + fur.SysFileName;
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))
