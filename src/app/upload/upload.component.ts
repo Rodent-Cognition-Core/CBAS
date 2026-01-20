@@ -44,7 +44,7 @@ export class UploadComponent implements OnInit {
     uploadErrorFileType: string = "";
 
     uploadConfirmShowed: boolean = false;
-
+    public app_url = environment.APP_URL;
 
 
     //fileToUpload: File = null;
@@ -63,19 +63,7 @@ export class UploadComponent implements OnInit {
         cancelReset: undefined,
         timeout: 36000000,
         headers: {},
-        url: this.app_url
-    };
-
-    public configTimeSeries: DropzoneConfigInterface = {
-        clickable: true,
-        maxFiles: 5000,
-        acceptedFiles: '.csv',
-        autoReset: undefined,
-        errorReset: undefined,
-        cancelReset: undefined,
-        timeout: 36000000,
-        headers: { },
-        url: 'http://localhost:5000/api/upload/UploadTimeSeriesFiles',
+        url:this.app_url
     };
 
     constructor(
