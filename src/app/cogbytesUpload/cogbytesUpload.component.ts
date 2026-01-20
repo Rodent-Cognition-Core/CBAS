@@ -98,7 +98,8 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         errorReset: undefined,
         cancelReset: undefined,
         timeout: 36000000,
-        headers: {}
+        headers: {},
+        url:this.app_url
     };
     
 
