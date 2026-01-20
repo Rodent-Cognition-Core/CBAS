@@ -38,13 +38,9 @@ export class UploadComponent implements OnInit {
     expTask: string;
     expTaskID: any;
     SessionList: any;
-
     uploadErrorServer: string = "";
     uploadErrorFileType: string = "";
-
     uploadConfirmShowed: boolean = false;
-
-
 
     //fileToUpload: File = null;
     public type: string = 'component';
