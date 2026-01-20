@@ -36,7 +36,7 @@ var api_url = environment.APP_URL;
                 // Change this to your upload POST address:
                 url: api_url+ '/api/upload/UploadFiles',
                 // maxFilesize: 50,
-                acceptedFiles: '.xml',
+                acceptedFiles: '.xml,.csv',
                 // headers: { 'Authorization': this.authenticationService.getAuthorizationHeader() },
                 parallelUploads: 10000,
                 uploadMultiple: true,
