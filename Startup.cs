@@ -182,6 +182,19 @@ namespace AngularSPAWebAPI
         {
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
 
+
+           
+
+            app.UseHttpsRedirection();
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
             if (env.IsDevelopment())
             {
                 app.UseCors("LocalCorsPolicy");
@@ -203,18 +216,6 @@ namespace AngularSPAWebAPI
                 });
                 app.UseHsts();
             }
-           
-
-            app.UseHttpsRedirection();
-
-            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
-            // Uses default files as index.html.
-            app.UseDefaultFiles();
-            // this should always be the last middleware
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
 
             // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
             var appRoutes = new[] {
