@@ -11,6 +11,7 @@ import {
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
+import { environment } from '../../environments/environment';
 
 @Component({
     selector: 'app-upload',
@@ -50,14 +51,18 @@ export class UploadComponent implements OnInit {
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
 
+    public app_url = environment.APP_URL;
+    //DropZone
     public config: DropzoneConfigInterface = {
         clickable: true,
         maxFiles: 5000,
+        maxFilesize: 10000,
         autoReset: undefined,
         errorReset: undefined,
         cancelReset: undefined,
         timeout: 36000000,
-        headers: { }
+        headers: {},
+        url: this.app_url
     };
 
     constructor(
