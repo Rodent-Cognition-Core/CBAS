@@ -48,7 +48,7 @@ export class UploadComponent implements OnInit {
     public type: string = 'component';
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
-    api_url = environment.api_url;
+    api_url = environment.APP_URL;
 
     public app_url = environment.APP_URL;
     //DropZone
