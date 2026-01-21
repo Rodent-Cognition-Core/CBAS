@@ -48,7 +48,7 @@ export class UploadComponent implements OnInit {
     public type: string = 'component';
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
-    api_url = environment.APP_URL;
+    public app_url = environment.APP_URL;
 
     public app_url = environment.APP_URL;
     //DropZone
@@ -73,7 +73,7 @@ export class UploadComponent implements OnInit {
         cancelReset: undefined,
         timeout: 36000000,
         headers: { },
-        url: this.api_url + '/api/upload/UploadTimeSeriesFiles',
+        url: this.app_url + '/api/upload/UploadTimeSeriesFiles',
     };
 
     constructor(
