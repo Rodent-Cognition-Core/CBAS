@@ -52,7 +52,6 @@ namespace AngularSPAWebAPI.Controllers
             int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"][0]);
             string SessionName = HttpContext.Request.Form["sessionName"][0];
             int sessionID = Int16.Parse(HttpContext.Request.Form["sessionID"][0]);
-            bool isTimeSeries = bool.Parse(HttpContext.Request.Form["isTimeSeries"][0]);
 
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
