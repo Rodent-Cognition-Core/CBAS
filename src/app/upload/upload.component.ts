@@ -11,7 +11,8 @@ import {
     DropzoneConfigInterface
 } from 'ngx-dropzone-wrapper';
 import { CANNOTUPLOADFILETYPE, FAILEDTOADDUPLOADDUETOSERVER, UPLOADERROR } from '../shared/messages';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
+
 
 @Component({
     selector: 'app-upload',
@@ -47,6 +48,7 @@ export class UploadComponent implements OnInit {
     public type: string = 'component';
     proceedUpload: boolean = true;
     //public disabled: boolean = false;
+    api_url = environment.api_url;
 
     public app_url = environment.APP_URL;
     //DropZone
@@ -71,7 +73,7 @@ export class UploadComponent implements OnInit {
         cancelReset: undefined,
         timeout: 36000000,
         headers: { },
-        url: 'http://localhost:5000/api/upload/UploadTimeSeriesFiles',
+        url: this.api_url + '/api/upload/UploadTimeSeriesFiles',
     };
 
     constructor(
