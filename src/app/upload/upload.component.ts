@@ -50,7 +50,6 @@ export class UploadComponent implements OnInit {
     //public disabled: boolean = false;
     public app_url = environment.APP_URL;
 
-    public app_url = environment.APP_URL;
     //DropZone
     public config: DropzoneConfigInterface = {
         clickable: true,
@@ -61,7 +60,6 @@ export class UploadComponent implements OnInit {
         cancelReset: undefined,
         timeout: 36000000,
         headers: {},
-        url:this.app_url
     };
 
     public configTimeSeries: DropzoneConfigInterface = {
