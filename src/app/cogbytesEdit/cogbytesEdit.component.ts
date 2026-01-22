@@ -67,8 +67,6 @@ export class CogbytesEditComponent implements OnInit {
 
             this.repObj = data[0];
             this.repoList = data;
-            //console.log(this.repObj);
-            //console.log(this.repoList);
 
         });
 
@@ -79,13 +77,9 @@ export class CogbytesEditComponent implements OnInit {
     // Downloading file
     DownloadFile(file: any): void {
 
-        let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
+        let path = "/app/COGBYTES_FILES/" + file.uploadID + '/' + file.sysFileName;
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
 
                 var fileData = new Blob([result]);
                 var csvURL = null;

@@ -98,7 +98,8 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         errorReset: undefined,
         cancelReset: undefined,
         timeout: 36000000,
-        headers: {}
+        headers: {},
+        url:this.app_url
     };
     
 
@@ -411,22 +412,12 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
 
     DownloadFile(file: any): void {
 
-        let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
+        let path = "/app/COGBYTES_FILES/" + file.uploadID + "/" + file.sysFileName;
 
         this.cogbytesService.downloadFile(path)
             .subscribe(result => {
-
-                // console.log('downloadresult', result);
-                //let url = window.URL.createObjectURL(result);
-                //window.open(url);
-
                 var fileData = new Blob([result]);
                 var csvURL = '';
-                //if (navigator.msSaveBlob) {
-                //    csvURL = navigator.msSaveBlob(fileData, file.userFileName);
-                //} else {
-                //    csvURL = window.URL.createObjectURL(fileData);
-                //}
                 csvURL = window.URL.createObjectURL(fileData);
                 var tempLink = document.createElement('a');
                 tempLink.href = csvURL;
@@ -463,7 +454,7 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
                     this.spinnerService.hide();
                 }, 500);
 
-                let path = "/app/COGBYTES/" + file.UploadID + '/' + file.sysFileName;
+                let path = "/app/COGBYTES_FILES/" + file.uploadID + "/" + file.sysFileName;
                 this.cogbytesService.deleteFile(file.expID, path).pipe(map((_res : any) => {
 
                 })).subscribe(

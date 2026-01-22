@@ -1,13 +1,17 @@
 using System;
 using System.Linq;
+using System.Net;
+
 using AngularSPAWebAPI.Data;
 using AngularSPAWebAPI.Models;
 using AngularSPAWebAPI.Services;
 using CBAS.Extensions;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +37,7 @@ namespace AngularSPAWebAPI
             currentEnvironment = env;
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
         }
+
 
         public IConfiguration Configuration { get; }
 
@@ -95,8 +100,33 @@ namespace AngularSPAWebAPI
             services.AddHttpClient();
             //services.AddTransient<PubScreenService>();
 
-            if (currentEnvironment.IsProduction())
+            if (currentEnvironment.IsDevelopment())
             {
+                services.AddIdentityServer()
+                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                .AddDeveloperSigningCredential()
+                .AddInMemoryPersistedGrants()
+                // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
+                // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients())
+                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
+                                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                                .AddIdentityServerAuthentication(options =>
+                                {
+                                    options.Authority = Environment.GetEnvironmentVariable("API_URL");
+                                    options.RequireHttpsMetadata = false;
+
+                                    options.ApiName = "WebAPI";
+                                });
+            }
+            else
+            {
+                var appName = Environment.GetEnvironmentVariable("APP_NAME");
+
                 // Uncomment this line for publuishing
                 services.AddIdentityServer(options =>
                          options.PublicOrigin = publicURL)
@@ -112,38 +142,15 @@ namespace AngularSPAWebAPI
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryClients(Config.GetClients())
                     .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
                         options.Authority = publicURL;
                         options.RequireHttpsMetadata = false;
-
                         options.ApiName = "WebAPI";
                     });
-            }
-            else
-            {
-                services.AddIdentityServer()
-                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
-                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
-                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
-                .AddDeveloperSigningCredential()
-                .AddInMemoryPersistedGrants()
-                // To configure IdentityServer to use EntityFramework (EF) as the storage mechanism for configuration data (rather than using the in-memory implementations),
-                // see https://identityserver4.readthedocs.io/en/release/quickstarts/8_entity_framework.html
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients())
-                .AddAspNetIdentity<ApplicationUser>(); // IdentityServer4.AspNetIdentity.
-                services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = Environment.GetEnvironmentVariable("API_URL");
-                    options.RequireHttpsMetadata = false;
-
-                    options.ApiName = "WebAPI";
-                });
+                services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo("/keys"))
+                    .SetApplicationName(appName);
             }
 
 
@@ -181,29 +188,10 @@ namespace AngularSPAWebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             app.UseSerilogRequestLogging(); // To enable Serilog request logging
 
-            if (env.IsDevelopment())
-            {
-                app.UseCors("LocalCorsPolicy");
-                app.UseDeveloperExceptionPage();
-                // Starts "npm start" command using Shell extension.
-                app.Shell("npm start");
-            }
-            else
-            {
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
-                {
-                    ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
-                });
-                app.UseCors("ProductionCorsPolicy");
-                app.UseExceptionHandler(new ExceptionHandlerOptions
-                {
-                    ExceptionHandlingPath = "/Home/Error",
-                    AllowStatusCode404Response = true
-                });
-                app.UseHsts();
-            }
+
            
 
             app.UseHttpsRedirection();
@@ -216,6 +204,19 @@ namespace AngularSPAWebAPI
 
             app.UseRouting();
 
+            if (env.IsDevelopment())
+            {
+                app.UseCors("LocalCorsPolicy");
+                app.UseDeveloperExceptionPage();
+                // Starts "npm start" command using Shell extension.
+                app.Shell("npm start");
+            }
+            else
+            {
+                app.UseCors("ProductionCorsPolicy");
+                app.UseExceptionHandler("/error");
+                app.UseHsts();
+            }
 
             // Router on the server must match the router on the client (see app.routing.module.ts) to use PathLocationStrategy.
             var appRoutes = new[] {
@@ -273,6 +274,13 @@ namespace AngularSPAWebAPI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // Microsoft.AspNetCore.StaticFiles: API for starting the application from wwwroot.
+            // Uses default files as index.html.
+            app.UseDefaultFiles();
+            // this should always be the last middleware
+            app.UseStaticFiles();
+
         }
     }
 }

@@ -20,7 +20,17 @@
         </mat-radio-group>
 
        <!--Animal Strain-->
-        <mat-form-field class="full-width">
+        <mat-form-field class="full-width" *ngIf="isTimeSeries">
+            <input type="text" placeholder="Animal Strain" matInput [formControl]="strainTimeSeries" [matAutocomplete]="autoStrain" required (input)="onStrainInput(strainTimeSeries.value)">
+            <mat-autocomplete #autoStrain="matAutocomplete" (optionSelected)="onStrainSelection($event)">
+                <mat-option *ngFor="let strain of StrainList" [value]="strain.strain">
+                    <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
+                </mat-option>
+            </mat-autocomplete>
+             <mat-error *ngIf="strainTimeSeries.invalid">{{getErrorMessageStrain()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" *ngIf="!isTimeSeries">
             <mat-select placeholder="Animal Strain" [formControl]="strain" required (selectionChange)="selectedStrainChange(strain.value)">
                 <mat-option *ngFor="let strain of StrainList" [value]="strain.id">
                     <span matTooltip="{{strain.strain}}">{{strain.strain}}</span>
@@ -30,7 +40,17 @@
         </mat-form-field>
 
         <!--Animal Genotype-->
-        <mat-form-field class="full-width">
+        <mat-form-field class="full-width" *ngIf="isTimeSeries">
+            <input type="text" placeholder="Animal Genotype" matInput [formControl]="genotypeTimeSeries" [matAutocomplete]="autoGeno" required>
+            <mat-autocomplete #autoGeno="matAutocomplete">
+                <mat-option *ngFor="let geno of GenoList" [value]="geno.genotype">
+                    <span matTooltip="{{geno.genotype}}">{{geno.genotype}}<span *ngIf="geno.link">, <a href="{{geno.link}}" target="_blank">Reference</a> {{geno.description}}</span></span>
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="genotypeTimeSeries.invalid">{{getErrorMessageGenotype()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width" *ngIf="!isTimeSeries">
             <mat-select placeholder="Animal Genotype" [formControl]="genotype" required>
                 <mat-option *ngFor="let geno of GenoList" [value]="geno.id">
                     <span matTooltip="{{geno.genotype}}">{{geno.genotype}}, <a href="{{geno.link}}" target="_blank">Reference</a> {{geno.description}}</span>

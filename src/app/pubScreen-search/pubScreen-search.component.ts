@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { ReplaySubject ,  Subject } from 'rxjs';
@@ -13,7 +13,7 @@ import { PubscreenDialogeComponent } from '../pubscreenDialoge/pubscreenDialoge.
     templateUrl: './pubScreen-search.component.html',
     styleUrls: ['./pubScreen-search.component.scss']
 })
-export class PubScreenSearchComponent implements OnInit {
+export class PubScreenSearchComponent implements OnInit, OnDestroy {
 
     authorModel: any;
     titleModel: any;
@@ -151,16 +151,12 @@ export class PubScreenSearchComponent implements OnInit {
 
         this.pubScreenService.getRegionSubRegion().subscribe((data: any) => {
             this.regionSubregionList = data;
-            //console.log(this.regionSubregionList);
             var filtered = this.regionSubregionList.filter(function (item : any) {
                 return SelectedRegion.indexOf(item.rid) !== -1;
             });
 
-            //console.log(filtered);
             this.subRegionList = JSON.parse(JSON.stringify(filtered));
         });
-
-        //console.log(this.subRegionList);
     }
 
     setDisabledValSearch() {
@@ -177,11 +173,7 @@ export class PubScreenSearchComponent implements OnInit {
 
         });
 
-        dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
-            //this.DialogResult = result;
-            //this.GetExpSelect();
-        });
+        dialogref.afterClosed().subscribe((_result : any) => {});
     }
 
     // Function definition for searching publications based on search criteria
@@ -191,8 +183,6 @@ export class PubScreenSearchComponent implements OnInit {
         this._pubSCreenSearch.title = this.titleModel;
         this._pubSCreenSearch.keywords = this.keywordsModel;
         this._pubSCreenSearch.doi = this.doiModel;
-        //this._pubSCreenSearch.year = this.yearModel;
-        //this._pubSCreenSearch.years = this.yearSearchModel;
         this._pubSCreenSearch.paperTypeIdSearch = this.paperTypeModel;
         this._pubSCreenSearch.taskID = this.cognitiveTaskModel;
         this._pubSCreenSearch.specieID = this.specieModel;
@@ -204,12 +194,10 @@ export class PubScreenSearchComponent implements OnInit {
         this._pubSCreenSearch.cellTypeID = this.cellTypeModel;
         this._pubSCreenSearch.methodID = this.methodModel;
         this._pubSCreenSearch.transmitterID = this.neurotransmitterModel;
-        //console.log(this._pubSCreenSearch);
 
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe(data => {
 
             this.searchResultList = data;
-            //console.log(this.searchResultList);
         });
 
     }

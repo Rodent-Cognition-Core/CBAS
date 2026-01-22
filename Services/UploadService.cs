@@ -18,6 +18,7 @@ using MathNet.Numerics.Statistics;
 using Serilog;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
+using System.IO.Compression;
 
 namespace AngularSPAWebAPI.Services
 {
@@ -31,6 +32,107 @@ namespace AngularSPAWebAPI.Services
             _qualityControlService = new QualityControlService();
         }
 
+        public async Task<List<FileUploadResult>> UploadTimeSeriesFiles(IFormFileCollection files, string userName, string userID, int expID,
+                                                                            int subExpId)
+        {
+            List<FileUploadResult> uploadResult = new List<FileUploadResult>();
+
+            foreach (IFormFile file in files)
+            {
+                string tempFileName = Guid.NewGuid().ToString() + "-" + file.FileName;
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "TempUpload");
+
+                if (file.Length > 0)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(uploads, tempFileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+
+                    // Check if multiple sessions allowed in a single day
+                    bool MultipleSessions = await GetMultipleSessionsTimeSeriesAsync(expID);
+
+                    // Extracting SubExpName , Age for the selected Subexperiment
+                    string SubExpNameAge1 = await GetSubExpNameAgeTimeSeriesAsync(subExpId);
+
+                    // Start Time Series Quality Control
+                    bool IsUploaded1 = false;
+
+                    (bool QC_IsQcPassed, bool QC_IsIdentifierPassed, string QC_FileUniqueID, string QC_ErrorMessage, string QC_WarningMessage, bool InsertToTblUpload, int SysAnimalID, int QC_UploadID, string QC_AnimalID) info =
+                        _qualityControlService.QualityControlTimeSeries(tempFileName, uploads, expID, subExpId, MultipleSessions);
+
+                    string pathString = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "UPLOAD", userName, expID.ToString());
+                    System.IO.Directory.CreateDirectory(pathString);
+
+                    FileUploadResult fur = new FileUploadResult
+                    {
+                        ExpID = expID,
+                        SubExpID = subExpId,
+                        AnimalID = info.SysAnimalID,
+                        UserFileName = file.FileName,
+                        SysFileName = tempFileName,
+                        ErrorMessage = info.QC_ErrorMessage, // message from QC
+                        WarningMessage = info.QC_WarningMessage, // message from QC
+                        IsUploaded = IsUploaded1,
+                        DateFileCreated = DateTime.UtcNow,
+                        DateUpload = DateTime.UtcNow,
+                        FileSize = HelperService.ConvertToNullableInt(file.Length.ToString()),
+                        FileUniqueID = info.QC_FileUniqueID,
+                        IsQcPassed = info.QC_IsQcPassed,
+                        IsIdentifierPassed = info.QC_IsIdentifierPassed,
+                        UserAnimalID = info.QC_AnimalID,
+                        PermanentFilePath = pathString,
+                        SubExpNameAge = SubExpNameAge1
+
+                    };
+
+                    // Only objects whose errorMessage & warningMessage is not Null returned to client 
+                    if (!string.IsNullOrEmpty(fur.ErrorMessage) || !string.IsNullOrEmpty(fur.WarningMessage))
+                    {
+                        uploadResult.Add(fur);
+                    }
+
+                    int uploadID = -1;
+
+                    //Inserting to Upload Table in DB
+                    if (info.InsertToTblUpload == true)
+                    {
+
+                        if (info.QC_UploadID == -1)
+                        {
+                            // Call insert function and return Upload ID if this fileinfo was not already inserted to tbl Upload
+                            uploadID = await InsertUploadTimeSeriesAsync(fur);
+
+                        }
+
+                        // If there is a duplicate, but multiple sessions for an animal in a day are allowed
+                        else if (MultipleSessions)
+                        {
+                            uploadID = await InsertUploadTimeSeriesAsync(fur);
+                            await UpdateDuplicateSessionsTimeSeriesAsync(info.QC_FileUniqueID);
+                        }
+
+                        else
+                        {
+                            //Update Upload table and return uploadID
+                            await UpdateUploadTimeSeriesAsync(fur, info.QC_UploadID);
+                            uploadID = info.QC_UploadID;
+
+                        }
+                        System.IO.Directory.CreateDirectory(pathString);
+                        if (file.Length > 0)
+                        {
+                            using (var fileStream1 = new FileStream(Path.Combine(pathString, tempFileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream1);
+                            }
+                    
+                        }
+                    }
+                }
+            }
+            return uploadResult;
+        }
         // Function Definition to read the file sent by the client, read the content, do some processing (e.g. Quality Control Rules), then insert it into Database
         public async Task<List<FileUploadResult>> UploadFiles(IFormFileCollection files, string TaskName, int expID, int subExpId, string ExpName,
                                                                 string Username, string userID, string SessionName, int TaskID, int sessionID)
@@ -251,6 +353,27 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        // function to determine if multiple sessions of an animal in a single day are allowed
+        public async Task<bool> GetMultipleSessionsTimeSeriesAsync(int ExpID)
+        {
+            const string sql = "SELECT MultipleSessions FROM ExperimentTimeSeries WHERE ExperimentTimeSeries.ExperimentID = @ExpID";
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", ExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToBoolean(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetMultipleSessionsTimeSeriesAsync");
+                throw;
+            }
+        }
+
         // Function to Insert To Upload Table in Database
         public async Task<int> InsertUploadAsync(FileUploadResult upload)
         {
@@ -262,6 +385,53 @@ namespace AngularSPAWebAPI.Services
             const string sql = @"
                 INSERT INTO Upload 
                 (ExpID, AnimalID, SubExpID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath) 
+                VALUES 
+                (@ExpID, @AnimalID, @SubExpID, @UserFileName, @SysFileName, @SessionName, @ErrorMessage, @WarningMessage, @IsUploaded, @DateFileCreated, @DateUpload, @FileSize, @FileUniqueID, @IsQcPassed, @IsIdentifierPassed, @PermanentFilePath); 
+                SELECT SCOPE_IDENTITY();";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", upload.ErrorMessage),
+                new SqlParameter("@WarningMessage", upload.WarningMessage),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@PermanentFilePath", upload.PermanentFilePath)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in InsertUploadAsync");
+                throw;
+            }
+        }
+
+         // Function to Insert To UploadTimeseries Table in Database
+        public async Task<int> InsertUploadTimeSeriesAsync(FileUploadResult upload)
+        {
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
+
+            const string sql = @"
+                INSERT INTO UploadTimeSeries 
+                (ExperimentID, AnimalID, SubExperimentID, UserFileName, SysFileName, SessionName, ErrorMessage, WarningMessage, IsUploaded, DateFileCreated, DateUpload, FileSize, FileUniqueID, IsQcPassed, IsIdentifierPassed, PermanentFilePath) 
                 VALUES 
                 (@ExpID, @AnimalID, @SubExpID, @UserFileName, @SysFileName, @SessionName, @ErrorMessage, @WarningMessage, @IsUploaded, @DateFileCreated, @DateUpload, @FileSize, @FileUniqueID, @IsQcPassed, @IsIdentifierPassed, @PermanentFilePath); 
                 SELECT SCOPE_IDENTITY();";
@@ -345,6 +515,53 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        //Function to update UploadTimeSeries Table
+        public async Task UpdateUploadTimeSeriesAsync(FileUploadResult upload, int uploadId)
+        {
+            if (upload.FileUniqueID != null)
+            {
+                upload.FileUniqueID = upload.FileUniqueID.Trim();
+            }
+
+            const string sql = @"
+                UPDATE Upload 
+                SET ExperimentID = @ExpID, AnimalID = @AnimalID, SubExperimentID = @SubExpID, UserFileName = @UserFileName, SysFileName = @SysFileName, 
+                    SessionName = @SessionName, ErrorMessage = @ErrorMessage, WarningMessage = @WarningMessage, 
+                    IsUploaded = @IsUploaded, DateFileCreated = @DateFileCreated, DateUpload = @DateUpload, FileSize = @FileSize, 
+                    IsQcPassed = @IsQcPassed, IsIdentifierPassed = @IsIdentifierPassed 
+                WHERE FileUniqueID = @FileUniqueID AND UploadID = @UploadID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@ExpID", upload.ExpID),
+                new SqlParameter("@AnimalID", upload.AnimalID),
+                new SqlParameter("@SubExpID", upload.SubExpID),
+                new SqlParameter("@UserFileName", upload.UserFileName),
+                new SqlParameter("@SysFileName", upload.SysFileName),
+                new SqlParameter("@SessionName", upload.SessionName),
+                new SqlParameter("@ErrorMessage", HelperService.EscapeSql(upload.ErrorMessage)),
+                new SqlParameter("@WarningMessage", HelperService.EscapeSql(upload.WarningMessage)),
+                new SqlParameter("@IsUploaded", upload.IsUploaded),
+                new SqlParameter("@DateFileCreated", upload.DateFileCreated),
+                new SqlParameter("@DateUpload", upload.DateUpload),
+                new SqlParameter("@FileSize", upload.FileSize),
+                new SqlParameter("@IsQcPassed", upload.IsQcPassed),
+                new SqlParameter("@IsIdentifierPassed", upload.IsIdentifierPassed),
+                new SqlParameter("@FileUniqueID", upload.FileUniqueID),
+                new SqlParameter("@UploadID", uploadId)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateUploadAsync");
+                throw;
+            }
+        }
+
 
         // Function to flag duplicate fileUniqueIDs in the Upload Table
         public async Task UpdateDuplicateSessionsAsync(string fileUniqueID)
@@ -366,6 +583,30 @@ namespace AngularSPAWebAPI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in UpdateDuplicateSessionsAsync");
+                throw;
+            }
+        }
+
+        // Function to flag duplicate fileUniqueIDs in the Upload Table
+        public async Task UpdateDuplicateSessionsTimeSeriesAsync(string fileUniqueID)
+        {
+            const string sql = @"
+                UPDATE UploadTimeSeries 
+                SET IsDuplicateSession = 1 
+                WHERE FileUniqueID = @FileUniqueID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@FileUniqueID", fileUniqueID)
+            };
+
+            try
+            {
+                await Dal.ExecuteNonQueryAsync(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in UpdateDuplicateSessionsTimeSeriesAsync");
                 throw;
             }
         }
@@ -423,6 +664,58 @@ namespace AngularSPAWebAPI.Services
 
                 const string sql = @"
                     UPDATE Upload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
+
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
+
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<bool> SetTimeSeriesUploadAsResolvedAsync(int uploadID, string userId)
+        {
+            FileUploadResult fur;
+            try
+            {
+                fur = await GetTimeSeriesUploadByUploadIDAsync(uploadID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetTimeSeriesUploadByUploadIDAsync");
+                return false;
+            }
+
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync(fur.AnimalID);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
+
+            foreach (var furInstance in lstFur)
+            {
+                const string sql = @"
+                    UPDATE UploadTimeSeries
                     SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
                         IsQcPassed = 1, IsIdentifierPassed = 1 
                     WHERE UploadID = @UploadID";
@@ -512,6 +805,47 @@ namespace AngularSPAWebAPI.Services
             return true;
         }
 
+        public async Task<bool> SetAsResolvedForEditedAnimalTimeSeriesIdAsync(int animalId, string userId)
+        {
+            List<FileUploadResult> lstFur;
+            try
+            {
+                lstFur = await GetListUploadsByAnimalIDErrorMessegeAsync(animalId);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                return false;
+            }
+
+            foreach (var furInstance in lstFur)
+            {
+                const string sql = @"
+                    UPDATE Upload 
+                    SET ErrorMessage = '', WarningMessage = '', IsUploaded = 1, DateUpload = @DateUpload, 
+                        IsQcPassed = 1, IsIdentifierPassed = 1 
+                    WHERE UploadID = @UploadID";
+
+                var parameters = new List<SqlParameter>
+                {
+                    new SqlParameter("@DateUpload", DateTime.UtcNow),
+                    new SqlParameter("@UploadID", furInstance.UploadID)
+                };
+
+                try
+                {
+                    await Dal.ExecuteNonQueryAsync(sql, parameters);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error in ExecuteNonQueryAsync");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private async Task<int> getUploadSessionIDbySessionNameAsync(string sessionName)
         {
             const string sql = "SELECT id FROM Upload_SessionInfo WHERE SessionName = @SessionName";
@@ -565,6 +899,40 @@ namespace AngularSPAWebAPI.Services
             }
         }
 
+        public async Task<FileUploadResult> GetTimeSeriesUploadByUploadIDAsync(int uploadID)
+        {
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskName 
+                FROM UploadTimeSeries AS Upload
+                INNER JOIN ExperimentTimeSeries as Experiment ON Experiment.ExperimentID = Upload.ExperimentID
+                WHERE UploadID = @UploadID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@UploadID", uploadID)
+            };
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    if (dt.Rows.Count != 1)
+                    {
+                        throw new Exception("UploadID Not Found");
+                    }
+
+                    return ParseUploadTimeSeriesRow(dt.Rows[0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetUploadByUploadIDAsync");
+                throw;
+            }
+        }
+
+        
+
         public async Task<List<FileUploadResult>> GetListUploadsByAnimalIDErrorMessegeAsync(int animalID)
         {
             const string sql = @"
@@ -587,6 +955,41 @@ namespace AngularSPAWebAPI.Services
                     foreach (DataRow dr in dt.Rows)
                     {
                         FileUploadResult uploadResult = ParseUploadRow(dr);
+                        retVal.Add(uploadResult);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetListUploadsByAnimalIDErrorMessegeAsync");
+                throw;
+            }
+
+            return retVal;
+        }
+
+         public async Task<List<FileUploadResult>> GetListTimeSeriesUploadsByAnimalIDErrorMessegeAsync(int animalID)
+        {
+            const string sql = @"
+                SELECT Upload.*, Experiment.TaskName
+                FROM UploadTimeSeries AS Upload
+                INNER JOIN ExperimentTimeSeries as Experiment ON Experiment.ExperimentID = Upload.ExperimentID
+                WHERE AnimalID = @AnimalID AND ErrorMessage LIKE 'Missing Animal Information:%'";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@AnimalID", animalID)
+            };
+
+            var retVal = new List<FileUploadResult>();
+
+            try
+            {
+                using (DataTable dt = await Dal.GetDataTableAsync(sql, parameters))
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        FileUploadResult uploadResult = ParseUploadTimeSeriesRow(dr);
                         retVal.Add(uploadResult);
                     }
                 }
@@ -624,6 +1027,33 @@ namespace AngularSPAWebAPI.Services
                 PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
                 SessionName = Convert.ToString(dr["SessionName"]),
                 TaskID = Int32.Parse(dr["TaskID"].ToString()),
+            };
+        }
+
+        private FileUploadResult ParseUploadTimeSeriesRow(DataRow dr)
+        {
+            return new FileUploadResult
+            {
+                UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
+                AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                UserFileName = Convert.ToString(dr["UserFileName"]),
+                SysFileName = Convert.ToString(dr["SysFileName"]),
+                ErrorMessage = Convert.ToString(dr["ErrorMessage"]),
+                WarningMessage = Convert.ToString(dr["WarningMessage"]),
+                IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
+                IsDismissed = bool.Parse(dr["IsDismissed"].ToString()),
+                DateUpload = HelperService.ConvertToNullableDateTime(dr["DateUpload"].ToString()),
+                DateFileCreated = HelperService.ConvertToNullableDateTime(dr["DateFileCreated"].ToString()),
+                FileSize = HelperService.ConvertToNullableInt(dr["FileSize"].ToString()),
+                FileUniqueID = Convert.ToString(dr["FileUniqueID"]),
+                FileContent = Convert.ToString(dr["FileContentType"]),
+                IsQcPassed = bool.Parse(dr["IsQcPassed"].ToString()),
+                IsIdentifierPassed = bool.Parse(dr["IsIdentifierPassed"].ToString()),
+                PermanentFilePath = Convert.ToString(dr["PermanentFilePath"]),
+                SessionName = Convert.ToString(dr["SessionName"]),
+                TaskName = Convert.ToString(dr["TaskName"]),
             };
         }
 
@@ -1491,6 +1921,49 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<FileUploadResult> GetUploadInfoByTimeSeriesExpID(int expId)
+        {
+            List<FileUploadResult> lstUploadLog = new List<FileUploadResult>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT Upload.UploadID, Upload.AnimalID,  UserFileName, Animal.UserAnimalID, DateFileCreated, WarningMessage, 
+                                                        Upload.ErrorMessage,  CONCAT(se.SubExpName, ', ' , se.StartAge, ' Months') as SubExpNameAge, se.SubExperimentID 
+                                                        From UploadTimeSeries as Upload inner join AnimalTimeSeries As Animal on Animal.AnimalID = Upload.AnimalID
+                                                        inner join SubExperimentTimeSeries se on Upload.SubExperimentID = se.SubExperimentID
+                                                        WHERE Upload.ExperimentID = {expId} and ((Upload.ErrorMessage!='' and Upload.ErrorMessage IS NOT NUll) OR (ISNULL(WarningMessage,'')!='')) Order By UserAnimalID;"))
+
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadLog.Add(new FileUploadResult
+                    {
+                        UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                        ExpID = expId,
+                        SubExpID = Int32.Parse(dr["SubExperimentID"].ToString()),
+                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+                        DateFileCreated = HelperService.ConvertToNullableDateTime(dr["DateFileCreated"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
+                        SubExpNameAge = Convert.ToString(dr["SubExpNameAge"].ToString()),
+                        AnimalObj = new Animal
+                        {
+                            ExpID = expId,
+                            AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                            UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+
+
+                        }
+
+                    });
+                }
+
+            }
+
+            return lstUploadLog;
+
+        }
+
         public List<UploadErrorLog> GetUploadErrorLogByExpID(int expId)
         {
             List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
@@ -1499,6 +1972,32 @@ namespace AngularSPAWebAPI.Services
                                                         inner join SubExperiment se on UploadErrorLog.SubExpID = se.SubExpID
 														inner join Age on Age.ID = se.AgeID
                                                         WHERE UploadErrorLog.ExpID = {expId};"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadErrorLog.Add(new UploadErrorLog
+                    {
+                        ExpID = expId,
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        UploadDate = HelperService.ConvertToNullableDateTime(dr["UploadDate"].ToString()),
+                        SubExpNameAge = Convert.ToString(dr["SubExpNameAge"].ToString()),
+                    });
+                }
+
+            }
+
+            return lstUploadErrorLog;
+
+        }
+
+        public List<UploadErrorLog> GetUploadErrorLogByTimeSeriesExpID(int expId)
+        {
+            List<UploadErrorLog> lstUploadErrorLog = new List<UploadErrorLog>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeriesErrorLog.* , CONCAT(se.SubExpName, ', ' , se.StartAge, ' Months') as SubExpNameAge  FROM UploadTimeSeriesErrorLog
+                                                        inner join SubExperimentTimeSeries se on UploadTimeSeriesErrorLog.SubExperimentID = se.SubExperimentID
+                                                        WHERE UploadTimeSeriesErrorLog.ExperimentID = {expId};"))
             {
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -1554,10 +2053,51 @@ namespace AngularSPAWebAPI.Services
 
         }
 
+        public List<FileUploadResult> GetUploadInfoBySubExpIDForTimeSeries(int subExpId)
+        {
+
+            List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
+
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeries.UploadID, UploadTimeSeries.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, UploadTimeSeries.IsUploaded, UploadTimeSeries.IsDuplicateSession
+                                                       From UploadTimeSeries inner join Animal on Animal.AnimalID = UploadTimeSeries.AnimalID
+                                                       WHERE UploadTimeSeries.SubExperimentID = {subExpId} Order By DateUpload;"))
+
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstUploadLogForExp.Add(new FileUploadResult
+                    {
+                        UploadID = Int32.Parse(dr["UploadID"].ToString()),
+                        SubExpID = subExpId,
+                        AnimalID = Int32.Parse(dr["AnimalID"].ToString()),
+                        UserFileName = Convert.ToString(dr["UserFileName"].ToString()),
+                        UserAnimalID = Convert.ToString(dr["UserAnimalID"].ToString()),
+                        DateUpload = HelperService.ConvertToNullableDateTime(dr["DateUpload"].ToString()),
+                        ErrorMessage = Convert.ToString(dr["ErrorMessage"].ToString()),
+                        WarningMessage = Convert.ToString(dr["WarningMessage"].ToString()),
+                        IsUploaded = bool.Parse(dr["IsUploaded"].ToString()),
+                        SessionName = Convert.ToString(dr["SessionName"].ToString()),
+                        IsDuplicateSession = dr["IsDuplicateSession"] != DBNull.Value && (dr["IsDuplicateSession"] is bool ? (bool)dr["IsDuplicateSession"] : Convert.ToInt32(dr["IsDuplicateSession"]) == 1),
+                    });
+                }
+
+            }
+
+            return lstUploadLogForExp;
+
+        }
+
         // Function Definition: Clear UploadErrorLog table
         public void ClearUploadLogTblbyID(int expID)
         {
             string sql = $@"Delete From UploadErrorLog Where ExpID={expID}";
+
+            Dal.ExecuteNonQuery(sql);
+        }
+
+        public void ClearUploadLogTblbyTimeSeriesID(int expID)
+        {
+            string sql = $@"Delete From UploadTimeSeriesErrorLog Where ExperimentID={expID}";
 
             Dal.ExecuteNonQuery(sql);
         }
@@ -1583,6 +2123,32 @@ namespace AngularSPAWebAPI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Error in GetSubExpNameAgeAsync");
+                throw;
+            }
+        }
+
+        //Function to Extract Age of Animal from Time Series SubExperiment Table
+
+        public async Task<string> GetSubExpNameAgeTimeSeriesAsync(int subExpID)
+        {
+            const string sql = @"
+                SELECT CONCAT(SubExpName, ', ', StartAge, ' Months') AS SubExpNameAge 
+                FROM SubExperimentTimeSeries
+                WHERE SubExperimentID = @SubExpID";
+
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@SubExpID", subExpID)
+            };
+
+            try
+            {
+                var result = await Dal.ExecScalarAsync(sql, parameters);
+                return result?.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in GetSubExpNameAgeTimeSeriesAsync");
                 throw;
             }
         }
@@ -2712,8 +3278,58 @@ namespace AngularSPAWebAPI.Services
             return lstFeatures;
         }
 
+        public byte[] DownloadTimeSeriesData(List<int> subExpIds)
+        {
+            if (subExpIds == null || subExpIds.Count == 0)
+            {
+                return null;
+            }
 
+            string ids = string.Join(",", subExpIds);
+            string sql = $@"
+                SELECT DISTINCT u.PermanentFilePath, e.ExpName 
+                FROM UploadTimeSeries u 
+                JOIN ExperimentTimeSeries e ON u.ExperimentID = e.ExperimentID 
+                WHERE u.SubExperimentID IN ({ids}) AND u.PermanentFilePath IS NOT NULL AND u.PermanentFilePath != ''";
 
+            var paths = new List<(string Path, string ExpName)>();
+
+            using (DataTable dt = Dal.GetDataTable(sql))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    paths.Add((dr["PermanentFilePath"].ToString(), dr["ExpName"].ToString()));
+                }
+            }
+
+            if (paths.Count == 0)
+            {
+                return null;
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    foreach (var item in paths)
+                    {
+                        if (Directory.Exists(item.Path))
+                        {
+                            string folderName = string.Join("_", item.ExpName.Split(Path.GetInvalidFileNameChars()));
+                            
+                            foreach (string filePath in Directory.GetFiles(item.Path, "*", SearchOption.AllDirectories))
+                            {
+                                string relativePath = filePath.Substring(item.Path.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                                string entryName = Path.Combine(folderName, relativePath);
+                                
+                                archive.CreateEntryFromFile(filePath, entryName);
+                            }
+                        }
+                    }
+                }
+                return memoryStream.ToArray();
+            }
+        }
 
     }
 }
