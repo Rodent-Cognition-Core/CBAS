@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { MatSelectModule } from '@angular/material/select';
 import { AnimalInfoComponent } from './animal-info.component';
 import { AnimalService } from '../services/animal.service';
+import { PubScreenService } from '../services/pubScreen.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button'
 import { PagerService } from '../services/pager.service';
@@ -24,6 +25,7 @@ import { PagerService } from '../services/pager.service';
     providers: [
         AnimalService,
         PagerService,
+        PubScreenService
         
     ],
     bootstrap: [AnimalInfoComponent],

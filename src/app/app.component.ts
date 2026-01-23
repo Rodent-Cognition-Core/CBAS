@@ -218,8 +218,6 @@ export class AppComponent implements OnInit {
     onActivate(event : any) {
 
         this.showHideFooter(this.router.url);
-        //console.log(this.router.url);
-        //console.log(event.constructor.name);
         //this.scrollTo("about");
         //if (e.constructor.name)==="login"{ // for example
         //    window.scroll(0, 0);

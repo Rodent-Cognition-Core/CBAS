@@ -3,6 +3,8 @@ export interface SubExperiment {
      SubExpID: number;
      ExpID: number;
      AgeID: number;
+     StartAge: number;
+     EndAge: number;
      AgeInMonth: string;
      SubExpName: string;
      ErrorMessage: string;

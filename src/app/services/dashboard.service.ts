@@ -20,10 +20,27 @@ import { AuthenticationService } from './authentication.service';
             });
     }
 
+    public getUploadInfoByTimeSeriesId(id: any): any {
+
+        return this.http
+            .get("/api/upload/GetUploadInfoByTimeSeriesID?expId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
+
     public getUploadErrorLogById(id: any): any {
 
         return this.http
             .get("/api/upload/GetUploadErrorLogByID?expId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
+    public getUploadErrorLogByTimeSeriesID(id: any): any {
+
+        return this.http
+            .get("/api/upload/GetUploadErrorLogByTimeSeriesID?expId=" + id, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
 
@@ -35,25 +52,15 @@ import { AuthenticationService } from './authentication.service';
             .delete("/api/upload/DelUploadLogTblbyId?expId=" + id, {
                 headers: this.authenticationService.getAuthorizationHeader()
             });
-    } 
+    }
 
-    
-    //public createAnimal(animal: Animal): any {
+    public clearUploadLogTblbyTimeSeriesExpID(id: any): any {
 
-    //    const body: string = JSON.stringify(animal);
-    //    return this.http.post("/api/animal/CreateAnimal", body, {
-    //        headers: this.authenticationService.getAuthorizationHeader()
-    //    });
-
-    //}
-
-    //public updateAniaml(animal: Animal): any {
-
-    //    const body: string = JSON.stringify(animal);
-    //    return this.http.post("/api/animal/UpdateAnimal", body, {
-    //        headers: this.authenticationService.getAuthorizationHeader()
-    //    });
-    //}
+        return this.http
+            .delete("/api/upload/DelUploadLogTblbyTimeSeriesId?expId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+    }
 
 
 

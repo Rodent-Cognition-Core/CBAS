@@ -53,7 +53,7 @@ import { AuthenticationService } from './authentication.service';
         return this.http.post("/api/taskAnalysis/CreateTaskAnalysis", body ,{
             headers: this.authenticationService.getAuthorizationHeader()
         }).pipe(
-            map((res: any) => { /*console.log(res);*/return res; }));
+            map((res: any) => { return res; }));
 
     }
 

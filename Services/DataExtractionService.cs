@@ -88,6 +88,40 @@ namespace AngularSPAWebAPI.Services
             return lstExp;
         }
 
+        public List<Experiment> GetAllTimeSeriesExperiment(string userID, string isFullDataAccess, int speciesId)
+        {
+            List<Experiment> lstExp = new List<Experiment>();
+
+            var userIdCondition = (string.IsNullOrEmpty(userID)) ? "" : $"OR Experiment.UserID ='{userID}'";
+            var isFullAccessCondition = (isFullDataAccess.ToUpper() == "TRUE") ? "" : $"and (Experiment.RepoStatus = 1 {userIdCondition} )";
+
+            using (DataTable dt = Dal.GetDataTable($@"select Experiment.*, CONCAT(AspNetUsers.GivenName, ' ', AspNetUsers.FamilyName) as UserName from ExperimentTimeSeries as Experiment
+                                                       INNER JOIN ASpNetUsers ON AspNetUsers.Id = Experiment.UserID
+                                                       WHERE SpeciesID = {speciesId} {isFullAccessCondition}"))
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    lstExp.Add(new Experiment
+                    {
+                        ExpID = Int32.Parse(dr["ExperimentID"].ToString()),
+                        UserID = Convert.ToString(dr["UserID"].ToString()),
+                        ExpName = Convert.ToString(dr["ExpName"].ToString()),
+                        StartExpDate = Convert.ToDateTime(dr["StartExpDate"].ToString()),
+                        EndExpDate = Convert.ToDateTime(dr["EndExpDate"].ToString()),
+                        TaskName = Convert.ToString(dr["TaskName"].ToString()),
+                        TaskDescription = Convert.ToString(dr["TaskDescription"].ToString()),
+                        DOI = Convert.ToString(dr["DOI"].ToString()),
+                        PISiteName = Convert.ToString(dr["PIName"].ToString()),
+                        UserName = Convert.ToString(dr["UserName"].ToString()),
+
+                    });
+
+                }
+            }
+
+            return lstExp;
+        }
+
         public List<Experiment> GetAllExperimentsByExpIdsCsv(string expIdCsv)
         {
             List<Experiment> lstExp = new List<Experiment>();
