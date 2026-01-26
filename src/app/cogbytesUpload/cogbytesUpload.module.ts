@@ -12,7 +12,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 
 import { environment } from '../../environments/environment'; // This path always points to 'environment.ts'
 
-const api_url = environment.api_url;
+const api_url = environment.APP_URL;
 
 const COGUPLOAD_DROPZONE_CONFIG: DropzoneConfigInterface = {
     // Change this to your upload POST address:

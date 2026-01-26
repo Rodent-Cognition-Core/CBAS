@@ -98,8 +98,6 @@ export class CogbytesDialogueComponent implements OnInit {
         this.GetAuthorList();
         this.GetPIList();
 
-        //console.log(this.data);
-
         // if it is an Edit model
         if (this.data.repObj != null) {
 

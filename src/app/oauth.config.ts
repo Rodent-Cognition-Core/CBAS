@@ -74,10 +74,10 @@ export class OAuthConfig {
             .then(() => {
                 // Additional logic after successful configuration, if needed
                 this.authenticationService.startupTokenRefresh();
-                console.log('OAuth configuration loaded successfully');
+                //console.log('OAuth configuration loaded successfully');
             })
             .catch((error) => {
-                console.error('Error loading OAuth configuration', error);
+                //console.error('Error loading OAuth configuration', error);
                 throw error;
             });
     }

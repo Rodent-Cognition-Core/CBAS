@@ -47,6 +47,7 @@ export class SharedExperimentComponent implements OnInit {
     imageDescriptionNotNullVal: boolean = false;
     repList: any;
     public app_url = environment.APP_URL;
+    isTimeSeries: boolean = false;
     
 
     constructor(
@@ -71,7 +72,7 @@ export class SharedExperimentComponent implements OnInit {
     ngOnInit() {
         //this.imageDescriptionNotNull = false;
         this.GetExpSelect();
-        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; /*console.log(this.repList);*/ });
+        this.cogbytesService.getAllRepositories().subscribe((data : any) => { this.repList = data; });
 
         if (this.hideSubExperiment == null) {
             this.hideSubExperiment = false;
@@ -82,23 +83,19 @@ export class SharedExperimentComponent implements OnInit {
 
     }
 
-    getSelectedExp(selValue : any) {
-        
-        return this.expList.find((x : any) => x.expID === selValue);
-    }
-
-
     getSelectedSubExp(selValue : any) {
         return this.subExpList.find((x: any) => x.subExpID === selValue);
     }
 
     selectExpChange() {
-        //this.outSelectChangeMethod.emit(this.selectedValue);
         this.selectedSubExpValue = null;
-        var selectedExp: any;
-        selectedExp = this.getSelectedExp(this.selectedExpValue);
-        this.outSelectedExperiment.emit(selectedExp);
-        this.GetSubExpSelect(this.selectedExpValue)
+        this.isTimeSeries = this.selectedExpValue.timeSeries;
+        this.outSelectedExperiment.emit(this.selectedExpValue);
+        if (!this.isTimeSeries) {
+            this.GetSubExpSelect(this.selectedExpValue.expID) 
+        } else {
+            this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+        }
     }
 
     SelectedSubExpChangedRD(event : any) {
@@ -112,7 +109,6 @@ export class SharedExperimentComponent implements OnInit {
         this.SubExpModel = this.selectedSubExpValue;
         var selectedSubExp: any;
         selectedSubExp = this.getSelectedSubExp(this.selectedSubExpValue);
-        //console.log(selectedSubExp)
         if (selectedSubExp.imageIds != null) {
             this.selectedImageResult = selectedSubExp.imageIds.length;
         }
@@ -130,26 +126,40 @@ export class SharedExperimentComponent implements OnInit {
         });
 
         dialogref.afterClosed().subscribe(result => {
-            //console.log('the dialog was closed');
             this.DialogResult = result;
             this.GetExpSelect();
         });
     }
 
+    //Creating Time Series:
+    openTimeSeries(): void {
+        let dialogref = this.dialog.open(ExpDialogeComponent, {
+            //height: '700px',
+            width: '600px',
+            data: { isTimeSeries: true }
+        });
+
+        dialogref.afterClosed().subscribe(result => {
+            this.DialogResult = result;
+            this.GetExpSelect();
+        });
+
+    }
+
     // Creating Sub experiment
-    openDialogSubExp(SubExperiment : any, ExpID : any): void {
-        //console.log(SubExperiment);
-        var Experiment = this.getSelectedExp(ExpID)
+    openDialogSubExp(SubExperiment : any, Exp : any): void {
         let dialogref = this.dialog.open(SubExpDialogeComponent, {
             width: '600px',
-            data: { subexperimentObj: SubExperiment, expObj: Experiment} // change it for editing
+            data: { subexperimentObj: SubExperiment, expObj: Exp} // change it for editing
 
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
-
-            this.GetSubExpSelect(this.selectedExpValue);
+            if (this.isTimeSeries) {
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+                } else {
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
+                }
         });
     } 
 
@@ -192,7 +202,11 @@ export class SharedExperimentComponent implements OnInit {
                 this.spinnerService.show();
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
                    // location.reload()
-                    this.GetSubExpSelect(this.selectedExpValue);
+                    if (this.isTimeSeries) {
+                        this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+                    } else {
+                        this.GetSubExpSelect(this.selectedExpValue.expID);
+                    }
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
                    
@@ -208,7 +222,6 @@ export class SharedExperimentComponent implements OnInit {
 
         this.uploadService.getAllExperiment().subscribe((data : any) => {
             this.expList = data;
-            //console.log(this.expList);
         });
 
     }
@@ -220,6 +233,12 @@ export class SharedExperimentComponent implements OnInit {
         });
     }
 
+    getSubExpTimeSeriesSelect(selectedExpVal: any) {
+        this.subexpDialogeService.getAllSubExpTimeSeries(selectedExpVal).subscribe((data: any) => {
+            this.subExpList = data.sort((a: any, b: any) => a.StartAge - b.StartAge);
+        });
+    }
+
     // Deleting Experiment
     delExp(expID : any) {
 
@@ -228,7 +247,6 @@ export class SharedExperimentComponent implements OnInit {
 
     // Deleting Sub Experiment
     delSubExp(subExp : any) {
-        //console.log(subExp)
         this.openSubExpConfirmationDialog(subExp);
 
     }
@@ -237,8 +255,6 @@ export class SharedExperimentComponent implements OnInit {
     getMinAge() {
 
        var minValue = Math.min.apply(Math, this.subExpList.map(function (o : any) { return o.ageInMonth; }));
-       //var age = JSON.parse(this.subExpList);
-       // console.log(minValue);
        return minValue;
         
     }
@@ -262,8 +278,11 @@ export class SharedExperimentComponent implements OnInit {
                     verticalPosition: 'top',
                 });
 
-                this.GetSubExpSelect(this.selectedExpValue);
-
+                if (this.isTimeSeries) {
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+                } else {
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
+                }
             }
 
         });

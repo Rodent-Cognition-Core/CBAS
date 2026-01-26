@@ -749,8 +749,6 @@ export class PubScreenComponent implements OnInit, OnDestroy {
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
-            //this.DialogResult = result;
             this.GetAuthorList();
         });
     }
@@ -765,13 +763,11 @@ export class PubScreenComponent implements OnInit, OnDestroy {
         });
 
         dialogref.afterClosed().subscribe((_result : any) => {
-            //console.log('the dialog was closed');
             this.search();
         });
     }
     
     selectYearToChange(yearFromVal: number, yearToVal: number) {
-        //console.log(yearToVal)
         yearFromVal = yearFromVal === null ? 0 : yearFromVal;
         
         yearToVal < yearFromVal ? this.yearTo.setErrors({ 'incorrect': true }) : false;
@@ -811,8 +807,6 @@ export class PubScreenComponent implements OnInit, OnDestroy {
         this._pubSCreenSearch.subTaskID = this.subTaskModel;
         this._pubSCreenSearch.search = this.searchModel;
 
-        console.log(this._pubSCreenSearch);
-
         this.pubScreenService.searchPublication(this._pubSCreenSearch).subscribe((data : any) => {
 
             this.searchResultList = data;
@@ -837,8 +831,6 @@ export class PubScreenComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
-
-                console.log(pubID);
 
                 this.pubScreenService.deletePublicationById(pubID).pipe(map((_res : any) => {
 

@@ -62,6 +62,13 @@ namespace AngularSPAWebAPI.Controllers
             return new JsonResult(_DataExtractionService.GetAllExperimentByTaskId(taskId, userGuid, isFullDataAccess, speciesId));
         }
 
+        [AllowAnonymous]
+        [HttpGet("GetAllTimeSeriesExp")]
+        public IActionResult GetAllTimeSeriesExp(string userGuid, string isFullDataAccess, int speciesId)
+        {
+            return new JsonResult(_DataExtractionService.GetAllTimeSeriesExperiment(userGuid, isFullDataAccess, speciesId));
+        }
+
 
         // Function Definition for extracting list of Sub Tasks
         [AllowAnonymous]

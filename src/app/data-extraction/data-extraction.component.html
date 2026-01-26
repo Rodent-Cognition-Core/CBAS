@@ -12,6 +12,15 @@
             <tr>
                 <td style="padding: 13px 16px;">
 
+                    <mat-form-field>
+                        <mat-select placeholder="Select the Data Type" [formControl]="dataType" (selectionChange)="selectedDataTypeChange()" required>
+                            <mat-option *ngFor="let dataType of dataTypeList" [value]="dataType.dataType">
+                                <span matTooltip="{{dataType.description}}">{{dataType.dataType}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="dataType.invalid">{{getErrorMessageDataType()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp;  &nbsp;
                     <!--Species dropDown-->
                     <mat-form-field>
                         <mat-select placeholder="Select the Species" [formControl]="species" (selectionChange)="selectedSpeciesChange()" required>
@@ -23,7 +32,7 @@
                     </mat-form-field>
                     &nbsp; &nbsp;  &nbsp;
                     <!--Task dropDown-->
-                    <mat-form-field *ngIf="species.value!==null">
+                    <mat-form-field *ngIf="species.value!==null && !isTimeSeries">
                         <mat-select placeholder="Select the Task" [formControl]="task" (selectionChange)="selectedTaskChange(task.value, species.value)" required>
                             <mat-option *ngFor="let task of taskList" [value]="task.id">
                                 <span matTooltip="{{task.taskDescription}}">{{task.name}}</span>
@@ -34,7 +43,7 @@
 
                     <!--Trial by Trial-->
                     &nbsp; &nbsp;  &nbsp;
-                    <mat-checkbox [(ngModel)]="isTrialByTrial">Extracting Data Trial by Trial</mat-checkbox>
+                    <mat-checkbox *ngIf="!isTimeSeries" [(ngModel)]="isTrialByTrial">Extracting Data Trial by Trial</mat-checkbox>
                     <br /><br />
 
                     <!--Experiment dropDown-->
@@ -49,16 +58,6 @@
                                 (toggleAll)="selectAllExperiments($event)"
                                 [formControl]="expMultiFilterCtrl"></ngx-mat-select-search>
                             </mat-option>
-                                <!-- <button mat-raised-button
-                                        class="mat-primary fill text-sm"
-                                        (click)="selectAllExperiments()">
-                                    Select All
-                                </button>
-                                <button mat-raised-button
-                                        class="mat-accent fill text-sm"
-                                        (click)="deselectAllExperiments()">
-                                    Deselect All
-                                </button> -->
                             <mat-option *ngFor="let exp of filteredExpMulti | async" [value]="exp.expID" (onSelectionChange)="onToggleSingle()">
                                 <span matTooltip="{{exp.expName}} ({{exp.piSiteUser}})">{{exp.expName}} ({{exp.piSiteUser}})</span>
                             </mat-option>
@@ -67,8 +66,27 @@
                     </mat-form-field>
                     &nbsp; &nbsp; &nbsp;
 
+                    <!--Select SubExperiments for Time Series-->
+                    <mat-form-field *ngIf="exp.value!==null && isTimeSeries">
+                        <mat-select [formControl]="subExpMultiCtrl" placeholder="Select Sub-Experiments" [multiple]="true">
+                            <mat-option>
+                                <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" 
+                                [showToggleAllCheckbox]="true"
+                                [toggleAllCheckboxChecked]="isAllSubExpChecked"
+                                [toggleAllCheckboxIndeterminate]="isSubExpIndeterminate"
+                                (toggleAll)="selectAllSubExperiments($event)"
+                                [formControl]="subExpMultiFilterCtrl"></ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option *ngFor="let subexp of filteredSubExpMulti | async" [value]="subexp.subExpID" (onSelectionChange)="onToggleSingle()">
+                                <span matTooltip="{{subexp.subExpName}}">{{subexp.subExpName}}</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="subExpMultiCtrl.invalid">{{getErrorMessageSubExp()}}</mat-error>
+                    </mat-form-field>
+                    &nbsp; &nbsp; &nbsp;
+
                     <!--SubTask/Session dropDown-->
-                    <mat-form-field *ngIf="exp.value.length > 0">
+                    <mat-form-field *ngIf="exp.value.length > 0 && !isTimeSeries">
                         <mat-select [formControl]="subtask" placeholder="Select the Session" (selectionChange)="selectedSubTaskChange(subtask.value, exp.value)" required>
                             <mat-option *ngFor="let subtask of subTakList" [value]="subtask.id">
                                 <span matTooltip="{{subtask.subTaskDescription}}">{{subtask.name}}</span>
@@ -79,7 +97,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Sub-session dropDown for some selected Sub-tasks-->
-                    <mat-form-field *ngIf="subSessionList.length > 0">
+                    <mat-form-field *ngIf="subSessionList.length > 0 && !isTimeSeries">
                         <mat-select placeholder="Select the sub-Session" [(ngModel)]="selectedSubSessionValue" multiple>
                             <mat-option *ngFor="let subsession of subSessionList" [value]="subsession.sessionName">
                                 <span matTooltip="{{subsession.sessionDescription}}">{{subsession.sessionName}}</span>
@@ -90,7 +108,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Static SessionInfo Features-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null && !isTimeSeries">
                         <mat-select [formControl]="sessioninfo" placeholder="Select key features" multiple>
                             <mat-option *ngFor="let sessioninfo of sessionInfoFeature" [value]="sessioninfo.name">
                                 <span matTooltip="{{sessioninfo.name}}">{{sessioninfo.name}}</span>
@@ -101,7 +119,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--Dynamic markerInfo Features-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null && !isTimeSeries">
                         <mat-select [formControl]="markerinfo" placeholder="Select the required features" (selectionChange)="getAnimalInfo(exp.value)" multiple>
                             <mat-option>
                                 <ngx-mat-select-search placeholderLabel="Search" noEntriesFoundLabel="Result not found!" [formControl]="MarkerInfoMultiFilterCtrl"></ngx-mat-select-search>
@@ -116,7 +134,7 @@
                     &nbsp; &nbsp; &nbsp;
 
                     <!--List of Aggregation Function-->
-                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null && !isTrialByTrial">
+                    <mat-form-field *ngIf="exp.value.length > 0 && subtask.value!==null && !isTrialByTrial && !isTimeSeries">
                         <mat-select [formControl]="aggFunc" placeholder="Select the aggregation function">
                             <mat-option *ngFor="let agg of aggregationFunction" [value]="agg.name">
                                 {{agg.name}}
@@ -136,7 +154,7 @@
     </mat-form-field>
     &nbsp; &nbsp; &nbsp;-->
                     <!--Show Intervention information if the selected experiments do have intervention-->
-                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!==null ">
+                    <mat-form-field *ngIf="InterventionList.length>0 && exp.value.length > 0 && subtask.value!==null && !isTimeSeries">
                         <mat-select placeholder="Select Intervention" [(ngModel)]="selectedInterventionValue" multiple>
                             <mat-option *ngFor="let intervention of InterventionList" [value]="intervention.subExpID">
                                 <span matTooltip="{{ intervention.isDrug ? intervention.drugName : intervention.interventionDescription }}">{{ intervention.isDrug ? intervention.drugName + " " + intervention.drugQuantity + " " + intervention.drugUnit : intervention.interventionDescription }}</span>
@@ -150,7 +168,7 @@
 
                     <!--Adding Panel for Filtering Animal Information-->
 
-                    <mat-card appearance="outlined" *ngIf="markerinfo.value.length > 0">
+                    <mat-card appearance="outlined" *ngIf="markerinfo.value.length > 0 && !isTimeSeries">
 
                         <mat-card-header>
                             <mat-card-title>
@@ -228,8 +246,8 @@
                     </mat-checkbox>
                     <br /><br />
 
-                    <button mat-raised-button (click)="GetData()" [disabled]="setDisabledVal()">Get Data</button>
-
+                    <button mat-raised-button *ngIf="!isTimeSeries" (click)="GetData()" [disabled]="setDisabledVal()">Get Data</button>
+                    <button mat-raised-button *ngIf="isTimeSeries" (click)="downloadTimeSeriesArchive()" [disabled]="setDisabledTimeSeriesVal()">Download Datasets</button>
 
 
                 </td>
