@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 declare var spotfire: any;
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,7 +11,7 @@ import { User } from '../models/user'
     templateUrl: './data-visualization.component.html',
     styleUrls: ['./data-visualization.component.scss']
 })
-export class DataVisualizationComponent implements OnInit {
+export class DataVisualizationComponent implements OnInit, OnDestroy {
 
     selectedCogTaskValue: any = '';
     app: any;
@@ -120,5 +120,11 @@ export class DataVisualizationComponent implements OnInit {
 
         this.spinnerService.hide();
 
+    }
+
+    ngOnDestroy() {
+        if (this.app) {
+            this.app.close();
+        }
     }
 }
