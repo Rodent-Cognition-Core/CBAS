@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ declare var spotfire: any;
     templateUrl: './pubScreen-dashboard.component.html',
     styleUrls: ['./pubScreen-dashboard.component.scss']
 })
-export class PSDashboardComponent implements OnInit, OnDestroy {
+export class PSDashboardComponent implements AfterViewInit, OnDestroy {
 
     app: any;
 
@@ -24,7 +24,7 @@ export class PSDashboardComponent implements OnInit, OnDestroy {
 
     }
 
-    ngOnInit() {
+    ngAfterViewInit() {
 
         this.loadAnalysis("pubscreen_dashboard")
         
@@ -51,10 +51,10 @@ export class PSDashboardComponent implements OnInit, OnDestroy {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/" + spotfireAnalysisName, "contentpanel", configuration);
-
-       
-        this.spinnerService.hide();
+        setTimeout(() => {
+            this.app.open("/Public/" + spotfireAnalysisName, "contentpanel-pubscreen", configuration);
+            this.spinnerService.hide();
+        }, 0);
 
     }
 
