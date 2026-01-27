@@ -50,10 +50,10 @@ export class MBDashboardComponent implements OnDestroy, AfterViewInit {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/" + spotfireAnalysisName, "contentpanel", configuration);
-
-       
-        this.spinnerService.hide();
+        setTimeout(() => {
+            this.app.open("/Public/" + spotfireAnalysisName, "contentpanel-mousebytes", configuration);
+            this.spinnerService.hide();
+        }, 0);
 
     }
 

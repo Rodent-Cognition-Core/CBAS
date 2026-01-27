@@ -51,10 +51,10 @@ export class PSDashboardComponent implements AfterViewInit, OnDestroy {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/" + spotfireAnalysisName, "contentpanel", configuration);
-
-       
-        this.spinnerService.hide();
+        setTimeout(() => {
+            this.app.open("/Public/" + spotfireAnalysisName, "contentpanel-pubscreen", configuration);
+            this.spinnerService.hide();
+        }, 0);
 
     }
 
