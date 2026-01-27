@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ declare var spotfire: any;
     templateUrl: './mb-dashboard.component.html',
     styleUrls: ['./mb-dashboard.component.scss']
 })
-export class MBDashboardComponent implements OnInit, OnDestroy {
+export class MBDashboardComponent implements OnDestroy, AfterViewInit {
 
     app: any;
 
@@ -24,13 +24,10 @@ export class MBDashboardComponent implements OnInit, OnDestroy {
 
     }
 
-    ngOnInit() {
-
+    ngAfterViewInit() {
         this.loadAnalysis("View_MB_Data")
-        
     }
 
-    
     loadAnalysis(spotfireAnalysisName: string) {
 
         var customization = new spotfire.webPlayer.Customization();
