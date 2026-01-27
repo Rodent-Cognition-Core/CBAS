@@ -120,4 +120,5 @@ jobs:
         run: |
               DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
               docker compose up -d app_staging
+              docker system prune -a
 
