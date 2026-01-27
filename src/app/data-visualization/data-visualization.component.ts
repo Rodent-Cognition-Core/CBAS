@@ -96,7 +96,6 @@ export class DataVisualizationComponent implements OnInit, OnDestroy {
         customization.showClose = false;
         customization.showDodPanel = false;
         customization.showHelp = false;
-        customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
         customization.showCollaboration = false;
 

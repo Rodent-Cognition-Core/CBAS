@@ -35,7 +35,6 @@ export class PSDashboardComponent implements AfterViewInit, OnDestroy {
         customization.showClose = false;
         customization.showDodPanel = false;
         customization.showHelp = false;
-        customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
         customization.showCollaboration = false;
 

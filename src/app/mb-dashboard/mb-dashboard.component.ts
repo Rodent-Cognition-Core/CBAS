@@ -34,7 +34,6 @@ export class MBDashboardComponent implements OnDestroy, AfterViewInit {
         customization.showClose = false;
         customization.showDodPanel = false;
         customization.showHelp = false;
-        customization.showReloadAnalysis = true;
         customization.showStatusBar = false;
         customization.showCollaboration = false;
 
