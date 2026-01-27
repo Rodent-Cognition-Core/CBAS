@@ -112,7 +112,7 @@ export class DataVisualizationComponent implements OnInit, OnDestroy {
         this.app.onOpened(onOpenedfunction);
 
 
-        this.app.open("/Public/User_Based_Visualizations/" + spotfireAnalysisName, "contentpanel", configuration);
+        this.app.open("/Public/User_Based_Visualizations/" + spotfireAnalysisName, "contentpanel-dataviz", configuration);
 
         // 1. click btn -> getActiveFilteringScheme -> get which items are checked and add them to query string masalan: https://mousebytes.ca/data-visualization?taskid=2&sara=1,3
         // 2. when user comes to this page with querystring set, get values from querystring and set filters
