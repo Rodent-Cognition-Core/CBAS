@@ -854,6 +854,11 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
                 this.genoIDList.push(71);
                 this.genoIDList.push(6);
             }
+            if (selected_StrainVal.indexOf(57) > -1) {
+                this.genoIDList.push(79);
+                this.genoIDList.push(80);
+                this.genoIDList.push(81);
+            }
 
 
 
