@@ -18,11 +18,19 @@ namespace CBAS.Extensions
                 settings = settings.DefaultIndex(defaultIndex);
             }
 
-            var authUser = Environment.GetEnvironmentVariable("SEARCH_USER");
-            var authPassword = Environment.GetEnvironmentVariable("SEARCH_PASS");
-            var certificate = Environment.GetEnvironmentVariable("SEARCH_CERT");
-            settings = settings.BasicAuthentication(authUser, authPassword);
-            settings = settings.CertificateFingerprint(certificate);
+            var authUser = Environment.GetEnvironmentVariable("SEARCH_USER") ?? configuration["ElasticSearch:Username"];
+            var authPassword = Environment.GetEnvironmentVariable("SEARCH_PASS") ?? configuration["ElasticSearch:Password"];
+            var certificate = Environment.GetEnvironmentVariable("SEARCH_CERT") ?? configuration["ElasticSearch:Certificate"];
+
+            if (!string.IsNullOrEmpty(authUser) && authUser != "%SEARCH_USER%")
+            {
+                settings = settings.BasicAuthentication(authUser, authPassword);
+            }
+
+            if (!string.IsNullOrEmpty(certificate) && certificate != "%SEARCH_CERT%")
+            {
+                settings = settings.CertificateFingerprint(certificate);
+            }
             IElasticClient _elasticClient = new ElasticClient(settings);
 
             services.AddSingleton<IElasticClient>(_elasticClient);
