@@ -81,8 +81,7 @@ jobs:
         run: git checkout staging
 
       # Merge the latest changes from dev into staging
-      - name: Merge dev into staging
-        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
+      run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
 
 
       # Push the updated staging branch back to the remote
@@ -101,12 +100,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: staging
-          
+
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete --exclude='.env' --exclude='src/environments/' . /cephfs/staging/CBAS/
+          rsync -av --delete --exclude='.env' --exclude='src/environments/' --exclude='package-lock.json' --exclude='node_modules/' . /cephfs/staging/CBAS/
 
-          
+
       - name: Stop and remove only app_staging container
         working-directory: /cephfs/staging/CBAS
         run: |
@@ -121,4 +120,3 @@ jobs:
               DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
               docker compose up -d app_staging
               docker system prune -af
-
