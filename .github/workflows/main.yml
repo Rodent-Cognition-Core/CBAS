@@ -42,7 +42,7 @@
 #             cd /cephfs/staging/CBAS                    # Navigate to app directory
 #             git pull origin staging                 # Pull latest code from staging
 #             docker compose down                     # Stop running containers
-#             docker compose up -d --build            # Rebuild and start containers in detached mode
+#             docker compose up -d --build            # Rebuild and start containers in detached mode        
 
 name: Merge Dev to Staging and Deploy with Docker Compose
 
@@ -101,12 +101,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: staging
-          
+
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete --exclude='.env' --exclude='src/environments/' . /cephfs/staging/CBAS/
+          rsync -av --delete --exclude='.env' --exclude='src/environments/' --exclude='package-lock.json' --exclude='node_modules/' . /cephfs/staging/CBAS/
 
-          
+
       - name: Stop and remove only app_staging container
         working-directory: /cephfs/staging/CBAS
         run: |
@@ -118,7 +118,6 @@ jobs:
       - name: Force fresh rebuild and restart app_staging
         working-directory: /cephfs/
         run: |
-              DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
+              DOCKER_BUILDKIT=1 docker compose build --no-cache --pull app_staging
               docker compose up -d app_staging
               docker system prune -af
-

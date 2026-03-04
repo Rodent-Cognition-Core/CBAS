@@ -3,7 +3,7 @@ FROM node:22.14.0  AS build_node
 WORKDIR /app
 copy . .
 RUN rm -rf node_modules
-RUN rm package-lock.json
+RUN rm -f package-lock.json
 RUN npm cache clean --force
 RUN npm install
 RUN npm run build:staging
