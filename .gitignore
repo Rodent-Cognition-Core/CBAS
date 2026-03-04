@@ -358,8 +358,21 @@ Thumbs.db
 /package - backup mar 29 2023.json
 /.npmignore
 
-#enviroment
+# enviroment
 /src/environments/environment.hmr.ts
 /src/environments/environment.prod.ts
 /src/environments/environment.staging.ts
+.env
+.env.*
+
+# dependencies
+/node_modules
+package-lock.json
+
+# IDEs
+.vs/
+.vscode/
+*.swp
+*.bak
+*.tmp
 
