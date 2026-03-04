@@ -11,9 +11,9 @@ namespace CBAS.Extensions
         {
             var settings = new ConnectionSettings(new Uri(configuration["ElasticSearch:uri"]));
 
-            var defaultIndex = configuration["ElasticSearch:defaultIndex"];
+            var defaultIndex = Environment.GetEnvironmentVariable("SEARCH_INDEX") ?? configuration["ElasticSearch:defaultIndex"];
 
-            if (!string.IsNullOrEmpty(defaultIndex))
+            if (!string.IsNullOrEmpty(defaultIndex) && defaultIndex != "%DEFAULT_INDEX%")
             {
                 settings = settings.DefaultIndex(defaultIndex);
             }
