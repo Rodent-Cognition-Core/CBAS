@@ -42,7 +42,7 @@
 #             cd /cephfs/staging/CBAS                    # Navigate to app directory
 #             git pull origin staging                 # Pull latest code from staging
 #             docker compose down                     # Stop running containers
-#             docker compose up -d --build            # Rebuild and start containers in detached mode
+#             docker compose up -d --build            # Rebuild and start containers in detached mode        
 
 name: Merge Dev to Staging and Deploy with Docker Compose
 
@@ -81,7 +81,8 @@ jobs:
         run: git checkout staging
 
       # Merge the latest changes from dev into staging
-      run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
+      - name: Merge dev into staging
+        run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
 
 
       # Push the updated staging branch back to the remote
