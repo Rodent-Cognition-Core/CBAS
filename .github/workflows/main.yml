@@ -115,8 +115,8 @@ jobs:
         run: |
               docker image prune -f
       - name: Force fresh rebuild and restart app_staging
-        working-directory: /cephfs/
+        working-directory: /cephfs/staging/CBAS
         run: |
-              DOCKER_BUILDKIT=1 docker compose build --no-cache app_staging
-              docker compose up -d app_staging
+              DOCKER_BUILDKIT=1 docker compose build --no-cache
+              docker compose up -d
               docker system prune -af
