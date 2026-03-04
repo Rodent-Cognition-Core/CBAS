@@ -18,9 +18,9 @@ namespace CBAS.Extensions
                 settings = settings.DefaultIndex(defaultIndex);
             }
 
-            var authUser = configuration["ElasticSearch:Username"] ?? Environment.GetEnvironmentVariable("SEARCH_USER");
-            var authPassword = configuration["ElasticSearch:Password"] ?? Environment.GetEnvironmentVariable("SEARCH_PASS");
-            var certificate = configuration["ElasticSearch:Certificate"] ?? Environment.GetEnvironmentVariable("SEARCH_CERT");
+            var authUser = Environment.GetEnvironmentVariable("SEARCH_USER") ?? configuration["ElasticSearch:Username"];
+            var authPassword = Environment.GetEnvironmentVariable("SEARCH_PASS") ?? configuration["ElasticSearch:Password"];
+            var certificate = Environment.GetEnvironmentVariable("SEARCH_CERT") ?? configuration["ElasticSearch:Certificate"];
 
             if (!string.IsNullOrEmpty(authUser) && authUser != "%SEARCH_USER%")
             {
