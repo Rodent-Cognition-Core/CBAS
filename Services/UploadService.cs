@@ -2058,8 +2058,8 @@ namespace AngularSPAWebAPI.Services
 
             List<FileUploadResult> lstUploadLogForExp = new List<FileUploadResult>();
 
-            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeries.UploadID, UploadTimeSeries.AnimalID, UserFileName, Animal.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, UploadTimeSeries.IsUploaded, UploadTimeSeries.IsDuplicateSession
-                                                       From UploadTimeSeries inner join Animal on Animal.AnimalID = UploadTimeSeries.AnimalID
+            using (DataTable dt = Dal.GetDataTable($@"SELECT UploadTimeSeries.UploadID, UploadTimeSeries.AnimalID, UserFileName, AnimalTimeSeries.UserAnimalID, SessionName, ErrorMessage, WarningMessage, DateUpload, UploadTimeSeries.IsUploaded, UploadTimeSeries.IsDuplicateSession
+                                                       From UploadTimeSeries inner join AnimalTimeSeries on AnimalTimeSeries.AnimalID = UploadTimeSeries.AnimalID
                                                        WHERE UploadTimeSeries.SubExperimentID = {subExpId} Order By DateUpload;"))
 
             {
