@@ -18,6 +18,7 @@ using MathNet.Numerics.Statistics;
 using Serilog;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
+using System.IO.Compression;
 
 namespace AngularSPAWebAPI.Services
 {

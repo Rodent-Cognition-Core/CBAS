@@ -160,6 +160,42 @@ namespace AngularSPAWebAPI.Controllers
             var path = string.Empty;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+                path = fur.PermanentFilePath + "\\" + fur.SysFileName;
+            }
+            else
+            {
+                path = fur.PermanentFilePath + "/" + fur.SysFileName;
+            }
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, GetContentType(path), fur.UserFileName);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("DownloadTimeSeriesData")]
+        public IActionResult DownloadTimeSeriesData([FromBody] List<int> subExpIds)
+        {
+            var fileBytes = _uploadService.DownloadTimeSeriesData(subExpIds);
+            if (fileBytes == null)
+            {
+                return NotFound("No data found for the selected experiments.");
+            }
+            return File(fileBytes, "application/zip", "TimeSeriesData.zip");
+        }
+
+        [HttpGet("DownloadTimeSeriesFile")]
+        public async Task<IActionResult> DownloadFileTimeSeries(int uploadId)
+        {
+
+            var fur = await _uploadService.GetTimeSeriesUploadByUploadIDAsync(uploadId);
+            var path = string.Empty;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
 
                 path = fur.PermanentFilePath + "\\" + fur.SysFileName;
             }
