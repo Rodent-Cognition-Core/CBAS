@@ -11,6 +11,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace AngularSPAWebAPI
@@ -32,12 +33,27 @@ namespace AngularSPAWebAPI
                         .UseStartup<Startup>()
                         .UseKestrel(o => { o.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10); o.Limits.MaxRequestBodySize = null; })
                         .UseIIS()
-                        .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Any, 8081, listenOptions =>
+                        .ConfigureKestrel((context, serverOptions) =>
                         {
-                            var cert = X509Certificate2.CreateFromPemFile("/https/mousebytes-cert.pem", "/https/mousebytes-key.pem");
-                            cert = new X509Certificate2(cert.Export(X509ContentType.Pfx));
-                            listenOptions.UseHttps(cert);
-                        }))
+                            var kestrelConfig = context.Configuration.GetSection("Kestrel");
+                            var certPath = kestrelConfig["CertificatePath"] ?? Environment.GetEnvironmentVariable("KESTREL_CERT_PATH");
+                            var keyPath = kestrelConfig["KeyPath"] ?? Environment.GetEnvironmentVariable("KESTREL_KEY_PATH");
+                            var portValue = kestrelConfig["Port"] ?? Environment.GetEnvironmentVariable("KESTREL_PORT");
+
+                            if (!string.IsNullOrEmpty(portValue) && int.TryParse(portValue, out int port))
+                            {
+                                serverOptions.Listen(IPAddress.Any, port, listenOptions =>
+                                {
+                                    if (!string.IsNullOrEmpty(certPath) && !string.IsNullOrEmpty(keyPath) &&
+                                        File.Exists(certPath) && File.Exists(keyPath))
+                                    {
+                                        var cert = X509Certificate2.CreateFromPemFile(certPath, keyPath);
+                                        cert = new X509Certificate2(cert.Export(X509ContentType.Pfx));
+                                        listenOptions.UseHttps(cert);
+                                    }
+                                });
+                            }
+                        })
                         //.UseHttpSys(options => { options.MaxRequestBodySize = 100_000_000;})
                         //.UseUrls("api_url")
                         .Build();

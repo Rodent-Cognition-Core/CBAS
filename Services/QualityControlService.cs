@@ -13,6 +13,8 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
+using Elasticsearch.Net;
 
 namespace AngularSPAWebAPI.Services
 {
