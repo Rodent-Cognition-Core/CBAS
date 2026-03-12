@@ -228,7 +228,7 @@ namespace AngularSPAWebAPI.Services
 
         public async Task<int> GetCountOfAnimalsAsync()
         {
-            string sql = "SELECT (SELECT COUNT(*) FROM Animal WHERE SID IS NOT NULL AND GID IS NOT NULL AND Sex != '') + (SELECT COUNT(*) FROM AnimalTimeSeries WHERE Strain != '' AND Genotype != '' AND Sex != '')";
+            string sql = "SELECT (SELECT COUNT(*) FROM Animal) + (SELECT COUNT(*) FROM AnimalTimeSeries)";
 
             try
             {
