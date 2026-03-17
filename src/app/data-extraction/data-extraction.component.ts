@@ -260,7 +260,7 @@ export class DataExtractionComponent implements OnInit, OnDestroy {
                 });
 
             } else {
-
+                this.getExpTimeSeriesList( "", this.species.value);
                 this.resetDdls();
                 this.showGeneratedLink = false;
 
