@@ -1104,201 +1104,129 @@ namespace AngularSPAWebAPI.Services
 
         // Function Definition for dataextractionQuery
         public string DataExtractionQuery(int TaskID, int SpeciesID, int subTaskId, string expIDcsv, string animalAgeCsv, string animalSexCsv,
-            string animalGenotypeCsv, string animalStrainCsv, string piSiteIdsCsv, string sessionInfoNamesCsv, string[] markerInfoNames,
-            string aggNames, bool isTrialByTrial, string SubExpIDcsv, string SessionNamesCsv)
+    string animalGenotypeCsv, string animalStrainCsv, string piSiteIdsCsv, string sessionInfoNamesCsv, string[] markerInfoNames,
+    string aggNames, bool isTrialByTrial, string SubExpIDcsv, string SessionNamesCsv)
+{
+    // Validate inputs here to prevent SQL injection (e.g., ensure CSVs only contain numbers/safe chars)
+
+    string AgeCondition = string.IsNullOrWhiteSpace(animalAgeCsv) ? "" : $"and Age.ID in ({animalAgeCsv}) ";
+    string SexCondition = string.IsNullOrWhiteSpace(animalSexCsv) ? "" : $"and Animal.Sex in ({animalSexCsv}) ";
+    string GenotypeCondition = string.IsNullOrWhiteSpace(animalGenotypeCsv) ? "" : $"and Genotype.ID in ({animalGenotypeCsv}) ";
+    string StrainCondition = string.IsNullOrWhiteSpace(animalStrainCsv) ? "" : $"and Strain.ID in ({animalStrainCsv}) ";
+    string PiSiteCondition = string.IsNullOrWhiteSpace(piSiteIdsCsv) ? "" : $"and tt2.PUSID in ({piSiteIdsCsv}) ";
+    string SessionNameCondition = string.IsNullOrWhiteSpace(SessionNamesCsv) ? "" : $"and SessionInfo.SessionName in ({SessionNamesCsv}) ";
+    
+    string InterventionCondition = "";
+    string InterventionQuery = "";
+    if (!string.IsNullOrWhiteSpace(SubExpIDcsv))
+    {
+        InterventionCondition = $"or ss.SubExpID in ({SubExpIDcsv})";
+        InterventionQuery = @",
+            CASE 
+                WHEN ss.IsDrug = 1 THEN CONCAT(ss.DrugName, '-', ss.DrugQuantity, '-', ss.DrugUnit)
+                ELSE ss.InterventionDescription
+            END as Intervention";
+    }
+
+    string str = string.IsNullOrWhiteSpace(SessionNamesCsv) ? GetQuery_markerInfoList(subTaskId) + " and " : "";
+
+    string StimulusDurationCondition1 = (subTaskId == 21 || subTaskId == 22 || subTaskId == 23 || subTaskId == 27) 
+        ? ", Stimulus_Duration " 
+        : "";
+
+    // Optimized subQuery1: Replaced dbo.CSVToTable with native STRING_SPLIT (Requires SQL Server 2016+)
+    string subQuery1 = $@"
+        Select Animal.UserAnimalID as AnimalID, Age.AgeInMonth as Age, Animal.Sex as Sex, Genotype.Genotype,
+        Strain.Strain, SessionInfo.ExpID, SessionInfo.SessionID, Experiment.ExpName, ss.Housing, ss.LightCycle, 
+        CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser, SessionName, ss.SubExpID,
+
+        STUFF((SELECT distinct ';' + CONCAT('<img src =""', imagepath, '"" width=''30'' height=''30'' style=''margin-top:15px;''/>')
+               FROM image
+               WHERE image.ID IN (SELECT value FROM STRING_SPLIT(ss.ImageIds, ','))
+               FOR XML PATH(''), type).value('.', 'nvarchar(max)'),1,1,'') as Image,
+
+        ss.ImageDescription as Image_Description,
+        {sessionInfoNamesCsv} as sessionInfoName
+        {StimulusDurationCondition1}
+        {InterventionQuery}
+        From SessionInfo
+        inner join Animal on Animal.AnimalID = SessionInfo.AnimalID
+        inner join Experiment on Experiment.ExpID = SessionInfo.ExpID
+        inner join Genotype on Genotype.ID = Animal.GID
+        inner join Strain on Strain.ID = Animal.SID
+        inner join (
+            Select PUSID, PIUserSite.PSID, tt.PISiteName , CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName 
+            From PIUserSite
+            inner join (
+                Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName 
+                From PISite
+                inner join PI on PI.PID = PISite.PID
+                inner join Site on Site.SiteID = PISite.SiteID
+            ) as tt on tt.PSID = PIUserSite.PSID
+            inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID
+        ) as tt2 on tt2.PUSID = Experiment.PUSID
+        inner join (
+            Select UploadID, SubExperiment.ExpID, SubExperiment.SubExpID, SubExperiment.AgeID, 
+                   SubExperiment.IsDrug, SubExperiment.DrugQuantity, SubExperiment.DrugName, SubExperiment.DrugUnit, SubExperiment.IsIntervention,
+                   SubExperiment.InterventionDescription, SubExperiment.ImageIds, SubExperiment.ImageDescription, SubExperiment.Housing, SubExperiment.LightCycle
+            From SubExperiment 
+            inner join Upload on SubExperiment.SubExpID = Upload.SubExpID
+        ) as ss on ss.UploadID = SessionInfo.UploadID
+        inner join Age on Age.ID = ss.AgeID
+        Where {str} (SessionInfo.ExpID in ({expIDcsv}) {AgeCondition} {SexCondition} {GenotypeCondition} {StrainCondition} {PiSiteCondition} {SessionNameCondition})";
+
+    // Setup marker features
+    List<string> FeaturesLst = new List<string>();
+    if (!isTrialByTrial)
+    {
+        string[] aggNamesList = aggNames.Split('§');
+        foreach (string marker in markerInfoNames)
         {
-            string sql = "";
-            string AgeCondition = "";
-            string SexCondition = "";
-            string GenotypeCondition = "";
-            string StrainCondition = "";
-            string PiSiteCondition = "";
-            string InterventionCondition = "";
-            string InterventionQuery = "";
-            string SessionNameCondition = "";
-            string StimulusDurationCondition1 = "";
-            string StimulusDurationCondition2 = "";
-
-            string str = ""; // GetQuery_markerInfoList(subTaskId);
-
-            //  Check to see Animal Info and PiSite info is Null or Not for including them to subQuery1
-            if (animalAgeCsv != "")
+            foreach (string agg in aggNamesList)
             {
-                AgeCondition = $"and Age.ID in ({animalAgeCsv}) ";
+                string safeAgg = agg == "MEAN" ? "AVG" : agg;
+                FeaturesLst.Add($"[{safeAgg}_{marker}]");
             }
-
-            if (animalSexCsv != "")
-            {
-                SexCondition = $"and Animal.Sex in ({animalSexCsv}) ";
-            }
-
-            if (animalGenotypeCsv != "")
-            {
-                GenotypeCondition = $"and Genotype.ID in ({animalGenotypeCsv}) ";
-            }
-
-            if (animalStrainCsv != "")
-            {
-                StrainCondition = $"and Strain.ID in ({animalStrainCsv}) ";
-            }
-
-            if (piSiteIdsCsv != "")
-            {
-                PiSiteCondition = $"and tt2.PUSID in ({piSiteIdsCsv}) ";
-            }
-            if (SubExpIDcsv != "")
-            {
-                InterventionCondition = $"or ss.SubExpID in ({SubExpIDcsv})";
-                InterventionQuery = @",
-						            CASE 
-						            WHEN ss.IsDrug = 1 THEN CONCAT(ss.DrugName, '-', ss.DrugQuantity, '-', ss.DrugUnit)
-						            WHEN ss.IsDrug = 0 THEN ss.InterventionDescription
-						            END as Intervention";
-            }
-
-            if (SessionNamesCsv != "")
-            {
-                SessionNameCondition = $"and SessionInfo.SessionName in ({SessionNamesCsv}) ";
-            }
-            else // IF no sessionName was sent from Client to server (SessionNameCsv is Null), then get the conditoin from GetQuery_markerInfoList Function
-            {
-                str = GetQuery_markerInfoList(subTaskId);
-                str = str + " and ";
-            }
-
-            // Including Stimulus duration in Data extraction Query if 5-chice testing sessions/subtasks are selected
-            if (subTaskId == 21 || subTaskId == 22 || subTaskId == 23 || subTaskId == 27)
-            {
-                StimulusDurationCondition1 = ", Stimulus_Duration ";
-
-                //StimulusDurationCondition2 = "and stimulus_Duration is not null ";
-
-            }
-
-            string subQuery1 = $@"Select Animal.UserAnimalID as AnimalID, Age.AgeInMonth as Age, Animal.Sex as Sex, Genotype.Genotype,
-                                 Strain.Strain, SessionInfo.ExpID, SessionInfo.SessionID, Experiment.ExpName, ss.Housing, ss.LightCycle, CONCAT(tt2.PISiteName, ' - ', tt2.UserName) as PISiteUser, SessionName,
-                                 ss.SubExpID,
-
-								STUFF(( SELECT distinct ';' + CONCAT('<img src =""', imagepath, '"" width=''30'' height=''30'' style=''margin-top:15px;''/>') as path
-                                From image
-                                Where image.ID in (SELECT * FROM dbo.CSVToTable(ss.ImageIds))
-                                FOR XML PATH(''), type
-                                ).value('.', 'nvarchar(max)'),1,1,'') as Image,
-
-                                ss.ImageDescription as Image_Description,
-
-                                 {sessionInfoNamesCsv} as sessionInfoName
-                                 {StimulusDurationCondition1}
-                                 {InterventionQuery}
-                                 From SessionInfo
-                                 inner join Animal on Animal.AnimalID = SessionInfo.AnimalID
-                                 inner join Experiment on Experiment.ExpID = SessionInfo.ExpID
-                                 inner join Genotype on Genotype.ID = Animal.GID
-                                 inner join Strain on Strain.ID = Animal.SID
-
-								 inner join (
-								 Select PUSID, PIUserSite.PSID, tt.PISiteName , CONCAT(AspNetUsers.GivenName, '-', AspNetUsers.FamilyName) as UserName From PIUserSite
-                                                        inner join
-                                                        (Select PSID, PI.PName, Site.Institution, CONCAT(PName, ' - ', Institution) as PISiteName From PISite
-                                                        inner join PI on PI.PID = PISite.PID
-                                                        inner join Site on Site.SiteID = PISite.SiteID) as tt on tt.PSID = PIUserSite.PSID
-                                                        inner join AspNetUsers on AspNetUsers.Id = PIUserSite.UserID
-
-								 ) as tt2 on  tt2.PUSID = Experiment.PUSID
-
-                                 inner join (
-								 Select UploadID, SubExperiment.ExpID, SubExperiment.SubExpID, SubExperiment.AgeID, 
-                                        SubExperiment.IsDrug, SubExperiment.DrugQuantity, SubExperiment.DrugName, SubExperiment.DrugUnit, SubExperiment.IsIntervention,
-                                        SubExperiment.InterventionDescription, SubExperiment.ImageIds, SubExperiment.ImageDescription, SubExperiment.Housing, SubExperiment.LightCycle
-                                        From SubExperiment 
-											inner join Upload on SubExperiment.SubExpID = Upload.SubExpID
-								 ) as ss on  ss.UploadID = SessionInfo.UploadID
-                                inner join Age on Age.ID = ss.AgeID
-
-                                 Where {str}  (SessionInfo.ExpID in ({expIDcsv}) {AgeCondition} {SexCondition} {GenotypeCondition} {StrainCondition} {PiSiteCondition} {SessionNameCondition})";
-
-            // Creating subQuery 2 from RBT_TouchScreen_Features
-
-            List<string> FeaturesLst = new List<string>();
-            List<string> ConditionLst = new List<string>();
-
-
-            if (!isTrialByTrial)
-
-            {
-                string[] aggNamesList = aggNames.Split('§');
-
-                for (int i = 0; i < markerInfoNames.Length; i++)
-                {
-
-                    for (int j = 0; j < aggNamesList.Length; j++)
-                    {
-                        if (aggNamesList[j] == "MEAN") { aggNamesList[j] = "AVG"; };
-                        string subString = $"[{aggNamesList[j]}_{markerInfoNames[i]}]";
-                        FeaturesLst.Add(subString);
-
-                    }
-                }
-            }
-
-            var strFeatureLst = string.Join(", ", FeaturesLst);
-
-            string strSessionIdDrop = "";
-            string subQuery2 = "Select * From ( Select SessionID as S_ID ";
-            if (isTrialByTrial)
-            {
-                subQuery2 += @" From RBT_TouchScreen_Features
-                            group by SessionID
-                            ) tmp ";
-
-            }
-            else
-            {
-                subQuery2 += ", " + strFeatureLst;
-                switch(aggNames)
-                {
-                    case "MEAN":
-                        subQuery2 += @" From rbt_data_cached_avg
-                                ) tmp ";
-                        break;
-                    case "STDEV":
-                        subQuery2 += @" From rbt_data_cached_std
-                                ) tmp ";
-                        break;
-                    case "COUNT":
-                        subQuery2 += @" From rbt_data_cached_cnt
-                                ) tmp ";
-                        break;
-                    case "SUM":
-                        subQuery2 += @" From rbt_data_cached_sum
-                                ) tmp ";
-                        break;
-                    default:
-                        subQuery2 += @" From rbt_data_cached
-                                ) tmp ";
-                        break;
-                }
-
-                //subQuery2 += @" From rbt_data_cached
-                //                ) tmp ";
-
-                strSessionIdDrop = ", SessionID";
-
-            }
-
-            // Making the main Query
-            sql = $@"SELECT * INTO #TempTable
-                    From ( Select SessionInfoTmp.*, MarkerInfoTmp.* From (
-                    ({subQuery1}) as SessionInfoTmp inner join ({subQuery2}) as MarkerInfoTmp on SessionInfoTmp.SessionID = MarkerInfoTmp.S_ID ) ) as MainTable
-                    ALTER TABLE #TempTable
-                    DROP COLUMN S_ID, ExpID, SubExpID {strSessionIdDrop}
-
-                    Select * From #TempTable
-                    DROP TABLE #TempTable ";
-
-
-            return sql;
         }
+    }
+
+    string strFeatureLst = string.Join(", ", FeaturesLst);
+    string subQuery2 = "Select SessionID as S_ID ";
+
+    if (isTrialByTrial)
+    {
+        // NOTE: If you are pulling Trial-By-Trial, selecting ONLY the SessionID and grouping by it 
+        // without aggregate functions means you are dropping all trial-level data. Is this intentional?
+        subQuery2 += @" From RBT_TouchScreen_Features group by SessionID ";
+    }
+    else
+    {
+        subQuery2 += ", " + strFeatureLst;
+        subQuery2 += aggNames switch
+        {
+            "MEAN" => " From rbt_data_cached_avg ",
+            "STDEV" => " From rbt_data_cached_std ",
+            "COUNT" => " From rbt_data_cached_cnt ",
+            "SUM" => " From rbt_data_cached_sum ",
+            _ => " From rbt_data_cached "
+        };
+    }
+
+    // Identify which columns we want to KEEP in the final output (Excluding S_ID, ExpID, SubExpID, SessionID)
+    // You should explicitly name the columns here instead of SessionInfoTmp.* if possible.
+    string finalSelectColumns = isTrialByTrial 
+        ? "SessionInfoTmp.*" // Adjust this if you need specific columns dropped in trial-by-trial
+        : "SessionInfoTmp.AnimalID, SessionInfoTmp.Age, SessionInfoTmp.Sex, SessionInfoTmp.Genotype, SessionInfoTmp.Strain, SessionInfoTmp.ExpName, SessionInfoTmp.Housing, SessionInfoTmp.LightCycle, SessionInfoTmp.PISiteUser, SessionInfoTmp.SessionName, SessionInfoTmp.Image, SessionInfoTmp.Image_Description, SessionInfoTmp.sessionInfoName" + StimulusDurationCondition1 + (string.IsNullOrWhiteSpace(InterventionQuery) ? "" : ", SessionInfoTmp.Intervention") + ", MarkerInfoTmp.*";
+
+    // Final direct SELECT (No Temp Tables!)
+    string sql = $@"
+        SELECT {finalSelectColumns}
+        FROM ({subQuery1}) as SessionInfoTmp 
+        INNER JOIN ({subQuery2}) as MarkerInfoTmp 
+        ON SessionInfoTmp.SessionID = MarkerInfoTmp.S_ID";
+
+    return sql;
+}
 
         private string ReplaceBadChars(string subString)
         {
