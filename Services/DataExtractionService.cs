@@ -896,7 +896,7 @@ namespace AngularSPAWebAPI.Services
 
                 //dtFinalResult.Columns["SessionID"].SetOrdinal(8);
 
-                if (linkModel.SubTaskId == 21 || linkModel.SubTaskId == 22 || linkModel.SubTaskId == 23 || linkModel.SubTaskId == 24)
+                if (linkModel.SubTaskId == 21 || linkModel.SubTaskId == 22 || linkModel.SubTaskId == 23 || linkModel.SubTaskId == 27)
                 {
                     dtFinalResult.Columns["Stimulus_Duration"].ColumnName = "Stimulus_Duration";
                 }
