@@ -537,7 +537,7 @@ namespace AngularSPAWebAPI.Services
             var dtSummaryResult = Dal.GetDataTable(decoded.sql);
             DataTable dtFinalResult = new DataTable();
 
-            if (isTrialByTrialEnabledFromClient)
+            if (isTrialByTrialEnabledFromClient && dtSummaryResult.Rows.Count > 0)
             {
                 //dtFinalResult.Columns.Add("SessionID");
                 dtFinalResult.Columns.Add("AnimalID");
@@ -566,15 +566,50 @@ namespace AngularSPAWebAPI.Services
                 List<string> lstSessionInfoNames = data_extraction.SessionInfoNames.ToList();
                 foreach (string name in lstSessionInfoNames)
                 {
-
                     dtFinalResult.Columns.Add(name);
+                }
 
+                var sessionIds = dtSummaryResult.AsEnumerable()
+                                                .Select(r => r["SessionID"]
+                                                .ToString())
+                                                .ToList();
+                string sessionIdCsv = string.Join(",", sessionIds);
 
+                string featureFilter = "";
+                if (data_extraction.MarkerInfoNames.Length > 0)
+                {
+                    var strOrCondition = string.Join(" OR ", data_extraction.MarkerInfoNames.Select(name => $"FeatureName = '{name}'"));
+                    featureFilter = $"AND ({strOrCondition})";
+                }
+
+                string bulkSql = $@"SELECT * FROM RBT_TouchScreen_Features 
+                    WHERE SessionID IN ({sessionIdCsv}) {featureFilter} 
+                    ORDER BY SessionID, FeatureName, ID";
+
+                DataTable dtAllFeatures = Dal.GetDataTable(bulkSql);
+
+                var featuresLookup = dtAllFeatures.AsEnumerable().ToLookup(row => row.Field<int>("SessionID"));
+
+                var featureSchema = dtAllFeatures.AsEnumerable()
+                                                .GroupBy(r => new { SID = r.Field<int>("SessionID"), Name = r.Field<string>("FeatureName").ToUpper() })
+                                                .Select(g => new { g.Key.Name, Count = g.Count() })
+                                                .GroupBy(x => x.Name)
+                                                .Select(g => new { Name = g.Key, Max = g.Max(x => x.Count) });
+                
+                {
+                    foreach (var feature in featureSchema)
+                    {
+                        for (int i = 1; i <= feature.Max; i++)
+                        {
+                            dtFinalResult.Columns.Add($"{feature.Name} _{i}");
+                        }
+                    }
                 }
 
                 foreach (DataRow drSummary in dtSummaryResult.Rows)
                 {
-                    SetRowsToFinalResult(drSummary, ref dtFinalResult, data_extraction.MarkerInfoNames, lstSessionInfoNames, data_extraction.SubTaskID);
+                    int sId = Convert.ToInt32(drSummary["SessionID"]);
+                    SetRowsToFinalResult(drSummary, ref dtFinalResult, featuresLookup[sId], lstSessionInfoNames, data_extraction.SubTaskID);
                 }
 
                 // set first few columns
@@ -630,76 +665,33 @@ namespace AngularSPAWebAPI.Services
         }
 
         // Inserting the code for Trial by Trial case
-        private DataTable SetRowsToFinalResult(DataRow drSummary, ref DataTable dtResult, string[] featureNames, List<string> lstSessionInfoNames, int Subtaks)
+        private DataTable SetRowsToFinalResult(DataRow drSummary, ref DataTable dtResult, IEnumerable<DataRow> sessionFeatures, List<string> lstSessionInfoNames, int Subtaks)
         {
-            var sessionId = Int32.Parse(drSummary["SessionID"].ToString());
-
-            var strFeatureNamesCondition = string.Empty;
-            if (featureNames.Length > 0)
-            {
-                var strOrCondition = string.Join(" OR ", featureNames.Select(x => " FeatureName = '" + x + "' "));
-                strFeatureNamesCondition = $"AND ({strOrCondition})";
-            }
-            // order by FeatureName so we don't need to sort the output
-            var sql = $"SELECT * from RBT_TouchScreen_Features WHERE SessionID = {sessionId} {strFeatureNamesCondition} ORDER BY FeatureName, ID";
-            var dt = Dal.GetDataTable(sql);
-            var index = 0;
-
-            // track the count of columns
+            var drResultRow = dtResult.NewRow();
             var dictColNames = new Dictionary<string, int>();
 
-            var drResultRow = dtResult.NewRow();
-
-            foreach (DataRow dr in dt.Rows)
+            foreach (DataRow dr in sessionFeatures)
             {
-                index += 1;
+                var rawName = dr["FeatureName"].ToString().ToUpper();
+                
+                // Track trial index (Feature _1, Feature _2...)
+                if (!dictColNames.ContainsKey(rawName)) dictColNames[rawName] = 1;
+                else dictColNames[rawName]++;
 
-                var featureName = dr["FeatureName"].ToString().ToUpper();
+                var featureName = $"{rawName} _{dictColNames[rawName]}";
 
-                if (dictColNames.ContainsKey(featureName))
-                {
-                    dictColNames[featureName] += 1;
-                }
-                else
-                {
-                    dictColNames[featureName] = 1;
-                }
+                // Pre-verify column existence to avoid expensive dynamic adds inside this loop
+                if (!dtResult.Columns.Contains(featureName))
+                    dtResult.Columns.Add(featureName);
 
-                index = dictColNames[featureName];
-
-                featureName = dr["FeatureName"].ToString().ToUpper() + " _" + index;
-
-
-                var SourceTypeID = Int16.Parse(dr["SourceTypeID"].ToString());
-                float value = 0;
-
-                switch (SourceTypeID)
-                {
-                    case 1:
-                        value = dr["Results"].ToString() == "" ? 0 : float.Parse(dr["Results"].ToString());
-                        break;
-                    case 2:
-                        value = dr["Count"].ToString() == "" ? 0 : float.Parse(dr["Count"].ToString());
-                        break;
-                    case 3:
-                        value = dr["Duration"].ToString() == "" ? 0 : (float.Parse(dr["Duration"].ToString()) / 1000000);
-                        break;
-
-                    default:
-                        break;
-                }
-
-
-                //if column exist, add the value, if doesn't exist add column and set the value
-
-                // TODO: need to insert new column to the correct location
-                if (dtResult.Columns.IndexOf(featureName) == -1)
-                {
-                    drResultRow.Table.Columns.Add(featureName);
-                }
-
-                drResultRow[featureName] = value;
-
+                // Value selection logic
+                int sourceType = Convert.ToInt16(dr["SourceTypeID"]);
+                drResultRow[featureName] = sourceType switch {
+                    1 => dr["Results"] == DBNull.Value ? 0 : dr["Results"],
+                    2 => dr["Count"] == DBNull.Value ? 0 : dr["Count"],
+                    3 => dr["Duration"] == DBNull.Value ? 0 : (Convert.ToSingle(dr["Duration"]) / 1000000),
+                    _ => 0
+                };
             }
 
             //drResultRow["SessionID"] = sessionId;
@@ -808,7 +800,7 @@ namespace AngularSPAWebAPI.Services
             var dtSummaryResult = Dal.GetDataTable(sql);
             DataTable dtFinalResult = new DataTable();
 
-            if (linkModel.IsTrialByTrials)
+            if (linkModel.IsTrialByTrials && dtSummaryResult.Rows.Count > 0)
             {
                 //dtFinalResult.Columns.Add("SessionID");
                 dtFinalResult.Columns.Add("AnimalID");
@@ -818,7 +810,7 @@ namespace AngularSPAWebAPI.Services
                 dtFinalResult.Columns.Add("Strain");
                 dtFinalResult.Columns.Add("ExpName");
                 dtFinalResult.Columns.Add("Housing");
-                dtFinalResult.Columns.Add("Lightcycle");
+                dtFinalResult.Columns.Add("LightCycle");
                 dtFinalResult.Columns.Add("PISiteUser");
                 dtFinalResult.Columns.Add("SessionName");
                 dtFinalResult.Columns.Add("Image");
@@ -842,9 +834,48 @@ namespace AngularSPAWebAPI.Services
 
                 }
 
+                var sessionIds = dtSummaryResult.AsEnumerable()
+                                                .Select(r => r["SessionID"]
+                                                .ToString())
+                                                .ToList();
+                string sessionIdCsv = string.Join(",", sessionIds);
+
+                string featureFilter = "";
+                var markerInfoNames = linkModel.MarkerInfoNamesCsv.Split('§');
+                if (markerInfoNames.Length > 0 && !string.IsNullOrEmpty(markerInfoNames[0]))
+                {
+                    var strOrCondition = string.Join(" OR ", markerInfoNames.Select(name => $"FeatureName = '{name}'"));
+                    featureFilter = $"AND ({strOrCondition})";
+                }
+
+                string bulkSql = $@"SELECT * FROM RBT_TouchScreen_Features 
+                    WHERE SessionID IN ({sessionIdCsv}) {featureFilter} 
+                    ORDER BY SessionID, FeatureName, ID";
+
+                DataTable dtAllFeatures = Dal.GetDataTable(bulkSql);
+
+                var featuresLookup = dtAllFeatures.AsEnumerable().ToLookup(row => row.Field<int>("SessionID"));
+
+                var featureSchema = dtAllFeatures.AsEnumerable()
+                                                .GroupBy(r => new { SID = r.Field<int>("SessionID"), Name = r.Field<string>("FeatureName").ToUpper() })
+                                                .Select(g => new { g.Key.Name, Count = g.Count() })
+                                                .GroupBy(x => x.Name)
+                                                .Select(g => new { Name = g.Key, Max = g.Max(x => x.Count) });
+
+                {
+                    foreach (var feature in featureSchema)
+                    {
+                        for (int i = 1; i <= feature.Max; i++)
+                        {
+                            dtFinalResult.Columns.Add($"{feature.Name} _{i}");
+                        }
+                    }
+                }
+
                 foreach (DataRow drSummary in dtSummaryResult.Rows)
                 {
-                    SetRowsToFinalResult(drSummary, ref dtFinalResult, linkModel.MarkerInfoNamesCsv.Split('§'), lstSessionInfoNames, linkModel.SubTaskId);
+                    int sId = Convert.ToInt32(drSummary["SessionID"]);
+                    SetRowsToFinalResult(drSummary, ref dtFinalResult, featuresLookup[sId], lstSessionInfoNames, linkModel.SubTaskId);
                 }
 
 
@@ -865,7 +896,7 @@ namespace AngularSPAWebAPI.Services
 
                 //dtFinalResult.Columns["SessionID"].SetOrdinal(8);
 
-                if (linkModel.SubTaskId == 21 || linkModel.SubTaskId == 22 || linkModel.SubTaskId == 23 || linkModel.SubTaskId == 27)
+                if (linkModel.SubTaskId == 21 || linkModel.SubTaskId == 22 || linkModel.SubTaskId == 23 || linkModel.SubTaskId == 24)
                 {
                     dtFinalResult.Columns["Stimulus_Duration"].ColumnName = "Stimulus_Duration";
                 }
@@ -874,7 +905,6 @@ namespace AngularSPAWebAPI.Services
             else
             {
                 dtFinalResult = dtSummaryResult;
-                //dtFinalResult.Columns.Remove("ScheduleName");
             }
 
             var DataExtractionList = dtFinalResult.AsDynamicEnumerable();
