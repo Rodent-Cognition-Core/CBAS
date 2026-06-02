@@ -73,9 +73,9 @@ namespace AngularSPAWebAPI.Controllers
         public async Task<IActionResult> UploadTimeSeriesFiles()
         {
             var files = HttpContext.Request.Form.Files;
-            int expID = Int16.Parse(HttpContext.Request.Form["expId"]);
-            int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"]);
-            string SessionName = HttpContext.Request.Form["sessionName"];
+            int expID = Int16.Parse(HttpContext.Request.Form["expId"][0]);
+            int subExpId = Int16.Parse(HttpContext.Request.Form["subExpId"][0]);
+            string SessionName = HttpContext.Request.Form["sessionName"][0];
 
             var user = await _manager.GetUserAsync(HttpContext.User);
             var userEmail = user.UserName;
