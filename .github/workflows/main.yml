@@ -104,7 +104,7 @@ jobs:
 
       - name: Copy code to staging directory
         run: |
-          rsync -av --delete --exclude='.env' --exclude='src/environments/' --exclude='package-lock.json' --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . /cephfs/staging/CBAS/
+          rsync -av --delete --no-g --no-o -O --no-t --exclude='.env' --exclude='src/environments/' --exclude='package-lock.json' --exclude='node_modules/' --exclude='.git/' --exclude='.github/' . /cephfs/staging/CBAS/
 
 
       - name: Stop and remove only app_staging container
