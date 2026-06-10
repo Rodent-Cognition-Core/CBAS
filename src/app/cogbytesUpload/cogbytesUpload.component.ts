@@ -99,7 +99,6 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         cancelReset: undefined,
         timeout: 36000000,
         headers: {},
-        url:this.app_url
     };
     
 
