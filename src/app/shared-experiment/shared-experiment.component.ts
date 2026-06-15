@@ -175,7 +175,17 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
+                if(this.isTimeSeries) {
+                    this.experimentService.deleteExperimentTimeSeriesbyID(expID).pipe(map((_res : any) => {
+
+                    
+                    this.spinnerService.hide();
+
+                    location.reload()
+
+                })).subscribe();
+                } else {
+                    this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
 
                     
                     this.spinnerService.hide();
@@ -184,6 +194,7 @@ export class SharedExperimentComponent implements OnInit {
                     location.reload()
 
                 })).subscribe();
+                }
             }
             //this.dialogRef = null;
             dialogRef.close();

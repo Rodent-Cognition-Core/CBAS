@@ -276,6 +276,17 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sql);
         }
 
+        public void DeleteTimeSeriesExpByExpID(int expID)
+        {
+            string sql = $@"Delete From UploadTimeSeries Where ExperimentID ={expID};
+                            Delete From AnimalTimeSeries Where ExperimentID ={expID};
+                            Delete From UploadTimeSeriesErrorLog Where ExperimentID ={expID};
+                            Delete From SubExperimentTimeSeries Where ExperimentID = {expID};
+                            Delete From ExperimentTimeSeries Where ExperimentID={expID};";
+
+            Dal.ExecuteNonQuery(sql);
+        }
+
         public void DeleteExpByUploadID(int uploadID)
         {
             string sql = $@"Delete From RBT_TouchScreen_Features Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
@@ -286,6 +297,13 @@ namespace AngularSPAWebAPI.Services
                             Delete From SessionInfo_Dynamic Where SessionID in (Select SessionID From SessionInfo Where UploadID = {uploadID});
                             Delete From SessionInfo Where UploadID = {uploadID};
                             Delete From Upload Where UploadID = {uploadID};";
+
+            Dal.ExecuteNonQuery(sql);
+        }
+
+        public void DeleteTimeSeriesExpByUploadID(int uploadID)
+        {
+            string sql = $@"Delete From UploadTimeSeries Where UploadID ={uploadID};";
 
             Dal.ExecuteNonQuery(sql);
         }
