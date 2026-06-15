@@ -136,7 +136,6 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
         
     
     ngOnInit() {
-
         this.cogbytesService.getFileTypes().subscribe((data : any) => { this.fileTypeList = data; });
         this.cogbytesService.getTask().subscribe((data: any) => { this.taskList = data; });
         this.cogbytesService.getSpecies().subscribe((data: any) => { this.speciesList = data; });
@@ -170,6 +169,12 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
                 this.numSubjects.setValue(this.uploadObj.numSubjects.toString());
             }
             this.uploadFileList = this.uploadObj.uploadFileList;
+            if (this.uploadObj.uploadFileList) {
+                this.uploadFileList = this.uploadObj.uploadFileList.map((file: any) => ({
+                    ...file,
+                    uploadID: this.uploadObj.id // Or 'uploadId' depending on your file object property casing
+                }));
+            }
             // this.UpdateFileList();
         }
     }
@@ -446,7 +451,6 @@ export class CogbytesUploadComponent implements OnInit, OnChanges {
             disableClose: false
         });
         dialogRefDelFile.componentInstance.confirmMessage = CONFIRMDELETE
-
         dialogRefDelFile.afterClosed().subscribe(result => {
             if (result) {
                 this.spinnerService.show();
