@@ -38,10 +38,26 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public deleteExperimentTimeSeriesbyID(id: any): any {
+
+        return this.http
+            .delete("/api/experiment/DeleteExpTimeSeriesById?expID=" + id, {
+             headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
     public deleteFilebyID(id: any): any {
 
         return this.http
             .delete("/api/experiment/DeleteFileById?uploadID=" + id, {
+             headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
+    public deleteTimeSeriesFilebyID(id: any): any {
+
+        return this.http
+            .delete("/api/experiment/DeleteTimeSeriesFileById?uploadID=" + id, {
              headers: this.authenticationService.getAuthorizationHeader()
         });
     }

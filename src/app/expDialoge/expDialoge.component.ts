@@ -237,7 +237,28 @@ export class ExpDialogeComponent implements OnInit {
 
         } else { // Edit Mode: edit experiment
 
+            if (this.isTimeSeries) {
+                this.isTaken = false;
+                this._experiment.ExpID = this.data.experimentObj.expID;
+                this.expDialogeService.updateExpTimeSeries(this._experiment).pipe(map((res : any) => {
 
+
+
+                    if (res == "Taken") {
+                        this.isTaken = true;
+                        this.exp.setErrors({ 'taken': true });
+                    } else {
+                        this.thisDialogRef.close();
+                    }
+
+                })).subscribe((_data : any) => {
+                    setTimeout(() => {
+                        this.spinnerService.hide();
+
+                    }, 500);
+
+                });
+            } else {
             this.isTaken = false;
             this._experiment.ExpID = this.data.experimentObj.expID;
             this.expDialogeService.updateExp(this._experiment).pipe(map((res : any) => {
@@ -259,7 +280,8 @@ export class ExpDialogeComponent implements OnInit {
 
             });
 
-        }
+        }  
+            }
 
     }
 

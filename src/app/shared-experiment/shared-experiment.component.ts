@@ -175,7 +175,17 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 this.spinnerService.show();
 
-                this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
+                if(this.isTimeSeries) {
+                    this.experimentService.deleteExperimentTimeSeriesbyID(expID).pipe(map((_res : any) => {
+
+                    
+                    this.spinnerService.hide();
+
+                    location.reload()
+
+                })).subscribe();
+                } else {
+                    this.experimentService.deleteExperimentbyID(expID).pipe(map((_res : any) => {
 
                     
                     this.spinnerService.hide();
@@ -184,6 +194,7 @@ export class SharedExperimentComponent implements OnInit {
                     location.reload()
 
                 })).subscribe();
+                }
             }
             //this.dialogRef = null;
             dialogRef.close();
@@ -199,19 +210,24 @@ export class SharedExperimentComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
+                if (this.isTimeSeries) {
                 this.spinnerService.show();
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
-                   // location.reload()
-                    if (this.isTimeSeries) {
-                        this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
-                    } else {
-                        this.GetSubExpSelect(this.selectedExpValue.expID);
-                    }
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+                    this.spinnerService.hide();
+                    this.outSelectedSubExperiment.emit(undefined);
+                   
+                })).subscribe();
+                } else {
+                this.spinnerService.show();
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
                    
                 })).subscribe();
             }
+                }
             //this.dialogRef = null;
             dialogRef.close();
         });
