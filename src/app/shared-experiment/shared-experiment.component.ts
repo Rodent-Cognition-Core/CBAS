@@ -210,19 +210,24 @@ export class SharedExperimentComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
+                if (this.isTimeSeries) {
                 this.spinnerService.show();
                 this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
-                   // location.reload()
-                    if (this.isTimeSeries) {
-                        this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
-                    } else {
-                        this.GetSubExpSelect(this.selectedExpValue.expID);
-                    }
+                    this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
+                    this.spinnerService.hide();
+                    this.outSelectedSubExperiment.emit(undefined);
+                   
+                })).subscribe();
+                } else {
+                this.spinnerService.show();
+                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
+                    this.GetSubExpSelect(this.selectedExpValue.expID);
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
                    
                 })).subscribe();
             }
+                }
             //this.dialogRef = null;
             dialogRef.close();
         });
