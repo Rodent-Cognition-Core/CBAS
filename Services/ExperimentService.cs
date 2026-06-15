@@ -156,6 +156,16 @@ namespace AngularSPAWebAPI.Services
             return flag;
         }
 
+        public bool DoesExperimentTimeSeriesExistEdit(string experimentName, int expID)
+        {
+            string sql = $"select count(*) from ExperimentTimeSeries where ltrim(rtrim(ExpName)) = '{HelperService.EscapeSql(experimentName.Trim())}' AND ExperimentID != {expID} ";
+
+            int countResult = Int32.Parse(Dal.ExecScalar(sql).ToString());
+
+            bool flag = (countResult == 0) ? false : true;
+            return flag;
+        }
+
         public int InsertExperiment(Experiment experiment, string userID, string Email)
 
         {
@@ -256,6 +266,37 @@ namespace AngularSPAWebAPI.Services
 
             Dal.ExecuteNonQuery(sql);
 
+        }
+
+        public void UpdateExpTimeSeries(Experiment experiment, string userID, string Email)
+        {
+            var repoGuid = new Guid();
+            string repoString = "null";
+            if (Guid.TryParse(experiment.RepoGuid, out repoGuid))
+            {
+                repoString = "'" + experiment.RepoGuid + "'";
+            }
+
+            string sql = $@"UPDATE ExperimentTimeSeries " +
+                 $"SET PIName = '{HelperService.EscapeSql(experiment.PISiteName)}', ExpName = '{HelperService.EscapeSql(experiment.ExpName)}', StartExpDate = '{experiment.StartExpDate}'," +
+                 $"EndExpDate = '{experiment.EndExpDate}', SpeciesID = {experiment.SpeciesID}, TaskDescription = '{HelperService.EscapeSql(experiment.TaskDescription)}'," +
+                 $" DOI = '{HelperService.EscapeSql(experiment.DOI)}', TaskBattery = '{HelperService.EscapeSql(experiment.TaskBattery)}',  RepoStatus = {(experiment.RepoStatus ? 1 : 0)}," +
+                 $" MultipleSessions = {(experiment.MultipleSessions ? 1 : 0)}, RepoGuid = {repoString}" +
+                 $" WHERE ExperimentID = {experiment.ExpID}  AND UserID = '{userID}';";
+
+            if (experiment.RepoStatus)
+            {
+                string strBody = $@"Hi Admin: <br /><br /> User with Email address <b>{Email}</b> has just changed the status of the experiment: <b>{HelperService.EscapeSql(experiment.ExpName.Trim())}</b>
+                                    to public!  <br /><br />";
+                if (!String.IsNullOrEmpty(experiment.DOI))
+                {
+                    strBody += $@"DOI: {experiment.DOI} - please consider adding data to CONP <br /><br />";
+                }
+                strBody += $@"Thanks <br /> MouseBytes";
+                HelperService.SendEmail("", "", "Status of experiment changed to public!", strBody);
+            }
+
+            Dal.ExecuteNonQuery(sql);
         }
 
         public void DeleteExpByExpID(int expID)

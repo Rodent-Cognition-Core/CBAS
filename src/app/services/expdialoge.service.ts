@@ -56,6 +56,14 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public updateExpTimeSeries(experiment: Experiment): any {
+
+        const body: string = JSON.stringify(experiment);
+        return this.http.post("/api/experiment/UpdateExperimentTimeSeries", body, {
+            headers: this.authenticationService.getAuthorizationHeader()
+        });
+    }
+
     // Function Definition to get all images in database for PAL and PD task
     public getAllImages(): any {
 
