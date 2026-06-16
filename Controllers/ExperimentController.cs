@@ -98,6 +98,25 @@ namespace AngularSPAWebAPI.Controllers
             }
         }
 
+        [HttpPost("UpdateExperimentTimeSeries")]
+        public IActionResult UpdateExperimentTimeSeries([FromBody]Experiment experiment)
+        {
+            var user = GetCurrentUser();
+            var userEmail = user.Result.UserName;
+            var userID = user.Result.Id;
+
+            // throw new Exception("This Experiment Name was already taken!");
+            if (_experimentService.DoesExperimentTimeSeriesExistEdit(experiment.ExpName, experiment.ExpID))
+            {
+                return new JsonResult("Taken");
+            }
+            else
+            {
+                _experimentService.UpdateExpTimeSeries(experiment, userID, userEmail);
+                return new JsonResult("Done!");
+            }
+        }
+
         [HttpDelete("DeleteExpById")]
         public IActionResult DeleteExpById(int expID)
         {
@@ -106,12 +125,26 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpDelete("DeleteExpTimeSeriesById")]
+        public IActionResult DeleteExpTimeSeriesById(int expID)
+        {
+            _experimentService.DeleteTimeSeriesExpByExpID(expID);
+            return new JsonResult("Done!");
+        }
+
         [HttpDelete("DeleteFileById")]
         public IActionResult DeleteFileById(int uploadID)
         {
             _experimentService.DeleteExpByUploadID(uploadID);
             return new JsonResult("Done!");
 
+        }
+
+        [HttpDelete("DeleteTimeSeriesFileById")]
+        public IActionResult DeleteTimeSeriesFileById(int uploadID)
+        {
+            _experimentService.DeleteTimeSeriesExpByUploadID(uploadID);
+            return new JsonResult("Done!");
         }
 
         // Function to get all images from DB for PAL and PD

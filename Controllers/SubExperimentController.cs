@@ -146,6 +146,14 @@ namespace AngularSPAWebAPI.Controllers
 
         }
 
+        [HttpDelete("DeleteSubExpTimeSeriesById")]
+        public IActionResult DeleteSubExpTimeSeriesById(int subExpID)
+        {
+            _subexperimentService.DeleteSubExpTimeSeriesBySubExpID(subExpID);
+            return new JsonResult("Done!");
+
+        }
+
         // Function to get all images from DB for PAL and PD
         [HttpGet("GetAllImages")]
         public IActionResult GetAllImages()

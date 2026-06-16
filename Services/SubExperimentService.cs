@@ -287,6 +287,18 @@ namespace AngularSPAWebAPI.Services
             Dal.ExecuteNonQuery(sql);
         }
 
+        public void DeleteSubExpTimeSeriesBySubExpID(int subExpID)
+        {
+            string sql = $@"Delete From Upload Where SubExpId in
+                        (Select SubExpId From SubExperimentTimeSeries Where SubExperimentId = {subExpID} );
+
+                        Delete From UploadErrorLog Where SubExpId in
+                        (Select SubExpId From SubExperimentTimeSeries Where SubExperimentId = {subExpID} );
+
+                        Delete From SubExperimentTimeSeries WHERE SubExperimentId = {subExpID};";
+            Dal.ExecuteNonQuery(sql);
+        }
+
         // Function definition to get image list from DB for PAL and PD
         public List<Image> GetAllImagesList()
         {

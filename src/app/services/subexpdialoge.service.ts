@@ -94,6 +94,15 @@ import { AuthenticationService } from './authentication.service';
 
     }
 
+    public deleteSubExperimentTimeSeriesbyID(id: any): any {
+
+        return this.http
+            .delete("/api/subexperiment/DeleteSubExpTimeSeriesById?subExpId=" + id, {
+                headers: this.authenticationService.getAuthorizationHeader()
+            });
+
+    }
+
     // Function Definition to get all images from database for PAL and PD task
     public getAllImages(): any {
 
