@@ -212,7 +212,7 @@ export class SharedExperimentComponent implements OnInit {
             if (result) {
                 if (this.isTimeSeries) {
                 this.spinnerService.show();
-                this.subexpDialogeService.deleteSubExperimentbyID(subExp.subExpID).pipe(map((_res : any) => {
+                this.subexpDialogeService.deleteSubExperimentTimeSeriesbyID(subExp.subExpID).pipe(map((_res : any) => {
                     this.getSubExpTimeSeriesSelect(this.selectedExpValue.expID);
                     this.spinnerService.hide();
                     this.outSelectedSubExperiment.emit(undefined);
