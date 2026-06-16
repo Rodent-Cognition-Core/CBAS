@@ -411,7 +411,7 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <table>
-                                <tr *ngFor="let rep of row.repo">
+                                <tr *ngFor="let rep of row?.repo">
                                     <td>Repository Name:&nbsp; <span style="color:#696d70;">{{rep.title}}</span></td>
                                     <td>Status:&nbsp; <span style="color:#696d70;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">
