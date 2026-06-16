@@ -404,7 +404,7 @@
                             </table>
 
                         </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="row?.repo?.length > 0">
+                        <mat-expansion-panel *ngIf="row && row.repo && row.repo.length > 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <span style="color: #A569BD;">MouseBytes+ datasets associated to this publicaton:</span>
