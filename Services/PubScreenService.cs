@@ -3410,12 +3410,13 @@ QueryContainerDescriptor<PubScreenElasticSearchModel> query)
                 }
                 results = searchResult.Hits.Select(hit => hit.Source).ToList();
 
-                var lstExperiment = new List<Experiment>();
-                var lstRepo = new List<Cogbytes>();
                 string sqlMB = string.Empty;
                 string sqlCog = string.Empty;
                 foreach (var paper in results)
                 {
+
+                    var lstExperiment = new List<Experiment>();
+                    var lstRepo = new List<Cogbytes>();
                     if (!String.IsNullOrEmpty(paper.DOI))
                     {
                         sqlMB = $@"Select Experiment.*, Task.Name as TaskName From Experiment
