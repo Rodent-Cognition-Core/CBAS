@@ -404,14 +404,14 @@
                             </table>
 
                         </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="row.repo.length>0">
+                        <mat-expansion-panel *ngIf="row !== null && row.repo !== null && row.repo.length > 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     <span style="color: #A569BD;">MouseBytes+ datasets associated to this publicaton:</span>
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <table>
-                                <tr *ngFor="let rep of row.repo">
+                                <tr *ngFor="let rep of row?.repo">
                                     <td>Repository Name:&nbsp; <span style="color:#696d70;">{{rep.title}}</span></td>
                                     <td>Status:&nbsp; <span style="color:#696d70;">{{rep.privacyStatus ? "Public" : "Private"}}</span></td>
                                     <td *ngIf="rep.privacyStatus">

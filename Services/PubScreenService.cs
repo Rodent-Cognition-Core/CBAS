@@ -3423,7 +3423,7 @@ QueryContainerDescriptor<PubScreenElasticSearchModel> query)
                                    Where DOI = '{paper.DOI}'";
 
                         // empty lstExperiment list
-                        lstExperiment.Clear();
+                        lstExperiment = new List<Experiment>();
                         using (DataTable dtExp = Dal.GetDataTable(sqlMB))
                         {
                             foreach (DataRow drExp in dtExp.Rows)
@@ -3445,7 +3445,7 @@ QueryContainerDescriptor<PubScreenElasticSearchModel> query)
                         }
 
                         sqlCog = $"Select * From UserRepository Where DOI = '{paper.DOI}'";
-                        lstRepo.Clear();
+                        lstRepo = new List<Cogbytes>();
                         using (DataTable dtCog = Dal.GetDataTableCog(sqlCog))
                         {
                             foreach (DataRow drCog in dtCog.Rows)
