@@ -79,7 +79,11 @@ jobs:
       # Switch to the staging branch
       - name: Checkout staging
         run: git checkout staging
-
+        
+      # Ensure staging is up-to-date with remote
+      - name: Reset staging to remote
+        run: git reset --hard origin/staging
+  
       # Merge the latest changes from dev into staging
       - name: Merge dev into staging
         run: git merge origin/${{ github.head_ref }} --strategy=recursive --strategy-option=theirs -m "Auto-merged PR branch ${{ github.head_ref }} into staging from PR ${{ github.event.pull_request.number }}"
