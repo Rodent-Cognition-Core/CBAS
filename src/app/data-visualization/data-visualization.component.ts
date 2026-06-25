@@ -100,7 +100,7 @@ export class DataVisualizationComponent implements OnInit {
         customization.showStatusBar = false;
         customization.showCollaboration = false;
 
-        this.app = new spotfire.webPlayer.Application("https://mouse.robarts.ca/spotfire/wp/", customization);
+        this.app = new spotfire.webPlayer.Application("https://spotfire.mousebytes.ca/spotfire/wp/", customization);
         var configuration = 'mbusername="' + this.user.userName + '";';
 
         var onError = function (errorCode : any, description : any) {
