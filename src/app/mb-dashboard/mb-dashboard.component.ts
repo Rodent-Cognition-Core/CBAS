@@ -38,7 +38,7 @@ export class MBDashboardComponent implements OnDestroy, AfterViewInit {
         customization.showStatusBar = false;
         customization.showCollaboration = false;
 
-        this.app = new spotfire.webPlayer.Application("https://spotfire-server:8080/spotfire/wp/", customization);
+        this.app = new spotfire.webPlayer.Application("https://spotfire.mousebytes.ca/spotfire/wp/", customization);
         var configuration = '';
 
         var onError = function (errorCode : any, description : any) {
